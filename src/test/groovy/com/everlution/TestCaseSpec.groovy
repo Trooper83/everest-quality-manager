@@ -82,13 +82,12 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.validate(["name"])
     }
 
-    void "test description cannot be null"() {
+    void "test description can be null"() {
         when:
         domain.description = null
 
         then:
-        !domain.validate(["description"])
-        domain.errors["description"].code == "nullable"
+        domain.validate(["description"])
     }
 
     void "test description can be blank"() {

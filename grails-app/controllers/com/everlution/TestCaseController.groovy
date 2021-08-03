@@ -9,6 +9,11 @@ class TestCaseController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    /**
+     * Lists all test cases
+     * @param max - maximum number of test cases to retrieve
+     * @return - list of test cases
+     */
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond testCaseService.list(params), model:[testCaseCount: testCaseService.count()]
@@ -31,16 +36,16 @@ class TestCaseController {
         try {
             testCaseService.save(testCase)
         } catch (ValidationException e) {
-            respond testCase.errors, view:'create'
+            respond testCase.errors, view:"create"
             return
         }
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'testCase.label', default: 'TestCase'), testCase.id])
+                flash.message = message(code: "default.created.message", args: [message(code: "testCase.name", default: "TestCase"), testCase.id])
                 redirect testCase
             }
-            '*' { respond testCase, [status: CREATED] }
+            "*" { respond testCase, [status: CREATED] }
         }
     }
 
@@ -57,16 +62,16 @@ class TestCaseController {
         try {
             testCaseService.save(testCase)
         } catch (ValidationException e) {
-            respond testCase.errors, view:'edit'
+            respond testCase.errors, view:"edit"
             return
         }
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'testCase.label', default: 'TestCase'), testCase.id])
+                flash.message = message(code: "default.updated.message", args: [message(code: "testCase.label", default: "TestCase"), testCase.id])
                 redirect testCase
             }
-            '*'{ respond testCase, [status: OK] }
+            "*"{ respond testCase, [status: OK] }
         }
     }
 
@@ -80,20 +85,20 @@ class TestCaseController {
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'testCase.label', default: 'TestCase'), id])
+                flash.message = message(code: "default.deleted.message", args: [message(code: "testCase.label", default: "TestCase"), id])
                 redirect action:"index", method:"GET"
             }
-            '*'{ render status: NO_CONTENT }
+            "*"{ render status: NO_CONTENT }
         }
     }
 
     protected void notFound() {
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'testCase.label', default: 'TestCase'), params.id])
+                flash.message = message(code: "default.not.found.message", args: [message(code: "testCase.name", default: "TestCase"), params.id])
                 redirect action: "index", method: "GET"
             }
-            '*'{ render status: NOT_FOUND }
+            "*"{ render status: NOT_FOUND }
         }
     }
 }

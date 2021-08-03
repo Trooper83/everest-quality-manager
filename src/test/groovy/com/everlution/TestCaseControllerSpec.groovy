@@ -10,9 +10,8 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     def populateValidParams(params) {
         assert params != null
 
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
-        assert false, "TODO: Provide a populateValidParams() implementation for this generated test suite"
+        params.name = "unit testing name"
+        params.description = "unit testing description"
     }
 
     void "Test the index action returns the correct model"() {
@@ -28,6 +27,26 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         then:"The model is correct"
         !model.testCaseList
         model.testCaseCount == 0
+    }
+
+    void "Test the index action param max"(Integer max, int expected) {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * list(_) >> []
+        }
+
+        when:"The index action is executed"
+        controller.index(max)
+
+        then:"The max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
     }
 
     void "Test the create action returns the correct model"() {
@@ -46,7 +65,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"A 404 error is returned"
         response.redirectedUrl == '/testCase/index'
-        flash.message != null
+        flash.message == "default.not.found.message"
     }
 
     void "Test the save action correctly persists"() {
@@ -67,7 +86,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/testCase/show/1'
-        controller.flash.message != null
+        controller.flash.message == "default.created.message"
     }
 
     void "Test the save action with an invalid instance"() {
@@ -200,7 +219,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"A 404 is returned"
         response.redirectedUrl == '/testCase/index'
-        flash.message != null
+        flash.message == "default.not.found.message"
     }
 
     void "Test the delete action with an instance"() {
@@ -216,7 +235,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"The user is redirected to index"
         response.redirectedUrl == '/testCase/index'
-        flash.message != null
+        flash.message == "default.deleted.message"
     }
 }
 
