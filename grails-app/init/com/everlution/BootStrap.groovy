@@ -3,7 +3,7 @@ package com.everlution
 class BootStrap {
 
     def init = { servletContext ->
-        new TestCase(name:"Everest").save()
+        new TestCase(name:"Everest", description: "").save()
     }
     def destroy = {
     }
