@@ -25,9 +25,14 @@
                 </g:eachError>
             </ul>
             </g:hasErrors>
-            <g:form resource="${this.testCase}" method="POST">
+            <g:form controller="testCase" action="save" method="POST">
                 <fieldset class="form">
-                    <f:all bean="testCase"/>
+                    <g:textField name="name"/>
+                    <g:textField name="description"/>
+                    <g:textField name="steps[0].action" value=""/>
+                    <g:textField name="steps[0].result" value=""/>
+                    <g:textField name="steps[1].action" value=""/>
+                    <g:textField name="steps[1].result" value=""/>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
