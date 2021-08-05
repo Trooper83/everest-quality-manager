@@ -13,14 +13,12 @@ class TestCaseServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     private Long setupData() {
-        // TODO: Populate valid domain instances and return a valid ID
-        //new TestCase(...).save(flush: true, failOnError: true)
-        //new TestCase(...).save(flush: true, failOnError: true)
-        //TestCase testCase = new TestCase(...).save(flush: true, failOnError: true)
-        //new TestCase(...).save(flush: true, failOnError: true)
-        //new TestCase(...).save(flush: true, failOnError: true)
-        assert false, "TODO: Provide a setupData() implementation for this generated test suite"
-        //testCase.id
+        TestCase testCase = new TestCase(name: "first", description: "desc1").save(flush: true, failOnError: true)
+        new TestCase(name: "second", description: "desc2").save(flush: true, failOnError: true)
+        new TestCase(name: "third", description: "desc3").save(flush: true, failOnError: true)
+        new TestCase(name: "fourth", description: "desc4").save(flush: true, failOnError: true)
+        new TestCase(name: "fifth", description: "desc5").save(flush: true, failOnError: true)
+        testCase.id
     }
 
     void "test get"() {
@@ -38,7 +36,6 @@ class TestCaseServiceSpec extends Specification {
 
         then:
         testCaseList.size() == 2
-        assert false, "TODO: Verify the correct instances are returned"
     }
 
     void "test count"() {
@@ -64,8 +61,7 @@ class TestCaseServiceSpec extends Specification {
 
     void "test save"() {
         when:
-        assert false, "TODO: Provide a valid instance to save"
-        TestCase testCase = new TestCase()
+        TestCase testCase = new TestCase(name: "test", description: "desc")
         testCaseService.save(testCase)
 
         then:
