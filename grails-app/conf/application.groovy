@@ -14,8 +14,12 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	[pattern: '/**/js/**',       access: ['permitAll']],
 	[pattern: '/**/css/**',      access: ['permitAll']],
 	[pattern: '/**/images/**',   access: ['permitAll']],
-	[pattern: '/**/favicon.ico', access: ['permitAll']]
+	[pattern: '/**/favicon.ico', access: ['permitAll']],
+	//TODO: Set h2-console to env specific for development
+	[pattern: '/h2-console/**',  access: ['permitAll']]
 ]
+
+
 
 grails.plugin.springsecurity.filterChain.chainMap = [
 	[pattern: '/assets/**',      filters: 'none'],
@@ -25,4 +29,9 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 	[pattern: '/**/favicon.ico', filters: 'none'],
 	[pattern: '/**',             filters: 'JOINED_FILTERS']
 ]
+
+//TODO: These should only be set for development environment
+grails.plugin.springsecurity.http.authorizeRequests = [pattern: "/h2-console/**", access: ["permitAll"]]
+grails.plugin.springsecurity.http.csrf = false
+grails.plugin.springsecurity.http.headers.frameOptions = false
 
