@@ -2,6 +2,7 @@ package com.everlution
 
 class TestCase {
 
+    Date dateCreated
     String description
     String name
     static hasMany = [steps: TestStep]
