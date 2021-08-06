@@ -68,18 +68,6 @@ class TestCaseServiceSpec extends Specification {
         testCase.id != null
     }
 
-    void "test save with steps"() {
-        when:
-        TestStep testStep = new TestStep(action: "do something", result: "something happened").save()
-        TestStep testStep1 = new TestStep(action: "do something", result: "something happened").save()
-        TestCase testCase = new TestCase(name: "test", description: "desc", steps: [testStep, testStep1])
-        testCaseService.save(testCase)
-
-        then:
-        testCase.id != null
-        testCase.steps.size() == 2
-    }
-
     void "test date created auto generated"() {
         when:
         TestCase testCase = new TestCase(name: "test", description: "desc")

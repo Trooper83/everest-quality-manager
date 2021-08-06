@@ -116,7 +116,7 @@ class TestStepSpec extends Specification implements DomainUnitTest<TestStep> {
         domain.validate(["result"])
     }
 
-    void "test case cannot be null"() {
+    void "test case can be null"() {
         when:
         def d = domain
         domain.testCase = null
