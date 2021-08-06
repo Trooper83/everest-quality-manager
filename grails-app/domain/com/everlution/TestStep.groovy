@@ -3,6 +3,7 @@ package com.everlution
 class TestStep {
 
     String action
+    Date dateCreated
     String result
 
     static belongsTo = TestCase
