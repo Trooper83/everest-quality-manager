@@ -14,31 +14,31 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         params.description = "unit testing description"
     }
 
-    void "Test the index action returns the correct model"() {
+    void "test the index action returns the correct model"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
 
-        when:"The index action is executed"
+        when:"the index action is executed"
         controller.index()
 
-        then:"The model is correct"
+        then:"the model is correct"
         !model.testCaseList
         model.testCaseCount == 0
     }
 
-    void "Test the index action param max"(Integer max, int expected) {
+    void "test the index action param max"(Integer max, int expected) {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * list(_) >> []
         }
 
-        when:"The index action is executed"
+        when:"the index action is executed"
         controller.index(max)
 
-        then:"The max is as expected"
+        then:"the max is as expected"
         controller.params.max == expected
 
         where:
@@ -49,32 +49,51 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         101  | 100
     }
 
-    void "Test the create action returns the correct model"() {
-        when:"The create action is executed"
+    void "test the create action returns the correct model"() {
+        when:"the create action is executed"
         controller.create()
 
-        then:"The model is correctly created"
+        then:"the model is correctly created"
         model.testCase!= null
     }
 
-    void "Test the save action with a null instance"() {
-        when:"Save is called for a domain instance that doesn't exist"
+    void "test the save action method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+        populateValidParams(params)
+        def testCase = new TestCase(params)
+
+        when:
+        controller.save(testCase)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'GET'        | _
+        'DELETE'     | _
+        'PUT'        | _
+    }
+
+    void "test the save action with a null instance"() {
+        when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         controller.save(null)
 
-        then:"A 404 error is returned"
+        then:"a 404 error is returned"
         response.redirectedUrl == '/testCase/index'
         flash.message == "default.not.found.message"
     }
 
-    void "Test the save action correctly persists"() {
+    void "test the save action correctly persists"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase)
         }
 
-        when:"The save action is executed with a valid instance"
+        when:"the save action is executed with a valid instance"
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
@@ -84,12 +103,12 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         controller.save(testCase)
 
-        then:"A redirect is issued to the show action"
+        then:"a redirect is issued to the show action"
         response.redirectedUrl == '/testCase/show/1'
         controller.flash.message == "default.created.message"
     }
 
-    void "Test the save action with an invalid instance"() {
+    void "test the save action with an invalid instance"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase) >> { TestCase testCase ->
@@ -97,88 +116,106 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
             }
         }
 
-        when:"The save action is executed with an invalid instance"
+        when:"the save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def testCase = new TestCase()
         controller.save(testCase)
 
-        then:"The create view is rendered again with the correct model"
+        then:"the create view is rendered again with the correct model"
         model.testCase != null
         view == 'create'
     }
 
-    void "Test the show action with a null id"() {
+    void "test the show action with a null id"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * get(null) >> null
         }
 
-        when:"The show action is executed with a null domain"
+        when:"the show action is executed with a null domain"
         controller.show(null)
 
-        then:"A 404 error is returned"
+        then:"a 404 error is returned"
         response.status == 404
     }
 
-    void "Test the show action with a valid id"() {
+    void "test the show action with a valid id"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * get(2) >> new TestCase()
         }
 
-        when:"A domain instance is passed to the show action"
+        when:"a domain instance is passed to the show action"
         controller.show(2)
 
-        then:"A model is populated containing the domain instance"
+        then:"a model is populated containing the domain instance"
         model.testCase instanceof TestCase
     }
 
-    void "Test the edit action with a null id"() {
+    void "test the edit action with a null id"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * get(null) >> null
         }
 
-        when:"The show action is executed with a null domain"
+        when:"the show action is executed with a null domain"
         controller.edit(null)
 
-        then:"A 404 error is returned"
+        then:"a 404 error is returned"
         response.status == 404
     }
 
-    void "Test the edit action with a valid id"() {
+    void "test the edit action with a valid id"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * get(2) >> new TestCase()
         }
 
-        when:"A domain instance is passed to the show action"
+        when:"a domain instance is passed to the show action"
         controller.edit(2)
 
-        then:"A model is populated containing the domain instance"
+        then:"a model is populated containing the domain instance"
         model.testCase instanceof TestCase
     }
 
+    void "test the update action method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+        populateValidParams(params)
+        def testCase = new TestCase(params)
 
-    void "Test the update action with a null instance"() {
-        when:"Save is called for a domain instance that doesn't exist"
+        when:
+        controller.update(testCase)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'GET'        | _
+        'DELETE'     | _
+        'POST'       | _
+    }
+
+    void "test the update action with a null instance"() {
+        when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(null)
 
-        then:"A 404 error is returned"
+        then:"a 404 error is returned"
         response.redirectedUrl == '/testCase/index'
         flash.message != null
     }
 
-    void "Test the update action correctly persists"() {
+    void "test the update action correctly persists"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase)
         }
 
-        when:"The save action is executed with a valid instance"
+        when:"the save action is executed with a valid instance"
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
@@ -188,12 +225,12 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         controller.update(testCase)
 
-        then:"A redirect is issued to the show action"
+        then:"a redirect is issued to the show action"
         response.redirectedUrl == '/testCase/show/1'
         controller.flash.message != null
     }
 
-    void "Test the update action with an invalid instance"() {
+    void "test the update action with an invalid instance"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase) >> { TestCase testCase ->
@@ -201,39 +238,56 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
             }
         }
 
-        when:"The save action is executed with an invalid instance"
+        when:"the save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(new TestCase())
 
-        then:"The edit view is rendered again with the correct model"
+        then:"the edit view is rendered again with the correct model"
         model.testCase != null
         view == 'edit'
     }
 
-    void "Test the delete action with a null instance"() {
-        when:"The delete action is called for a null instance"
+    void "test the delete action method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.delete(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'GET'        | _
+        'PUT'        | _
+        'POST'       | _
+    }
+
+    void "test the delete action with a null instance"() {
+        when:"the delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
         controller.delete(null)
 
-        then:"A 404 is returned"
+        then:"a 404 is returned"
         response.redirectedUrl == '/testCase/index'
         flash.message == "default.not.found.message"
     }
 
-    void "Test the delete action with an instance"() {
+    void "test the delete action with an instance"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * delete(2)
         }
 
-        when:"The domain instance is passed to the delete action"
+        when:"the domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
         controller.delete(2)
 
-        then:"The user is redirected to index"
+        then:"the user is redirected to index"
         response.redirectedUrl == '/testCase/index'
         flash.message == "default.deleted.message"
     }
