@@ -12,7 +12,8 @@ class TestStepIntSpec extends Specification {
         when:
         TestStep testStep = new TestStep(action: "do something", result: "something happened").save()
         TestStep testStep1 = new TestStep(action: "do something", result: "something happened").save()
-        TestCase testCase = new TestCase(name: "test", description: "desc", steps: [testStep, testStep1]).save()
+        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
+                executionMethod: "automated", type: "ui", steps: [testStep, testStep1]).save()
 
         then:
         testCase.steps.size() == 2
