@@ -16,8 +16,10 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
     void "test instances are persisted"() {
         setup:
-        new TestCase(name: "First Test Case", description: "test").save()
-        new TestCase(name: "Second Test Case", description: "test").save()
+        new TestCase(creator: "test", name: "First Test Case", description: "test",
+                executionMethod: "manual", type: "ui").save()
+        new TestCase(creator: "test",name: "Second Test Case", description: "test",
+                executionMethod: "automated", type: "api").save()
 
         expect:
         TestCase.count() == 2
@@ -123,5 +125,122 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
         then:
         domain.validate(["steps"])
+    }
+
+    void "test execution method cannot be null"() {
+        when:
+        domain.executionMethod = null
+
+        then:
+        !domain.validate(["executionMethod"])
+        domain.errors["executionMethod"].code == "nullable"
+    }
+
+    void "test execution method cannot be blank"() {
+        when:
+        domain.executionMethod = ""
+
+        then:
+        !domain.validate(["executionMethod"])
+        domain.errors["executionMethod"].code == "blank"
+    }
+
+    void "test execution method value in list"(String value) {
+        when:
+        domain.executionMethod = value
+
+        then:
+        domain.validate(["executionMethod"])
+
+        where:
+        value       | _
+        "automated" | _
+        "manual"    | _
+    }
+
+    void "test execution method value not in list"() {
+        when:
+        domain.executionMethod = "test"
+
+        then:
+        !domain.validate(["executionMethod"])
+        domain.errors["executionMethod"].code == "not.inList"
+    }
+
+    void "test type cannot be null"() {
+        when:
+        domain.type = null
+
+        then:
+        !domain.validate(["type"])
+        domain.errors["type"].code == "nullable"
+    }
+
+    void "test type cannot be blank"() {
+        when:
+        domain.type = ""
+
+        then:
+        !domain.validate(["type"])
+        domain.errors["type"].code == "blank"
+    }
+
+    void "test type value in list"(String value) {
+        when:
+        domain.type = value
+
+        then:
+        domain.validate(["type"])
+
+        where:
+        value | _
+        "api" | _
+        "ui"  | _
+    }
+
+    void "test type value not in list"() {
+        when:
+        domain.type = "test"
+
+        then:
+        !domain.validate(["type"])
+        domain.errors["type"].code == "not.inList"
+    }
+
+    void "test creator cannot be null"() {
+        when:
+        domain.creator = null
+
+        then:
+        !domain.validate(["creator"])
+        domain.errors["creator"].code == "nullable"
+    }
+
+    void "test creator cannot be blank"() {
+        when:
+        domain.creator = ""
+
+        then:
+        !domain.validate(["creator"])
+        domain.errors["creator"].code == "blank"
+    }
+
+    void "test creator cannot exceed 100 characters"() {
+        when: "for a string of 101 characters"
+        String str = "a" * 101
+        domain.creator = str
+
+        then: "creator validation fails"
+        !domain.validate(["creator"])
+        domain.errors["creator"].code == "maxSize.exceeded"
+    }
+
+    void "test creator validates with 100 characters"() {
+        when: "for a string of 100 characters"
+        String str = "a" * 100
+        domain.creator = str
+
+        then: "validation passes"
+        domain.validate(["creator"])
     }
 }
