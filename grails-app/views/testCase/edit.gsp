@@ -29,8 +29,26 @@
             <g:form resource="${this.testCase}" method="PUT">
                 <g:hiddenField name="version" value="${this.testCase?.version}" />
                 <fieldset class="form">
-                    <f:all bean="testCase"/>
+                    <f:all bean="testCase" except="steps"/>
                 </fieldset>
+                <fieldset>
+                    <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <g:each status="i" var="step" in="${testCase.steps}">
+                        <tr>
+                            <td><g:field type="text" name="steps[${i}].action" value="${step.action}" /></td>
+                            <td><g:field type="text" name="steps[${i}].result" value="${step.result}" /></td>
+                        </tr>
+                    </g:each>
+                    </tbody>
+                    </table>
+                    </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                 </fieldset>

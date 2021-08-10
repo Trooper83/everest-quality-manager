@@ -19,7 +19,25 @@
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:display bean="testCase" />
+            <f:display bean="testCase" except="steps"/>
+            <fieldset>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+            <g:each in="${testCase.steps}">
+                <tr>
+                    <td>${it.action}</td>
+                    <td>${it.result}</td>
+                </tr>
+            </g:each>
+            </tbody>
+            </table>
+            </fieldset>
             <g:form resource="${this.testCase}" method="DELETE">
                 <fieldset class="buttons">
                     <g:link class="edit" action="edit" resource="${this.testCase}"><g:message code="default.button.edit.label" default="Edit" /></g:link>

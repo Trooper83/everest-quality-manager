@@ -40,6 +40,7 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def create() {
+        params.creator = getPrincipal().username
         respond new TestCase(params)
     }
 
@@ -49,6 +50,8 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def save(TestCase testCase) {
+
+        def p = params
 
         if (testCase == null) {
             notFound()

@@ -18,8 +18,7 @@
             <g:if test="${flash.message}">
                 <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:table collection="${testCaseList}" />
-
+            <f:table collection="${testCaseList}" order="['name', 'creator', 'type', 'executionMethod']"/>
             <div class="pagination">
                 <g:paginate total="${testCaseCount ?: 0}" />
             </div>
