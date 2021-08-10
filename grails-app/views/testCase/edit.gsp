@@ -29,7 +29,7 @@
             <g:form resource="${this.testCase}" method="PUT">
                 <g:hiddenField name="version" value="${this.testCase?.version}" />
                 <fieldset class="form">
-                    <f:all bean="testCase" except="steps"/>
+                    <f:all bean="testCase" except="steps, creator"/>
                 </fieldset>
                 <fieldset>
                     <table class="table">

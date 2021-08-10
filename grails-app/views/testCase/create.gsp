@@ -27,7 +27,8 @@
             </g:hasErrors>
             <g:form controller="testCase" action="save" method="POST">
                 <fieldset class="form">
-                    <f:all bean="testCase" except="steps"/>
+                    <input type="hidden" name="creator" value="<sec:username/>"/>
+                    <f:all bean="testCase" except="steps, creator"/>
                 </fieldset>
                 <fieldset>
                     <table id="ledgerEntriesTable" class="table">
