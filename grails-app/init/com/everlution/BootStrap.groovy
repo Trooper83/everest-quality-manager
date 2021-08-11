@@ -10,7 +10,7 @@ class BootStrap {
 
             }
             development {
-                addTestUser()
+                seedTestUsers()
                 seedTestCases()
             }
         }
@@ -20,12 +20,24 @@ class BootStrap {
     }
 
     @Transactional
-    void addTestUser() {
-        def basicRole = new Role(authority: 'ROLE_BASIC').save(failOnError: true)
+    void seedTestUsers() {
+        def basicRole = new Role(authority: "ROLE_BASIC").save(failOnError: true)
+        def readOnlyRole = new Role(authority: "ROLE_READ_ONLY").save(failOnError: true)
+        def projectAdminRole = new Role(authority: "ROLE_PROJECT_ADMIN").save(failOnError: true)
+        def orgAdminRole = new Role(authority: "ROLE_ORG_ADMIN").save(failOnError: true)
+        def appAdminRole = new Role(authority: "ROLE_APP_ADMIN").save(failOnError: true)
 
-        def testUser = new Person(username: 'test', password: 'password').save(failOnError: true)
+        def readOnlyUser = new Person(username: "read_only", password: "password").save(failOnError: true)
+        def basicUser = new Person(username: "basic", password: "password").save(failOnError: true)
+        def projectAdminUser = new Person(username: "project_admin", password: "password").save(failOnError: true)
+        def orgAdminUser = new Person(username: "org_admin", password: "password").save(failOnError: true)
+        def appAdminUser = new Person(username: "app_admin", password: "password").save(failOnError: true)
 
-        PersonRole.create(testUser, basicRole)
+        PersonRole.create(readOnlyUser, readOnlyRole)
+        PersonRole.create(basicUser, basicRole)
+        PersonRole.create(projectAdminUser, projectAdminRole)
+        PersonRole.create(orgAdminUser, orgAdminRole)
+        PersonRole.create(appAdminUser, appAdminRole)
 
         PersonRole.withSession {
             it.flush()
@@ -36,6 +48,6 @@ class BootStrap {
     void seedTestCases() {
         def s = new TestStep(action: "do something", result: "expect something").save(failOnError: true)
         new TestCase(creator: "test", name: "everest", description: "lorem ipsum etc...",
-                executionMethod: "manual", type: "ui", steps: s).save(failOnError: true)
+                executionMethod: "manual", type: "ui", steps: [s]).save(failOnError: true)
     }
 }

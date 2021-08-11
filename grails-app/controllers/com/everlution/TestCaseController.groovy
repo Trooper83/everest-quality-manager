@@ -16,7 +16,7 @@ class TestCaseController {
      * @param max - maximum number of test cases to retrieve
      * @return - list of test cases
      */
-    @Secured("ROLE_BASIC")
+    @Secured("ROLE_READ_ONLY")
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond testCaseService.list(params), model:[testCaseCount: testCaseService.count()]
@@ -28,7 +28,7 @@ class TestCaseController {
      * @param id - id of the case to display
      * @return - a single test case
      */
-    @Secured("ROLE_BASIC")
+    @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         respond testCaseService.get(id)
     }
