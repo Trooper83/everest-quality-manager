@@ -83,22 +83,4 @@ class TestCaseServiceSpec extends Specification {
         then:
         testCaseService.get(testCase.id).dateCreated != null
     }
-
-    void "test steps order persists"() {
-        when:
-        def paramMap = [creator: "test", name: "case", description: "desc",
-                executionMethod: "automated", type: "api",
-                "steps[0]": [action: "act1", result: "res1"],
-                "steps[1]": [action: "act2", result: "res2"],
-                "steps[2]": [action: "act3", result: "res3"]
-        ]
-        TestCase testCase = new TestCase(paramMap).save()
-
-        def tc = testCaseService.get(testCase.id)
-
-        then:
-        tc.steps[0].action == "act1"
-        tc.steps[1].action == "act2"
-        tc.steps[2].action == "act3"
-    }
 }
