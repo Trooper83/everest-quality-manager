@@ -41,12 +41,6 @@
             </g:each>
         </ul>
     </li>
-    <sec:ifLoggedIn>
-        Welcome Back <sec:username/>!
-    </sec:ifLoggedIn>
-    <sec:ifNotLoggedIn>
-        <g:link controller='login' action='auth'>Login</g:link>
-    </sec:ifNotLoggedIn>
 </content>
 
 <div class="svg" role="presentation">

@@ -27,6 +27,17 @@
             <g:pageProperty name="page.nav"/>
         </ul>
     </div>
+    <div>
+        <sec:ifLoggedIn>
+            <p>Welcome Back <sec:username/>!</p>
+            <g:form controller="logout">
+                <button>logout</button>
+            </g:form>
+        </sec:ifLoggedIn>
+        <sec:ifNotLoggedIn>
+            <g:link controller='login' action='auth'>Login</g:link>
+        </sec:ifNotLoggedIn>
+    </div>
 
 </nav>
 
