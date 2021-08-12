@@ -35,24 +35,28 @@
                     <table class="table">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Action</th>
                             <th>Result</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="stepsTableContent">
                     <g:each status="i" var="step" in="${testCase.steps}">
                         <tr>
+                            <td><g:hiddenField name="stepsIndex[${i}]" class="iHidden" />
                             <td><g:field type="text" name="steps[${i}].action" value="${step.action}" /></td>
                             <td><g:field type="text" name="steps[${i}].result" value="${step.result}" /></td>
                         </tr>
                     </g:each>
                     </tbody>
                     </table>
+                    <input id="btnAddEntry" type="button" value="Add" onclick="addEntryRow()" />
                     </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                 </fieldset>
             </g:form>
         </div>
+        <asset:javascript src="teststep.js"/>
     </body>
 </html>
