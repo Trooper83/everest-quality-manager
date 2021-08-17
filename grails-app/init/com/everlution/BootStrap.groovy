@@ -7,7 +7,7 @@ class BootStrap {
     def init = { servletContext ->
         environments {
             test {
-
+                seedTestUsers()
             }
             development {
                 seedTestUsers()
@@ -43,6 +43,7 @@ class BootStrap {
             it.flush()
             it.clear()
         }
+
     }
 
     void seedTestCases() {
