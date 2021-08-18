@@ -14,6 +14,20 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         params.description = "unit testing description"
     }
 
+    void "test index action renders index view"() {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * list(_) >> []
+            1 * count() >> 0
+        }
+
+        when:
+        controller.index()
+
+        then:
+        view == 'index'
+    }
+
     void "test the index action returns the correct model"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
@@ -47,6 +61,14 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         1    | 1
         99   | 99
         101  | 100
+    }
+
+    void "test the create action returns the correct view"() {
+        when:"the create action is executed"
+        controller.create()
+
+        then:"the model is correctly created"
+        view == "create"
     }
 
     void "test the create action returns the correct model"() {
@@ -127,6 +149,19 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         view == 'create'
     }
 
+    void "test the show action renders show view"() {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * get(2) >> new TestCase()
+        }
+
+        when:"a domain instance is passed to the show action"
+        controller.show(2)
+
+        then:
+        view == "show"
+    }
+
     void "test the show action with a null id"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
@@ -164,6 +199,19 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"a 404 error is returned"
         response.status == 404
+    }
+
+    void "test the edit action renders edit view"() {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * get(2) >> new TestCase()
+        }
+
+        when:"a domain instance is passed to the show action"
+        controller.edit(2)
+
+        then:
+        view == "edit"
     }
 
     void "test the edit action with a valid id"() {
@@ -206,7 +254,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"a 404 error is returned"
         response.redirectedUrl == '/testCase/index'
-        flash.message != null
+        flash.message == "default.not.found.message"
     }
 
     void "test the update action correctly persists"() {
@@ -215,7 +263,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
             1 * save(_ as TestCase)
         }
 
-        when:"the save action is executed with a valid instance"
+        when:
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
@@ -227,7 +275,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"a redirect is issued to the show action"
         response.redirectedUrl == '/testCase/show/1'
-        controller.flash.message != null
+        controller.flash.message == "default.updated.message"
     }
 
     void "test the update action with an invalid instance"() {
