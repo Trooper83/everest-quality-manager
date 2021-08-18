@@ -35,7 +35,7 @@
             </g:form>
         </sec:ifLoggedIn>
         <sec:ifNotLoggedIn>
-            <g:link controller="login" action="auth" data-test-id="auth-login-link">Login</g:link>
+            <g:link controller="login" action="auth" data-test-id="main-login-link">Login</g:link>
         </sec:ifNotLoggedIn>
     </div>
 

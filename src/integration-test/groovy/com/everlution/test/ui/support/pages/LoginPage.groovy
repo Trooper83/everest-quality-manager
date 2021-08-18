@@ -11,6 +11,11 @@ class LoginPage extends BasePage {
         usernameTextField { $(id: "username") }
     }
 
+    /**
+     * Logs into the app
+     * @param username
+     * @param password
+     */
     void login(String username, String password) {
         usernameTextField << username
         passwordTextField << password
