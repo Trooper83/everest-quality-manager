@@ -1,5 +1,7 @@
-package com.everlution
+package com.everlution.test.service
 
+import com.everlution.TestCase
+import com.everlution.TestCaseService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification

@@ -29,13 +29,13 @@
     </div>
     <div>
         <sec:ifLoggedIn>
-            <p>Welcome Back <sec:username/>!</p>
+            <p data-test-id="main-welcome-username">Welcome Back <sec:username/>!</p>
             <g:form controller="logout">
-                <button>logout</button>
+                <button data-test-id="main-logout-button">logout</button>
             </g:form>
         </sec:ifLoggedIn>
         <sec:ifNotLoggedIn>
-            <g:link controller='login' action='auth'>Login</g:link>
+            <g:link controller="login" action="auth" data-test-id="main-login-link">Login</g:link>
         </sec:ifNotLoggedIn>
     </div>
 
