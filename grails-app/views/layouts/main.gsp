@@ -29,9 +29,9 @@
     </div>
     <div>
         <sec:ifLoggedIn>
-            <p>Welcome Back <sec:username/>!</p>
+            <p data-test-id="main-welcome-username">Welcome Back <sec:username/>!</p>
             <g:form controller="logout">
-                <button>logout</button>
+                <button data-test-id="main-logout-button">logout</button>
             </g:form>
         </sec:ifLoggedIn>
         <sec:ifNotLoggedIn>
