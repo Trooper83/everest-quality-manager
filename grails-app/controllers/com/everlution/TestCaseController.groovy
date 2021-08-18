@@ -30,7 +30,7 @@ class TestCaseController {
      */
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
-        respond testCaseService.get(id)
+        respond testCaseService.get(id), view:"show"
     }
 
     /**
@@ -78,7 +78,7 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def edit(Long id) {
-        respond testCaseService.get(id)
+        respond testCaseService.get(id), view:"edit"
     }
 
     /**
@@ -94,7 +94,7 @@ class TestCaseController {
 
         try {
             testCaseService.save(testCase)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             respond testCase.errors, view:"edit"
             return
         }
