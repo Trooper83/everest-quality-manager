@@ -7,12 +7,12 @@ class NavBarModule extends Module {
 
     static content = {
         loginLink { $("[data-test-id=main-login-link]") }
-        logoutButton { $("[data-test-id=main-logout-button]")}
-        usernameLabel { $("[data-test-id=main-welcome-username]")}
+        logoutButton { $("[data-test-id=main-logout-button]") }
+        usernameLabel { $("[data-test-id=main-welcome-username]") }
     }
 
     /**
-     * Determines if the welcome message is displayed
+     * determines if the welcome message is displayed
      * @return - true if displayed, false if not
      */
     boolean isWelcomeMessageDisplayed() {
@@ -32,7 +32,7 @@ class NavBarModule extends Module {
     }
 
     /**
-     * Verifies the welcome message text
+     * verifies the welcome message text
      * @param username - the logged in user
      */
     boolean verifyWelcomeMessage(String username) {

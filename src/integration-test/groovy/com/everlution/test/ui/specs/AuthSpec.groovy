@@ -10,12 +10,6 @@ import grails.testing.mixin.integration.Integration
 @Rollback
 class AuthSpec extends GebSpec {
 
-    def setup() {
-    }
-
-    def cleanup() {
-    }
-
     void "invalid login displays message"(String username, String password) {
         given:
         to LoginPage

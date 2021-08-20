@@ -12,7 +12,7 @@ class LoginPage extends BasePage {
     }
 
     /**
-     * Logs into the app
+     * logs into the app
      * @param username
      * @param password
      */

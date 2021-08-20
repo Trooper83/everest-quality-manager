@@ -23,8 +23,6 @@ class TestCaseServiceSpec extends Specification {
                 executionMethod: "automated", type: "api").save(flush: true, failOnError: true)
         new TestCase(creator: "test",name: "fourth", description: "desc4",
                 executionMethod: "manual", type: "ui").save(flush: true, failOnError: true)
-        new TestCase(creator: "test",name: "fifth", description: "desc5",
-                executionMethod: "automated", type: "api").save(flush: true, failOnError: true)
         testCase.id
     }
 

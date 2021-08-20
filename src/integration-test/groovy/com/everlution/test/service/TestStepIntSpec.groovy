@@ -22,7 +22,7 @@ class TestStepIntSpec extends Specification {
         testCaseService.save(testCase)
 
         then:
-        TestStep.list().size == 2
+        TestStep.list().size == 3
     }
 
     void "test update case with steps"() {
