@@ -8,6 +8,7 @@ class BootStrap {
         environments {
             test {
                 seedTestUsers()
+                seedTestCases()
             }
             development {
                 seedTestUsers()

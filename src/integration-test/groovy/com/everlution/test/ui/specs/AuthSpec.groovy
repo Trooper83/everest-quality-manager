@@ -10,12 +10,6 @@ import grails.testing.mixin.integration.Integration
 @Rollback
 class AuthSpec extends GebSpec {
 
-    def setup() {
-    }
-
-    def cleanup() {
-    }
-
     void "invalid login displays message"(String username, String password) {
         given:
         to LoginPage
@@ -61,5 +55,16 @@ class AuthSpec extends GebSpec {
         expect:
         HomePage homePage = browser.page(HomePage)
         !homePage.navBar.isWelcomeMessageDisplayed()
+    }
+
+    void "anonymous user redirected to login page"(String url) {
+        when:
+        go url
+
+        then:
+        at LoginPage
+
+        where:
+        url << ["/testCase/index", "/testCase/create", "/testCase/edit", "/testCase/show"]
     }
 }
