@@ -3,7 +3,7 @@ package com.everlution.test.ui.support.pages
 import com.everlution.test.ui.support.pages.modules.TableModule
 import geb.error.RequiredPageContentNotPresent
 
-class TestCaseIndexPage extends BasePage {
+class ListTestCasePage extends BasePage {
     static url = "/testCase/index"
     static at = { title == "TestCase List" }
 

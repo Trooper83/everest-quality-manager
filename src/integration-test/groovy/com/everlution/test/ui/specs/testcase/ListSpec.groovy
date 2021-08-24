@@ -3,7 +3,7 @@ package com.everlution.test.ui.specs.testcase
 import com.everlution.test.ui.support.pages.CreateTestCasePage
 import com.everlution.test.ui.support.pages.HomePage
 import com.everlution.test.ui.support.pages.LoginPage
-import com.everlution.test.ui.support.pages.TestCaseIndexPage
+import com.everlution.test.ui.support.pages.ListTestCasePage
 import geb.spock.GebSpec
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
@@ -19,11 +19,11 @@ class ListSpec extends GebSpec {
         loginPage.login("read_only", "password")
 
         when:
-        to TestCaseIndexPage
+        to ListTestCasePage
 
         then:
         def expected = ["Name", "Creator", "Type", "Execution Method"]
-        TestCaseIndexPage page = browser.page(TestCaseIndexPage)
+        ListTestCasePage page = browser.page(ListTestCasePage)
         page.testCaseTable.getHeaders() == expected
     }
 
@@ -32,10 +32,10 @@ class ListSpec extends GebSpec {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login("read_only", "password")
-        to TestCaseIndexPage
+        to ListTestCasePage
 
         when:
-        TestCaseIndexPage page = browser.page(TestCaseIndexPage)
+        ListTestCasePage page = browser.page(ListTestCasePage)
         page.goToHome()
 
         then:
@@ -47,10 +47,10 @@ class ListSpec extends GebSpec {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login("basic", "password")
-        to TestCaseIndexPage
+        to ListTestCasePage
 
         when:
-        TestCaseIndexPage page = browser.page(TestCaseIndexPage)
+        ListTestCasePage page = browser.page(ListTestCasePage)
         page.goToCreateTestCase()
 
         then:

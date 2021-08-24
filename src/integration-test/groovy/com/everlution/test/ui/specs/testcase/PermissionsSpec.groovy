@@ -1,7 +1,9 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.test.ui.support.pages.CreateTestCasePage
+import com.everlution.test.ui.support.pages.EditTestCasePage
 import com.everlution.test.ui.support.pages.LoginPage
-import com.everlution.test.ui.support.pages.TestCaseIndexPage
+import com.everlution.test.ui.support.pages.ListTestCasePage
 import geb.spock.GebSpec
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
@@ -10,31 +12,31 @@ import grails.testing.mixin.integration.Integration
 @Rollback
 class PermissionsSpec extends GebSpec {
 
-    void "create button not displayed on index for Read Only user"() {
+    void "create button not displayed on list for Read Only user"() {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login("read_only", "password")
 
         when:
-        to TestCaseIndexPage
+        to ListTestCasePage
 
         then:
-        TestCaseIndexPage page = browser.page(TestCaseIndexPage)
+        ListTestCasePage page = browser.page(ListTestCasePage)
         !page.isCreateButtonDisplayed()
     }
 
-    void "create button displayed on index for users"(String username, String password) {
+    void "create button displayed on list for users"(String username, String password) {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
         when:
-        to TestCaseIndexPage
+        to ListTestCasePage
 
         then:
-        TestCaseIndexPage page = browser.page(TestCaseIndexPage)
+        ListTestCasePage page = browser.page(ListTestCasePage)
         page.isCreateButtonDisplayed()
 
         where:
@@ -43,5 +45,33 @@ class PermissionsSpec extends GebSpec {
         "project_admin" | "password"
         "org_admin"     | "password"
         "app_admin"     | "password"
+    }
+
+    void "create view displays unauthorized error for read_only user"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("read_only", "password")
+
+        when:
+        go "/testCase/create"
+
+        then:
+        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        page.errorText.text() == "Sorry, you're not authorized to view this page."
+    }
+
+    void "edit view displays unauthorized error for read_only user"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("read_only", "password")
+
+        when:
+        go "/testCase/edit"
+
+        then:
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        page.errorText.text() == "Sorry, you're not authorized to view this page."
     }
 }
