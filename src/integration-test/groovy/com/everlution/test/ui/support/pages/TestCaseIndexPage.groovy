@@ -9,7 +9,22 @@ class TestCaseIndexPage extends BasePage {
 
     static content = {
         createTestCaseButton { $("[data-test-id=index-create-button]") }
+        homeLink { $("[data-test-id=index-home-link]")}
         testCaseTable { module TableModule }
+    }
+
+    /**
+     * clicks the new test case button
+     */
+    void goToCreateTestCase() {
+        createTestCaseButton.click()
+    }
+
+    /**
+     * clicks the home link
+     */
+    void goToHome() {
+        homeLink.click()
     }
 
     /**
