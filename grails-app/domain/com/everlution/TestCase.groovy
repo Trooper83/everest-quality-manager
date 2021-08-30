@@ -17,6 +17,6 @@ class TestCase {
         executionMethod blank: false, nullable: false, inList: ["Automated", "Manual"]
         name blank: false, maxSize: 255, nullable: false
         steps nullable: true
-        type blank: false, nullable: false, inList: ["API", "UI"]
+        type blank: false, nullable: false, inList: ["UI", "API"]
     }
 }

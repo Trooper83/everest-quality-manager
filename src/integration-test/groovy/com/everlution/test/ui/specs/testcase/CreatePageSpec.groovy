@@ -10,7 +10,7 @@ import org.springframework.test.annotation.Rollback
 
 @Rollback
 @Integration
-class CreateSpec extends GebSpec {
+class CreatePageSpec extends GebSpec {
 
     def setup() {
         given: "login as a basic user"
@@ -51,8 +51,14 @@ class CreateSpec extends GebSpec {
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         verifyAll {
             page.executionMethodOptions*.text() == ["Automated", "Manual"]
-            page.typeOptions*.text() == ["API", "UI"]
+            page.typeOptions*.text() == ["UI", "API"]
         }
+
+        and: "default values are correct"
+        verifyAll( {
+            page.executionMethodSelect.value() == "Automated"
+            page.typeSelect.value() == "UI"
+        })
     }
 
     void "add test step row"() {

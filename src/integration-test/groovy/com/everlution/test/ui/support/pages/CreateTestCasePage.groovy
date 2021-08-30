@@ -9,10 +9,12 @@ class CreateTestCasePage extends BasePage {
     static content = {
         errorText { $("div.errors") }
         executionMethodOptions { $("#executionMethod>option") }
+        executionMethodSelect { $("#executionMethod")}
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link") }
         testStepTable { module TestStepTableModule }
         typeOptions { $("#type>option") }
+        typeSelect { $("#type") }
     }
 
     /**
