@@ -49,7 +49,7 @@
                                 <td><g:field type="text" name="steps[0].result"/></td>
                         </tbody>
                     </table>
-                    <input id="btnAddEntry" type="button" value="Add" onclick="addEntryRow()" />
+                    <input id="btnAddRow" type="button" value="Add" onclick="addEntryRow()" />
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: "default.button.create.label", default: "Create")}" />
