@@ -18,7 +18,7 @@ class TestStepIntSpec extends Specification {
         TestStep testStep = new TestStep(action: "do something", result: "something happened").save()
         TestStep testStep1 = new TestStep(action: "do something", result: "something happened").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "automated", type: "ui", steps: [testStep, testStep1])
+                executionMethod: "Automated", type: "UI", steps: [testStep, testStep1])
         testCaseService.save(testCase)
 
         then:
@@ -29,7 +29,7 @@ class TestStepIntSpec extends Specification {
         given:
         TestStep testStep = new TestStep(action: "do something", result: "something happened").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "automated", type: "ui", steps: [testStep])
+                executionMethod: "Automated", type: "UI", steps: [testStep])
         testCaseService.save(testCase)
 
         when:
@@ -45,7 +45,7 @@ class TestStepIntSpec extends Specification {
         given:
         TestStep testStep = new TestStep(action: "do something", result: "something happened").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "automated", type: "ui", steps: [testStep])
+                executionMethod: "Automated", type: "UI", steps: [testStep])
         testCaseService.save(testCase)
 
         expect:
@@ -70,7 +70,7 @@ class TestStepIntSpec extends Specification {
     void "test steps order persists"() {
         when:
         def paramMap = [creator: "test", name: "case", description: "desc",
-                        executionMethod: "automated", type: "api",
+                        executionMethod: "Automated", type: "API",
                         "steps[0]": [action: "act1", result: "res1"],
                         "steps[1]": [action: "act2", result: "res2"],
                         "steps[2]": [action: "act3", result: "res3"]

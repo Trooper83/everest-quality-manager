@@ -22,9 +22,8 @@ class ListSpec extends GebSpec {
         to ListTestCasePage
 
         then:
-        def expected = ["Name", "Creator", "Type", "Execution Method"]
         ListTestCasePage page = browser.page(ListTestCasePage)
-        page.testCaseTable.getHeaders() == expected
+        page.testCaseTable.getHeaders() == ["Name", "Creator", "Type", "Execution Method"]
     }
 
     void "home link directs to home view"() {

@@ -17,9 +17,9 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
     void "test instances are persisted"() {
         setup:
         new TestCase(creator: "test", name: "First Test Case", description: "test",
-                executionMethod: "manual", type: "ui").save()
+                executionMethod: "Manual", type: "UI").save()
         new TestCase(creator: "test",name: "Second Test Case", description: "test",
-                executionMethod: "automated", type: "api").save()
+                executionMethod: "Automated", type: "API").save()
 
         expect:
         TestCase.count() == 2
@@ -154,8 +154,8 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
         where:
         value       | _
-        "automated" | _
-        "manual"    | _
+        "Automated" | _
+        "Manual"    | _
     }
 
     void "test execution method value not in list"() {
@@ -194,8 +194,8 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
         where:
         value | _
-        "api" | _
-        "ui"  | _
+        "API" | _
+        "UI"  | _
     }
 
     void "test type value not in list"() {
