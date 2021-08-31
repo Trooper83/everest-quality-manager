@@ -10,6 +10,31 @@ class TableModule extends Module {
     }
 
     /**
+     * clicks a link in a cell
+     * @param columnName - name of the column
+     * @param rowIndex - index of the row
+     */
+    void clickCell(String columnName, int rowIndex) {
+        int columnIndex = getColumnIndex(columnName)
+        def cells = tableRows[rowIndex].find("td")
+        cells[columnIndex].find("a").click()
+    }
+
+    /**
+     * finds the index of column with the supplied name
+     * @param columnName - name of the column
+     * @return - zero-based index
+     * @throws - IllegalArgumentException if column not found
+     */
+    int getColumnIndex(String columnName) {
+        int index = getHeaders().findIndexOf({ it == columnName })
+        if (index == -1) {
+            throw new IllegalArgumentException("${columnName} column not found")
+        }
+        return index
+    }
+
+    /**
      * gets the header names
      * @return - list of header names
      */
