@@ -1,11 +1,11 @@
 package com.everlution.test.ui.specs.testcase
 
-import com.everlution.test.ui.support.pages.CreateTestCasePage
-import com.everlution.test.ui.support.pages.EditTestCasePage
-import com.everlution.test.ui.support.pages.HomePage
-import com.everlution.test.ui.support.pages.ListTestCasePage
-import com.everlution.test.ui.support.pages.LoginPage
-import com.everlution.test.ui.support.pages.ShowTestCasePage
+import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
+import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
+import com.everlution.test.ui.support.pages.common.HomePage
+import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
+import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import org.springframework.test.annotation.Rollback

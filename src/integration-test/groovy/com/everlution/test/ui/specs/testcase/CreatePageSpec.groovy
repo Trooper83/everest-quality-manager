@@ -1,9 +1,9 @@
 package com.everlution.test.ui.specs.testcase
 
-import com.everlution.test.ui.support.pages.CreateTestCasePage
-import com.everlution.test.ui.support.pages.HomePage
-import com.everlution.test.ui.support.pages.LoginPage
-import com.everlution.test.ui.support.pages.ListTestCasePage
+import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
+import com.everlution.test.ui.support.pages.common.HomePage
+import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import org.springframework.test.annotation.Rollback
@@ -138,19 +138,5 @@ class CreatePageSpec extends GebSpec {
         expect: "the remove button is not displayed for the first row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.getRow(0).find("input[value=Remove]").isEmpty()
-    }
-
-    void "create view displays unauthorized error for read_only user"() {
-        given: "login as read_only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("read_only", "password")
-
-        when: "go to create test case page"
-        go "/testCase/create"
-
-        then: "unauthorized message is displayed"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.errorText.text() == "Sorry, you're not authorized to view this page."
     }
 }

@@ -1,9 +1,9 @@
 package com.everlution.test.ui.specs.testcase
 
-import com.everlution.test.ui.support.pages.CreateTestCasePage
-import com.everlution.test.ui.support.pages.HomePage
-import com.everlution.test.ui.support.pages.LoginPage
-import com.everlution.test.ui.support.pages.ListTestCasePage
+import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
+import com.everlution.test.ui.support.pages.common.HomePage
+import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import geb.spock.GebSpec
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration

@@ -1,7 +1,7 @@
-package com.everlution.test.ui.specs
+package com.everlution.test.ui.specs.common
 
-import com.everlution.test.ui.support.pages.HomePage
-import com.everlution.test.ui.support.pages.LoginPage
+import com.everlution.test.ui.support.pages.common.HomePage
+import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration

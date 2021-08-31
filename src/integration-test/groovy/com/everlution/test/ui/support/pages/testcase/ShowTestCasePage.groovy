@@ -1,5 +1,6 @@
-package com.everlution.test.ui.support.pages
+package com.everlution.test.ui.support.pages.testcase
 
+import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.TestStepTableModule
 
 class ShowTestCasePage extends BasePage {
