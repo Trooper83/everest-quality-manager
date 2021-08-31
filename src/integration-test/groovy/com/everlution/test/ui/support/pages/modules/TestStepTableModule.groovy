@@ -7,6 +7,20 @@ class TestStepTableModule extends TableModule {
     }
 
     /**
+     * adds a test step
+     * @param action - the action
+     * @param result - the result
+     */
+    void addTestStep(String action, String result, boolean isFirst = true) {
+        if (!isFirst) {
+            addRow()
+        }
+        int index = super.getRowCount() - 1
+        $("input[name='steps[${index}].action']") << action
+        $("input[name='steps[${index}].result']") << result
+    }
+
+    /**
      * adds a row
      */
     void addRow() {

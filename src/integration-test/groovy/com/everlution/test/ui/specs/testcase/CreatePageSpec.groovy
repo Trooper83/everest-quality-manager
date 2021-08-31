@@ -12,7 +12,7 @@ import org.springframework.test.annotation.Rollback
 @Integration
 class CreatePageSpec extends GebSpec {
 
-    def setup() {
+    void "home link directs to home view"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -20,9 +20,7 @@ class CreatePageSpec extends GebSpec {
 
         and: "go to the create test case page"
         to CreateTestCasePage
-    }
 
-    void "home link directs to home view"() {
         when: "click the home button"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.goToHome()
@@ -32,6 +30,14 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "list link directs to list view"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to the create test case page"
+        to CreateTestCasePage
+
         when: "click the list link"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.goToList()
@@ -41,12 +47,28 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "required fields indicator displayed for required fields"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to the create test case page"
+        to CreateTestCasePage
+
         expect: "required field indicators displayed"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.areRequiredFieldIndicatorsDisplayed(["executionMethod", "name", "type"])
     }
 
     void "verify method and type field options"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to the create test case page"
+        to CreateTestCasePage
+
         expect: "correct options populate for executionMethod and type"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         verifyAll {
@@ -62,6 +84,14 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "add test step row"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to the create test case page"
+        to CreateTestCasePage
+
         expect: "row count is 1"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.getRowCount() == 1
@@ -74,7 +104,15 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "remove test step row"() {
-        given:
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to the create test case page"
+        to CreateTestCasePage
+
+        and: "add a row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.addRow()
 
@@ -89,8 +127,30 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "first row cannot be removed"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to the create test case page"
+        to CreateTestCasePage
+
         expect: "the remove button is not displayed for the first row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.getRow(0).find("input[value=Remove]").isEmpty()
+    }
+
+    void "create view displays unauthorized error for read_only user"() {
+        given: "login as read_only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("read_only", "password")
+
+        when: "go to create test case page"
+        go "/testCase/create"
+
+        then: "unauthorized message is displayed"
+        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        page.errorText.text() == "Sorry, you're not authorized to view this page."
     }
 }

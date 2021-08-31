@@ -7,11 +7,14 @@ class CreateTestCasePage extends BasePage {
     static at = { title == "Create TestCase" }
 
     static content = {
+        createButton { $("#create") }
+        descriptionInput { $("#description") }
         errorText { $("div.errors") }
         executionMethodOptions { $("#executionMethod>option") }
         executionMethodSelect { $("#executionMethod")}
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link") }
+        nameInput { $("#name") }
         testStepTable { module TestStepTableModule }
         typeOptions { $("#type>option") }
         typeSelect { $("#type") }
@@ -31,6 +34,26 @@ class CreateTestCasePage extends BasePage {
             }
         }
         return true
+    }
+
+    /**
+     * adds a generic test case
+     */
+    void createTestCase() {
+        nameInput = "fake test case"
+        descriptionInput = "fake description"
+        testStepTable.addTestStep("step action", "step result")
+        createButton.click()
+    }
+
+    /**
+     * fills in all information for the create form
+     * but does not submit
+     */
+    void completeCreateForm() {
+        nameInput = "fake test case"
+        descriptionInput = "fake description"
+        testStepTable.addTestStep("step action", "step result")
     }
 
     /**

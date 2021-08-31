@@ -1,0 +1,188 @@
+package com.everlution.test.ui.specs.testcase
+
+import com.everlution.test.ui.support.pages.CreateTestCasePage
+import com.everlution.test.ui.support.pages.EditTestCasePage
+import com.everlution.test.ui.support.pages.HomePage
+import com.everlution.test.ui.support.pages.ListTestCasePage
+import com.everlution.test.ui.support.pages.LoginPage
+import com.everlution.test.ui.support.pages.ShowTestCasePage
+import geb.spock.GebSpec
+import grails.testing.mixin.integration.Integration
+import org.springframework.test.annotation.Rollback
+
+@Rollback
+@Integration
+class ShowPageSpec extends GebSpec {
+
+    void "status message displayed after test case created"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to the create test case page"
+        to CreateTestCasePage
+
+        when: "create a test case"
+        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        page.createTestCase()
+
+        then: "at show test case page with message displayed"
+        at ShowTestCasePage
+        ShowTestCasePage showPage = browser.page(ShowTestCasePage)
+        showPage.statusMessage.text() ==~ /TestCase \d+ created/
+    }
+
+    void "home link directs to home view"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        when: "click the home button"
+        ShowTestCasePage page = browser.page(ShowTestCasePage)
+        page.goToHome()
+
+        then: "at the home page"
+        at HomePage
+    }
+
+    void "list link directs to list view"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        when: "click the list link"
+        ShowTestCasePage page = browser.page(ShowTestCasePage)
+        page.goToList()
+
+        then: "at the list page"
+        at ListTestCasePage
+    }
+
+    void "create link directs to create view"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        when: "click the new test case link"
+        ShowTestCasePage page = browser.page(ShowTestCasePage)
+        page.goToCreate()
+
+        then: "at the create test case page"
+        at CreateTestCasePage
+    }
+
+    void "edit link directs to home view"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        when: "click the edit button"
+        ShowTestCasePage page = browser.page(ShowTestCasePage)
+        page.goToEdit()
+
+        then: "at the edit test case page"
+        at EditTestCasePage
+    }
+
+    void "create delete edit buttons not displayed for Read Only user"() {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("read_only", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        when: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        then: "create delete edit test case buttons are not displayed"
+        ShowTestCasePage page = browser.page(ShowTestCasePage)
+        verifyAll {
+            !page.createLink.displayed
+            !page.deleteLink.displayed
+            !page.editLink.displayed
+        }
+    }
+
+    void "create delete edit buttons displayed for authorized users"(String username, String password) {
+        given: "login as basic and above user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(username, password)
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        when: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        then: "create delete edit test case buttons are not displayed"
+        ShowTestCasePage page = browser.page(ShowTestCasePage)
+        verifyAll {
+            page.createLink.displayed
+            page.deleteLink.displayed
+            page.editLink.displayed
+        }
+
+        where:
+        username        | password
+        "basic"         | "password"
+        "project_admin" | "password"
+        "org_admin"     | "password"
+        "app_admin"     | "password"
+    }
+
+    void "correct fields are displayed"() {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("read_only", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        when: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        then: "correct fields are displayed"
+        ShowTestCasePage page = browser.page(ShowTestCasePage)
+        page.getFields() == ["Creator", "Description", "Execution Method", "Name", "Type"]
+    }
+}
