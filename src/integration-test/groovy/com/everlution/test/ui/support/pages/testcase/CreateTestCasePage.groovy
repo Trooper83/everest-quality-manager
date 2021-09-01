@@ -13,7 +13,7 @@ class CreateTestCasePage extends BasePage {
         executionMethodOptions { $("#executionMethod>option") }
         executionMethodSelect { $("#executionMethod")}
         homeLink { $("[data-test-id=create-home-link]") }
-        listLink { $("[data-test-id=create-list-link") }
+        listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
         testStepTable { module TestStepTableModule }
         typeOptions { $("#type>option") }

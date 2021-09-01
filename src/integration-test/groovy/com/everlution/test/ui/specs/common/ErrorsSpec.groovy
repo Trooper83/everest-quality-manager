@@ -5,25 +5,26 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.common.NotFoundPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import org.springframework.test.annotation.Rollback
 
-@Rollback
 @Integration
 class ErrorsSpec extends GebSpec {
 
-    void "404 message displayed for not found test case"() {
-        given: "login as read only user"
+    void "404 message displayed for not found test case"(String url) {
+        given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("read_only", "password")
+        loginPage.login("basic", "password")
 
         when: "go to show page for not found test case"
-        go "/testCase/show/9999999999999999"
+        go url
 
         then:
         at NotFoundPage
         NotFoundPage notFoundPage = browser.page(NotFoundPage)
         notFoundPage.errors*.text().contains("Error: Page Not Found (404)")
+
+        where:
+        url << ["/testCase/show/9999999999999999", "/testCase/edit/9999999999999999"]
     }
 
     void "denied page displayed for read_only user"(String url) {
