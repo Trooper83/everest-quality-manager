@@ -9,7 +9,8 @@ class ListTestCasePage extends BasePage {
 
     static content = {
         createTestCaseLink(required: false) { $("[data-test-id=index-create-button]") }
-        homeLink { $("[data-test-id=index-home-link]")}
+        homeLink { $("[data-test-id=index-home-link]") }
+        statusMessage { $("div.message") }
         testCaseTable { module TableModule }
     }
 

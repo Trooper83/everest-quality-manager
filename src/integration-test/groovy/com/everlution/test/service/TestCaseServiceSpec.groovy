@@ -27,10 +27,10 @@ class TestCaseServiceSpec extends Specification {
     }
 
     void "test get"() {
-        setupData()
+        def id = setupData()
 
         expect:
-        testCaseService.get(1) != null
+        testCaseService.get(id) != null
     }
 
     void "test list"() {
@@ -47,21 +47,21 @@ class TestCaseServiceSpec extends Specification {
         setupData()
 
         expect:
-        testCaseService.count() == 5
+        testCaseService.count() > 1
     }
 
     void "test delete"() {
         Long testCaseId = setupData()
 
-        expect:
-        testCaseService.count() == 5
+        given:
+        def count = testCaseService.count()
 
         when:
         testCaseService.delete(testCaseId)
         sessionFactory.currentSession.flush()
 
         then:
-        testCaseService.count() == 4
+        testCaseService.count() == count - 1
     }
 
     void "test save"() {

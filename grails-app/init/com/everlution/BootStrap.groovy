@@ -48,8 +48,10 @@ class BootStrap {
     }
 
     void seedTestCases() {
-        def s = new TestStep(action: "do something", result: "expect something").save(failOnError: true)
-        new TestCase(creator: "test", name: "everest", description: "lorem ipsum etc...",
-                executionMethod: "Manual", type: "UI", steps: [s]).save(failOnError: true)
+        TestStep testStep = new TestStep(action: "do something", result: "something happened").save(failOnError: true)
+        TestStep testStep1 = new TestStep(action: "do something1", result: "something happened1").save(failOnError: true)
+        TestCase testCase = new TestCase(creator: "test", name: "everest", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep, testStep1])
+        testCase.save(failOnError: true)
     }
 }
