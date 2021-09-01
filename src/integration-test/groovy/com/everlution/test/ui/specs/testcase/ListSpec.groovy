@@ -1,16 +1,19 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.TestCase
+import com.everlution.TestCaseService
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
+import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
-import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 
 @Integration
-@Rollback
 class ListSpec extends GebSpec {
+
+    TestCaseService testCaseService
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -93,5 +96,27 @@ class ListSpec extends GebSpec {
         "project_admin" | "password"
         "org_admin"     | "password"
         "app_admin"     | "password"
+    }
+
+    void "delete message displays after test case deleted"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        when: "delete test case"
+        ShowTestCasePage showPage = browser.page(ShowTestCasePage)
+        showPage.deleteTestCase()
+
+        then: "at list page and message displayed"
+        at ListTestCasePage
+        listPage.statusMessage.text() ==~ /TestCase \d+ deleted/
     }
 }

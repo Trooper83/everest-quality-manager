@@ -9,9 +9,12 @@
         <a href="#edit-testCase" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div class="nav" role="navigation">
             <ul>
-                <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-                <li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
-                <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
+                <li>
+                    <a class="home" href="${createLink(uri: '/')}" data-test-id="edit-home-link"><g:message code="default.home.label"/></a>
+                </li>
+                <li>
+                    <g:link class="list" action="index" data-test-id="edit-list-link"><g:message code="default.list.label" args="[entityName]" /></g:link>
+                </li>
             </ul>
         </div>
         <div id="edit-testCase" class="content scaffold-edit" role="main">
@@ -50,10 +53,10 @@
                     </g:each>
                     </tbody>
                     </table>
-                    <input id="btnAddEntry" type="button" value="Add" onclick="addEntryRow()" />
+                    <input id="btnAddRow" type="button" value="Add" onclick="addEntryRow()" />
                     </fieldset>
                 <fieldset class="buttons">
-                    <input class="save" type="submit" value="${message(code: 'default.button.update.label', default: 'Update')}" />
+                    <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                 </fieldset>
             </g:form>
         </div>

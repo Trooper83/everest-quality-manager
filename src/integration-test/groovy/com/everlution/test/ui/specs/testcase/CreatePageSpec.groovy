@@ -6,9 +6,7 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import org.springframework.test.annotation.Rollback
 
-@Rollback
 @Integration
 class CreatePageSpec extends GebSpec {
 

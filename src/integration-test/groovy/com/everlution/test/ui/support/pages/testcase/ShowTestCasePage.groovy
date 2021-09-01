@@ -19,6 +19,13 @@ class ShowTestCasePage extends BasePage {
     }
 
     /**
+     * clicks the delete link
+     */
+    void deleteTestCase() {
+        withConfirm(true) { deleteLink.click() }
+    }
+
+    /**
      * Gets the labels for all fields displayed on the page
      * @return - a list of field names
      */

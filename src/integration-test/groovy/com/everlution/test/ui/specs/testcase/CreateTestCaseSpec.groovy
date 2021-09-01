@@ -5,9 +5,7 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import org.springframework.test.annotation.Rollback
 
-@Rollback
 @Integration
 class CreateTestCaseSpec extends GebSpec {
 
@@ -24,7 +22,7 @@ class CreateTestCaseSpec extends GebSpec {
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.createTestCase()
 
-        then: "at show test case page with message displayed"
+        then: "at show test case page"
         at ShowTestCasePage
 
         where:

@@ -1,5 +1,8 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.TestCase
+import com.everlution.TestCaseService
+import com.everlution.TestStep
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.common.HomePage
@@ -8,11 +11,11 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import org.springframework.test.annotation.Rollback
 
-@Rollback
 @Integration
 class ShowPageSpec extends GebSpec {
+
+    TestCaseService testCaseService
 
     void "status message displayed after test case created"() {
         given: "login as a basic user"
@@ -184,5 +187,51 @@ class ShowPageSpec extends GebSpec {
         then: "correct fields are displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
         page.getFields() == ["Creator", "Description", "Execution Method", "Name", "Type"]
+    }
+
+    void "test case not deleted if alert is canceled"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to list test case page"
+        to ListTestCasePage
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.testCaseTable.clickCell("Name", 0)
+
+        when: "click delete and cancel | verify message"
+        ShowTestCasePage showPage = browser.page(ShowTestCasePage)
+        assert withConfirm(false) { showPage.deleteLink.click() } == "Are you sure?"
+
+        then: "at show test case page"
+        at ShowTestCasePage
+    }
+
+    void "updated message displays after updating test case"() {
+        given: "create test case"
+        TestStep testStep = new TestStep(action: "do something", result: "something happened")
+        TestCase testCase = new TestCase(creator: "test", name: "updated message displayed", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep])
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("basic", "password")
+
+        and: "go to edit page"
+        go "/testCase/edit/${id}"
+
+        when: "edit a test case"
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        page.editTestCase()
+
+        then: "at show test case page with message displayed"
+        at ShowTestCasePage
+        ShowTestCasePage showPage = browser.page(ShowTestCasePage)
+        showPage.statusMessage.text() == "TestCase ${id} updated"
     }
 }
