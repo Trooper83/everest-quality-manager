@@ -1,8 +1,9 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.Project
+import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.TestStep
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.common.HomePage
@@ -15,6 +16,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ShowPageSpec extends GebSpec {
 
+    ProjectService projectService
     TestCaseService testCaseService
 
     void "status message displayed after test case created"() {
@@ -186,7 +188,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
-        page.getFields() == ["Creator", "Description", "Execution Method", "Name", "Type"]
+        page.getFields() == ["Creator", "Description", "Execution Method", "Name", "Type", "Project"]
     }
 
     void "test case not deleted if alert is canceled"() {
@@ -212,9 +214,9 @@ class ShowPageSpec extends GebSpec {
 
     void "updated message displays after updating test case"() {
         given: "create test case"
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
-        TestCase testCase = new TestCase(creator: "test", name: "updated message displayed", description: "desc",
-                executionMethod: "Automated", type: "UI", steps: [testStep])
+        Project project = projectService.list(max: 10).first()
+        TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project)
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"

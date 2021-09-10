@@ -2,6 +2,7 @@ package com.everlution.test.ui.support.pages.testcase
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.TestStepTableModule
+import com.github.javafaker.Faker
 
 class CreateTestCasePage extends BasePage {
     static url = "/testCase/create"
@@ -40,9 +41,10 @@ class CreateTestCasePage extends BasePage {
      * adds a generic test case
      */
     void createTestCase() {
-        nameInput = "fake test case"
-        descriptionInput = "fake description"
-        testStepTable.addTestStep("step action", "step result")
+        Faker faker = new Faker()
+        nameInput = faker.zelda().game()
+        descriptionInput = faker.zelda().character()
+        testStepTable.addTestStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
 

@@ -3,16 +3,26 @@ package com.everlution
 import grails.gorm.services.Service
 
 @Service(TestCase)
-interface TestCaseService {
+abstract class TestCaseService implements ITestCaseService {
 
-    TestCase get(Serializable id)
+    void deleteAllTestCasesByProject(Project project) {
+        def cases = TestCase.findAllByProject(project)
+        cases.each {
+            it.delete()
+        }
+    }
 
-    List<TestCase> list(Map args)
-
-    Long count()
-
-    void delete(Serializable id)
-
-    TestCase save(TestCase testCase)
-
+    @Override
+    void delete(Serializable id) {
+        def testCase = get(id)
+        def stepsList = []
+        if(testCase.steps) {
+            stepsList += testCase.steps
+        }
+        stepsList.each {
+            testCase.removeFromSteps(it)
+            it.delete()
+        }
+        testCase.delete()
+    }
 }

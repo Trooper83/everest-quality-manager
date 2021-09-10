@@ -47,11 +47,14 @@ class BootStrap {
 
     }
 
+    @Transactional
     void seedTestCases() {
+        def project = new Project(name: "bootstrap project", code: "bsp").save()
         TestStep testStep = new TestStep(action: "do something", result: "something happened").save(failOnError: true)
         TestStep testStep1 = new TestStep(action: "do something1", result: "something happened1").save(failOnError: true)
-        TestCase testCase = new TestCase(creator: "test", name: "everest", description: "desc",
-                executionMethod: "Automated", type: "UI", steps: [testStep, testStep1])
-        testCase.save(failOnError: true)
+        new TestCase(creator: "test", name: "everest", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep, testStep1], project: project).save(failOnError: true)
+        new TestCase(creator: "test123", name: "everest123", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep], project: project).save(failOnError: true)
     }
 }

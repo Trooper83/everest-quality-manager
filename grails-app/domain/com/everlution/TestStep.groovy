@@ -7,7 +7,6 @@ class TestStep {
     String result
 
     static belongsTo = TestCase
-    static hasMany = [testCase: TestCase]
 
     static constraints = {
         action blank: true, maxSize: 500, nullable: false

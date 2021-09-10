@@ -1,7 +1,5 @@
 package com.everlution.test.ui.specs.testcase
 
-import com.everlution.TestCase
-import com.everlution.TestCaseService
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -12,8 +10,6 @@ import grails.testing.mixin.integration.Integration
 
 @Integration
 class ListSpec extends GebSpec {
-
-    TestCaseService testCaseService
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -26,7 +22,7 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListTestCasePage page = browser.page(ListTestCasePage)
-        page.testCaseTable.getHeaders() == ["Name", "Creator", "Type", "Execution Method"]
+        page.testCaseTable.getHeaders() == ["Name", "Creator", "Type", "Execution Method", "Project"]
     }
 
     void "home link directs to home view"() {

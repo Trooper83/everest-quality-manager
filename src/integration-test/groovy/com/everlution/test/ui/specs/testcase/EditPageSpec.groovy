@@ -1,5 +1,7 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.Project
+import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestStep
@@ -15,6 +17,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class EditPageSpec extends GebSpec {
 
+    ProjectService projectService
     TestCaseService testCaseService
 
     void "home link directs to home view"() {
@@ -122,9 +125,10 @@ class EditPageSpec extends GebSpec {
 
     void "add test step row"() {
         given: "test case"
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "UI", steps: [testStep])
+        Project project = projectService.list(max: 1).first()
+        TestStep testStep = new TestStep(action: "step1", result: "result1")
+        TestCase testCase = new TestCase(creator: "test", name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"
@@ -148,9 +152,10 @@ class EditPageSpec extends GebSpec {
 
     void "remove test step row"() {
         given: "test case"
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "UI", steps: [testStep])
+        Project project = projectService.list(max: 1).first()
+        TestStep testStep = new TestStep(action: "step123", result: "result123")
+        TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"
@@ -177,9 +182,10 @@ class EditPageSpec extends GebSpec {
 
     void "first row cannot be removed"() {
         given: "test case"
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
-        TestCase testCase = new TestCase(creator: "test", name: "first row cannot be removed", description: "desc",
-                executionMethod: "Automated", type: "UI", steps: [testStep])
+        Project project = projectService.list(max: 1).first()
+        TestStep testStep = new TestStep(action: "step1234", result: "result1234")
+        TestCase testCase = new TestCase(creator: "test", name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"

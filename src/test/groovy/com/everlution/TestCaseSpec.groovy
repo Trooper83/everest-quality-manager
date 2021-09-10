@@ -8,18 +8,13 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
     @Shared int id
 
-    def setup() {
-    }
-
-    def cleanup() {
-    }
-
     void "test instances are persisted"() {
         setup:
+        def project = new Project(name: "tc domain project", code: "tdp")
         new TestCase(creator: "test", name: "First Test Case", description: "test",
-                executionMethod: "Manual", type: "UI").save()
+                executionMethod: "Manual", type: "UI", project: project).save()
         new TestCase(creator: "test",name: "Second Test Case", description: "test",
-                executionMethod: "Automated", type: "API").save()
+                executionMethod: "Automated", type: "API", project: project).save()
 
         expect:
         TestCase.count() == 2

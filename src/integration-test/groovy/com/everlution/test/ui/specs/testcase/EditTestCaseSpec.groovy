@@ -1,8 +1,9 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.Project
+import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.TestStep
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -12,13 +13,14 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class EditTestCaseSpec extends GebSpec {
 
+    ProjectService projectService
     TestCaseService testCaseService
 
     void "authorized users can edit test case"(String username, String password) {
         given: "create test case"
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
-        TestCase testCase = new TestCase(creator: "test", name: "user can edit", description: "desc",
-                executionMethod: "Automated", type: "UI", steps: [testStep])
+        Project project = projectService.list(max: 10).first()
+        TestCase testCase = new TestCase(creator: "testing", name: "first1", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project)
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"

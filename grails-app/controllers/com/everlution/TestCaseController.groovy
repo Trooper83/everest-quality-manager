@@ -11,7 +11,7 @@ class TestCaseController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
-     * Lists all test cases
+     * lists all test cases
      * /testCase/index
      * @param max - maximum number of test cases to retrieve
      * @return - list of test cases
@@ -23,7 +23,7 @@ class TestCaseController {
     }
 
     /**
-     * Shows a single test case
+     * shows a single test case
      * /testCase/show/$id
      * @param id - id of the case to display
      * @return - a single test case
@@ -34,7 +34,7 @@ class TestCaseController {
     }
 
     /**
-     * Display the create test case view
+     * display the create test case view
      * /testCase/create
      * @return - create test case view
      */
@@ -44,7 +44,7 @@ class TestCaseController {
     }
 
     /**
-     * Saves a test case
+     * saves a test case
      * @param testCase - the test case to save
      */
     @Secured("ROLE_BASIC")
@@ -72,7 +72,7 @@ class TestCaseController {
     }
 
     /**
-     * Displays the edit test case view
+     * displays the edit test case view
      * /testCase/edit
      * @param id - id of the test to edit
      */
@@ -82,7 +82,7 @@ class TestCaseController {
     }
 
     /**
-     * Updates a test case
+     * updates a test case
      * @param testCase - test case values to update
      */
     @Secured("ROLE_BASIC")
@@ -109,7 +109,7 @@ class TestCaseController {
     }
 
     /**
-     * Deletes a test case
+     * deletes a test case
      * @param id
      * @return
      */
@@ -132,7 +132,7 @@ class TestCaseController {
     }
 
     /**
-     * Displays view when notFound (404)
+     * displays view when notFound (404)
      */
     protected void notFound() {
         request.withFormat {
