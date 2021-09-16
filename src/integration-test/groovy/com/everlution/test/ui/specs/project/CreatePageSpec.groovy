@@ -1,0 +1,56 @@
+package com.everlution.test.ui.specs.project
+
+import com.everlution.test.ui.support.pages.common.HomePage
+import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.CreateProjectPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import geb.spock.GebSpec
+import grails.testing.mixin.integration.Integration
+
+@Integration
+class CreatePageSpec extends GebSpec {
+
+    def setup() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login("project_admin", "password")
+
+        and: "go to the create page"
+        to CreateProjectPage
+    }
+
+    void "home link directs to home view"() {
+        when: "click the home button"
+        CreateProjectPage page = browser.page(CreateProjectPage)
+        page.goToHome()
+
+        then: "at the home page"
+        at HomePage
+    }
+
+    void "list link directs to list view"() {
+        when: "click the list link"
+        CreateProjectPage page = browser.page(CreateProjectPage)
+        page.goToList()
+
+        then: "at the list page"
+        at ListProjectPage
+    }
+
+    void "required fields indicator displayed for required fields"() {
+        expect: "required field indicators displayed"
+        CreateProjectPage page = browser.page(CreateProjectPage)
+        page.areRequiredFieldIndicatorsDisplayed(["name", "code"])
+    }
+
+    void "code field requires three characters"() {
+        when: "enter field values"
+        CreateProjectPage page = browser.page(CreateProjectPage)
+        page.createProject("project name", "tt")
+
+        then: "validation message is displayed"
+        page.errors.text() ==
+                "Property [code] of class [class com.everlution.Project] with value [tt] is less than the minimum size of [3]"
+    }
+}

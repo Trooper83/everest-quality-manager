@@ -50,11 +50,13 @@ class BootStrap {
     @Transactional
     void seedTestCases() {
         def project = new Project(name: "bootstrap project", code: "bsp").save()
+        def project1 = new Project(name: "bootstrap project12", code: "BPP").save()
         TestStep testStep = new TestStep(action: "do something", result: "something happened").save(failOnError: true)
-        TestStep testStep1 = new TestStep(action: "do something1", result: "something happened1").save(failOnError: true)
+        TestStep testStep1 = new TestStep(action: "do something12", result: "something happened12").save(failOnError: true)
+        TestStep testStep2 = new TestStep(action: "do something123", result: "something happened123").save(failOnError: true)
         new TestCase(creator: "test", name: "everest", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep, testStep1], project: project).save(failOnError: true)
         new TestCase(creator: "test123", name: "everest123", description: "desc",
-                executionMethod: "Automated", type: "UI", steps: [testStep], project: project).save(failOnError: true)
+                executionMethod: "Automated", type: "UI", steps: [testStep2], project: project1).save(failOnError: true)
     }
 }

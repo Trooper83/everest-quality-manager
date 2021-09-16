@@ -1,22 +1,16 @@
-package com.everlution.test.ui.support.pages.testcase
+package com.everlution.test.ui.support.pages.project
 
 import com.everlution.test.ui.support.pages.common.BasePage
-import com.everlution.test.ui.support.pages.modules.TestStepTableModule
 
-class EditTestCasePage extends BasePage {
-    static url = "/testCase/edit"
-    static at = { title == "Edit TestCase" }
+class EditProjectPage extends BasePage {
+    static url = "/project/edit"
+    static at = { title == "Edit Project" }
 
     static content = {
-        descriptionInput { $("#description") }
-        executionMethodOptions { $("#executionMethod>option") }
-        executionMethodSelect { $("#executionMethod") }
+        codeInput { $("#code") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
-        testStepTable { module TestStepTableModule }
-        typeOptions { $("#type>option") }
-        typeSelect { $("#type") }
         updateButton { $("[data-test-id=edit-update-button]")}
     }
 
@@ -39,7 +33,7 @@ class EditTestCasePage extends BasePage {
     /**
      * clicks the update button
      */
-    void editTestCase() {
+    void editProject() {
         updateButton.click()
     }
 

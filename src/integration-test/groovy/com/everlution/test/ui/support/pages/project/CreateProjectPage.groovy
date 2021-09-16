@@ -1,23 +1,18 @@
-package com.everlution.test.ui.support.pages.testcase
+package com.everlution.test.ui.support.pages.project
 
 import com.everlution.test.ui.support.pages.common.BasePage
-import com.everlution.test.ui.support.pages.modules.TestStepTableModule
 
-class EditTestCasePage extends BasePage {
-    static url = "/testCase/edit"
-    static at = { title == "Edit TestCase" }
+class CreateProjectPage extends BasePage {
+    static url = "/project/create"
+    static at = { title == "Create Project" }
 
     static content = {
-        descriptionInput { $("#description") }
-        executionMethodOptions { $("#executionMethod>option") }
-        executionMethodSelect { $("#executionMethod") }
-        homeLink { $("[data-test-id=edit-home-link]") }
-        listLink { $("[data-test-id=edit-list-link]") }
+        codeInput { $("#code") }
+        createButton { $("#create") }
+        errors { $("ul.errors>li") }
+        homeLink { $("[data-test-id=create-home-link]") }
+        listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
-        testStepTable { module TestStepTableModule }
-        typeOptions { $("#type>option") }
-        typeSelect { $("#type") }
-        updateButton { $("[data-test-id=edit-update-button]")}
     }
 
     /**
@@ -37,10 +32,23 @@ class EditTestCasePage extends BasePage {
     }
 
     /**
-     * clicks the update button
+     * fills in all fields for the create form but does not submit
+     * @param name
+     * @param code
      */
-    void editTestCase() {
-        updateButton.click()
+    void completeCreateForm(String name, String code) {
+        nameInput << name
+        codeInput << code
+    }
+
+    /**
+     * fills in all fields for the create form and submits
+     * @param name
+     * @param code
+     */
+    void createProject(String name, String code) {
+        this.completeCreateForm(name, code)
+        createButton.click()
     }
 
     /**

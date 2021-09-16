@@ -7,7 +7,6 @@ import com.everlution.TestCaseService
 import com.everlution.TestStep
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -88,7 +87,7 @@ class EditPageSpec extends GebSpec {
         showPage.goToEdit()
 
         expect: "required field indicators displayed"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        EditTestCasePage page = browser.page(EditTestCasePage)
         page.areRequiredFieldIndicatorsDisplayed(["executionMethod", "name", "type"])
     }
 
@@ -110,7 +109,7 @@ class EditPageSpec extends GebSpec {
         showPage.goToEdit()
 
         expect: "correct options populate for executionMethod and type"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        EditTestCasePage page = browser.page(EditTestCasePage)
         verifyAll {
             page.executionMethodOptions*.text() == ["Automated", "Manual"]
             page.typeOptions*.text() == ["UI", "API"]
@@ -167,7 +166,7 @@ class EditPageSpec extends GebSpec {
         go "/testCase/edit/${id}"
 
         and: "add a row"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        EditTestCasePage page = browser.page(EditTestCasePage)
         page.testStepTable.addRow()
 
         expect: "row count is 2"
@@ -197,7 +196,7 @@ class EditPageSpec extends GebSpec {
         go "/testCase/edit/${id}"
 
         expect: "the remove button is not displayed for the first row"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        EditTestCasePage page = browser.page(EditTestCasePage)
         page.testStepTable.getRow(0).find("input[value=Remove]").isEmpty()
     }
 }
