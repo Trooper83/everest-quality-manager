@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.common
+package com.everlution.test.ui.specs.testcase
 
 import com.everlution.test.ui.support.pages.common.DeniedPage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -19,8 +19,7 @@ class ErrorsSpec extends GebSpec {
         go url
 
         then:
-        at NotFoundPage
-        NotFoundPage notFoundPage = browser.page(NotFoundPage)
+        NotFoundPage notFoundPage = at NotFoundPage
         notFoundPage.errors*.text().contains("Error: Page Not Found (404)")
 
         where:
@@ -37,7 +36,7 @@ class ErrorsSpec extends GebSpec {
         go url
 
         then: "unauthorized message is displayed"
-        DeniedPage page = browser.page(DeniedPage)
+        DeniedPage page = at DeniedPage
         page.errors.text() == "Sorry, you're not authorized to view this page."
 
         where:

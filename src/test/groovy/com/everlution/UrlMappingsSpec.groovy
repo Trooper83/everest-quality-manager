@@ -5,11 +5,9 @@ import spock.lang.Specification
 
 class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMappings> {
 
-    void setup() {
+    void "verify test case forward and reverse mappings"() {
         mockController(TestCaseController)
-    }
 
-    void "test forward and reverse mappings"() {
         expect:
         verifyUrlMapping("/", view: 'index')
         verifyUrlMapping("/testCase/index", controller: 'testCase', action: 'index')
@@ -23,6 +21,25 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
             id = 123
         }
         verifyUrlMapping("/testCase/delete/123", controller: 'testCase', action: 'delete') {
+            id = 123
+        }
+    }
+
+    void "verify project forward and reverse mappings"() {
+        mockController(ProjectController)
+
+        expect:
+        verifyUrlMapping("/project/index", controller: 'project', action: 'index')
+        verifyUrlMapping("/project/create", controller: 'project', action: 'create')
+        verifyUrlMapping("/project/save", controller: 'project', action: 'save')
+        verifyUrlMapping("/project/update", controller: 'project', action: 'update')
+        verifyUrlMapping("/project/show/123", controller: 'project', action: 'show') {
+            id = 123
+        }
+        verifyUrlMapping("/project/edit/123", controller: 'project', action: 'edit') {
+            id = 123
+        }
+        verifyUrlMapping("/project/delete/123", controller: 'project', action: 'delete') {
             id = 123
         }
     }

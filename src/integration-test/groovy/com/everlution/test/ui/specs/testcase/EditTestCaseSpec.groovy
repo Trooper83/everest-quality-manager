@@ -26,7 +26,7 @@ class EditTestCaseSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(username, password)
 
         and: "go to edit page"
         go "/testCase/edit/${id}"
