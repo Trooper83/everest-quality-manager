@@ -4,20 +4,20 @@ import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
 
-class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
+class BugSpec extends Specification implements DomainUnitTest<Bug> {
 
     @Shared int id
 
     void "test instances are persisted"() {
         setup:
         def project = new Project(name: "tc domain project", code: "tdp")
-        new TestCase(creator: "test", name: "First Test Case", description: "test",
+        def testCase = new TestCase(creator: "test", name: "First Test Case in bugs", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        new TestCase(creator: "test",name: "Second Test Case", description: "test",
-                executionMethod: "Automated", type: "API", project: project).save()
+        new Bug(creator: "test", name: "First Bug", description: "test", testCases: [testCase]).save()
+        new Bug(creator: "test",name: "Second Bug", description: "test", testCases: [testCase]).save()
 
         expect:
-        TestCase.count() == 2
+        Bug.count() == 2
     }
 
     void "test domain instance"() {
@@ -29,10 +29,10 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.hashCode() == id
 
         when:
-        domain.name = "Test case name"
+        domain.name = "bug name"
 
         then:
-        domain.name == "Test case name"
+        domain.name == "bug name"
     }
 
     void "test we get a new domain"() {
@@ -114,94 +114,6 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.validate(["description"])
     }
 
-    void "test steps can be null"() {
-        when:
-        domain.steps = null
-
-        then:
-        domain.validate(["steps"])
-    }
-
-    void "test execution method cannot be null"() {
-        when:
-        domain.executionMethod = null
-
-        then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "nullable"
-    }
-
-    void "test execution method cannot be blank"() {
-        when:
-        domain.executionMethod = ""
-
-        then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "blank"
-    }
-
-    void "test execution method value in list"(String value) {
-        when:
-        domain.executionMethod = value
-
-        then:
-        domain.validate(["executionMethod"])
-
-        where:
-        value       | _
-        "Automated" | _
-        "Manual"    | _
-    }
-
-    void "test execution method value not in list"() {
-        when:
-        domain.executionMethod = "test"
-
-        then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "not.inList"
-    }
-
-    void "test type cannot be null"() {
-        when:
-        domain.type = null
-
-        then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "nullable"
-    }
-
-    void "test type cannot be blank"() {
-        when:
-        domain.type = ""
-
-        then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "blank"
-    }
-
-    void "test type value in list"(String value) {
-        when:
-        domain.type = value
-
-        then:
-        domain.validate(["type"])
-
-        where:
-        value | _
-        "API" | _
-        "UI"  | _
-    }
-
-    void "test type value not in list"() {
-        when:
-        domain.type = "test"
-
-        then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "not.inList"
-    }
-
     void "test creator cannot be null"() {
         when:
         domain.creator = null
@@ -209,6 +121,15 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         then:
         !domain.validate(["creator"])
         domain.errors["creator"].code == "nullable"
+    }
+
+    void "test cases cannot be null"() {
+        when:
+        domain.testCases = null
+
+        then:
+        !domain.validate(["testCases"])
+        domain.errors["testCases"].code == "nullable"
     }
 
     void "test creator cannot be blank"() {
@@ -237,13 +158,5 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
         then: "validation passes"
         domain.validate(["creator"])
-    }
-
-    void "test bugs can be null"() {
-        when:
-        domain.bugs = null
-
-        then:
-        domain.validate(["bugs"])
     }
 }
