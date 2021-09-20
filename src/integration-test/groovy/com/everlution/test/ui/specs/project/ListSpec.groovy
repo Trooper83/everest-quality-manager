@@ -2,6 +2,7 @@ package com.everlution.test.ui.specs.project
 
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
@@ -19,7 +20,7 @@ class ListSpec extends GebSpec {
         given: "login as project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("project_admin", "password")
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         when: "go to list page"
         to ListProjectPage
@@ -33,7 +34,7 @@ class ListSpec extends GebSpec {
         given: "login as project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("project_admin", "password")
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         and: "go to list page"
         to ListProjectPage
@@ -50,7 +51,7 @@ class ListSpec extends GebSpec {
         given: "login as project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("project_admin", "password")
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         and: "go to list page"
         to ListProjectPage
@@ -73,7 +74,7 @@ class ListSpec extends GebSpec {
         when: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("project_admin", "password")
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         and: "go to project"
         go "/project/show/${id}"

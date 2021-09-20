@@ -12,7 +12,8 @@ class CreateTestCasePage extends BasePage {
         createButton { $("#create") }
         descriptionInput { $("#description") }
         executionMethodOptions { $("#executionMethod>option") }
-        executionMethodSelect { $("#executionMethod")}
+        executionMethodSelect { $("#executionMethod") }
+        fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
@@ -56,6 +57,14 @@ class CreateTestCasePage extends BasePage {
         nameInput = "fake test case"
         descriptionInput = "fake description"
         testStepTable.addTestStep("step action", "step result")
+    }
+
+    /**
+     * Gets the labels for all fields displayed on the page
+     * @return - a list of field names
+     */
+    List<String> getFields() {
+        return fieldLabels*.text()
     }
 
     /**

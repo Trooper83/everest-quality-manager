@@ -1,6 +1,7 @@
 package com.everlution.test.ui.specs.project
 
 import com.everlution.ProjectService
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
@@ -32,9 +33,9 @@ class EditProjectSpec extends GebSpec {
         at ShowProjectPage
 
         where:
-        username        | password
-        "project_admin" | "password"
-        "org_admin"     | "password"
-        "app_admin"     | "password"
+        username                         | password
+        Usernames.PROJECT_ADMIN.username | "password"
+        Usernames.ORG_ADMIN.username     | "password"
+        Usernames.APP_ADMIN.username     | "password"
     }
 }

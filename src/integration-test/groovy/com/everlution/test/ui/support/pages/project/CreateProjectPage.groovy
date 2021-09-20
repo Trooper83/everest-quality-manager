@@ -10,6 +10,7 @@ class CreateProjectPage extends BasePage {
         codeInput { $("#code") }
         createButton { $("#create") }
         errors { $("ul.errors>li") }
+        fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
@@ -49,6 +50,14 @@ class CreateProjectPage extends BasePage {
     void createProject(String name, String code) {
         this.completeCreateForm(name, code)
         createButton.click()
+    }
+
+    /**
+     * Gets the labels for all fields displayed on the page
+     * @return - a list of field names
+     */
+    List<String> getFields() {
+        return fieldLabels*.text()
     }
 
     /**

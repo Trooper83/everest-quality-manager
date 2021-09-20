@@ -1,8 +1,10 @@
 package com.everlution.test.ui.specs.project
 
 import com.everlution.ProjectService
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
@@ -20,13 +22,11 @@ class EditPageSpec extends GebSpec {
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("project_admin", "password")
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        go "/project/edit/${id}"
     }
 
     void "home link directs to home view"() {
-        given: "go to edit project page"
-        go "/project/edit/${id}"
-
         when: "click the home button"
         EditProjectPage page = at EditProjectPage
         page.goToHome()
@@ -36,9 +36,6 @@ class EditPageSpec extends GebSpec {
     }
 
     void "list link directs to list view"() {
-        given: "go to edit project page"
-        go "/project/edit/${id}"
-
         when: "click the list button"
         EditProjectPage page = at EditProjectPage
         page.goToList()
@@ -48,11 +45,13 @@ class EditPageSpec extends GebSpec {
     }
 
     void "required fields indicator displayed for required fields"() {
-        given: "go to edit project page"
-        go "/project/edit/${id}"
-
         expect: "required field indicators displayed"
         EditProjectPage page = at EditProjectPage
         page.areRequiredFieldIndicatorsDisplayed(["name", "code"])
+    }
+
+    void "correct fields are displayed"() {
+        expect: "correct fields are displayed"
+        browser.page(CreateProjectPage).getFields() == ["Name *", "Code *"]
     }
 }

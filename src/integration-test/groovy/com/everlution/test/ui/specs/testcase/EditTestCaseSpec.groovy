@@ -4,6 +4,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -39,10 +40,10 @@ class EditTestCaseSpec extends GebSpec {
         at ShowTestCasePage
 
         where:
-        username        | password
-        "basic"         | "password"
-        "project_admin" | "password"
-        "org_admin"     | "password"
-        "app_admin"     | "password"
+        username                         | password
+        Usernames.BASIC.username         | "password"
+        Usernames.PROJECT_ADMIN.username | "password"
+        Usernames.ORG_ADMIN.username     | "password"
+        Usernames.APP_ADMIN.username     | "password"
     }
 }
