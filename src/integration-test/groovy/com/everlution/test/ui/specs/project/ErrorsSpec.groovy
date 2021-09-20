@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.project
 
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.DeniedPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.common.NotFoundPage
@@ -13,7 +14,7 @@ class ErrorsSpec extends GebSpec {
         given: "login as project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("project_admin", "password")
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         when: "go to show page for not found project"
         go url
@@ -41,13 +42,13 @@ class ErrorsSpec extends GebSpec {
 
         where:
         url               | username
-        "/project/create" | "basic"
-        "/project/create" | "read_only"
-        "/project/edit"   | "basic"
-        "/project/edit"   | "read_only"
-        "/project/show"   | "basic"
-        "/project/show"   | "read_only"
-        "/project/index"  | "basic"
-        "/project/index"  | "read_only"
+        "/project/create" | Usernames.BASIC.username
+        "/project/create" | Usernames.READ_ONLY.username
+        "/project/edit"   | Usernames.BASIC.username
+        "/project/edit"   | Usernames.READ_ONLY.username
+        "/project/show"   | Usernames.BASIC.username
+        "/project/show"   | Usernames.READ_ONLY.username
+        "/project/index"  | Usernames.BASIC.username
+        "/project/index"  | Usernames.READ_ONLY.username
     }
 }

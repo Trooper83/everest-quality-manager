@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.common
 
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec
@@ -28,7 +29,7 @@ class AuthSpec extends GebSpec {
         given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         expect: "welcome message is displayed"
         HomePage homePage = browser.page(HomePage)
@@ -39,7 +40,7 @@ class AuthSpec extends GebSpec {
         given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         when: "logout of app"
         HomePage homePage = browser.page(HomePage)

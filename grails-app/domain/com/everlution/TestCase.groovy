@@ -13,9 +13,10 @@ class TestCase {
 
     static belongsTo = Project
     static mappedBy = [project: "none"]
-    static hasMany = [steps: TestStep]
+    static hasMany = [steps: TestStep, bugs: Bug]
 
     static constraints = {
+        bugs nullable: true
         creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000
         executionMethod blank: false, nullable: false, inList: ["Automated", "Manual"]

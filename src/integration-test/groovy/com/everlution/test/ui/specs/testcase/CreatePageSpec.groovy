@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -14,7 +15,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
@@ -31,7 +32,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
@@ -48,7 +49,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
@@ -62,7 +63,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
@@ -85,7 +86,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
@@ -105,7 +106,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
@@ -128,7 +129,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
@@ -136,5 +137,18 @@ class CreatePageSpec extends GebSpec {
         expect: "the remove button is not displayed for the first row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.getRow(0).find("input[value=Remove]").isEmpty()
+    }
+
+    void "correct fields are displayed"() {
+        given: "login as basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        when: "go to create page"
+        def page = to CreateTestCasePage
+
+        then: "correct fields are displayed"
+        page.getFields() == ["Description", "Execution Method *", "Name *", "Type *", "Project *"]
     }
 }

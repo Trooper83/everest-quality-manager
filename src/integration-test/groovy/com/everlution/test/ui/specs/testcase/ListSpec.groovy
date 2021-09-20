@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -15,7 +16,7 @@ class ListSpec extends GebSpec {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("read_only", "password")
+        loginPage.login(Usernames.READ_ONLY.username, "password")
 
         when: "go to list test case page"
         to ListTestCasePage
@@ -29,7 +30,7 @@ class ListSpec extends GebSpec {
         given: "login as read_only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("read_only", "password")
+        loginPage.login(Usernames.READ_ONLY.username, "password")
 
         and: "go to list test case page"
         to ListTestCasePage
@@ -46,7 +47,7 @@ class ListSpec extends GebSpec {
         given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to list test case page"
         to ListTestCasePage
@@ -63,7 +64,7 @@ class ListSpec extends GebSpec {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("read_only", "password")
+        loginPage.login(Usernames.READ_ONLY.username, "password")
 
         when: "go to list test case page"
         to ListTestCasePage
@@ -87,18 +88,18 @@ class ListSpec extends GebSpec {
         page.createTestCaseLink.displayed
 
         where:
-        username        | password
-        "basic"         | "password"
-        "project_admin" | "password"
-        "org_admin"     | "password"
-        "app_admin"     | "password"
+        username                         | password
+        Usernames.BASIC.username         | "password"
+        Usernames.PROJECT_ADMIN.username | "password"
+        Usernames.ORG_ADMIN.username     | "password"
+        Usernames.APP_ADMIN.username     | "password"
     }
 
     void "delete message displays after test case deleted"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to list test case page"
         to ListTestCasePage

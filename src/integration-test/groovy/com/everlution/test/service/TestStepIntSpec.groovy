@@ -69,14 +69,6 @@ class TestStepIntSpec extends Specification {
         testStepService.get(testStep.id) == null
     }
 
-    void "test date created auto generated"() {
-        when:
-        TestStep testStep = new TestStep(action: "do something", result: "something happened").save()
-
-        then:
-        testStep.dateCreated != null
-    }
-
     void "test steps order persists"() {
         when:
         Project project = new Project(name: "TestStep Step Order Project", code: "SOP")

@@ -30,7 +30,7 @@
             <g:form controller="testCase" action="save" method="POST">
                 <fieldset class="form">
                     <input type="hidden" name="creator" value="<sec:username/>"/>
-                    <f:all bean="testCase" except="steps, creator"/>
+                    <f:all bean="testCase" except="bugs, steps, creator"/>
                 </fieldset>
                 <fieldset>
                     <table id="ledgerEntriesTable" class="table">

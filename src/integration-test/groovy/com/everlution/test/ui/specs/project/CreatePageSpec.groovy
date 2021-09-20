@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.project
 
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
@@ -14,7 +15,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("project_admin", "password")
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         and: "go to the create page"
         to CreateProjectPage
@@ -52,5 +53,10 @@ class CreatePageSpec extends GebSpec {
         then: "validation message is displayed"
         page.errors.text() ==
                 "Property [code] of class [class com.everlution.Project] with value [tt] is less than the minimum size of [3]"
+    }
+
+    void "correct fields are displayed"() {
+        expect: "correct fields are displayed"
+        browser.page(CreateProjectPage).getFields() == ["Name *", "Code *"]
     }
 }

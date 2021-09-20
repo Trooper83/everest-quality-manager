@@ -5,6 +5,7 @@ import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestStep
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
@@ -23,7 +24,7 @@ class EditPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to list test case page"
         to ListTestCasePage
@@ -48,7 +49,7 @@ class EditPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to list test case page"
         to ListTestCasePage
@@ -69,11 +70,26 @@ class EditPageSpec extends GebSpec {
         at ListTestCasePage
     }
 
+    void "correct fields are displayed"() {
+        given: "login as basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        when: "go to edit page"
+        def id = testCaseService.list(max: 1).first().id
+        go "/testCase/edit/${id}"
+
+        then: "correct fields are displayed"
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        page.getFields() == ["Description", "Execution Method *", "Name *", "Type *", "Project *"]
+    }
+
     void "required fields indicator displayed for required fields"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to list test case page"
         to ListTestCasePage
@@ -95,7 +111,7 @@ class EditPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to list test case page"
         to ListTestCasePage
@@ -133,7 +149,7 @@ class EditPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
         go "/testCase/edit/${id}"
@@ -160,7 +176,7 @@ class EditPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
         go "/testCase/edit/${id}"
@@ -190,7 +206,7 @@ class EditPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
         go "/testCase/edit/${id}"

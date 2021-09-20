@@ -8,6 +8,7 @@ class EditProjectPage extends BasePage {
 
     static content = {
         codeInput { $("#code") }
+        fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
@@ -35,6 +36,14 @@ class EditProjectPage extends BasePage {
      */
     void editProject() {
         updateButton.click()
+    }
+
+    /**
+     * Gets the labels for all fields displayed on the page
+     * @return - a list of field names
+     */
+    List<String> getFields() {
+        return fieldLabels*.text()
     }
 
     /**

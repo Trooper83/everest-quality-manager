@@ -11,6 +11,7 @@ class EditTestCasePage extends BasePage {
         descriptionInput { $("#description") }
         executionMethodOptions { $("#executionMethod>option") }
         executionMethodSelect { $("#executionMethod") }
+        fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
@@ -41,6 +42,14 @@ class EditTestCasePage extends BasePage {
      */
     void editTestCase() {
         updateButton.click()
+    }
+
+    /**
+     * Gets the labels for all fields displayed on the page
+     * @return - a list of field names
+     */
+    List<String> getFields() {
+        return fieldLabels*.text()
     }
 
     /**

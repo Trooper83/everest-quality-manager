@@ -76,15 +76,4 @@ class TestCaseServiceSpec extends Specification {
         then:
         testCase.id != null
     }
-
-    void "test date created auto generated"() {
-        when:
-        Project project = new Project(name: "Test Case Date Project", code: "TCD")
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project)
-        testCaseService.save(testCase)
-
-        then:
-        testCaseService.get(testCase.id).dateCreated != null
-    }
 }

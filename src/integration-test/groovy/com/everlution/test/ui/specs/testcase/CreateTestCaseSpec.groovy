@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -26,18 +27,18 @@ class CreateTestCaseSpec extends GebSpec {
         at ShowTestCasePage
 
         where:
-        username        | password
-        "basic"         | "password"
-        "project_admin" | "password"
-        "org_admin"     | "password"
-        "app_admin"     | "password"
+        username                         | password
+        Usernames.BASIC.username         | "password"
+        Usernames.PROJECT_ADMIN.username | "password"
+        Usernames.ORG_ADMIN.username     | "password"
+        Usernames.APP_ADMIN.username     | "password"
     }
 
     void "removed test steps are not saved"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login("basic", "password")
+        loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
         to CreateTestCasePage
