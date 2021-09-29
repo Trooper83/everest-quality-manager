@@ -1,5 +1,7 @@
 package com.everlution.test.service
 
+import com.everlution.Bug
+import com.everlution.BugService
 import com.everlution.TestStepService
 import com.everlution.Project
 import com.everlution.ProjectService
@@ -15,6 +17,7 @@ import org.hibernate.SessionFactory
 @Rollback
 class ProjectServiceSpec extends Specification {
 
+    BugService bugService
     ProjectService projectService
     SessionFactory sessionFactory
     TestCaseService testCaseService
@@ -34,14 +37,34 @@ class ProjectServiceSpec extends Specification {
         projectService.get(1) != null
     }
 
-    void "test list"() {
+    void "test list with no args"() {
         setupData()
 
         when:
-        List<Project> projectList = projectService.list(max: 2, offset: 2)
+        List<Project> projectList = projectService.list()
 
         then:
-        projectList.size() == 2
+        projectList.size() == 5
+    }
+
+    void "test list with max args"() {
+        setupData()
+
+        when:
+        List<Project> projectList = projectService.list(max: 1)
+
+        then:
+        projectList.size() == 1
+    }
+
+    void "test list with offset args"() {
+        setupData()
+
+        when:
+        List<Project> projectList = projectService.list(offset: 1)
+
+        then:
+        projectList.size() == 4
     }
 
     void "test count"() {
@@ -90,25 +113,30 @@ class ProjectServiceSpec extends Specification {
         projectService.delete(project.id)
         sessionFactory.currentSession.flush()
 
-        then: "test case is deleted"
+        then: "test case and steps deleted"
         projectService.get(project.id) == null
         testCaseService.get(testCase.id) == null
         testStepService.get(step.id) == null
     }
 
-    void "delete test case does not cascade to project"() {
+    void "delete project cascades to bug"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        TestStep step = new TestStep(action: "first action", result: "first result").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project, steps: [step]).save()
+                executionMethod: "Automated", type: "API", project: project).save()
+        Bug bug = new Bug(name: "cascade project", description: "this should delete", creator: "testing",
+                project: project).save()
 
-        when: "delete test case"
-        testCaseService.delete(testCase.id)
+        expect:
+        project.id != null
+        bug.id != null
+
+        when: "delete project"
+        projectService.delete(project.id)
         sessionFactory.currentSession.flush()
 
-        then: "project is not deleted"
-        testCaseService.get(testCase.id) == null
-        projectService.get(project.id) != null
+        then: "bug and project are deleted"
+        projectService.get(project.id) == null
+        bugService.get(bug.id) == null
     }
 }

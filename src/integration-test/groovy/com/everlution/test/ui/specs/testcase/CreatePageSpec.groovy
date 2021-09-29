@@ -149,6 +149,6 @@ class CreatePageSpec extends GebSpec {
         def page = to CreateTestCasePage
 
         then: "correct fields are displayed"
-        page.getFields() == ["Description", "Execution Method *", "Name *", "Type *", "Project *"]
+        page.getFields() == ["Description", "Execution Method *", "Name *", "Project *", "Type *"]
     }
 }

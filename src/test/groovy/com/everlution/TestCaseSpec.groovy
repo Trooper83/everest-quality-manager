@@ -238,12 +238,4 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         then: "validation passes"
         domain.validate(["creator"])
     }
-
-    void "test bugs can be null"() {
-        when:
-        domain.bugs = null
-
-        then:
-        domain.validate(["bugs"])
-    }
 }
