@@ -10,11 +10,9 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
 
     void "test instances are persisted"() {
         setup:
-        def project = new Project(name: "tc domain project", code: "tdp")
-        def testCase = new TestCase(creator: "test", name: "First Test Case in bugs", description: "test",
-                executionMethod: "Manual", type: "UI", project: project).save()
-        new Bug(creator: "test", name: "First Bug", description: "test", testCases: [testCase]).save()
-        new Bug(creator: "test",name: "Second Bug", description: "test", testCases: [testCase]).save()
+        def project = new Project(name: "tc domain project321", code: "td5").save()
+        new Bug(creator: "test", name: "First Bug", description: "test", project: project).save()
+        new Bug(creator: "test",name: "Second Bug", description: "test", project: project).save()
 
         expect:
         Bug.count() == 2
@@ -121,15 +119,6 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         then:
         !domain.validate(["creator"])
         domain.errors["creator"].code == "nullable"
-    }
-
-    void "test cases cannot be null"() {
-        when:
-        domain.testCases = null
-
-        then:
-        !domain.validate(["testCases"])
-        domain.errors["testCases"].code == "nullable"
     }
 
     void "test creator cannot be blank"() {

@@ -6,6 +6,7 @@ import grails.gorm.transactions.Transactional
 @Service(Project)
 abstract class ProjectService implements IProjectService {
 
+    BugService bugService
     TestCaseService testCaseService
 
     @Transactional
@@ -13,6 +14,7 @@ abstract class ProjectService implements IProjectService {
     void delete(Serializable id) {
         def project = get(id)
         testCaseService.deleteAllTestCasesByProject(project)
+        bugService.deleteAllBugsByProject(project)
         project.delete()
     }
 }

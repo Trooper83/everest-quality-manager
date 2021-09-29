@@ -13,19 +13,4 @@ abstract class TestCaseService implements ITestCaseService {
             it.delete()
         }
     }
-
-    @Transactional
-    @Override
-    void delete(Serializable id) {
-        def testCase = get(id)
-        def stepsList = []
-        if(testCase.steps) {
-            stepsList += testCase.steps
-        }
-        stepsList.each {
-            testCase.removeFromSteps(it)
-            it.delete()
-        }
-        testCase.delete()
-    }
 }
