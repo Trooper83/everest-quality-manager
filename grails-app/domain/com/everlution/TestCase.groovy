@@ -11,7 +11,6 @@ class TestCase {
     List steps
     String type
 
-    static belongsTo = Project
     static hasMany = [steps: TestStep]
 
     static mapping = {

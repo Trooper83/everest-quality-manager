@@ -17,9 +17,7 @@ class BugServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     private Long setupData() {
-        Project project = new Project(name: "BugServiceSpec Project", code: "BP2").save()
-        TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
-                executionMethod: "Automated", type: "API", project: project).save()
+        Project project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
         Bug bug = new Bug(creator: "God", description: "Found a bug", name: "Name of the bug", project: project).save()
         new Bug(creator: "Zeus", description: "Found a bug again!", name: "Name of the bug again", project: project).save()
         bug.id
@@ -103,8 +101,6 @@ class BugServiceSpec extends Specification {
     void "test save"() {
         when:
         Project project = new Project(name: "BugServiceSpec Project", code: "BPM").save()
-        TestCase testCase = new TestCase(creator: "testing", name: "first", description: "desc1",
-                executionMethod: "Automated", type: "API", project: project).save()
         Bug bug = new Bug(creator: "Athena", description: "Found a bug123", name: "Name of the bug123", project: project)
         bugService.save(bug)
 

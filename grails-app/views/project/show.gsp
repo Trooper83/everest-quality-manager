@@ -31,7 +31,7 @@
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:display bean="project" />
+            <f:display bean="project" except="bugs, testCases" />
             <g:form resource="${this.project}" method="DELETE">
                 <fieldset class="buttons">
                     <g:link class="edit" action="edit" resource="${this.project}" data-test-id="show-edit-link">

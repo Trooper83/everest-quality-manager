@@ -122,8 +122,6 @@ class ProjectServiceSpec extends Specification {
     void "delete project cascades to bug"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project).save()
         Bug bug = new Bug(name: "cascade project", description: "this should delete", creator: "testing",
                 project: project).save()
 
