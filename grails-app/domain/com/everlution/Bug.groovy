@@ -8,8 +8,6 @@ class Bug {
     String name
     Project project
 
-    static belongsTo = Project
-
     static mapping = {
         project cascade: 'none'
     }

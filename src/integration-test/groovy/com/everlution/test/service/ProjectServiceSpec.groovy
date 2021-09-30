@@ -97,7 +97,7 @@ class ProjectServiceSpec extends Specification {
         project.id != null
     }
 
-    void "delete project cascades to test case and steps"() {
+    void "delete project removes all test cases and steps"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         TestStep step = new TestStep(action: "first action", result: "first result").save()
@@ -119,7 +119,7 @@ class ProjectServiceSpec extends Specification {
         testStepService.get(step.id) == null
     }
 
-    void "delete project cascades to bug"() {
+    void "delete project removes all bugs"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         Bug bug = new Bug(name: "cascade project", description: "this should delete", creator: "testing",
