@@ -1,6 +1,6 @@
 package com.everlution
 
-class TestStep {
+class Step {
 
     String action
     Date dateCreated

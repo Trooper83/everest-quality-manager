@@ -4,7 +4,7 @@ import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
 
-class TestStepSpec extends Specification implements DomainUnitTest<TestStep> {
+class StepSpec extends Specification implements DomainUnitTest<Step> {
 
     @Shared int id
 
@@ -16,10 +16,10 @@ class TestStepSpec extends Specification implements DomainUnitTest<TestStep> {
 
     void "test instances are persisted"() {
         setup:
-        new TestStep(action: "First Test step", result: "test").save()
+        new Step(action: "First Test step", result: "test").save()
 
         expect:
-        TestStep.count() == 1
+        Step.count() == 1
     }
 
     void "test domain instance"() {

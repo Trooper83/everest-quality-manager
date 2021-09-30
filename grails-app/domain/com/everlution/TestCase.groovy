@@ -11,7 +11,7 @@ class TestCase {
     List steps
     String type
 
-    static hasMany = [steps: TestStep]
+    static hasMany = [steps: Step]
 
     static mapping = {
         project cascade: "none"

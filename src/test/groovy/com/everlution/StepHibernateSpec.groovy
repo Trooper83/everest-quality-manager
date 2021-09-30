@@ -2,11 +2,11 @@ package com.everlution
 
 import grails.test.hibernate.HibernateSpec
 
-class TestStepHibernateSpec extends HibernateSpec {
+class StepHibernateSpec extends HibernateSpec {
 
     void "test date created auto generated"() {
         when:
-        TestStep testStep = new TestStep(action: "do something", result: "something happened").save()
+        Step testStep = new Step(action: "do something", result: "something happened").save()
 
         then:
         testStep.dateCreated != null
@@ -15,7 +15,7 @@ class TestStepHibernateSpec extends HibernateSpec {
     void "delete step does not cascade to case"() {
         given: "valid domain instances"
         Project project = new Project(name: "TestStep Cascade Project", code: "TCP").save()
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
+        Step testStep = new Step(action: "do something", result: "something happened")
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
         testCase.save()

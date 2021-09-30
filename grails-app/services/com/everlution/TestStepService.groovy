@@ -2,10 +2,10 @@ package com.everlution
 
 import grails.gorm.services.Service
 
-@Service(TestStep)
+@Service(Step)
 interface TestStepService {
 
-    TestStep get(Serializable id)
+    Step get(Serializable id)
 
     Long count()
 
