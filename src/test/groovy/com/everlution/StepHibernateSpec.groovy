@@ -31,7 +31,32 @@ class StepHibernateSpec extends HibernateSpec {
         sessionFactory.currentSession.flush()
 
         then: "test case is still found"
+        Step.findById(testStep.id) == null
         def tc = TestCase.findById(testCase.id)
         tc.steps.size() == 0
+    }
+
+    void "delete step does not cascade to bug"() {
+        given: "valid domain instances"
+        Project project = new Project(name: "TestStep Cascade Project", code: "TCC").save()
+        Step testStep = new Step(action: "do something", result: "something happened")
+        Bug bug = new Bug(creator: "test", name: "test", description: "desc",
+               project: project).addToSteps(testStep)
+        bug.save()
+
+        expect:
+        bug.steps.size() == 1
+        testStep.id != null
+        bug.id != null
+
+        when: "delete test step"
+        bug.removeFromSteps(testStep)
+        testStep.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "bug is still found"
+        Step.findById(testStep.id) == null
+        def b = Bug.findById(bug.id)
+        b.steps.size() == 0
     }
 }
