@@ -4,7 +4,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.TestStep
+import com.everlution.Step
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -82,7 +82,7 @@ class EditPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.getFields() == ["Description", "Execution Method *", "Name *", "Project *", "Type *"]
+        page.getFields() == ["Description", "Execution Method *", "Name *", "Type *"]
     }
 
     void "required fields indicator displayed for required fields"() {
@@ -141,7 +141,7 @@ class EditPageSpec extends GebSpec {
     void "add test step row"() {
         given: "test case"
         Project project = projectService.list(max: 1).first()
-        TestStep testStep = new TestStep(action: "step1", result: "result1")
+        Step testStep = new Step(action: "step1", result: "result1")
         TestCase testCase = new TestCase(creator: "test", name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
@@ -168,7 +168,7 @@ class EditPageSpec extends GebSpec {
     void "remove test step row"() {
         given: "test case"
         Project project = projectService.list(max: 1).first()
-        TestStep testStep = new TestStep(action: "step123", result: "result123")
+        Step testStep = new Step(action: "step123", result: "result123")
         TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
@@ -198,7 +198,7 @@ class EditPageSpec extends GebSpec {
     void "first row cannot be removed"() {
         given: "test case"
         Project project = projectService.list(max: 1).first()
-        TestStep testStep = new TestStep(action: "step1234", result: "result1234")
+        Step testStep = new Step(action: "step1234", result: "result1234")
         TestCase testCase = new TestCase(creator: "test", name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id

@@ -28,7 +28,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
     void "delete test case does not cascade to project"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        TestStep step = new TestStep(action: "first action", result: "first result").save()
+        Step step = new Step(action: "first action", result: "first result").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project, steps: [step]).save()
 
@@ -44,8 +44,8 @@ class TestCaseHibernateSpec extends HibernateSpec {
     void "test save case with steps cascades"() {
         given: "unsaved test case and test steps"
         Project project = new Project(name: "TestStep Save Project", code: "TPS").save()
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
-        TestStep testStep1 = new TestStep(action: "do something", result: "something happened")
+        Step testStep = new Step(action: "do something", result: "something happened")
+        Step testStep1 = new Step(action: "do something", result: "something happened")
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep, testStep1], project: project)
 
@@ -64,7 +64,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
     void "test update case with steps"() {
         given: "valid test case instance"
         Project project = new Project(name: "TestStep Update Project", code: "TUP").save()
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
+        Step testStep = new Step(action: "do something", result: "something happened")
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep], project: project).save()
 
@@ -73,7 +73,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
         testCase.steps[0].result = "edited result"
 
         then: "updated steps are retrieved on the step instance"
-        def step = TestStep.findById(testStep.id)
+        def step = Step.findById(testStep.id)
         step.action == "edited action"
         step.result == "edited result"
     }
@@ -81,7 +81,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
     void "test delete case cascades to steps"() {
         given: "valid domain instances"
         Project project = new Project(name: "TestStep Cascade Project", code: "TCP").save()
-        TestStep testStep = new TestStep(action: "do something", result: "something happened")
+        Step testStep = new Step(action: "do something", result: "something happened")
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
         testCase.save()
@@ -95,15 +95,15 @@ class TestCaseHibernateSpec extends HibernateSpec {
         sessionFactory.currentSession.flush()
 
         then: "steps are not found"
-        TestStep.findById(testStep.id) == null
+        Step.findById(testStep.id) == null
     }
 
     void "test steps order persists"() {
         given: "save a test case"
         Project project = new Project(name: "TestStep Cascade Project666", code: "TC1").save()
-        TestStep testStep = new TestStep(action: "do something", result: "something happened123")
-        TestStep testStep1 = new TestStep(action: "I did something", result: "something happened231")
-        TestStep testStep2 = new TestStep(action: "something happened", result: "something happened321")
+        Step testStep = new Step(action: "do something", result: "something happened123")
+        Step testStep1 = new Step(action: "I did something", result: "something happened231")
+        Step testStep2 = new Step(action: "something happened", result: "something happened321")
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project, steps: [testStep, testStep1, testStep2])
         testCase.save()

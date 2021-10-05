@@ -8,11 +8,11 @@ class BootStrap {
         environments {
             test {
                 seedTestUsers()
-                seedTestCases()
+                seedTestData()
             }
             development {
                 seedTestUsers()
-                seedTestCases()
+                seedTestData()
             }
         }
     }
@@ -48,15 +48,25 @@ class BootStrap {
     }
 
     @Transactional
-    void seedTestCases() {
+    void seedTestData() {
         def project = new Project(name: "bootstrap project", code: "bsp").save()
         def project1 = new Project(name: "bootstrap project12", code: "BPP").save()
-        TestStep testStep = new TestStep(action: "do something", result: "something happened").save(failOnError: true)
-        TestStep testStep1 = new TestStep(action: "do something12", result: "something happened12").save(failOnError: true)
-        TestStep testStep2 = new TestStep(action: "do something123", result: "something happened123").save(failOnError: true)
+        Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
+        Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)
+        Step testStep2 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
         new TestCase(creator: "test", name: "everest", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep, testStep1], project: project).save(failOnError: true)
         new TestCase(creator: "test123", name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep2], project: project1).save(failOnError: true)
+        def bugStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
+        def bugStep1 = new Step(action: "do something", result: "something happened").save(failOnError: true)
+        def bugStep2 = new Step(action: "do something", result: "something happened").save(failOnError: true)
+        def bugStep3 = new Step(action: "do something", result: "something happened").save(failOnError: true)
+        new Bug(creator: "bug creator", name: "seeded bug 1", description: "description of the bug",
+                project: project1, steps: [bugStep]).save(failOnError: true)
+        new Bug(creator: "bug creator1", name: "seeded bug 2", description: "description of the bug 1",
+                project: project, steps: [bugStep1]).save(failOnError: true)
+        new Bug(creator: "bug creator2", name: "seeded bug 3", description: "description of the bug 2",
+                project: project1, steps: [bugStep2, bugStep3]).save(failOnError: true)
     }
 }

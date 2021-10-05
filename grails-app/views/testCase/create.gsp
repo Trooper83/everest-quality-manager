@@ -33,7 +33,7 @@
                     <f:all bean="testCase" except="bugs, steps, creator"/>
                 </fieldset>
                 <fieldset>
-                    <table id="ledgerEntriesTable" class="table">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th></th>
@@ -57,6 +57,6 @@
             </g:form>
         </div>
 
-        <asset:javascript src="teststep.js"/>
+        <asset:javascript src="step.js"/>
     </body>
 </html>

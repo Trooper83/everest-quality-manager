@@ -2,6 +2,8 @@ package com.everlution
 
 import grails.test.hibernate.HibernateSpec
 
+import javax.persistence.PersistenceException
+
 class ProjectHibernateSpec extends HibernateSpec {
 
     List<Class> getDomainClasses() { [Project] }
@@ -40,5 +42,33 @@ class ProjectHibernateSpec extends HibernateSpec {
         and: "save fails"
         !failed.save()
         Project.count() == old(Project.count())
+    }
+
+    void "delete project with bug throws persistence exception"() {
+        given: "valid bug with a project"
+        Project project = new Project(name: "Delete Bug Cascade Project777", code: "ZZ7").save()
+        new Bug(name: "cascade project", description: "this should delete", creator: "testing",
+                project: project).save()
+
+        when: "delete project"
+        project.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "exception is thrown"
+        thrown(PersistenceException)
+    }
+
+    void "delete project with test case throws persistence exception"() {
+        given: "valid test case with project"
+        Project project = new Project(name: "Delete Test Case Cascade Project000", code: "ZZ0").save()
+        new TestCase(creator: "test", name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+
+        when: "delete project"
+        project.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "exception is thrown"
+        thrown(PersistenceException)
     }
 }

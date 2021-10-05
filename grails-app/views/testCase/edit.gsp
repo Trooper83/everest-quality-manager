@@ -60,6 +60,6 @@
                 </fieldset>
             </g:form>
         </div>
-        <asset:javascript src="teststep.js"/>
+        <asset:javascript src="step.js"/>
     </body>
 </html>

@@ -1,17 +1,18 @@
 package com.everlution.test.ui.support.pages.modules
 
-class TestStepTableModule extends TableModule {
+class StepTableModule extends TableModule {
 
     static content = {
         addRowButton { $("#btnAddRow") }
     }
 
     /**
-     * adds a test step
+     * adds a step
      * @param action - the action
      * @param result - the result
+     * @param isFirst - determines if this is the first step
      */
-    void addTestStep(String action, String result, boolean isFirst = true) {
+    void addStep(String action, String result, boolean isFirst = true) {
         if (!isFirst) {
             addRow()
         }

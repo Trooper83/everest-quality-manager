@@ -11,15 +11,17 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreatePageSpec extends GebSpec {
 
-    void "home link directs to home view"() {
+    def setup() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to the create test case page"
+        and: "go to the create page"
         to CreateTestCasePage
+    }
 
+    void "home link directs to home view"() {
         when: "click the home button"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.goToHome()
@@ -29,14 +31,6 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "list link directs to list view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to the create test case page"
-        to CreateTestCasePage
-
         when: "click the list link"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.goToList()
@@ -46,28 +40,12 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "required fields indicator displayed for required fields"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to the create test case page"
-        to CreateTestCasePage
-
         expect: "required field indicators displayed"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.areRequiredFieldIndicatorsDisplayed(["executionMethod", "name", "type"])
+        page.areRequiredFieldIndicatorsDisplayed(["executionMethod", "name", "type", "project"])
     }
 
     void "verify method and type field options"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to the create test case page"
-        to CreateTestCasePage
-
         expect: "correct options populate for executionMethod and type"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         verifyAll {
@@ -83,14 +61,6 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "add test step row"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to the create test case page"
-        to CreateTestCasePage
-
         expect: "row count is 1"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.getRowCount() == 1
@@ -103,15 +73,7 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "remove test step row"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to the create test case page"
-        to CreateTestCasePage
-
-        and: "add a row"
+        setup: "add a row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.addRow()
 
@@ -126,29 +88,14 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "first row cannot be removed"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to the create test case page"
-        to CreateTestCasePage
-
         expect: "the remove button is not displayed for the first row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.getRow(0).find("input[value=Remove]").isEmpty()
     }
 
     void "correct fields are displayed"() {
-        given: "login as basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to create page"
-        def page = to CreateTestCasePage
-
-        then: "correct fields are displayed"
+        expect: "correct fields are displayed"
+        CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.getFields() == ["Description", "Execution Method *", "Name *", "Project *", "Type *"]
     }
 }

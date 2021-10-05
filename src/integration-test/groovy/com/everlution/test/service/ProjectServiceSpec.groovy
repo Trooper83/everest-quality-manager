@@ -7,7 +7,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.TestStep
+import com.everlution.Step
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification
@@ -97,10 +97,10 @@ class ProjectServiceSpec extends Specification {
         project.id != null
     }
 
-    void "delete project cascades to test case and steps"() {
+    void "delete project removes all test cases and steps"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        TestStep step = new TestStep(action: "first action", result: "first result").save()
+        Step step = new Step(action: "first action", result: "first result").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project, steps: [step]).save()
 
@@ -119,11 +119,9 @@ class ProjectServiceSpec extends Specification {
         testStepService.get(step.id) == null
     }
 
-    void "delete project cascades to bug"() {
+    void "delete project removes all bugs"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project).save()
         Bug bug = new Bug(name: "cascade project", description: "this should delete", creator: "testing",
                 project: project).save()
 

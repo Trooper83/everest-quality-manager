@@ -7,11 +7,13 @@ class Bug {
     String description
     String name
     Project project
+    List steps
 
-    static belongsTo = Project
+    static hasMany = [steps: Step]
 
     static mapping = {
         project cascade: 'none'
+        steps cascade: 'all'
     }
 
     static constraints = {

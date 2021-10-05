@@ -5,6 +5,12 @@ import spock.lang.Specification
 
 class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMappings> {
 
+    void "test forward error mappings"() {
+        expect:
+        verifyForwardUrlMapping(500, view: 'error')
+        verifyForwardUrlMapping(404, view: 'notFound')
+    }
+
     void "verify test case forward and reverse mappings"() {
         mockController(TestCaseController)
 
@@ -44,10 +50,22 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         }
     }
 
-    void "test forward error mappings"() {
-        expect:
-        verifyForwardUrlMapping(500, view: 'error')
-        verifyForwardUrlMapping(404, view: 'notFound')
-    }
+    void "verify bug forward and reverse mappings"() {
+        mockController(BugController)
 
+        expect:
+        verifyUrlMapping("/bug/index", controller: 'bug', action: 'index')
+        verifyUrlMapping("/bug/create", controller: 'bug', action: 'create')
+        verifyUrlMapping("/bug/save", controller: 'bug', action: 'save')
+        verifyUrlMapping("/bug/update", controller: 'bug', action: 'update')
+        verifyUrlMapping("/bug/show/123", controller: 'bug', action: 'show') {
+            id = 123
+        }
+        verifyUrlMapping("/bug/edit/123", controller: 'bug', action: 'edit') {
+            id = 123
+        }
+        verifyUrlMapping("/bug/delete/123", controller: 'bug', action: 'delete') {
+            id = 123
+        }
+    }
 }
