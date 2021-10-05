@@ -1,5 +1,6 @@
 package com.everlution
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
@@ -9,19 +10,43 @@ class BugController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    /**
+     * lists all bugs
+     * /bug/index
+     * @param max - maximum bugs to retrieve
+     * @return - list of bugs
+     */
+    @Secured("ROLE_READ_ONLY")
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond bugService.list(params), model: [bugCount: bugService.count()]
     }
 
+    /**
+     * displays the show view with bug data
+     * /bug/show/${id}
+     * @param id - id of the bug
+     * @return - the bug to show
+     */
+    @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         respond bugService.get(id), view: "show"
     }
 
+    /**
+     * displays the create bug view
+     * /bug/create
+     */
+    @Secured("ROLE_BASIC")
     def create() {
         respond new Bug(params)
     }
 
+    /**
+     * saves a bug instance
+     * @param bug - the bug to save
+     */
+    @Secured("ROLE_BASIC")
     def save(Bug bug) {
         if (bug == null) {
             notFound()
@@ -44,10 +69,21 @@ class BugController {
         }
     }
 
+    /**
+     * displays the edit view
+     * /bug/edit/${id}
+     * @param id - id of the bug
+     */
+    @Secured("ROLE_BASIC")
     def edit(Long id) {
         respond bugService.get(id), view: "edit"
     }
 
+    /**
+     * updates a bugs data
+     * @param bug - bug to update
+     */
+    @Secured("ROLE_BASIC")
     def update(Bug bug) {
         if (bug == null) {
             notFound()
@@ -70,6 +106,11 @@ class BugController {
         }
     }
 
+    /**
+     * deletes a bug
+     * @param id - id of the bug to delete
+     */
+    @Secured("ROLE_BASIC")
     def delete(Long id) {
         if (id == null) {
             notFound()
@@ -87,6 +128,9 @@ class BugController {
         }
     }
 
+    /**
+     * displays view when notFound (404)
+     */
     protected void notFound() {
         request.withFormat {
             form multipartForm {

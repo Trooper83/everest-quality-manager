@@ -1,7 +1,7 @@
 package com.everlution.test.ui.support.pages.testcase
 
 import com.everlution.test.ui.support.pages.common.BasePage
-import com.everlution.test.ui.support.pages.modules.TestStepTableModule
+import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
 
 class CreateTestCasePage extends BasePage {
@@ -17,7 +17,7 @@ class CreateTestCasePage extends BasePage {
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
-        testStepTable { module TestStepTableModule }
+        testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
         typeSelect { $("#type") }
     }
@@ -45,7 +45,7 @@ class CreateTestCasePage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
-        testStepTable.addTestStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
 
@@ -56,7 +56,7 @@ class CreateTestCasePage extends BasePage {
     void completeCreateForm() {
         nameInput = "fake test case"
         descriptionInput = "fake description"
-        testStepTable.addTestStep("step action", "step result")
+        testStepTable.addStep("step action", "step result")
     }
 
     /**

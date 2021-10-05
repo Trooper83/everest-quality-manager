@@ -87,4 +87,20 @@ class ListSpec extends GebSpec {
         ListProjectPage listPage = at ListProjectPage
         listPage.statusMessage.text() ==~ /Project \d+ deleted/
     }
+
+    void "clicking name column directs to show page"() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+
+        and: "go to list project page"
+        def listPage = to ListProjectPage
+
+        when: "click first bug in list"
+        listPage.projectTable.clickCell("Name", 0)
+
+        then: "at show page"
+        at ShowProjectPage
+    }
 }

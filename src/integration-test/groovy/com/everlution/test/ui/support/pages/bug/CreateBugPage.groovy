@@ -1,24 +1,21 @@
-package com.everlution.test.ui.support.pages.testcase
+package com.everlution.test.ui.support.pages.bug
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
+import com.github.javafaker.Faker
 
-class EditTestCasePage extends BasePage {
-    static url = "/testCase/edit"
-    static at = { title == "Edit TestCase" }
+class CreateBugPage extends BasePage {
+    static url = "/bug/create"
+    static at = { title == "Create Bug" }
 
     static content = {
-        descriptionInput { $("#description") }
-        executionMethodOptions { $("#executionMethod>option") }
-        executionMethodSelect { $("#executionMethod") }
+        createButton { $("#create") }
+        descriptionInput { $("#description")}
         fieldLabels { $("fieldset label") }
-        homeLink { $("[data-test-id=edit-home-link]") }
-        listLink { $("[data-test-id=edit-list-link]") }
-        nameInput { $("#name") }
-        testStepTable { module StepTableModule }
-        typeOptions { $("#type>option") }
-        typeSelect { $("#type") }
-        updateButton { $("[data-test-id=edit-update-button]")}
+        homeLink { $("[data-test-id=create-home-link]") }
+        listLink { $("[data-test-id=create-list-link]") }
+        nameInput { $("#name")}
+        stepsTable { module StepTableModule }
     }
 
     /**
@@ -38,10 +35,25 @@ class EditTestCasePage extends BasePage {
     }
 
     /**
-     * clicks the update button
+     * adds a generic bug
      */
-    void editTestCase() {
-        updateButton.click()
+    void createBug() {
+        Faker faker = new Faker()
+        nameInput = faker.zelda().game()
+        descriptionInput = faker.zelda().character()
+        stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        createButton.click()
+    }
+
+    /**
+     * fills in all information for the create form
+     * but does not submit
+     */
+    void completeCreateForm() {
+        Faker faker = new Faker()
+        nameInput = faker.zelda().game()
+        descriptionInput = faker.zelda().character()
+        stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
     }
 
     /**

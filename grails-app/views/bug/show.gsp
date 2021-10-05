@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <g:set var="entityName" value="${message(code: 'testCase.label', default: 'TestCase')}"/>
+    <g:set var="entityName" value="${message(code: 'bug.label', default: 'Bug')}"/>
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
-<a href="#show-testCase" class="skip" tabindex="-1">
+<a href="#show-bug" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
 <div class="nav" role="navigation">
@@ -30,14 +30,14 @@
         </sec:ifAnyGranted>
     </ul>
 </div>
-<div id="show-testCase" class="content scaffold-show" role="main">
+<div id="show-bug" class="content scaffold-show" role="main">
     <h1>
         <g:message code="default.show.label" args="[entityName]"/>
     </h1>
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <f:display bean="testCase" except="steps"/>
+    <f:display bean="bug" except="steps"/>
     <fieldset>
         <table class="table">
             <thead>
@@ -47,7 +47,7 @@
             </tr>
             </thead>
             <tbody>
-            <g:each in="${testCase.steps}">
+            <g:each in="${bug.steps}">
                 <tr>
                     <td>${it.action}</td>
                     <td>${it.result}</td>
@@ -57,9 +57,9 @@
         </table>
     </fieldset>
     <sec:ifAnyGranted roles="ROLE_BASIC">
-        <g:form resource="${this.testCase}" method="DELETE">
+        <g:form resource="${this.bug}" method="DELETE">
             <fieldset class="buttons">
-                <g:link class="edit" action="edit" resource="${this.testCase}" data-test-id="show-edit-link">
+                <g:link class="edit" action="edit" resource="${this.bug}" data-test-id="show-edit-link">
                     <g:message code="default.button.edit.label" default="Edit"/>
                 </g:link>
                 <input class="delete" type="submit" data-test-id="show-delete-link"

@@ -1,27 +1,27 @@
-package com.everlution.test.ui.support.pages.testcase
+package com.everlution.test.ui.support.pages.bug
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 
-class ShowTestCasePage extends BasePage {
-    static url = "/testCase/show"
-    static at = { title == "Show TestCase" }
+class ShowBugPage extends BasePage {
+    static url = "/bug/show"
+    static at = { title == "Show Bug" }
 
     static content = {
         createLink(required: false) { $("[data-test-id=show-create-link]") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
+        fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
-        fieldLabels { $("ol.property-list>li>span") }
         statusMessage { $("div.message") }
-        testStepTable { module StepTableModule }
+        stepsTable { module StepTableModule }
     }
 
     /**
      * clicks the delete link
      */
-    void deleteTestCase() {
+    void deleteBug() {
         withConfirm(true) { deleteLink.click() }
     }
 
