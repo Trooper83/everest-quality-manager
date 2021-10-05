@@ -6,7 +6,7 @@ class Step {
     Date dateCreated
     String result
 
-    static belongsTo = [Step, TestCase]
+    static belongsTo = [Bug, TestCase]
 
     static constraints = {
         action blank: true, maxSize: 500, nullable: false
