@@ -5,7 +5,7 @@ class Project {
     String name
     String code
 
-    static hasMany = [bugs: Bug, testCases: TestCase]
+    static hasMany = [areas: Area, bugs: Bug, testCases: TestCase]
 
     static mapping = {
         bugs cascade: "none",

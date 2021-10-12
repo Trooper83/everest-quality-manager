@@ -8,12 +8,6 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
     @Shared int id
 
-    def setup() {
-    }
-
-    def cleanup() {
-    }
-
     void "test instances are persisted"() {
         setup:
         new Step(action: "First Test step", result: "test").save()

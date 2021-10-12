@@ -1,8 +1,11 @@
 package com.everlution
 
 import grails.testing.gorm.DomainUnitTest
+import org.hibernate.SessionFactory
 import spock.lang.Shared
 import spock.lang.Specification
+
+import javax.persistence.PersistenceException
 
 class ProjectSpec extends Specification implements DomainUnitTest<Project> {
 
@@ -121,5 +124,52 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         then: "domain fails to validate with blank error"
         !domain.validate(["code"])
         domain.errors["code"].code == "blank"
+    }
+
+    void "save project cascades to area"() {
+        expect:
+        Area.count() == 0
+
+        when: "project with valid area params"
+        new Project(name: "Cascades To Area", code: "CTA", areas: [new Area(name: "area name")]).save()
+
+        then: "area is saved"
+        Area.count() == 1
+    }
+
+    void "project name must be unique"() {
+        given: "a project instance"
+        new Project(name: "test", code: "cod").save()
+
+        when: "create a project with same name"
+        def failed = new Project(name: "test", code: "san")
+
+        then: "name fails validation"
+        !failed.validate(["name"])
+
+        and: "unique error"
+        failed.errors["name"].code == "unique"
+
+        and: "save fails"
+        !failed.save()
+        Project.count() == old(Project.count())
+    }
+
+    void "project code must be unique"() {
+        given: "a project instance"
+        new Project(name: "test", code: "cod").save()
+
+        when: "create a project with same code"
+        def failed = new Project(name: "testing", code: "cod")
+
+        then: "code fails validation"
+        !failed.validate(["code"])
+
+        and: "unique error"
+        failed.errors["code"].code == "unique"
+
+        and: "save fails"
+        !failed.save()
+        Project.count() == old(Project.count())
     }
 }

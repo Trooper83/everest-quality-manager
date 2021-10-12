@@ -8,42 +8,6 @@ class ProjectHibernateSpec extends HibernateSpec {
 
     List<Class> getDomainClasses() { [Project] }
 
-    void "project name must be unique"() {
-        given: "a project instance"
-        new Project(name: "test", code: "cod").save()
-
-        when: "save a project with same name"
-        def failed = new Project(name: "test", code: "san")
-
-        then: "name fails validation"
-        !failed.validate(["name"])
-
-        and: "unique error"
-        failed.errors["name"].code == "unique"
-
-        and: "save fails"
-        !failed.save()
-        Project.count() == old(Project.count())
-    }
-
-    void "project code must be unique"() {
-        given: "a project instance"
-        new Project(name: "test", code: "cod").save()
-
-        when: "save a project with same code"
-        def failed = new Project(name: "testing", code: "cod")
-
-        then: "code fails validation"
-        !failed.validate(["code"])
-
-        and: "unique error"
-        failed.errors["code"].code == "unique"
-
-        and: "save fails"
-        !failed.save()
-        Project.count() == old(Project.count())
-    }
-
     void "delete project with bug throws persistence exception"() {
         given: "valid bug with a project"
         Project project = new Project(name: "Delete Bug Cascade Project777", code: "ZZ7").save()
@@ -70,5 +34,37 @@ class ProjectHibernateSpec extends HibernateSpec {
 
         then: "exception is thrown"
         thrown(PersistenceException)
+    }
+
+    void "delete project cascades to area"() {
+        given: "project with valid area params"
+        Project p = new Project(name: "Cascades To Area", code: "CTA", areas: [new Area(name: "area name")]).save()
+
+        expect: "area is saved"
+        Area.count() == 1
+
+        when: "delete project"
+        p.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "area was deleted"
+        Area.count() == 0
+    }
+
+    void "update project cascades to area"() {
+        given: "project with valid area params"
+        Project p = new Project(name: "Cascades To Area", code: "CTA", areas: [new Area(name: "area name")]).save()
+
+        expect: "area is saved"
+        p.areas[0].name == "area name"
+
+        when: "update area"
+        p.areas[0].name = "edited name"
+        p.save()
+        sessionFactory.currentSession.flush()
+
+        then: "area was updated"
+        Project.findById(p.id).areas[0].name == "edited name"
+
     }
 }
