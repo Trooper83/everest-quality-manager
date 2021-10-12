@@ -65,6 +65,5 @@ class ProjectHibernateSpec extends HibernateSpec {
 
         then: "area was updated"
         Project.findById(p.id).areas[0].name == "edited name"
-
     }
 }

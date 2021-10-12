@@ -36,7 +36,7 @@
             <g:form resource="${this.project}" method="PUT">
                 <g:hiddenField name="version" value="${this.project?.version}" />
                 <fieldset class="form">
-                    <f:all bean="project" except="bugs, testCases"/>
+                    <f:all bean="project" except="areas, bugs, testCases"/>
                 </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
