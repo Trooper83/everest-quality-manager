@@ -65,7 +65,7 @@ class EditPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(EditBugPage)
-        page.getFields() == ["Description", "Name *"]
+        page.getFields() == ["Description", "Name *", "Project *"]
     }
 
     void "required fields indicator displayed for required fields"() {
