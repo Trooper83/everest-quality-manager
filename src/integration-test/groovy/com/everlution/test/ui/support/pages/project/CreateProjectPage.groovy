@@ -7,6 +7,9 @@ class CreateProjectPage extends BasePage {
     static at = { title == "Create Project" }
 
     static content = {
+        areaInput { $("#area") }
+        addAreaButton { $("#btnAddArea") }
+        areaTags(required: false) { $("#areas li") }
         codeInput { $("#code") }
         createButton { $("#create") }
         errors { $("ul.errors>li") }
@@ -14,6 +17,15 @@ class CreateProjectPage extends BasePage {
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
+    }
+
+    /**
+     * adds an area tag
+     * @param name - name of the tag to add
+     */
+    void addAreaTag(String name) {
+        areaInput << name
+        addAreaButton.click()
     }
 
     /**
@@ -34,8 +46,6 @@ class CreateProjectPage extends BasePage {
 
     /**
      * fills in all fields for the create form but does not submit
-     * @param name
-     * @param code
      */
     void completeCreateForm(String name, String code) {
         nameInput << name
@@ -44,8 +54,6 @@ class CreateProjectPage extends BasePage {
 
     /**
      * fills in all fields for the create form and submits
-     * @param name
-     * @param code
      */
     void createProject(String name, String code) {
         this.completeCreateForm(name, code)
@@ -72,5 +80,36 @@ class CreateProjectPage extends BasePage {
      */
     void goToList() {
         listLink.click()
+    }
+
+    /**
+     * determines if an area tag is displayed
+     * @param name - name of the tag
+     * @return boolean - true if tag found, false if not
+     */
+    boolean isAreaTagDisplayed(String name) {
+        return areaTags.find("span")*.text().contains(name)
+    }
+
+    /**
+     * determines if an area tag has a hidden input
+     * fails the test if the input is not found
+     * present means found in the DOM, displayed means visible to the user
+     * @param name - name of the tag
+     * @return boolean - true if input is displayed, false if it is not displayed
+     */
+    boolean isAreaTagHiddenInputDisplayed() {
+        def e = areaTags.find("input")
+        assert e.size() == 1 //verify one tag is found
+        return e.displayed
+    }
+
+    /**
+     * removes an area tag
+     * @param name - name of the tag to remove
+     */
+    void removeAreaTag(String name) {
+        def element = areaTags.find("span").find { e -> e.text() == name }
+        element.previous("button").click()
     }
 }
