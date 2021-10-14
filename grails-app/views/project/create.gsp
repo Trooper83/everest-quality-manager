@@ -36,11 +36,18 @@
             <g:form resource="${this.project}" method="POST">
                 <fieldset class="form">
                     <f:all bean="project" except="areas, bugs, testCases"/>
+                    <div class="fieldcontain" id="input-areas">
+                        <label>Areas</label>
+                        <g:field type="text" name="areaInput"/>
+                        <g:field type="button" name="btnAddArea" value="Add" onclick="addArea()"/>
+                        <ul class="one-to-many"></ul>
+                    </div>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                 </fieldset>
             </g:form>
         </div>
+        <asset:javascript src="area.js"/>
     </body>
 </html>
