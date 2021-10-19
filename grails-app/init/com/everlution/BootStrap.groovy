@@ -49,7 +49,7 @@ class BootStrap {
 
     @Transactional
     void seedTestData() {
-        def project = new Project(name: "bootstrap project", code: "bsp").save()
+        def project = new Project(name: "bootstrap project", code: "bsp", areas: [new Area(name: "bootstrap area")]).save()
         def project1 = new Project(name: "bootstrap project12", code: "BPP").save()
         Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)

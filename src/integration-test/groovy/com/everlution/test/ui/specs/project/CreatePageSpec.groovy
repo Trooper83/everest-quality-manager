@@ -113,7 +113,7 @@ class CreatePageSpec extends GebSpec {
         page.addAreaTag("Test Area")
 
         expect: "hidden input is present and not displayed"
-        !page.isAreaTagHiddenInputDisplayed()
+        !page.isAreaTagHiddenInputDisplayed("Test Area")
     }
 
     void "removing one tag does not remove all"() {
@@ -132,5 +132,41 @@ class CreatePageSpec extends GebSpec {
         then: "only the selected tag is removed"
         page.areaTags.size() == 1
         page.isAreaTagDisplayed("Test Area2")
+    }
+
+    void "area tag can be edited"() {
+        given: "add a tag"
+        def page = browser.page(CreateProjectPage)
+        page.addAreaTag("Test Area Edit")
+
+        when: "edit tag"
+        page.editAreaTag("Test Area Edit", "Edited Area Tag")
+
+        then: "tag is updated"
+        page.isAreaTagDisplayed("Edited Area Tag")
+        !page.isAreaTagDisplayed("Test Area Edit")
+    }
+
+    void "area tag elements correct after tag edited"() {
+        given: "add a tag"
+        def tag = "Test Area Edit"
+        def edited = "Edited Area Tag"
+        def page = browser.page(CreateProjectPage)
+        page.addAreaTag(tag)
+
+        when: "edit tag"
+        page.editAreaTag(tag, edited)
+
+        then: "save button removed"
+        page.areaTagSaveButton(edited).size() == 0
+
+        and: "input is hidden"
+        !page.isAreaTagHiddenInputDisplayed(edited)
+
+        and: "edit button is displayed"
+        page.areaTagEditButton(edited).size() == 1
+
+        and: "delete button is displayed"
+        page.areaTagRemoveButton(edited).size() == 1
     }
 }

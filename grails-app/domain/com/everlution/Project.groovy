@@ -4,12 +4,9 @@ class Project {
 
     String name
     String code
+    List areas
 
     static hasMany = [areas: Area, bugs: Bug, testCases: TestCase]
-
-    static mapping = {
-        areas fetch: "join"
-    }
 
     static constraints = {
         name blank: false, nullable: false, maxSize: 100, unique: true

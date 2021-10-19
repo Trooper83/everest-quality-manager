@@ -37,11 +37,27 @@
                 <g:hiddenField name="version" value="${this.project?.version}" />
                 <fieldset class="form">
                     <f:all bean="project" except="areas, bugs, testCases"/>
+                    <div class="fieldcontain" id="areas">
+                        <label>Areas</label>
+                        <g:field type="text" name="area"/>
+                        <g:field type="button" name="btnAddArea" value="Add" onclick="addArea()"/>
+                        <ul class="one-to-many">
+                            <g:each status="i" var="area" in="${project.areas}">
+                                <li>
+                                    <input type="button" value="x" onclick="removeAreaElement(this)"/>
+                                    <input type="button" value="y" onclick="editAreaElement(this)"/>
+                                    <span>${area.name}</span>
+                                    <input style="display: none;" type="text" id="areas[${i}].name" name="areas[${i}].name" value="${area.name}" />
+                                </li>
+                            </g:each>
+                        </ul>
+                    </div>
                 </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                 </fieldset>
             </g:form>
         </div>
+        <asset:javascript src="area.js"/>
     </body>
 </html>

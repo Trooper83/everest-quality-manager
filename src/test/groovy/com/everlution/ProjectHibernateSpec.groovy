@@ -66,4 +66,21 @@ class ProjectHibernateSpec extends HibernateSpec {
         then: "area was updated"
         Project.findById(p.id).areas[0].name == "edited name"
     }
+
+    void "area order persists"() {
+        given: "save a project with areas"
+        def area1 = new Area(name: "area name1");
+        def area2 = new Area(name: "area name2");
+        def area3 = new Area(name: "area name3");
+        Project project = new Project(name: "TestStep Cascade Project669", code: "TC2",
+            areas: [area1, area2, area3]).save()
+
+        when: "get the project"
+        def p = Project.findById(project.id)
+
+        then: "order is the same as when it was created"
+        p.areas[0].id == area1.id
+        p.areas[1].id == area2.id
+        p.areas[2].id == area3.id
+    }
 }

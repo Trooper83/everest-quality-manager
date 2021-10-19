@@ -9,6 +9,11 @@ class CreateProjectPage extends BasePage {
     static content = {
         areaInput { $("#area") }
         addAreaButton { $("#btnAddArea") }
+        areaTag { text -> $("li", name: text) }
+        areaTagEditButton { text -> areaTag(text).find("input[data-test-id='create-edit-area-button']") }
+        areaTagInput { text -> areaTag(text).find("input[data-test-id='create-area-tag-input']") }
+        areaTagRemoveButton { text -> areaTag(text).find("input[data-test-id='create-remove-area-button']") }
+        areaTagSaveButton(required: false) { text -> areaTag(text).find("input[data-test-id='create-area-save-button']") }
         areaTags(required: false) { $("#areas li") }
         codeInput { $("#code") }
         createButton { $("#create") }
@@ -61,6 +66,17 @@ class CreateProjectPage extends BasePage {
     }
 
     /**
+     * edits the value of an area tag
+     * @param name - name of the tag to edit
+     * @param value - the new value of the tag
+     */
+    void editAreaTag(String name, String value) {
+        areaTagEditButton(name).click()
+        areaTagInput(name).value(value)
+        areaTagSaveButton(name).click()
+    }
+
+    /**
      * Gets the labels for all fields displayed on the page
      * @return - a list of field names
      */
@@ -98,18 +114,18 @@ class CreateProjectPage extends BasePage {
      * @param name - name of the tag
      * @return boolean - true if input is displayed, false if it is not displayed
      */
-    boolean isAreaTagHiddenInputDisplayed() {
-        def e = areaTags.find("input")
+    boolean isAreaTagHiddenInputDisplayed(String name) {
+        def e = areaTagInput(name)
         assert e.size() == 1 //verify one tag is found
         return e.displayed
     }
+
 
     /**
      * removes an area tag
      * @param name - name of the tag to remove
      */
     void removeAreaTag(String name) {
-        def element = areaTags.find("span").find { e -> e.text() == name }
-        element.previous("button").click()
+        areaTagRemoveButton(name).click()
     }
 }

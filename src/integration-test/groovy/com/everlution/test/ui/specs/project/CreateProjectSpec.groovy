@@ -50,11 +50,8 @@ class CreateProjectSpec extends GebSpec {
         page.addAreaTag("area51")
         page.createButton.click()
 
-        then: "area is saved"
-        def index = currentUrl.lastIndexOf("/")
-        def id = currentUrl.substring(index + 1)
-        def p = projectService.get(id)
-        p.areas.size() == 1
-        p.areas[0].name == "area51"
+        then: "area is displayed on show page"
+        def show = at ShowProjectPage
+        show.isAreaDisplayed("area51")
     }
 }
