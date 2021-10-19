@@ -43,7 +43,7 @@
                         <g:field type="button" name="btnAddArea" value="Add" onclick="addArea()"/>
                         <ul class="one-to-many">
                             <g:each status="i" var="area" in="${project.areas}">
-                                <li>
+                                <li name="${area.name}">
                                     <input type="button" value="x" onclick="removeAreaElement(this)"/>
                                     <input type="button" value="y" onclick="editAreaElement(this)"/>
                                     <span>${area.name}</span>

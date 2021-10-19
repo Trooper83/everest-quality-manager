@@ -7,13 +7,13 @@ class CreateProjectPage extends BasePage {
     static at = { title == "Create Project" }
 
     static content = {
-        areaInput { $("#area") }
         addAreaButton { $("#btnAddArea") }
-        areaTag { text -> $("li", name: text) }
-        areaTagEditButton { text -> areaTag(text).find("input[data-test-id='create-edit-area-button']") }
-        areaTagInput { text -> areaTag(text).find("input[data-test-id='create-area-tag-input']") }
-        areaTagRemoveButton { text -> areaTag(text).find("input[data-test-id='create-remove-area-button']") }
-        areaTagSaveButton(required: false) { text -> areaTag(text).find("input[data-test-id='create-area-save-button']") }
+        areaInput { $("#area") }
+        areaTag(required: false) { text -> $("li", name: text) }
+        areaTagEditButton { text -> areaTag(text).find("input[data-test-id='edit-area-button']") }
+        areaTagInput { text -> areaTag(text).find("input[data-test-id='area-tag-input']") }
+        areaTagRemoveButton { text -> areaTag(text).find("input[data-test-id='remove-area-button']") }
+        areaTagSaveButton(required: false) { text -> areaTag(text).find("input[data-test-id='area-save-button']") }
         areaTags(required: false) { $("#areas li") }
         codeInput { $("#code") }
         createButton { $("#create") }
@@ -104,7 +104,7 @@ class CreateProjectPage extends BasePage {
      * @return boolean - true if tag found, false if not
      */
     boolean isAreaTagDisplayed(String name) {
-        return areaTags.find("span")*.text().contains(name)
+        return areaTag(name).size() == 1
     }
 
     /**
@@ -119,7 +119,6 @@ class CreateProjectPage extends BasePage {
         assert e.size() == 1 //verify one tag is found
         return e.displayed
     }
-
 
     /**
      * removes an area tag
