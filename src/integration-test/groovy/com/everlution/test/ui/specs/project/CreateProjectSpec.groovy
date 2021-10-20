@@ -11,8 +11,6 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreateProjectSpec extends GebSpec {
 
-    ProjectService projectService
-
     void "authorized users can create project"(String username, String password, String name, String code) {
         given: "login as a user"
         to LoginPage

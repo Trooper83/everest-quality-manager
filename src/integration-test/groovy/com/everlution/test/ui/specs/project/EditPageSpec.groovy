@@ -96,15 +96,13 @@ class EditPageSpec extends GebSpec {
         page.addAreaTag("Test Area1")
         page.addAreaTag("Test Area2")
 
-        expect: "two tags are found"
-        page.areaTags.size() == 2
+        expect: "tag is found"
         page.isAreaTagDisplayed("Test Area2")
 
         when: "remove one tag"
         page.removeAreaTag("Test Area1")
 
         then: "only the selected tag is removed"
-        page.areaTags.size() == 1
         page.isAreaTagDisplayed("Test Area2")
     }
 

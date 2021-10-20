@@ -6,7 +6,7 @@ import geb.navigator.Navigator
 class TableModule extends Module {
     static content = {
         tableHeaders { $("thead th") }
-        tableRows { $("tbody tr") }
+        tableRows(required: false) { $("tbody tr") }
     }
 
     /**

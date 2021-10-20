@@ -194,25 +194,4 @@ class EditPageSpec extends GebSpec {
         then: "row count is 1"
         page.testStepTable.getRowCount() == 1
     }
-
-    void "first row cannot be removed"() {
-        given: "test case"
-        Project project = projectService.list(max: 1).first()
-        Step testStep = new Step(action: "step1234", result: "result1234")
-        TestCase testCase = new TestCase(creator: "test", name: "first", description: "desc1",
-                executionMethod: "Automated", type: "API", project: project, steps: [testStep])
-        def id = testCaseService.save(testCase).id
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to edit page"
-        go "/testCase/edit/${id}"
-
-        expect: "the remove button is not displayed for the first row"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testStepTable.getRow(0).find("input[value=Remove]").isEmpty()
-    }
 }

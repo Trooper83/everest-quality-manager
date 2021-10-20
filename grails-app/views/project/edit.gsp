@@ -44,10 +44,10 @@
                         <ul class="one-to-many">
                             <g:each status="i" var="area" in="${project.areas}">
                                 <li name="${area.name}">
-                                    <input type="button" value="x" onclick="removeAreaElement(this)"/>
-                                    <input type="button" value="y" onclick="editAreaElement(this)"/>
+                                    <input type="button" value="x" data-test-id="remove-area-button" onclick="removeAreaElement(this)"/>
+                                    <input type="button" value="y" data-test-id="edit-area-button" onclick="editAreaElement(this)"/>
                                     <span>${area.name}</span>
-                                    <input style="display: none;" type="text" id="areas[${i}].name" name="areas[${i}].name" value="${area.name}" />
+                                    <input style="display: none;" type="text" id="areas[${i}].name" name="areas[${i}].name" value="${area.name}" data-test-id="area-tag-input" />
                                 </li>
                             </g:each>
                         </ul>

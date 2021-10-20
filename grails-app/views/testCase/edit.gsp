@@ -49,6 +49,7 @@
                             <td><g:hiddenField name="stepsIndex[${i}]" class="iHidden" />
                             <td><g:field type="text" name="steps[${i}].action" value="${step.action}" /></td>
                             <td><g:field type="text" name="steps[${i}].result" value="${step.result}" /></td>
+                            <td><input type="button" value="Remove" onclick="removeEntryRow(this)" /></td>
                         </tr>
                     </g:each>
                     </tbody>

@@ -47,7 +47,7 @@ class CreateTestCaseSpec extends GebSpec {
         page.completeCreateForm()
 
         and: "add a new test step"
-        page.testStepTable.addStep("should not persist", "should not persist", false)
+        page.testStepTable.addStep("should not persist", "should not persist")
 
         and: "remove row"
         page.testStepTable.removeRow(1)
