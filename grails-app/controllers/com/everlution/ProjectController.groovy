@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -84,14 +85,14 @@ class ProjectController {
      * @param project - project to update
      */
     @Secured("ROLE_PROJECT_ADMIN")
-    def update(Project project) {
+    def update(Project project, RemovedItems removedItems) {
         if (project == null) {
             notFound()
             return
         }
 
         try {
-            projectService.save(project)
+            projectService.saveUpdate(project, removedItems)
         } catch (ValidationException e) {
             respond project.errors, view:'edit'
             return

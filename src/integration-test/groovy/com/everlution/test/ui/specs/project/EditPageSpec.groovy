@@ -1,5 +1,7 @@
 package com.everlution.test.ui.specs.project
 
+import com.everlution.Area
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage

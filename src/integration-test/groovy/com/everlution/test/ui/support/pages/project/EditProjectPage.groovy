@@ -9,6 +9,7 @@ class EditProjectPage extends BasePage {
     static content = {
         addAreaButton { $("#btnAddArea") }
         areaInput { $("#area") }
+        areaRemovedInput { $("input[data-test-id='area-removed-input']") }
         areaTag(required: false) { text -> $("li", name: text) }
         areaTagEditButton { text -> areaTag(text).find("input[data-test-id='edit-area-button']") }
         areaTagInput { text -> areaTag(text).find("input[data-test-id='area-tag-input']") }

@@ -69,9 +69,9 @@ class ProjectHibernateSpec extends HibernateSpec {
 
     void "area order persists"() {
         given: "save a project with areas"
-        def area1 = new Area(name: "area name1");
-        def area2 = new Area(name: "area name2");
-        def area3 = new Area(name: "area name3");
+        def area1 = new Area(name: "area name1")
+        def area2 = new Area(name: "area name2")
+        def area3 = new Area(name: "area name3")
         Project project = new Project(name: "TestStep Cascade Project669", code: "TC2",
             areas: [area1, area2, area3]).save()
 

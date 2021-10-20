@@ -32,15 +32,21 @@ function editAreaElement(button) {
 /**
 * removes an area tag
 */
-function removeAreaElement(button) {
-    $(button).parent().remove();
+function removeAreaElement(element, id) {
+    if(id) {
+        let input = $('<input style="display: none;" data-test-id="area-removed-input" type="text" id="removedItems.ids" name="removedItems.ids" value="' + id + '" />');
+        $(element).parent().parent().append(input);
+        $(element).parent().remove();
+    } else {
+        $(element).parent().remove();
+    }
 }
 
 /**
 * saves an area tag edit
 */
-function saveAreaElement(button) {
-    let ele = $(button);
+function saveAreaElement(element) {
+    let ele = $(element);
     let input = ele.siblings('input[type="text"]');
     let text = input.val();
     ele.parent().append('<input data-test-id="edit-area-button" type="button" value="y" onclick="editAreaElement(this)"/>');

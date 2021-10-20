@@ -1,6 +1,7 @@
 package com.everlution.test.ui.specs.project
 
 import com.everlution.Area
+import com.everlution.AreaService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
@@ -13,6 +14,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class EditProjectSpec extends GebSpec {
 
+    AreaService areaService
     ProjectService projectService
 
     void "authorized users can edit test case"(String username, String password) {
@@ -93,7 +95,8 @@ class EditProjectSpec extends GebSpec {
 
     void "area tag can be deleted from existing project"() {
         given: "save a project"
-        def project = new Project(name: "edited project155", code: "edz", areas: [new Area(name: "area name")])
+        def area = new Area(name: "area name")
+        def project = new Project(name: "edited project155", code: "edz", areas: [area])
         def id = projectService.save(project).id
 
         and: "login as an authorized user"
@@ -104,7 +107,10 @@ class EditProjectSpec extends GebSpec {
         and: "go to show page"
         go "/project/show/${id}"
 
-        expect: "area tag is displayed"
+        expect: "area to be found"
+        areaService.get(area.id) != null
+
+        and: "area tag is displayed"
         def showPage = at ShowProjectPage
         showPage.isAreaDisplayed("area name")
 
@@ -114,7 +120,29 @@ class EditProjectSpec extends GebSpec {
         page.removeAreaTag("area name")
         page.editProject()
 
-        then: "area tag is displayed"
+        then: "area tag is displayed and was deleted"
         !showPage.isAreaDisplayed("area name")
+        areaService.get(area.id) == null
+    }
+
+    void "Removed item input added when existing tag removed"() {
+        given: "project with tag"
+        def project = new Project(name: "Area Tag Removed Input Project", code: "ATR", areas: [new Area(name: "Area Name")])
+        def id = projectService.save(project).id
+
+        and: "login as an authorized user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+
+        and: "go to edit page"
+        go "/project/edit/${id}"
+
+        when: "remove the area tag"
+        EditProjectPage page = browser.page(EditProjectPage)
+        page.removeAreaTag("Area Name")
+
+        then: "removed input is added to dom"
+        page.areaRemovedInput.size() == 1
     }
 }
