@@ -15,7 +15,7 @@ class TestCase {
 
     static mapping = {
         project cascade: "none"
-        steps cascade: "all"
+        steps cascade: "all-delete-orphan"
     }
 
     static constraints = {

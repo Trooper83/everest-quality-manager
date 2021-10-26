@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -49,7 +50,6 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def save(TestCase testCase) {
-
         if (testCase == null) {
             notFound()
             return
@@ -86,14 +86,14 @@ class TestCaseController {
      * @param testCase - test case values to update
      */
     @Secured("ROLE_BASIC")
-    def update(TestCase testCase) {
+    def update(TestCase testCase, RemovedItems removedItems) {
         if (testCase == null) {
             notFound()
             return
         }
 
         try {
-            testCaseService.save(testCase)
+            testCaseService.saveUpdate(testCase, removedItems)
         } catch (ValidationException ignored) {
             respond testCase.errors, view:"edit"
             return

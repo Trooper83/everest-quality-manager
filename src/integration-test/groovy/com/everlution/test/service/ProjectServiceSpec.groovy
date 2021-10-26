@@ -1,7 +1,6 @@
 package com.everlution.test.service
 
 import com.everlution.Area
-import com.everlution.AreaService
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.TestStepService
@@ -20,7 +19,6 @@ import org.hibernate.SessionFactory
 @Rollback
 class ProjectServiceSpec extends Specification {
 
-    AreaService areaService
     BugService bugService
     ProjectService projectService
     SessionFactory sessionFactory
@@ -148,6 +146,7 @@ class ProjectServiceSpec extends Specification {
         Project project = new Project(name: "Remove Area Test", code: "RAT").addToAreas(area).save()
 
         expect:
+        project.areas.size() == 1
         area.id != null
 
         when: "call saveUpdate"

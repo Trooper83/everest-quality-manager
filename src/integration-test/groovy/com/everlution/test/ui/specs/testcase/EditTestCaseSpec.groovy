@@ -5,6 +5,7 @@ import com.everlution.ProjectService
 import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.TestStepService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
@@ -17,6 +18,7 @@ class EditTestCaseSpec extends GebSpec {
 
     ProjectService projectService
     TestCaseService testCaseService
+    TestStepService testStepService
 
     void "authorized users can edit test case"(String username, String password) {
         given: "create test case"
@@ -102,9 +104,10 @@ class EditTestCaseSpec extends GebSpec {
     void "step can be deleted from existing test case"() {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
+        def step = new Step(action: "action", result: "result")
         TestCase testCase = new TestCase(creator: "testing", name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project,
-                steps: [new Step(action: "action", result: "result")])
+                steps: [step])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"
@@ -115,14 +118,19 @@ class EditTestCaseSpec extends GebSpec {
         and: "go to edit page"
         go "/testCase/edit/${id}"
 
-        when: "edit the test case"
+        expect:
+        step.id != null
         EditTestCasePage page = browser.page(EditTestCasePage)
+        page.testStepTable.getRowCount() == 1
+
+        when: "edit the test case"
         page.testStepTable.removeRow(0)
         page.editTestCase()
 
         then: "at show view with edited step values"
         ShowTestCasePage showPage = at ShowTestCasePage
-        !showPage.testStepTable.isRowDisplayed("action", "result")
         showPage.testStepTable.getRowCount() == 0
+        !showPage.testStepTable.isRowDisplayed("action", "result")
+        testStepService.get(step.id) == null
     }
 }

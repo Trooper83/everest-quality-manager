@@ -15,6 +15,7 @@ class EditTestCasePage extends BasePage {
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
+        stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
         typeSelect { $("#type") }

@@ -1,8 +1,12 @@
 package com.everlution.test.service
 
 import com.everlution.Project
+import com.everlution.ProjectService
+import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.TestStepService
+import com.everlution.command.RemovedItems
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification
@@ -12,7 +16,9 @@ import org.hibernate.SessionFactory
 @Rollback
 class TestCaseServiceSpec extends Specification {
 
+    ProjectService projectService
     TestCaseService testCaseService
+    TestStepService testStepService
     SessionFactory sessionFactory
 
     private Long setupData() {
@@ -112,5 +118,25 @@ class TestCaseServiceSpec extends Specification {
 
         then:
         TestCase.findAllByProject(project).size() == 0
+    }
+
+    void "saveUpdate removes steps"() {
+        given: "valid test case with step"
+        def project = projectService.list(max: 1).first()
+        def step = new Step(action: "action", result: "result")
+        def testCase = new TestCase(creator: "test", name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: project, steps: [step]).save()
+
+        expect:
+        testStepService.get(step.id) != null
+        testCase.steps.size() == 1
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.ids = [step.id]
+        testCaseService.saveUpdate(testCase, removed)
+
+        then: "step is removed"
+        testCase.steps.size() == 0
     }
 }

@@ -20,6 +20,12 @@ function addEntryRow() {
     $('#stepsTableContent').append(row);
 }
 
-function removeEntryRow(button) {
-    $(button).parent().parent().remove();
+function removeEntryRow(element, id) {
+    if(id) {
+       let input = $('<input style="display: none;" data-test-id="step-removed-input" type="text" id="removedItems.ids" name="removedItems.ids" value="' + id + '" />');
+       $(element).parent().parent().parent().append(input);
+       $(element).parent().parent().remove();
+    } else {
+       $(element).parent().parent().remove();
+    }
 }
