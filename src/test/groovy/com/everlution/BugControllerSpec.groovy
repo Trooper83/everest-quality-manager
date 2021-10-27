@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -231,7 +232,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         def bug = new Bug(params)
 
         when:
-        controller.update(bug)
+        controller.update(bug, new RemovedItems())
 
         then:
         response.status == 405
@@ -241,10 +242,10 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     }
 
     void "Test the update action with a null instance"() {
-        when:"Save is called for a domain instance that doesn't exist"
+        when:"update is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, null)
 
         then:"A 404 error is returned"
         response.redirectedUrl == '/bug/index'
@@ -254,7 +255,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     void "Test the update action correctly persists"() {
         given:
         controller.bugService = Mock(BugService) {
-            1 * save(_ as Bug)
+            1 * saveUpdate(_ as Bug, _ as RemovedItems)
         }
 
         when:"The save action is executed with a valid instance"
@@ -265,7 +266,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         def bug = new Bug(params)
         bug.id = 1
 
-        controller.update(bug)
+        controller.update(bug, new RemovedItems())
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/bug/show/1'
@@ -275,15 +276,15 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     void "Test the update action with an invalid instance"() {
         given:
         controller.bugService = Mock(BugService) {
-            1 * save(_ as Bug) >> { Bug bug ->
+            1 * saveUpdate(_ as Bug, _ as RemovedItems) >> { Bug bug, RemovedItems removedItems ->
                 throw new ValidationException("Invalid instance", bug.errors)
             }
         }
 
-        when:"The save action is executed with an invalid instance"
+        when:"The saveUpdate action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new Bug())
+        controller.update(new Bug(), new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
         model.bug != null

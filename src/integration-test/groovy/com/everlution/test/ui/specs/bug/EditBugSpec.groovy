@@ -4,6 +4,7 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.ProjectService
 import com.everlution.Step
+import com.everlution.TestStepService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
@@ -16,6 +17,7 @@ class EditBugSpec extends GebSpec {
 
     BugService bugService
     ProjectService projectService
+    TestStepService testStepService
 
     void "authorized users can edit bug"(String username, String password) {
         setup: "create bug"
@@ -98,8 +100,9 @@ class EditBugSpec extends GebSpec {
     void "step can be deleted from existing bug"() {
         setup: "create bug"
         def project = projectService.list(max: 1).first()
+        def step = new Step(action: "bug action", result: "bug result")
         def bug = new Bug(creator: "bug creator", name: "name of bug", project: project,
-                steps: [new Step(action: "bug action", result: "bug result")])
+                steps: [step])
         def id = bugService.save(bug).id
 
         and: "login as a basic user"
@@ -118,5 +121,6 @@ class EditBugSpec extends GebSpec {
         def showPage = at ShowBugPage
         !showPage.stepsTable.isRowDisplayed("bug action", "bug result")
         showPage.stepsTable.getRowCount() == 0
+        testStepService.get(step.id) == null
     }
 }

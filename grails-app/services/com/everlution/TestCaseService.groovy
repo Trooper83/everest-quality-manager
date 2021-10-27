@@ -19,7 +19,7 @@ abstract class TestCaseService implements ITestCaseService {
 
     /**
      * save an updated test case, deletes any removed steps
-     * @param project - the project to update
+     * @param testCase - the test case to update
      * @param removedItems - ids of the steps to remove
      * @return - the updated test case
      */
