@@ -7,6 +7,7 @@ class ShowProjectPage extends BasePage {
     static at = { title == "Show Project" }
 
     static content = {
+        areasList { $("#areas") }
         createLink(required: false) { $("[data-test-id=show-create-link]") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
@@ -57,5 +58,13 @@ class ShowProjectPage extends BasePage {
      */
     void goToList() {
         listLink.click()
+    }
+
+    /**
+     * determines if an area is displayed
+     * @param name - name of the area to check
+     */
+    boolean isAreaDisplayed(String name) {
+        return areasList.find("div")*.text().contains(name)
     }
 }

@@ -46,7 +46,7 @@ class CreateBugSpec extends GebSpec {
         page.completeCreateForm()
 
         and: "add a new test step"
-        page.stepsTable.addStep("should not persist", "should not persist", false)
+        page.stepsTable.addStep("should not persist", "should not persist")
 
         and: "remove row"
         page.stepsTable.removeRow(1)

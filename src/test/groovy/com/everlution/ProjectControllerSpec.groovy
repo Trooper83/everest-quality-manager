@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -231,7 +232,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         def project = new Project(params)
 
         when:
-        controller.update(project)
+        controller.update(project, null)
 
         then:
         response.status == 405
@@ -244,7 +245,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, null)
 
         then:"A 404 error is returned"
         response.redirectedUrl == '/project/index'
@@ -254,7 +255,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     void "Test the update action correctly persists"() {
         given:
         controller.projectService = Mock(ProjectService) {
-            1 * save(_ as Project)
+            1 * saveUpdate(_ as Project, _ as RemovedItems)
         }
 
         when:"The save action is executed with a valid instance"
@@ -265,7 +266,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         def project = new Project(params)
         project.id = 1
 
-        controller.update(project)
+        controller.update(project, new RemovedItems())
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/show/1'
@@ -275,7 +276,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     void "Test the update action with an invalid instance"() {
         given:
         controller.projectService = Mock(ProjectService) {
-            1 * save(_ as Project) >> { Project project ->
+            1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
                 throw new ValidationException("Invalid instance", project.errors)
             }
         }
@@ -283,7 +284,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new Project())
+        controller.update(new Project(), new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
         model.project != null

@@ -1,5 +1,6 @@
 package com.everlution.test.service
 
+import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.TestStepService
@@ -8,6 +9,7 @@ import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.Step
+import com.everlution.command.RemovedItems
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification
@@ -44,7 +46,7 @@ class ProjectServiceSpec extends Specification {
         List<Project> projectList = projectService.list()
 
         then:
-        projectList.size() == 5
+        projectList.size() > 0
     }
 
     void "test list with max args"() {
@@ -64,7 +66,7 @@ class ProjectServiceSpec extends Specification {
         List<Project> projectList = projectService.list(offset: 1)
 
         then:
-        projectList.size() == 4
+        projectList.size().toLong() == projectService.count() - 1
     }
 
     void "test count"() {
@@ -136,5 +138,24 @@ class ProjectServiceSpec extends Specification {
         then: "bug and project are deleted"
         projectService.get(project.id) == null
         bugService.get(bug.id) == null
+    }
+
+    void "saveUpdate removes area"() {
+        given: "project with area"
+        def area = new Area(name: "area name").save()
+        Project project = new Project(name: "Remove Area Test", code: "RAT").addToAreas(area).save()
+
+        expect:
+        project.areas.size() == 1
+        area.id != null
+
+        when: "call saveUpdate"
+        def items = new RemovedItems()
+        items.ids = [area.id]
+        projectService.saveUpdate(project, items)
+        sessionFactory.currentSession.flush()
+
+        then: "area is removed"
+        project.areas.size() == 0
     }
 }

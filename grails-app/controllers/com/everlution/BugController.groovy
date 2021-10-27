@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -84,14 +85,14 @@ class BugController {
      * @param bug - bug to update
      */
     @Secured("ROLE_BASIC")
-    def update(Bug bug) {
+    def update(Bug bug, RemovedItems removedItems) {
         if (bug == null) {
             notFound()
             return
         }
 
         try {
-            bugService.save(bug)
+            bugService.saveUpdate(bug, removedItems)
         } catch (ValidationException e) {
             respond bug.errors, view:'edit'
             return

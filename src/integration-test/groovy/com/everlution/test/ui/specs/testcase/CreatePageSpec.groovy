@@ -61,15 +61,15 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "add test step row"() {
-        expect: "row count is 1"
+        expect: "row count is 0"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.testStepTable.getRowCount() == 1
+        page.testStepTable.getRowCount() == 0
 
         when: "add a test step row"
         page.testStepTable.addRow()
 
-        then: "row count is 2"
-        page.testStepTable.getRowCount() == 2
+        then: "row count is 1"
+        page.testStepTable.getRowCount() == 1
     }
 
     void "remove test step row"() {
@@ -77,20 +77,14 @@ class CreatePageSpec extends GebSpec {
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.testStepTable.addRow()
 
-        expect: "row count is 2"
-        page.testStepTable.getRowCount() == 2
+        expect: "row count is 1"
+        page.testStepTable.getRowCount() == 1
 
-        when: "remove the second row"
-        page.testStepTable.removeRow(1)
+        when: "remove the first row"
+        page.testStepTable.removeRow(0)
 
         then: "row count is 1"
-        page.testStepTable.getRowCount() == 1
-    }
-
-    void "first row cannot be removed"() {
-        expect: "the remove button is not displayed for the first row"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.testStepTable.getRow(0).find("input[value=Remove]").isEmpty()
+        page.testStepTable.getRowCount() == 0
     }
 
     void "correct fields are displayed"() {

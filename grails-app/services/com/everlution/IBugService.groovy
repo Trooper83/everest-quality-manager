@@ -1,7 +1,5 @@
 package com.everlution
 
-import grails.gorm.services.Service
-
 interface IBugService {
 
     Bug get(Serializable id)

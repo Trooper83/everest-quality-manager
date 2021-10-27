@@ -94,7 +94,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         ShowProjectPage page = browser.page(ShowProjectPage)
-        page.getFields() == ["Name", "Code"]
+        page.getFields() == ["Name", "Code", "Areas"]
     }
 
     void "project not deleted if alert is canceled"() {

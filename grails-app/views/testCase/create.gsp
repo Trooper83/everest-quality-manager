@@ -43,10 +43,6 @@
                             </tr>
                         </thead>
                         <tbody id="stepsTableContent">
-                            <tr>
-                                <td><g:hiddenField name="stepsIndex[0]" class="iHidden" />
-                                <td><g:field type="text" name="steps[0].action"/></td>
-                                <td><g:field type="text" name="steps[0].result"/></td>
                         </tbody>
                     </table>
                     <input id="btnAddRow" type="button" value="Add" onclick="addEntryRow()" />

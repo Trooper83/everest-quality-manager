@@ -36,12 +36,28 @@
             <g:form resource="${this.project}" method="PUT">
                 <g:hiddenField name="version" value="${this.project?.version}" />
                 <fieldset class="form">
-                    <f:all bean="project" except="bugs, testCases"/>
+                    <f:all bean="project" except="areas, bugs, testCases"/>
+                    <div class="fieldcontain" id="areas">
+                        <label>Areas</label>
+                        <g:field type="text" name="area"/>
+                        <g:field type="button" name="btnAddArea" value="Add" onclick="addArea()"/>
+                        <ul class="one-to-many">
+                            <g:each status="i" var="area" in="${project.areas}">
+                                <li name="${area.name}">
+                                    <input type="button" value="x" data-test-id="remove-area-button" onclick="removeAreaElement(this, ${area.id})"/>
+                                    <input type="button" value="y" data-test-id="edit-area-button" onclick="editAreaElement(this)"/>
+                                    <span>${area.name}</span>
+                                    <input style="display: none;" type="text" id="areas[${i}].name" name="areas[${i}].name" value="${area.name}" data-test-id="area-tag-input" />
+                                </li>
+                            </g:each>
+                        </ul>
+                    </div>
                 </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                 </fieldset>
             </g:form>
         </div>
+        <asset:javascript src="area.js"/>
     </body>
 </html>

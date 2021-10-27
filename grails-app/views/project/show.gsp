@@ -31,7 +31,15 @@
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:display bean="project" except="bugs, testCases" />
+            <f:display bean="project" except="areas, bugs, testCases" />
+            <ol class="property-list">
+            <li class="fieldcontain" id="areas">
+                <span id="areas-label" class="property-label">Areas</span>
+                <g:each in="${project.areas}">
+                    <div class="property-value" aria-labelledby="areas-label">${it.name}</div>
+                </g:each>
+            </li>
+            </ol>
             <g:form resource="${this.project}" method="DELETE">
                 <fieldset class="buttons">
                     <g:link class="edit" action="edit" resource="${this.project}" data-test-id="show-edit-link">

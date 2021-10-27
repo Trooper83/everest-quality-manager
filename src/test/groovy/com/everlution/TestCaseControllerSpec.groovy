@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -234,7 +235,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         def testCase = new TestCase(params)
 
         when:
-        controller.update(testCase)
+        controller.update(testCase, new RemovedItems())
 
         then:
         response.status == 405
@@ -250,7 +251,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, null)
 
         then:"a 404 error is returned"
         response.redirectedUrl == '/testCase/index'
@@ -260,7 +261,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     void "test the update action correctly persists"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            1 * save(_ as TestCase)
+            1 * saveUpdate(_ as TestCase, _ as RemovedItems)
         }
 
         when:
@@ -271,7 +272,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         def testCase = new TestCase(params)
         testCase.id = 1
 
-        controller.update(testCase)
+        controller.update(testCase, new RemovedItems())
 
         then:"a redirect is issued to the show action"
         response.redirectedUrl == '/testCase/show/1'
@@ -281,15 +282,15 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     void "test the update action with an invalid instance"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            1 * save(_ as TestCase) >> { TestCase testCase ->
+            1 * saveUpdate(_ as TestCase, _ as RemovedItems) >> { TestCase testCase, RemovedItems removedItems ->
                 throw new ValidationException("Invalid instance", testCase.errors)
             }
         }
 
-        when:"the save action is executed with an invalid instance"
+        when:"the action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new TestCase())
+        controller.update(new TestCase(), new RemovedItems())
 
         then:"the edit view is rendered again with the correct model"
         model.testCase != null

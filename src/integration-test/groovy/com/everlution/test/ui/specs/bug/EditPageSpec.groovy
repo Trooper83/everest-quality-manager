@@ -1,6 +1,10 @@
 package com.everlution.test.ui.specs.bug
 
+import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.Project
+import com.everlution.ProjectService
+import com.everlution.Step
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.bug.ListBugPage
@@ -14,6 +18,7 @@ import spock.lang.Shared
 class EditPageSpec extends GebSpec {
 
     BugService bugService
+    ProjectService projectService
     @Shared int id
 
     def setup() {
@@ -125,17 +130,30 @@ class EditPageSpec extends GebSpec {
         page.stepsTable.getRowCount() == 1
     }
 
-    void "first row cannot be removed"() {
-        given: "login as a basic user"
+    void "removing step adds hidden input"() {
+        given: "valid bug with step"
+        Project project = projectService.list(max: 1).first()
+        Step step = new Step(action: "step123", result: "result123")
+        Bug bug = new Bug(creator: "test",name: "first", description: "desc1",
+                project: project, steps: [step])
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to edit page"
+        and: "go to edit page"
         go "/bug/edit/${id}"
 
-        then: "the remove button is not displayed for the first row"
-        def page = browser.page(EditBugPage)
-        page.stepsTable.getRow(0).find("input[value=Remove]").isEmpty()
+        expect:
+        bug.steps.size() == 1
+
+        when: "remove step"
+        EditBugPage page = browser.page(EditBugPage)
+        page.stepsTable.removeRow(0)
+
+        then: "hidden input added"
+        page.stepRemovedInput.size() == 1
     }
 }

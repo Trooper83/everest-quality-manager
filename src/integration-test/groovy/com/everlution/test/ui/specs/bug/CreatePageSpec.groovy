@@ -52,15 +52,15 @@ class CreatePageSpec extends GebSpec {
     }
 
     void "add test step row"() {
-        expect: "row count is 1"
+        expect: "row count is 0"
         def page = browser.page(CreateBugPage)
-        page.stepsTable.getRowCount() == 1
+        page.stepsTable.getRowCount() == 0
 
         when: "add a test step row"
         page.stepsTable.addRow()
 
-        then: "row count is 2"
-        page.stepsTable.getRowCount() == 2
+        then: "row count is 1"
+        page.stepsTable.getRowCount() == 1
     }
 
     void "remove test step row"() {
@@ -68,19 +68,13 @@ class CreatePageSpec extends GebSpec {
         def page = browser.page(CreateBugPage)
         page.stepsTable.addRow()
 
-        expect: "row count is 2"
-        page.stepsTable.getRowCount() == 2
-
-        when: "remove the second row"
-        page.stepsTable.removeRow(1)
-
-        then: "row count is 1"
+        expect: "row count is 1"
         page.stepsTable.getRowCount() == 1
-    }
 
-    void "first row cannot be removed"() {
-        expect: "the remove button is not displayed for the first row"
-        def page = browser.page(CreateBugPage)
-        page.stepsTable.getRow(0).find("input[value=Remove]").isEmpty()
+        when: "remove the first row"
+        page.stepsTable.removeRow(0)
+
+        then: "row count is 0"
+        page.stepsTable.getRowCount() == 0
     }
 }
