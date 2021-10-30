@@ -3,6 +3,8 @@ package com.everlution.test.ui.support.pages.bug
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
+import geb.module.Select
+import geb.navigator.Navigator
 
 class CreateBugPage extends BasePage {
     static url = "/bug/create"
@@ -10,12 +12,21 @@ class CreateBugPage extends BasePage {
 
     static content = {
         createButton { $("#create") }
-        descriptionInput { $("#description")}
+        descriptionInput { $("#description") }
+        errorsMessage { $("ul.errors") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
-        nameInput { $("#name")}
+        nameInput { $("#name") }
+        projectOptions { $("#project>option") }
         stepsTable { module StepTableModule }
+    }
+
+    /**
+     * select element strongly typed for convenience in tests
+     */
+    Select projectSelect() {
+        $("#project").module(Select)
     }
 
     /**
@@ -41,6 +52,7 @@ class CreateBugPage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
+        projectSelect().selected = "1"
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
@@ -53,6 +65,7 @@ class CreateBugPage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
+        projectSelect().selected = "1"
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
     }
 

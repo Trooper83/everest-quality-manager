@@ -65,6 +65,11 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     }
 
     void "test the create action returns the correct view"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:"the create action is executed"
         controller.create()
 
@@ -73,11 +78,17 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     }
 
     void "Test the create action returns the correct model"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:"The create action is executed"
         controller.create()
 
-        then:"The model is correctly created"
-        model.bug != null
+        then:"The model is correctly populated with bug and projects"
+        model.bug instanceof Bug
+        model.projects instanceof List
     }
 
     void "test save action returns 405 with not allowed method types"(String httpMethod) {
@@ -129,7 +140,10 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     }
 
     void "Test the save action with an invalid instance"() {
-        given:
+        given: "mock services"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
         controller.bugService = Mock(BugService) {
             1 * save(_ as Bug) >> { Bug bug ->
                 throw new ValidationException("Invalid instance", bug.errors)
@@ -143,7 +157,8 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         controller.save(bug)
 
         then:"The create view is rendered again with the correct model"
-        model.bug != null
+        model.bug instanceof Bug
+        model.projects instanceof List
         view == 'create'
     }
 
@@ -287,7 +302,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         controller.update(new Bug(), new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
-        model.bug != null
+        model.bug instanceof Bug
         view == 'edit'
     }
 

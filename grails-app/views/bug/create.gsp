@@ -35,7 +35,16 @@
             <g:form resource="${this.bug}" method="POST">
                 <fieldset class="form">
                     <input type="hidden" name="creator" value="<sec:username/>"/>
-                    <f:all bean="bug" except="creator, steps"/>
+                    <f:all bean="bug" except="creator, project, steps"/>
+                    <div class="fieldcontain required">
+                        <label for="project">Project
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <g:select name="project" from="${projects}"
+                              optionKey="id" optionValue="name"
+                              noSelection="${['':'Select a Project...']}"
+                        />
+                    </div>
                 </fieldset>
                 <fieldset>
                     <table class="table">

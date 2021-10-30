@@ -5,6 +5,7 @@ import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import geb.module.Select
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -42,7 +43,7 @@ class CreatePageSpec extends GebSpec {
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         def page = browser.page(CreateBugPage)
-        page.getFields() == ["Description", "Name *", "Project *"]
+        page.getFields() == ["Area", "Description", "Name *", "Project *"]
     }
 
     void "required fields indicator displayed for required fields"() {
@@ -76,5 +77,32 @@ class CreatePageSpec extends GebSpec {
 
         then: "row count is 0"
         page.stepsTable.getRowCount() == 0
+    }
+
+    void "project field has no value set"() {
+        expect: "default text selected"
+        def page = browser.page(CreateBugPage)
+        page.projectSelect().selectedText == "Select a Project..."
+        page.projectSelect().selected == ""
+    }
+
+    void "failed form submission populates projects"() {
+        when: "form submission without project selected"
+        def page = browser.page(CreateBugPage)
+        page.nameInput = "failure"
+        page.createButton.click()
+
+        then: "projects are populated"
+        page.projectOptions.size() > 1
+    }
+
+    void "null project message displays"() {
+        when: "form submission without project selected"
+        def page = browser.page(CreateBugPage)
+        page.nameInput = "failure"
+        page.createButton.click()
+
+        then: "projects are populated"
+        page.errorsMessage.text() == "Property [project] of class [class com.everlution.Bug] cannot be null"
     }
 }
