@@ -148,4 +148,12 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         then: "validation passes"
         domain.validate(["creator"])
     }
+
+    void "area can be null"() {
+        when:
+        domain.area = null
+
+        then:
+        domain.validate(["area"])
+    }
 }

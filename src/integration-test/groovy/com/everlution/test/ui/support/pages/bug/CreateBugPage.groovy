@@ -11,6 +11,7 @@ class CreateBugPage extends BasePage {
     static at = { title == "Create Bug" }
 
     static content = {
+        areaOptions { $("#area>option") }
         createButton { $("#create") }
         descriptionInput { $("#description") }
         errorsMessage { $("ul.errors") }
@@ -20,6 +21,13 @@ class CreateBugPage extends BasePage {
         nameInput { $("#name") }
         projectOptions { $("#project>option") }
         stepsTable { module StepTableModule }
+    }
+
+    /**
+     * select element strongly typed for convenience in tests
+     */
+    Select areaSelect() {
+        $("#area").module(Select)
     }
 
     /**

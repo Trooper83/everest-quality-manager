@@ -18,7 +18,7 @@ class Bug {
     }
 
     static constraints = {
-        area blank: true, nullable: true
+        area nullable: true //TODO: custom validator to ensure area is in project
         creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000
         name blank: false, maxSize: 255, nullable: false
