@@ -118,7 +118,7 @@ class BugServiceSpec extends Specification {
         def project = projectService.list(max: 1).first()
         def step = new Step(action: "action", result: "result")
         def bug = new Bug(creator: "test", name: "second", description: "desc2",
-                project: project, steps: [step]).save()
+                project: project, steps: [step]).save(failOnError: true)
 
         expect:
         testStepService.get(step.id) != null
