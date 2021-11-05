@@ -40,7 +40,7 @@
                                   onchange="getAreas()"
                         />
                     </div>
-                    <div class="fieldcontain required">
+                    <div class="fieldcontain">
                         <label for="area">Area</label>
                         <select name="area" id="area" disabled>
                             <option value=''>Select an Area...</option>

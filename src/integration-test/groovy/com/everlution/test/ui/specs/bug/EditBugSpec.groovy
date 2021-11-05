@@ -123,4 +123,6 @@ class EditBugSpec extends GebSpec {
         showPage.stepsTable.getRowCount() == 0
         testStepService.get(step.id) == null
     }
+
+    //TODO: area edit persists (use no value)
 }

@@ -2,21 +2,31 @@ package com.everlution.test.ui.support.pages.bug
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
+import geb.module.Select
 
 class EditBugPage extends BasePage {
     static url = "/bug/edit"
     static at = { title == "Edit Bug" }
 
     static content = {
+        areaOptions { $("#area>option") }
         createButton { $("#create") }
         descriptionInput { $("#description")}
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name")}
+        projectNameField { $("[data-test-id=edit-project-name]") }
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         stepsTable { module StepTableModule }
         updateButton { $("[data-test-id=edit-update-button]") }
+    }
+
+    /**
+     * select element strongly typed for convenience in tests
+     */
+    Select areaSelect() {
+        $("#area").module(Select)
     }
 
     /**

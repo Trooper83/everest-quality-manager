@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.bug
 
+import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Project
@@ -70,7 +71,7 @@ class EditPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(EditBugPage)
-        page.getFields() == ["Area", "Description", "Name *", "Project *"]
+        page.getFields() == ["Project", "Area", "Description", "Name *"]
     }
 
     void "required fields indicator displayed for required fields"() {
@@ -155,5 +156,75 @@ class EditPageSpec extends GebSpec {
 
         then: "hidden input added"
         page.stepRemovedInput.size() == 1
+    }
+
+    void "area select populates with only elements within the associated project"() {
+        setup: "project & bug instances with areas"
+        def area = new Area(name: "area testing area")
+        def project = projectService.save(new Project(name: "area testing project", code: "ATP", areas: [area]))
+        def bug = bugService.save(new Bug(name: "area testing bug", project: project, creator: "testing"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        when: "go to edit page"
+        go "/bug/edit/${bug.id}"
+
+        then: "area populates with project.areas"
+        EditBugPage page = browser.page(EditBugPage)
+        page.areaOptions*.text() == ["", area.name]
+    }
+
+    void "area select defaults with selected area"() {
+        setup: "project & bug instances with areas"
+        def area = new Area(name: "area testing area II")
+        def project = projectService.save(new Project(name: "area testing project II", code: "ATI", areas: [area]))
+        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, creator: "testing", area: area))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        when: "go to edit page"
+        go "/bug/edit/${bug.id}"
+
+        then: "bug.area is selected"
+        EditBugPage page = browser.page(EditBugPage)
+        page.areaSelect().selectedText == area.name
+    }
+
+    void "area select defaults empty text when no area set"() {
+        setup: "project & bug instances with areas"
+        def project = projectService.save(new Project(name: "area testing project III", code: "AT2"))
+        def bug = bugService.save(new Bug(name: "area testing bug III", project: project, creator: "testing"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        when: "go to edit page"
+        go "/bug/edit/${bug.id}"
+
+        then: "area defaults with no selection"
+        EditBugPage page = browser.page(EditBugPage)
+        page.areaSelect().selectedText == ""
+    }
+
+    void "project name tag is html span and project cannot be edited"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        when: "go to edit page"
+        go "/bug/edit/${id}"
+
+        then: "project tag is span"
+        EditBugPage page = browser.page(EditBugPage)
+        page.projectNameField.tag() == "span"
     }
 }

@@ -36,7 +36,18 @@
             <g:form resource="${this.bug}" method="PUT">
                 <g:hiddenField name="version" value="${this.bug?.version}" />
                 <fieldset class="form">
-                    <f:all bean="bug" except="steps, creator"/>
+                    <div class="fieldcontain">
+                        <label for="project">Project</label>
+                        <span data-test-id="edit-project-name">${bug.project.name}</span>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="area">Area</label>
+                        <g:select name="area" id="area" from="${bug.project.areas}"
+                                  optionKey="id" optionValue="name" value="${bug.area?.id}"
+                                  noSelection="${['':'']}"
+                        />
+                    </div>
+                    <f:all bean="bug" except="area, project, steps, creator"/>
                 </fieldset>
                 <fieldset>
                     <table class="table">
