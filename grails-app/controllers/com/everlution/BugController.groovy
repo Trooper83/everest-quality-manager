@@ -8,6 +8,7 @@ import static org.springframework.http.HttpStatus.*
 class BugController {
 
     BugService bugService
+    ProjectService projectService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -40,7 +41,7 @@ class BugController {
      */
     @Secured("ROLE_BASIC")
     def create() {
-        respond new Bug(params)
+        respond new Bug(params), model: [projects: projectService.list()]
     }
 
     /**
@@ -57,7 +58,7 @@ class BugController {
         try {
             bugService.save(bug)
         } catch (ValidationException e) {
-            respond bug.errors, view:'create'
+            respond bug.errors, view:'create', model: [projects: projectService.list()]
             return
         }
 

@@ -238,4 +238,43 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         then: "validation passes"
         domain.validate(["creator"])
     }
+
+    void "area can be null"() {
+        when:
+        domain.area = null
+
+        then:
+        domain.validate(["area"])
+    }
+
+    void "area validates when project null"() {
+        when:
+        domain.project = null
+
+        then:
+        domain.validate(["area"])
+    }
+
+    void "area validates with area in project"() {
+        when:
+        def a = new Area(name: "test area")
+        def p = new Project(name: "testing project areas", code: "tpa", areas: [a]).save()
+        domain.project = p
+        domain.area = a
+
+        then:
+        domain.validate(["area"])
+    }
+
+    void "area fails to validate with area not in project"() {
+        when:
+        def a = new Area(name: "test area").save()
+        def p = new Project(name: "testing project areas", code: "tpa").save()
+        domain.project = p
+        domain.area = a
+
+        then:
+        !domain.validate(["area"])
+        domain.errors["area"].code == "validator.invalid"
+    }
 }

@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.*
 
 class TestCaseController {
 
+    ProjectService projectService
     TestCaseService testCaseService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -41,7 +42,7 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def create() {
-        respond new TestCase(params)
+        respond new TestCase(params), model: [projects: projectService.list()]
     }
 
     /**
@@ -58,7 +59,7 @@ class TestCaseController {
         try {
             testCaseService.save(testCase)
         } catch (ValidationException e) {
-            respond testCase.errors, view:"create"
+            respond testCase.errors, view:"create", model: [projects: projectService.list()]
             return
         }
 

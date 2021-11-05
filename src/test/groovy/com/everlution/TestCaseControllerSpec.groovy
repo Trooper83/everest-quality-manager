@@ -65,6 +65,11 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     }
 
     void "test the create action returns the correct view"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:"the create action is executed"
         controller.create()
 
@@ -73,6 +78,11 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     }
 
     void "test the create action returns the correct model"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:"the create action is executed"
         controller.create()
 
@@ -133,6 +143,9 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
     void "test the save action with an invalid instance"() {
         given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase) >> { TestCase testCase ->
                 throw new ValidationException("Invalid instance", testCase.errors)

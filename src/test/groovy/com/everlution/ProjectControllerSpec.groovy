@@ -331,6 +331,42 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         response.redirectedUrl == '/project/index'
         flash.message == "default.deleted.message"
     }
+
+    void "Test the getAreas action with a null instance"() {
+        when:"The delete action is called for a null instance"
+        request.method = 'GET'
+        controller.getAreas(null)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
+    void "Test the getAreas action with an instance"() {
+        given: "a valid project"
+        params.name = "unit test project"
+        params.code = "SOX"
+        params.areas = [new Area(name:"testing")]
+        def project = new Project(params)
+
+        when:"The domain instance is passed to the getAreas action"
+        request.method = 'GET'
+        controller.getAreas(project)
+
+        then:"areas are returned"
+        response.status == 200
+    }
+
+    void "test the getAreas action method"(String httpMethod) {
+        when:"The domain instance is passed to the getAreas action"
+        request.method = httpMethod
+        controller.getAreas(null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "POST", "PATCH"]
+    }
 }
 
 

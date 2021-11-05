@@ -4,6 +4,7 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'bug.label', default: 'Bug')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
+        <asset:javascript src="application.js"/>
     </head>
     <body>
         <a href="#create-bug" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
@@ -35,7 +36,23 @@
             <g:form resource="${this.bug}" method="POST">
                 <fieldset class="form">
                     <input type="hidden" name="creator" value="<sec:username/>"/>
-                    <f:all bean="bug" except="creator, steps"/>
+                    <f:all bean="bug" except="area, creator, project, steps"/>
+                    <div class="fieldcontain required">
+                        <label for="project">Project
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <g:select name="project" from="${projects}"
+                              optionKey="id" optionValue="name"
+                              noSelection="${['':'Select a Project...']}"
+                              onchange="getAreas()"
+                        />
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="area">Area</label>
+                        <select name="area" id="area" disabled>
+                            <option value=''>Select an Area...</option>
+                        </select>
+                    </div>
                 </fieldset>
                 <fieldset>
                     <table class="table">
@@ -58,5 +75,6 @@
             </g:form>
         </div>
         <asset:javascript src="step.js"/>
+        <asset:javascript src="getProjectAreas.js"/>
     </body>
 </html>

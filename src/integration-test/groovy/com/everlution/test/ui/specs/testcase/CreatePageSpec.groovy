@@ -90,6 +90,72 @@ class CreatePageSpec extends GebSpec {
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.getFields() == ["Description", "Execution Method *", "Name *", "Project *", "Type *"]
+        page.getFields() == ["Project *", "Area", "Description", "Execution Method *", "Name *", "Type *"]
+    }
+
+    void "project field has no value set"() {
+        expect: "default text selected"
+        def page = browser.page(CreateTestCasePage)
+        page.projectSelect().selectedText == "Select a Project..."
+        page.projectSelect().selected == ""
+    }
+
+    void "failed form submission populates projects"() {
+        when: "form submission without project selected"
+        def page = browser.page(CreateTestCasePage)
+        page.nameInput = "failure"
+        page.createButton.click()
+
+        then: "projects are populated"
+        page.projectOptions.size() > 1
+    }
+
+    void "null project message displays"() {
+        when: "form submission without project selected"
+        def page = browser.page(CreateTestCasePage)
+        page.nameInput = "failure"
+        page.createButton.click()
+
+        then: "projects are populated"
+        page.errorsMessage.text() == "Property [project] of class [class com.everlution.TestCase] cannot be null"
+    }
+
+    void "area field has no value set"() {
+        when: "project is selected"
+        def page = browser.page(CreateTestCasePage)
+        page.projectSelect().selected = "1"
+
+        then: "default text selected"
+        page.areaSelect().selectedText == "Select an Area..."
+        page.areaSelect().selected == ""
+    }
+
+    void "area field defaults disabled"() {
+        expect: "area is disabled"
+        def page = browser.page(CreateTestCasePage)
+        page.areaSelect().disabled
+    }
+
+    void "area field disabled and depopulated when project is set to default"() {
+        given: "project is selected"
+        def page = browser.page(CreateTestCasePage)
+        page.projectSelect().selected = "bootstrap project"
+
+        expect: "area field enabled and populated"
+        waitFor(2) { //need to wait for transition
+            !page.areaSelect().disabled
+            page.areaOptions.size() > 1
+        }
+
+        when: "project set to default"
+        page.projectSelect().selected = ""
+
+        then: "area is disabled, depopulated and set to default"
+        waitFor(2) { //need to wait for transition
+            page.areaSelect().disabled
+            page.areaOptions.size() == 1
+            page.areaSelect().selectedText == "Select an Area..."
+            page.areaSelect().selected == ""
+        }
     }
 }

@@ -32,7 +32,18 @@
             <g:form resource="${this.testCase}" method="PUT">
                 <g:hiddenField name="version" value="${this.testCase?.version}" />
                 <fieldset class="form">
-                    <f:all bean="testCase" except="bugs, steps, creator"/>
+                    <div class="fieldcontain">
+                        <label for="project">Project</label>
+                        <span data-test-id="edit-project-name">${testCase.project.name}</span>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="area">Area</label>
+                        <g:select name="area" id="area" from="${testCase.project.areas}"
+                                  optionKey="id" optionValue="name" value="${testCase.area?.id}"
+                                  noSelection="${['':'']}"
+                        />
+                    </div>
+                    <f:all bean="testCase" except="area, project, bugs, steps, creator"/>
                 </fieldset>
                 <fieldset>
                     <table class="table">

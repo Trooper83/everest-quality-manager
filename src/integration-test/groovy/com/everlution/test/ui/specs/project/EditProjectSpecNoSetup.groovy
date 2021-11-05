@@ -16,7 +16,7 @@ class EditProjectSpecNoSetup extends GebSpec {
 
     void "Removed item input added when existing tag removed"() {
         given: "project with tag"
-        def project = new Project(name: "Area Tag Removed Input Project", code: "ATP", areas: [new Area(name: "Area Name")])
+        def project = new Project(name: "Area Tag Removed Input Project II", code: "ATR", areas: [new Area(name: "Area Name")])
         def id = projectService.save(project).id
 
         and: "login as an authorized user"

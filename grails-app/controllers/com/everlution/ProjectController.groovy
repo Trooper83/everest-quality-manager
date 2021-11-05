@@ -9,7 +9,7 @@ class ProjectController {
 
     ProjectService projectService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [getAreas: "GET", save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
      * lists all projects
@@ -127,6 +127,20 @@ class ProjectController {
             }
             '*'{ render status: NO_CONTENT }
         }
+    }
+
+    /**
+     * gets the areas of a project
+     * @param project - the project
+     * @return - a list of the areas
+     */
+    @Secured("ROLE_BASIC")
+    def getAreas(Project project) {
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond project.areas
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.testcase
+package com.everlution.test.ui.specs.testcase.edit
 
 import com.everlution.Project
 import com.everlution.ProjectService

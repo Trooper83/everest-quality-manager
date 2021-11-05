@@ -3,23 +3,41 @@ package com.everlution.test.ui.support.pages.testcase
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
+import geb.module.Select
 
 class CreateTestCasePage extends BasePage {
     static url = "/testCase/create"
     static at = { title == "Create TestCase" }
 
     static content = {
+        areaOptions { $("#area>option") }
         createButton { $("#create") }
         descriptionInput { $("#description") }
+        errorsMessage { $("ul.errors") }
         executionMethodOptions { $("#executionMethod>option") }
         executionMethodSelect { $("#executionMethod") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
+        projectOptions { $("#project>option") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
         typeSelect { $("#type") }
+    }
+
+    /**
+     * select element strongly typed for convenience in tests
+     */
+    Select areaSelect() {
+        $("#area").module(Select)
+    }
+
+    /**
+     * select element strongly typed for convenience in tests
+     */
+    Select projectSelect() {
+        $("#project").module(Select)
     }
 
     /**
@@ -45,6 +63,7 @@ class CreateTestCasePage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
+        projectSelect().selected = "1"
         testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
@@ -56,6 +75,7 @@ class CreateTestCasePage extends BasePage {
     void completeCreateForm() {
         nameInput = "fake test case"
         descriptionInput = "fake description"
+        projectSelect().selected = "1"
         testStepTable.addStep("step action", "step result")
     }
 
