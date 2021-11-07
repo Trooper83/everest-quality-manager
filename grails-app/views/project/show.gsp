@@ -31,14 +31,21 @@
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:display bean="project" except="areas, bugs, testCases" />
             <ol class="property-list">
-            <li class="fieldcontain" id="areas">
-                <span id="areas-label" class="property-label">Areas</span>
-                <g:each in="${project.areas}">
-                    <div class="property-value" aria-labelledby="areas-label">${it.name}</div>
-                </g:each>
-            </li>
+                <li class="fieldcontain">
+                    <span id="name-label" class="property-label">Name</span>
+                    <div id="name" class="property-value" aria-labelledby="property-label">${project.name}</div>
+                </li>
+                <li class="fieldcontain">
+                    <span id="code-label" class="property-label">Code</span>
+                    <div id="code" class="property-value" aria-labelledby="code-label">${project.code}</div>
+                </li>
+                <li class="fieldcontain" id="areas">
+                    <span id="areas-label" class="property-label">Areas</span>
+                    <g:each in="${project.areas}">
+                        <div class="property-value" aria-labelledby="areas-label">${it.name}</div>
+                    </g:each>
+                </li>
             </ol>
             <g:form resource="${this.project}" method="DELETE">
                 <fieldset class="buttons">

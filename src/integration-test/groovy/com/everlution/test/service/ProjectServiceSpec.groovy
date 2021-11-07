@@ -1,6 +1,7 @@
 package com.everlution.test.service
 
 import com.everlution.Area
+import com.everlution.AreaService
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.TestStepService
@@ -10,6 +11,7 @@ import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.Step
 import com.everlution.command.RemovedItems
+import com.everlution.test.support.DataFactory
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification
@@ -19,6 +21,7 @@ import org.hibernate.SessionFactory
 @Rollback
 class ProjectServiceSpec extends Specification {
 
+    AreaService areaService
     BugService bugService
     ProjectService projectService
     SessionFactory sessionFactory
@@ -138,6 +141,26 @@ class ProjectServiceSpec extends Specification {
         then: "bug and project are deleted"
         projectService.get(project.id) == null
         bugService.get(bug.id) == null
+    }
+
+    void "delete project removes all associated areas"() {
+        given:
+        def ad = DataFactory.area()
+        Area area = new Area(ad)
+        def pd = DataFactory.project()
+        Project project = new Project(name: pd.name, code: pd.code, areas: [area]).save()
+
+        expect:
+        project.id != null
+        area.id != null
+
+        when: "delete project"
+        projectService.delete(project.id)
+        sessionFactory.currentSession.flush()
+
+        then: "bug and project are deleted"
+        projectService.get(project.id) == null
+        areaService.get(area.id) == null
     }
 
     void "saveUpdate removes area"() {

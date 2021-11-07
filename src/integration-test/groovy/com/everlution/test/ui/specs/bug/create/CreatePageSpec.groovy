@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.bug
+package com.everlution.test.ui.specs.bug.create
 
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.CreateBugPage

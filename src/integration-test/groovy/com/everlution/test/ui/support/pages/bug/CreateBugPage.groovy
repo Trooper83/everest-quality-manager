@@ -4,7 +4,6 @@ import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
 import geb.module.Select
-import geb.navigator.Navigator
 
 class CreateBugPage extends BasePage {
     static url = "/bug/create"
@@ -24,7 +23,7 @@ class CreateBugPage extends BasePage {
     }
 
     /**
-     * select element strongly typed for convenience in tests
+     * select elements strongly typed for convenience in tests
      */
     Select areaSelect() {
         $("#area").module(Select)
@@ -62,6 +61,22 @@ class CreateBugPage extends BasePage {
         descriptionInput = faker.zelda().character()
         projectSelect().selected = "1"
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        createButton.click()
+    }
+
+    /**
+     * creates a bug with the supplied data
+     */
+    void createBug(String name, String description, String area,
+                   String project, String action, String result) {
+        nameInput = name
+        descriptionInput = description
+        projectSelect().selected = project
+        waitFor() {
+            areaSelect().enabled
+        }
+        areaSelect().selected = area
+        stepsTable.addStep(action, result)
         createButton.click()
     }
 

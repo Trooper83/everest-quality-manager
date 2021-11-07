@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.bug
+package com.everlution.test.ui.specs.bug.edit
 
 import com.everlution.Area
 import com.everlution.Bug

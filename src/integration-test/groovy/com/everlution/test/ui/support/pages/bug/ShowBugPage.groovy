@@ -8,12 +8,17 @@ class ShowBugPage extends BasePage {
     static at = { title == "Show Bug" }
 
     static content = {
+        areaValue { $("#area") }
         createLink(required: false) { $("[data-test-id=show-create-link]") }
+        creatorValue { $("#creator") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
+        descriptionValue { $("#description") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
         fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
+        nameValue { $("#name") }
+        projectValue { $("#project") }
         statusMessage { $("div.message") }
         stepsTable { module StepTableModule }
     }

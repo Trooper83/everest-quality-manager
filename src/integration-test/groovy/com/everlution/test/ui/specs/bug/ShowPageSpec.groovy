@@ -176,7 +176,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ShowBugPage)
-        page.getFields() == ["Area", "Creator", "Description", "Name", "Project"]
+        page.getFields() == ["Creator", "Project", "Area", "Name", "Description"]
     }
 
     void "bug not deleted if alert is canceled"() {

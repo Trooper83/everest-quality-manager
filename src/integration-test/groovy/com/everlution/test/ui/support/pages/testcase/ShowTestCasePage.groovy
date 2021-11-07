@@ -8,14 +8,21 @@ class ShowTestCasePage extends BasePage {
     static at = { title == "Show TestCase" }
 
     static content = {
+        areaValue { $("#area") }
         createLink(required: false) { $("[data-test-id=show-create-link]") }
+        creatorValue { $("#creator") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
+        descriptionValue { $("#description") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
+        executionMethodValue { $("#executionMethod") }
+        fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
-        fieldLabels { $("ol.property-list>li>span") }
+        nameValue { $("#name") }
+        projectValue { $("#project") }
         statusMessage { $("div.message") }
         testStepTable { module StepTableModule }
+        typeValue { $ ("#type") }
     }
 
     /**

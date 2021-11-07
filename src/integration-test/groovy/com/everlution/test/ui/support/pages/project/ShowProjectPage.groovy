@@ -8,12 +8,14 @@ class ShowProjectPage extends BasePage {
 
     static content = {
         areasList { $("#areas") }
+        codeValue { $("#code") }
         createLink(required: false) { $("[data-test-id=show-create-link]") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
+        fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
-        fieldLabels { $("ol.property-list>li>span") }
+        nameValue { $("#name") }
         statusMessage { $("div.message") }
     }
 

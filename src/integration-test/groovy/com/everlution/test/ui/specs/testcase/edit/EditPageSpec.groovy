@@ -128,8 +128,8 @@ class EditPageSpec extends GebSpec {
 
         and: "default values are correct"
         verifyAll( {
-            page.executionMethodSelect.value() == "Automated"
-            page.typeSelect.value() == "UI"
+            page.executionMethodSelect().selected == "Automated"
+            page.typeSelect().selected == "UI"
         })
     }
 }

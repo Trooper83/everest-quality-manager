@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.testcase
+package com.everlution.test.ui.specs.testcase.create
 
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
@@ -55,8 +55,8 @@ class CreatePageSpec extends GebSpec {
 
         and: "default values are correct"
         verifyAll( {
-            page.executionMethodSelect.value() == "Automated"
-            page.typeSelect.value() == "UI"
+            page.executionMethodSelect().selected == "Automated"
+            page.typeSelect().selected == "UI"
         })
     }
 
