@@ -10,7 +10,6 @@ class EditBugPage extends BasePage {
 
     static content = {
         areaOptions { $("#area>option") }
-        createButton { $("#create") }
         descriptionInput { $("#description")}
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
@@ -49,6 +48,16 @@ class EditBugPage extends BasePage {
      * clicks the update button
      */
     void editBug() {
+        updateButton.click()
+    }
+
+    /**
+     * edits a bug with the supplied data
+     */
+    void editBug(String name, String description, String area) {
+        nameInput = name
+        descriptionInput = description
+        areaSelect().selected = area
         updateButton.click()
     }
 

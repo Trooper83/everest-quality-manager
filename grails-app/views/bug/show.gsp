@@ -37,7 +37,28 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <f:display bean="bug" except="steps"/>
+    <ol class="property-list bug">
+        <li class="fieldcontain">
+            <span id="creator-label" class="property-label">Creator</span>
+            <div class="property-value" id="creator">${bug.creator}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="project-label" class="property-label">Project</span>
+            <div class="property-value" id="project">${bug.project.name}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="area-label" class="property-label">Area</span>
+            <div class="property-value" id="area">${bug.area?.name}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="name-label" class="property-label">Name</span>
+            <div class="property-value" id="name">${bug.name}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="description-label" class="property-label">Description</span>
+            <div class="property-value" id="description">${bug.description}</div>
+        </li>
+    </ol>
     <fieldset>
         <table class="table">
             <thead>

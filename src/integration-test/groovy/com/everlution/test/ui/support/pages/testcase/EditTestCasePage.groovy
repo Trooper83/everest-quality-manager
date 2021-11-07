@@ -12,7 +12,6 @@ class EditTestCasePage extends BasePage {
         areaOptions { $("#area>option") }
         descriptionInput { $("#description") }
         executionMethodOptions { $("#executionMethod>option") }
-        executionMethodSelect { $("#executionMethod") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
@@ -21,7 +20,6 @@ class EditTestCasePage extends BasePage {
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
-        typeSelect { $("#type") }
         updateButton { $("[data-test-id=edit-update-button]")}
     }
 
@@ -30,6 +28,14 @@ class EditTestCasePage extends BasePage {
      */
     Select areaSelect() {
         $("#area").module(Select)
+    }
+
+    Select executionMethodSelect() {
+        $("#executionMethod").module(Select)
+    }
+
+    Select typeSelect() {
+        $("#type").module(Select)
     }
 
     /**
@@ -52,6 +58,18 @@ class EditTestCasePage extends BasePage {
      * clicks the update button
      */
     void editTestCase() {
+        updateButton.click()
+    }
+
+    /**
+     * edits a test case with the supplied data
+     */
+    void editTestCase(String name, String description, String area, String method, String type) {
+        nameInput = name
+        descriptionInput = description
+        areaSelect().selected = area
+        executionMethodSelect().selected = method
+        typeSelect().selected = type
         updateButton.click()
     }
 

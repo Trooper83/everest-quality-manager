@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.bug
+package com.everlution.test.ui.specs.bug.create
 
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
@@ -8,30 +8,7 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
-class CreateBugSpec extends GebSpec {
-
-    void "authorized users can create bug"(String username, String password) {
-        given: "login as an authorized user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, password)
-
-        and: "go to the create bug page"
-        def page = to CreateBugPage
-
-        when: "create a bug"
-        page.createBug()
-
-        then: "at show page"
-        at ShowBugPage
-
-        where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
-    }
+class CreateBugStepsSpec extends GebSpec {
 
     void "removed test steps are not saved"() {
         given: "login as a basic user"

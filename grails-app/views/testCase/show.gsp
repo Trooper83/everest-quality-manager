@@ -37,7 +37,36 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <f:display bean="testCase" except="steps"/>
+    <ol class="property-list testCase">
+        <li class="fieldcontain">
+            <span id="creator-label" class="property-label">Creator</span>
+            <div class="property-value" id="creator">${testCase.creator}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="project-label" class="property-label">Project</span>
+            <div class="property-value" id="project">${testCase.project.name}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="area-label" class="property-label">Area</span>
+            <div class="property-value" id="area">${testCase.area?.name}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="name-label" class="property-label">Name</span>
+            <div class="property-value" id="name">${testCase.name}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="description-label" class="property-label">Description</span>
+            <div class="property-value" id="description">${testCase.description}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="executionMethod-label" class="property-label">Execution Method</span>
+            <div class="property-value" id="executionMethod">${testCase.executionMethod}</div>
+        </li>
+        <li class="fieldcontain">
+            <span id="type-label" class="property-label">Type</span>
+            <div class="property-value" id="type">${testCase.type}</div>
+        </li>
+    </ol>
     <fieldset>
         <table class="table">
             <thead>

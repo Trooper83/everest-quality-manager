@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.project
+package com.everlution.test.ui.specs.project.edit
 
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames

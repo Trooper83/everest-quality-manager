@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.project
+package com.everlution.test.ui.specs.project.create
 
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage

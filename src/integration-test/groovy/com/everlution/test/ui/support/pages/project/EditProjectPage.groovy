@@ -68,6 +68,15 @@ class EditProjectPage extends BasePage {
     }
 
     /**
+     * edits a projects with the supplied data
+     */
+    void editProject(String name, String code) {
+        nameInput = name
+        codeInput = code
+        updateButton.click()
+    }
+
+    /**
      * Gets the labels for all fields displayed on the page
      * @return - a list of field names
      */

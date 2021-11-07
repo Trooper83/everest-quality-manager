@@ -1,6 +1,6 @@
-package com.everlution.test.ui.specs.project
+package com.everlution.test.ui.specs.project.create
 
-import com.everlution.ProjectService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
@@ -34,8 +34,12 @@ class CreateProjectSpec extends GebSpec {
         Usernames.APP_ADMIN.username     | "password" | "created project 3" | "CP3"
     }
 
-    void "area saved with project"() {
-        given: "login as a user"
+    void "all create from data saved"() {
+        given: "create data"
+        def pd = DataFactory.project()
+        def ad = DataFactory.area()
+
+        and: "login as a user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
@@ -44,12 +48,16 @@ class CreateProjectSpec extends GebSpec {
         def page = to CreateProjectPage
 
         when: "create a project with an area"
-        page.completeCreateForm("name of my new project", "npc")
-        page.addAreaTag("area51")
+        page.completeCreateForm(pd.name, pd.code)
+        page.addAreaTag(ad.name)
         page.createButton.click()
 
-        then: "area is displayed on show page"
+        then: "all data is displayed on show page"
         def show = at ShowProjectPage
-        show.isAreaDisplayed("area51")
+        verifyAll {
+            show.isAreaDisplayed(ad.name)
+            show.nameValue.text() == pd.name
+            show.codeValue.text() == pd.code
+        }
     }
 }

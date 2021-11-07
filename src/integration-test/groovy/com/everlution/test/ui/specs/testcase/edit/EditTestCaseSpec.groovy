@@ -1,13 +1,16 @@
 package com.everlution.test.ui.specs.testcase.edit
 
+import com.everlution.Area
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestStepService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
@@ -132,5 +135,40 @@ class EditTestCaseSpec extends GebSpec {
         showPage.testStepTable.getRowCount() == 0
         !showPage.testStepTable.isRowDisplayed("action", "result")
         testStepService.get(step.id) == null
+    }
+
+    void "all edit from data saved"() {
+        setup: "get fake data"
+        def area = new Area(DataFactory.area())
+        def projectData = DataFactory.project()
+        def project = projectService.save(new Project(name: projectData.name, code: projectData.code, areas: [area]))
+        def td = DataFactory.testCase()
+        def testCase = new TestCase(name: td.name, description: td.description, creator: td.creator, project: project,
+            area: area, executionMethod: "Manual", type: "API")
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to edit page"
+        go "/testCase/edit/${id}"
+
+        when: "edit test case"
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        def edited = DataFactory.testCase()
+        page.editTestCase(edited.name, edited.description, "", "Automated", "UI")
+
+        then: "data is displayed on show page"
+        ShowTestCasePage showPage = at ShowTestCasePage
+        verifyAll {
+            showPage.areaValue.text() == ""
+            showPage.projectValue.text() == project.name
+            showPage.nameValue.text() == edited.name
+            showPage.descriptionValue.text() == edited.description
+            showPage.executionMethodValue.text() == "Automated"
+            showPage.typeValue.text() == "UI"
+        }
     }
 }

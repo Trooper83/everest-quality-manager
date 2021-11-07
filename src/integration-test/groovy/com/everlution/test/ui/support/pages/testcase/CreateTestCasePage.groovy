@@ -15,7 +15,6 @@ class CreateTestCasePage extends BasePage {
         descriptionInput { $("#description") }
         errorsMessage { $("ul.errors") }
         executionMethodOptions { $("#executionMethod>option") }
-        executionMethodSelect { $("#executionMethod") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
@@ -23,7 +22,6 @@ class CreateTestCasePage extends BasePage {
         projectOptions { $("#project>option") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
-        typeSelect { $("#type") }
     }
 
     /**
@@ -33,11 +31,16 @@ class CreateTestCasePage extends BasePage {
         $("#area").module(Select)
     }
 
-    /**
-     * select element strongly typed for convenience in tests
-     */
+    Select executionMethodSelect() {
+        $("#executionMethod").module(Select)
+    }
+
     Select projectSelect() {
         $("#project").module(Select)
+    }
+
+    Select typeSelect() {
+        $("#type").module(Select)
     }
 
     /**
@@ -65,6 +68,19 @@ class CreateTestCasePage extends BasePage {
         descriptionInput = faker.zelda().character()
         projectSelect().selected = "1"
         testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        createButton.click()
+    }
+
+    /**
+     * creates a test case with the supplied data
+     */
+    void createTestCase(String name, String description, String project, String area, String method, String type) {
+        nameInput = name
+        descriptionInput = description
+        projectSelect().selected = project
+        executionMethodSelect().selected = method
+        typeSelect().selected = type
+        areaSelect().selected = area
         createButton.click()
     }
 
