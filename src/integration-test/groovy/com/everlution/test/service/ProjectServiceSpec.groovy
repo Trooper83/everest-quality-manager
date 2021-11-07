@@ -158,7 +158,7 @@ class ProjectServiceSpec extends Specification {
         projectService.delete(project.id)
         sessionFactory.currentSession.flush()
 
-        then: "bug and project are deleted"
+        then: "area and project are deleted"
         projectService.get(project.id) == null
         areaService.get(area.id) == null
     }
