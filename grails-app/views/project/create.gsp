@@ -42,7 +42,7 @@
             <f:all bean="project" except="areas, bugs, testCases"/>
             <div class="fieldcontain" id="areas">
                 <label>Areas</label>
-                <g:field type="text" name="area"/>
+                <g:field type="text" name="area" data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"/>
                 <g:field type="button" name="btnAddArea" value="Add" onclick="addArea()"/>
                 <ul class="one-to-many"></ul>
             </div>
@@ -53,5 +53,6 @@
     </g:form>
 </div>
 <asset:javascript src="area.js"/>
+<asset:javascript src="popper.min.js"/>
 </body>
 </html>

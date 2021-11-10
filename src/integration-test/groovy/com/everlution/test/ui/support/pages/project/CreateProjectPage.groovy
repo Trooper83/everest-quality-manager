@@ -22,6 +22,7 @@ class CreateProjectPage extends BasePage {
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
+        tooltip { $("div.tooltip-inner") }
     }
 
     /**
@@ -126,5 +127,12 @@ class CreateProjectPage extends BasePage {
      */
     void removeAreaTag(String name) {
         areaTagRemoveButton(name).click()
+    }
+
+    /**
+     * clicks the create button
+     */
+    void submitForm() {
+        createButton.click()
     }
 }

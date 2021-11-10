@@ -74,6 +74,27 @@ class EditProjectAreaSpec extends GebSpec {
         !showPage.isAreaDisplayed("area name")
     }
 
+    void "tooltip displays for editing existing area with blank name"() {
+        given: "save a project"
+        def project = new Project(name: "edited project1", code: "ed1", areas: [new Area(name: "area name")])
+        def id = projectService.save(project).id
+
+        and: "login as an authorized user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+
+        and: "go to edit page"
+        go "/project/edit/${id}"
+
+        when: "edit the project"
+        EditProjectPage page = browser.page(EditProjectPage)
+        page.editAreaTag("area name", "")
+
+        then: "area tag tooltip is displayed"
+        page.tooltip.displayed
+    }
+
     void "area tag with associated test case cannot be deleted from existing project"() {
         given: "save a project"
         def area = new Area(DataFactory.area())

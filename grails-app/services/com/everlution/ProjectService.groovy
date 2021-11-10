@@ -36,6 +36,6 @@ abstract class ProjectService implements IProjectService {
             def area = areaService.get(id)
             project.removeFromAreas(area)
         }
-        return project.save()
+        return save(project)
     }
 }

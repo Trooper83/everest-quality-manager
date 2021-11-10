@@ -22,7 +22,7 @@ class Bug {
             if(val == null) {
                 return true
             }
-            val in obj.project?.areas
+            val in obj.project.areas
         }
         creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000

@@ -22,7 +22,8 @@ class EditProjectPage extends BasePage {
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
-        updateButton { $("[data-test-id=edit-update-button]")}
+        tooltip { $("div.tooltip-inner") }
+        updateButton { $("[data-test-id=edit-update-button]") }
     }
 
     /**
