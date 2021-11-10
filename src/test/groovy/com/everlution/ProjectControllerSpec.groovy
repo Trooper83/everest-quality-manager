@@ -4,6 +4,7 @@ import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.*
 
 class ProjectControllerSpec extends Specification implements ControllerUnitTest<ProjectController>, DomainUnitTest<Project> {
@@ -287,7 +288,30 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.update(new Project(), new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
-        model.project != null
+        model.project instanceof Project
+        view == 'edit'
+    }
+
+    void "Test the update action with constraint violation"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
+                throw new DataIntegrityViolationException("Foreign Key constraint violation")
+            }
+        }
+
+        Project project = new Project(name: "test", code: "ccc").save()
+        params.id = project.id
+
+        when:"The update action is executed"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+
+        controller.update(project, new RemovedItems())
+
+        then:"The edit view is rendered again with the correct model"
+        model.project instanceof Project
+        controller.flash.error == "Removed Area has associated items and cannot be deleted"
         view == 'edit'
     }
 

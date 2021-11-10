@@ -199,7 +199,7 @@ class ShowPageSpec extends GebSpec {
         at ShowBugPage
     }
 
-    void "updated message displays after updating test case"() {
+    void "updated message displays after updating bug"() {
         setup: "get a bug id"
         def id = bugService.list(max: 1).first().id
 

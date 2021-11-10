@@ -22,7 +22,8 @@ class Bug {
             if(val == null) {
                 return true
             }
-            val in obj.project?.areas
+            def ids = obj.project.areas*.id
+            val.id in ids
         }
         creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000

@@ -17,11 +17,13 @@ class EditProjectPage extends BasePage {
         areaTagSaveButton(required: false) { text -> areaTag(text).find("input[data-test-id='area-save-button']") }
         areaTags(required: false) { $("#areas li") }
         codeInput { $("#code") }
+        errorMessages { $("ul.errors") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
-        updateButton { $("[data-test-id=edit-update-button]")}
+        tooltip { $("div.tooltip-inner") }
+        updateButton { $("[data-test-id=edit-update-button]") }
     }
 
     /**

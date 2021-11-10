@@ -7,7 +7,8 @@ function addArea() {
     if(text) {
         let element = $('<li/>');
         let hiddenElement = $('<input type="text" data-test-id="area-tag-input" style="display: none;" name="areas[' +
-                itemIndex + '].name" id="areas[' + itemIndex + '].name" value="' + text + '"/>');
+                itemIndex + '].name" id="areas[' + itemIndex + '].name" value="' + text + '"' +
+                'data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"/>');
         let removeButton = $('<input data-test-id="remove-area-button" type="button" value="x" onclick="removeAreaElement(this)"/>');
         let editButton = $('<input data-test-id="edit-area-button" type="button" value="y" onclick="editAreaElement(this)"/>');
         let span = $('<span>' + text + '</span>')
@@ -15,6 +16,12 @@ function addArea() {
         element.append(removeButton, editButton, span, hiddenElement);
         $('#area').val('');
         $('#areas ul').append(element);
+    } else {
+        let element = $("[name='area']");
+        element.tooltip('show');
+        setTimeout(function(){
+            element.tooltip('dispose');
+        }, 2000);
     }
 }
 
@@ -46,12 +53,22 @@ function removeAreaElement(element, id) {
 * saves an area tag edit
 */
 function saveAreaElement(element) {
-    let ele = $(element);
-    let input = ele.siblings('input[type="text"]');
+    let input = $(element).siblings('input[type="text"]');
     let text = input.val();
-    ele.parent().append('<input data-test-id="edit-area-button" type="button" value="y" onclick="editAreaElement(this)"/>');
-    ele.parent().append('<span>' + text + '</span>');
-    ele.parent().attr('name', text);
-    ele.remove();
-    input.hide();
+    console.log(text);
+    if(text) {
+        let ele = $(element);
+        let input = ele.siblings('input[type="text"]');
+        let text = input.val();
+        ele.parent().append('<input data-test-id="edit-area-button" type="button" value="y" onclick="editAreaElement(this)"/>');
+        ele.parent().append('<span>' + text + '</span>');
+        ele.parent().attr('name', text);
+        ele.remove();
+        input.hide();
+    } else {
+        input.tooltip('show');
+        setTimeout(function(){
+           input.tooltip('dispose');
+        }, 2000);
+    }
 }

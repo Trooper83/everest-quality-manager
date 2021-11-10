@@ -10,7 +10,6 @@ import com.everlution.TestStepService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec

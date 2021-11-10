@@ -29,6 +29,6 @@ abstract class BugService implements IBugService {
             def step = testStepService.get(id)
             bug.removeFromSteps(step)
         }
-        return bug.save()
+        return save(bug)
     }
 }

@@ -3,6 +3,9 @@ package com.everlution
 import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.validation.Errors
+
 import static org.springframework.http.HttpStatus.*
 
 class ProjectController {
@@ -93,8 +96,13 @@ class ProjectController {
 
         try {
             projectService.saveUpdate(project, removedItems)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             respond project.errors, view:'edit'
+            return
+        } catch (DataIntegrityViolationException ignored) {
+            flash.error = 'Removed Area has associated items and cannot be deleted'
+            project = Project.read(params.id)
+            respond project, view:'edit'
             return
         }
 

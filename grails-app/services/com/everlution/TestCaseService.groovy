@@ -29,6 +29,6 @@ abstract class TestCaseService implements ITestCaseService {
             def step = testStepService.get(id)
             testCase.removeFromSteps(step)
         }
-        return testCase.save()
+        return save(testCase)
     }
 }
