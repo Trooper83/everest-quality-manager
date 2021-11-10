@@ -55,7 +55,6 @@ function removeAreaElement(element, id) {
 function saveAreaElement(element) {
     let input = $(element).siblings('input[type="text"]');
     let text = input.val();
-    console.log(text);
     if(text) {
         let ele = $(element);
         let input = ele.siblings('input[type="text"]');
