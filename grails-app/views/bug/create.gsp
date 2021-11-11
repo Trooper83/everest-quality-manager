@@ -23,16 +23,7 @@
         </div>
         <div id="create-bug" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
-            <g:if test="${flash.message}">
-            <div class="message" role="status">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${this.bug}">
-            <ul class="errors" role="alert">
-                <g:eachError bean="${this.bug}" var="error">
-                <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
-                </g:eachError>
-            </ul>
-            </g:hasErrors>
+            <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
             <g:form resource="${this.bug}" method="POST">
                 <fieldset class="form">
                     <input type="hidden" name="creator" value="<sec:username/>"/>
@@ -54,21 +45,7 @@
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Action</th>
-                            <th>Result</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody id="stepsTableContent">
-                        </tbody>
-                    </table>
-                    <input id="btnAddRow" type="button" value="Add" onclick="addEntryRow()" />
-                </fieldset>
+                <g:render template="/shared/createStepsTableTemplate"/>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                 </fieldset>

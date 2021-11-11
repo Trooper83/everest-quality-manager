@@ -23,16 +23,7 @@
         </div>
         <div id="edit-bug" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
-            <g:if test="${flash.message}">
-            <div class="message" role="status">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${this.bug}">
-            <ul class="errors" role="alert">
-                <g:eachError bean="${this.bug}" var="error">
-                <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
-                </g:eachError>
-            </ul>
-            </g:hasErrors>
+            <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
             <g:form resource="${this.bug}" method="PUT">
                 <g:hiddenField name="version" value="${this.bug?.version}" />
                 <fieldset class="form">
@@ -49,29 +40,7 @@
                     </div>
                     <f:all bean="bug" except="area, project, steps, creator"/>
                 </fieldset>
-                <fieldset>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Action</th>
-                            <th>Result</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody id="stepsTableContent">
-                        <g:each status="i" var="step" in="${bug.steps}">
-                            <tr>
-                                <td><g:hiddenField name="stepsIndex[${i}]" class="iHidden" /></td>
-                                <td><g:field type="text" name="steps[${i}].action" value="${step.action}" /></td>
-                                <td><g:field type="text" name="steps[${i}].result" value="${step.result}" /></td>
-                                <td><input type="button" value="Remove" onclick="removeEntryRow(this, ${step.id})" /></td>
-                            </tr>
-                        </g:each>
-                        </tbody>
-                    </table>
-                    <input id="btnAddRow" type="button" value="Add" onclick="addEntryRow()" />
-                </fieldset>
+                <g:render template="/shared/editStepsTableTemplate" bean="${bug}" var="entity"/>
                 <fieldset class="buttons">
                     <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                 </fieldset>

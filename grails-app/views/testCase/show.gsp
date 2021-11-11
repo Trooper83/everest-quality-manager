@@ -67,24 +67,7 @@
             <div class="property-value" id="type">${testCase.type}</div>
         </li>
     </ol>
-    <fieldset>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Action</th>
-                <th>Result</th>
-            </tr>
-            </thead>
-            <tbody>
-            <g:each in="${testCase.steps}">
-                <tr>
-                    <td>${it.action}</td>
-                    <td>${it.result}</td>
-                </tr>
-            </g:each>
-            </tbody>
-        </table>
-    </fieldset>
+    <g:render template="/shared/showStepsTableTemplate" bean="${testCase}" var="entity"/>
     <sec:ifAnyGranted roles="ROLE_BASIC">
         <g:form resource="${this.testCase}" method="DELETE">
             <fieldset class="buttons">
