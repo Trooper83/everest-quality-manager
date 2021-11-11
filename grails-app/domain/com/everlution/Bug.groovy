@@ -20,7 +20,7 @@ class Bug {
     static constraints = {
         area nullable: true, validator: { val, Bug obj ->
             if(val == null) {
-                return true
+                return
             }
             def ids = obj.project.areas*.id
             val.id in ids
