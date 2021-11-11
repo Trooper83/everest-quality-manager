@@ -45,21 +45,7 @@
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Action</th>
-                            <th>Result</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody id="stepsTableContent">
-                        </tbody>
-                    </table>
-                    <input id="btnAddRow" type="button" value="Add" onclick="addEntryRow()" />
-                </fieldset>
+                <g:render template="/shared/createStepsTableTemplate"/>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                 </fieldset>

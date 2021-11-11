@@ -59,24 +59,7 @@
             <div class="property-value" id="description">${bug.description}</div>
         </li>
     </ol>
-    <fieldset>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Action</th>
-                <th>Result</th>
-            </tr>
-            </thead>
-            <tbody>
-            <g:each in="${bug.steps}">
-                <tr>
-                    <td>${it.action}</td>
-                    <td>${it.result}</td>
-                </tr>
-            </g:each>
-            </tbody>
-        </table>
-    </fieldset>
+    <g:render template="/shared/showStepsTableTemplate" bean="${bug}" var="entity"/>
     <sec:ifAnyGranted roles="ROLE_BASIC">
         <g:form resource="${this.bug}" method="DELETE">
             <fieldset class="buttons">
