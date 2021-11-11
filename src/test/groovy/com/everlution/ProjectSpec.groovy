@@ -172,4 +172,29 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         !failed.save()
         Project.count() == old(Project.count())
     }
+
+    void "project cannot have duplicate area names"() {
+        when: "project with duplicate area params"
+        domain.areas = [new Area(name: "name"), new Area(name: "name")]
+
+        then: "project validation fails"
+        !domain.validate(["areas"])
+        domain.errors["areas"].code == "validator.invalid"
+    }
+
+    void "project validates with non-duplicate area names"() {
+        when: "project with duplicate area params"
+        domain.areas = [new Area(name: "name"), new Area(name: "name123")]
+
+        then: "project validation fails"
+        domain.validate(["areas"])
+    }
+
+    void "areas can be null"() {
+        when: "area is null"
+        domain.areas = null
+
+        then: "domain validates"
+        domain.validate(["areas"])
+    }
 }

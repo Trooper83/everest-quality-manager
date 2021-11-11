@@ -22,7 +22,7 @@ class TestCase {
     static constraints = {
         area nullable: true, validator: { val, TestCase obj ->
             if(val == null) {
-                return true
+                return
             }
             def ids = obj.project.areas*.id
             val.id in ids
