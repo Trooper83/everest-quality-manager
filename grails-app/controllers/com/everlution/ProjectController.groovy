@@ -100,7 +100,7 @@ class ProjectController {
             respond project.errors, view:'edit'
             return
         } catch (DataIntegrityViolationException ignored) {
-            flash.error = 'Removed Area has associated items and cannot be deleted'
+            flash.error = 'Removed entity has associated items and cannot be deleted'
             project = Project.read(params.id)
             respond project, view:'edit'
             return

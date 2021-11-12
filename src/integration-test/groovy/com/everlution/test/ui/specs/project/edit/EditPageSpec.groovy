@@ -51,7 +51,7 @@ class EditPageSpec extends GebSpec {
 
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
-        browser.page(EditProjectPage).getFields() == ["Code *", "Name *", "Areas"]
+        browser.page(EditProjectPage).getFields() == ["Code *", "Name *", "Areas", "Environments"]
     }
 
     void "area tag is added and removed"() {

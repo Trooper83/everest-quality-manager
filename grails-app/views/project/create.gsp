@@ -30,11 +30,17 @@
     <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
     <g:form resource="${this.project}" method="POST">
         <fieldset class="form">
-            <f:all bean="project" except="areas, bugs, testCases"/>
+            <f:all bean="project" except="areas, bugs, environments, testCases"/>
             <div class="fieldcontain" id="areas">
                 <label>Areas</label>
                 <g:field type="text" name="area" data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"/>
-                <g:field type="button" name="btnAddArea" value="Add" onclick="addArea()"/>
+                <g:field type="button" name="btnAddArea" value="Add" onclick="addAreaTag()"/>
+                <ul class="one-to-many"></ul>
+            </div>
+            <div class="fieldcontain" id="environments">
+                <label>Environments</label>
+                <g:field type="text" name="environment" data-toggle="tooltip" trigger="manual" title="Environment Name cannot be blank"/>
+                <g:field type="button" name="btnAddEnvironment" value="Add" onclick="addEnvironmentTag()"/>
                 <ul class="one-to-many"></ul>
             </div>
         </fieldset>
@@ -43,7 +49,7 @@
         </fieldset>
     </g:form>
 </div>
-<asset:javascript src="area.js"/>
+<asset:javascript src="project.js"/>
 <asset:javascript src="popper.min.js"/>
 </body>
 </html>

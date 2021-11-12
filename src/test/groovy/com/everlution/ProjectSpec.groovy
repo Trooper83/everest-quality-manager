@@ -197,4 +197,56 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         then: "domain validates"
         domain.validate(["areas"])
     }
+
+    void "save project cascades to environment"() {
+        expect:
+        Environment.count() == 0
+
+        when: "project with valid env params"
+        new Project(name: "Cascades To Env", code: "CTE", environments: [new Environment(name: "area name")]).save()
+
+        then: "env is saved"
+        Environment.count() == 1
+    }
+
+    void "project cannot have duplicate environment names"() {
+        when: "project with duplicate env params"
+        domain.environments = [new Environment(name: "name"), new Environment(name: "name")]
+
+        then: "project validation fails"
+        !domain.validate(["environments"])
+        domain.errors["environments"].code == "validator.invalid"
+    }
+
+    void "project validates with non-duplicate environment names"() {
+        when: "project with duplicate env params"
+        domain.environments = [new Environment(name: "name"), new Environment(name: "name123")]
+
+        then: "project validation fails"
+        domain.validate(["environments"])
+    }
+
+    void "environments can be null"() {
+        when: "environment is null"
+        domain.environments = null
+
+        then: "domain validates"
+        domain.validate(["environments"])
+    }
+
+    void "bugs can be null"() {
+        when: "bug is null"
+        domain.bugs = null
+
+        then: "domain validates"
+        domain.validate(["bugs"])
+    }
+
+    void "test cases can be null"() {
+        when: "testCases is null"
+        domain.testCases = null
+
+        then: "domain validates"
+        domain.validate(["testCases"])
+    }
 }

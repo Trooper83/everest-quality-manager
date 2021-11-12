@@ -27,6 +27,13 @@ class DataFactory {
     }
 
     /**
+     * creates fake data to populate an environment
+     */
+    static Map<String, String> environment() {
+        return [name: faker.lordOfTheRings().location()]
+    }
+
+    /**
      * creates fake data to populate a project instance
      */
     static Map<String, String> project() {

@@ -120,7 +120,7 @@ class EditProjectAreaSpec extends GebSpec {
         page.editProject()
 
         then: "area tag is displayed and was not deleted"
-        page.errorMessages.text() == "Removed Area has associated items and cannot be deleted"
+        page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
         areaService.get(area.id) != null
     }
 
@@ -148,7 +148,7 @@ class EditProjectAreaSpec extends GebSpec {
         page.editProject()
 
         then: "area tag is displayed and was not deleted"
-        page.errorMessages.text() == "Removed Area has associated items and cannot be deleted"
+        page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
         areaService.get(area.id) != null
     }
 
