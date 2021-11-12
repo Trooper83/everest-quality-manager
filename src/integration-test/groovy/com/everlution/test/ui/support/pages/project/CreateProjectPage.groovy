@@ -22,7 +22,7 @@ class CreateProjectPage extends BasePage {
         environmentTag(required: false) { text -> $("#environments li", name: text) }
         environmentTagEditButton { text -> environmentTag(text).find("input[data-test-id='edit-tag-button']") }
         environmentTagInput { text -> environmentTag(text).find("input[data-test-id='tag-input']") }
-        environmentRemoveButton { text -> environmentTag(text).find("input[data-test-id='remove-tag-button']") }
+        environmentTagRemoveButton { text -> environmentTag(text).find("input[data-test-id='remove-tag-button']") }
         environmentTagSaveButton(required: false) { text -> environmentTag(text).find("input[data-test-id='save-tag-button']") }
         environmentTags(required: false) { $("#environments li") }
         errors { $("ul.errors>li") }
@@ -184,7 +184,7 @@ class CreateProjectPage extends BasePage {
      * @param name - name of the tag to remove
      */
     void removeEnvironmentTag(String name) {
-        environmentRemoveButton(name).click()
+        environmentTagRemoveButton(name).click()
     }
 
     /**

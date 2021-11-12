@@ -6,13 +6,15 @@ class Bug {
     String creator
     Date dateCreated
     String description
+    List environments
     String name
     Project project
     List steps
 
-    static hasMany = [steps: Step]
+    static hasMany = [environments: Environment, steps: Step]
 
     static mapping = {
+        environments cascade: 'none'
         project cascade: 'none'
         steps cascade: 'all-delete-orphan'
     }
@@ -22,6 +24,9 @@ class Bug {
             if(val == null) {
                 return
             }
+            if(obj.project == null || obj.project.areas == null) {
+                return false
+            }
             def ids = obj.project.areas*.id
             val.id in ids
         }
@@ -29,5 +34,16 @@ class Bug {
         description blank: true, nullable: true, maxSize: 1000
         name blank: false, maxSize: 255, nullable: false
         project nullable: false
+        environments nullable: true, validator: { val, Bug obj ->
+            if(val == null) {
+                return
+            }
+            if(obj.project == null || obj.project.environments == null) {
+                return false
+            }
+            def ids = obj.project.environments*.id
+            def c = val.collect { it.id }
+            ids.containsAll(c)
+        }
     }
 }

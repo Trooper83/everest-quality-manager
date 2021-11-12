@@ -40,7 +40,7 @@
             <div class="fieldcontain" id="environments">
                 <label>Environments</label>
                 <g:field type="text" name="environment" data-toggle="tooltip" trigger="manual" title="Environment Name cannot be blank"/>
-                <g:field type="button" name="btnAddEnvironment" value="Add" onclick="addEnvironmentTag()"/>
+                <g:field type="button" name="btnAddEnv" value="Add" onclick="addEnvironmentTag()"/>
                 <ul class="one-to-many"></ul>
             </div>
         </fieldset>

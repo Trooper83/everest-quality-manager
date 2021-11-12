@@ -311,7 +311,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:"The edit view is rendered again with the correct model"
         model.project instanceof Project
-        controller.flash.error == "Removed Area has associated items and cannot be deleted"
+        controller.flash.error == "Removed entity has associated items and cannot be deleted"
         view == 'edit'
     }
 

@@ -1,6 +1,7 @@
 package com.everlution.test.ui.specs.bug.create
 
 import com.everlution.Area
+import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
@@ -44,8 +45,10 @@ class CreateBugSpec extends GebSpec {
         setup: "get fake data"
         Faker faker = new Faker()
         def area = new Area(DataFactory.area())
+        def env = new Environment(DataFactory.environment())
         def projectData = DataFactory.project()
-        def project = projectService.save(new Project(name: projectData.name, code: projectData.code, areas: [area]))
+        def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
+                areas: [area], environments: [env]))
         def name = faker.zelda().game()
         def description = faker.zelda().character()
         def action = faker.lorem().sentence(5)
@@ -69,5 +72,7 @@ class CreateBugSpec extends GebSpec {
             showPage.descriptionValue.text() == description
             showPage.stepsTable.isRowDisplayed(action, result)
         }
+
+        //TODO: update for environment
     }
 }

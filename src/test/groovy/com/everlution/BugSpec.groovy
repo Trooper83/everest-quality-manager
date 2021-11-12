@@ -157,12 +157,14 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         domain.validate(["area"])
     }
 
-    void "area validates when project null"() {
+    void "area fails to validate when project null"() {
         when:
         domain.project = null
+        domain.area = new Area(name: "test")
 
         then:
-        domain.validate(["area"])
+        !domain.validate(["area"])
+        domain.errors["area"].code == "validator.invalid"
     }
 
     void "area validates with area in project"() {
@@ -176,7 +178,7 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         domain.validate(["area"])
     }
 
-    void "area fails to validate with area not in project"() {
+    void "area fails to validate for project with no areas"() {
         when:
         def a = new Area(name: "test area").save()
         def p = new Project(name: "testing project areas", code: "tpa").save()
@@ -186,5 +188,112 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         then:
         !domain.validate(["area"])
         domain.errors["area"].code == "validator.invalid"
+    }
+
+    void "area not in project fails to validate for project with areas"() {
+        when:
+        def a = new Area(name: "test area").save()
+        def p = new Project(name: "testing project areas", code: "tpa", areas: [new Area(name: "test")]).save()
+        domain.project = p
+        domain.area = a
+
+        then:
+        !domain.validate(["area"])
+        domain.errors["area"].code == "validator.invalid"
+    }
+
+    void "environment can be null"() {
+        when:
+        domain.environments = null
+
+        then:
+        domain.validate(["environments"])
+    }
+
+    void "environment fails to validate when project null"() {
+        when:
+        domain.project = null
+        domain.environments = [new Environment(name: "test")]
+
+        then:
+        !domain.validate(["environments"])
+        domain.errors["environments"].code == "validator.invalid"
+    }
+
+    void "environment validates with environment in project"() {
+        when:
+        def e = new Environment(name: "test env")
+        def p = new Project(name: "testing project areas", code: "tpa", environments: [e]).save()
+        domain.project = p
+        domain.environments = [e]
+
+        then:
+        domain.validate(["environments"])
+    }
+
+    void "environment fails to validate for project with no environments"() {
+        when:
+        def e = new Environment(name: "test env").save()
+        def p = new Project(name: "testing project areas", code: "tpa").save()
+        domain.project = p
+        domain.environments = [e]
+
+        then:
+        !domain.validate(["environments"])
+        domain.errors["environments"].code == "validator.invalid"
+    }
+
+    void "environment not in project fails to validate for project with environments"() {
+        when:
+        def e = new Environment(name: "test env").save()
+        def p = new Project(name: "testing project areas", code: "tpa", environments: [new Environment(name: "failed")]).save()
+        domain.project = p
+        domain.environments = [e]
+
+        then:
+        !domain.validate(["environments"])
+        domain.errors["environments"].code == "validator.invalid"
+    }
+
+    void "environment validates with multiple environments in project"() {
+        when:
+        def e = new Environment(name: "test env")
+        def en = new Environment(name: "test environment")
+        def p = new Project(name: "testing project areas", code: "tpa", environments: [e, en]).save()
+        domain.project = p
+        domain.environments = [e, en]
+
+        then:
+        domain.validate(["environments"])
+    }
+
+    void "environment fails to validate with multiple environments only one in project"() {
+        when:
+        def e = new Environment(name: "test env")
+        def en = new Environment(name: "test environment")
+        def p = new Project(name: "testing project areas", code: "tpa", environments: [e]).save()
+        domain.project = p
+        domain.environments = [e, en]
+
+        then:
+        !domain.validate(["environments"])
+        domain.errors["environments"].code == "validator.invalid"
+    }
+
+    void "project cannot be null"() {
+        when:
+        domain.project = null
+
+        then:
+        !domain.validate(["project"])
+        domain.errors["project"].code == "nullable"
+    }
+
+    void "steps can be null"() {
+        when:
+        domain.steps = null
+
+        then:
+        domain.validate(["steps"])
     }
 }
