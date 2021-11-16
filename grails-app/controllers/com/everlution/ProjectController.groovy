@@ -1,11 +1,9 @@
 package com.everlution
 
 import com.everlution.command.RemovedItems
-import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.validation.Errors
 
 import static org.springframework.http.HttpStatus.*
 

@@ -26,6 +26,9 @@ function getProjectItems() {
     }
 }
 
+/**
+* populates the areas dropdown
+*/
 function populateAreas(areas) {
     const len = areas.length;
     $("#area").empty();
@@ -38,6 +41,9 @@ function populateAreas(areas) {
     $("#area").prop("disabled", false);
 }
 
+/**
+* populates the environments select field
+*/
 function populateEnvironments(environments) {
     const len = environments.length;
     $("#environments").empty();

@@ -49,7 +49,7 @@
                 <li class="fieldcontain" id="environments">
                     <span id="environments-label" class="property-label">Environments</span>
                     <g:each in="${project.environments}">
-                        <div class="property-value" aria-labelledby="areas-label">${it.name}</div>
+                        <div class="property-value" aria-labelledby="environments-label">${it.name}</div>
                     </g:each>
                 </li>
             </ol>

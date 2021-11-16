@@ -48,8 +48,8 @@ class TestCase {
                 return false
             }
             def ids = obj.project.environments*.id
-            def c = val.collect { it.id }
-            ids.containsAll(c)
+            def envIds = val.collect { it.id }
+            ids.containsAll(envIds)
         }
     }
 }
