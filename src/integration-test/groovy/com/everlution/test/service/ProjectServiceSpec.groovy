@@ -4,6 +4,8 @@ import com.everlution.Area
 import com.everlution.AreaService
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.Environment
+import com.everlution.EnvironmentService
 import com.everlution.TestStepService
 import com.everlution.Project
 import com.everlution.ProjectService
@@ -23,6 +25,7 @@ class ProjectServiceSpec extends Specification {
 
     AreaService areaService
     BugService bugService
+    EnvironmentService environmentService
     ProjectService projectService
     SessionFactory sessionFactory
     TestCaseService testCaseService
@@ -174,11 +177,50 @@ class ProjectServiceSpec extends Specification {
 
         when: "call saveUpdate"
         def items = new RemovedItems()
-        items.ids = [area.id]
+        items.areaIds = [area.id]
         projectService.saveUpdate(project, items)
         sessionFactory.currentSession.flush()
 
         then: "area is removed"
         project.areas.size() == 0
+    }
+
+    void "delete project removes all associated environments"() {
+        given:
+        def ed = DataFactory.environment()
+        Environment env = new Environment(ed)
+        def pd = DataFactory.project()
+        Project project = new Project(name: pd.name, code: pd.code, environments: [env]).save()
+
+        expect:
+        project.id != null
+        env.id != null
+
+        when: "delete project"
+        projectService.delete(project.id)
+        sessionFactory.currentSession.flush()
+
+        then: "area and project are deleted"
+        projectService.get(project.id) == null
+        environmentService.get(env.id) == null
+    }
+
+    void "saveUpdate removes environments"() {
+        given: "project with environment"
+        def env = new Environment(name: "env name").save()
+        Project project = new Project(name: "Remove Area Test", code: "RAT").addToEnvironments(env).save()
+
+        expect:
+        project.environments.size() == 1
+        env.id != null
+
+        when: "call saveUpdate"
+        def items = new RemovedItems()
+        items.environmentIds = [env.id]
+        projectService.saveUpdate(project, items)
+        sessionFactory.currentSession.flush()
+
+        then: "env is removed"
+        project.environments.size() == 0
     }
 }

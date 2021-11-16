@@ -120,7 +120,7 @@ class EditProjectAreaSpec extends GebSpec {
         page.editProject()
 
         then: "area tag is displayed and was not deleted"
-        page.errorMessages.text() == "Removed Area has associated items and cannot be deleted"
+        page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
         areaService.get(area.id) != null
     }
 
@@ -148,7 +148,7 @@ class EditProjectAreaSpec extends GebSpec {
         page.editProject()
 
         then: "area tag is displayed and was not deleted"
-        page.errorMessages.text() == "Removed Area has associated items and cannot be deleted"
+        page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
         areaService.get(area.id) != null
     }
 
@@ -216,7 +216,8 @@ class EditProjectAreaSpec extends GebSpec {
 
     void "Removed item input added when existing area tag removed"() {
         given: "project with tag"
-        def project = new Project(name: "Area Tag Removed Input Project II", code: "ATR", areas: [new Area(name: "Area Name")])
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, areas: [new Area(name: "Area Name")])
         def id = projectService.save(project).id
 
         and: "login as an authorized user"

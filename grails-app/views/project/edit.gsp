@@ -27,20 +27,38 @@
             <g:form resource="${this.project}" method="PUT">
                 <g:hiddenField name="version" value="${this.project?.version}" />
                 <fieldset class="form">
-                    <f:all bean="project" except="areas, bugs, testCases"/>
+                    <f:all bean="project" except="areas, bugs, environments, testCases"/>
                     <div class="fieldcontain" id="areas">
                         <label>Areas</label>
                         <g:field type="text" name="area" data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"/>
-                        <g:field type="button" name="btnAddArea" value="Add" onclick="addArea()"/>
+                        <g:field type="button" name="btnAddArea" value="Add" onclick="addAreaTag()"/>
                         <ul class="one-to-many">
                             <g:each status="i" var="area" in="${project.areas}">
                                 <li name="${area.name}">
-                                    <input type="button" value="x" data-test-id="remove-area-button" onclick="removeAreaElement(this, ${area.id})"/>
-                                    <input type="button" value="y" data-test-id="edit-area-button" onclick="editAreaElement(this)"/>
+                                    <input type="button" value="x" data-test-id="remove-tag-button" onclick="removeAreaTag(this, ${area.id})"/>
+                                    <input type="button" value="y" data-test-id="edit-tag-button" onclick="editTag(this)"/>
                                     <span>${area.name}</span>
                                     <input style="display: none;" type="text" id="areas[${i}].name"
-                                           name="areas[${i}].name" value="${area.name}" data-test-id="area-tag-input"
+                                           name="areas[${i}].name" value="${area.name}" data-test-id="tag-input"
                                            data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"
+                                    />
+                                </li>
+                            </g:each>
+                        </ul>
+                    </div>
+                    <div class="fieldcontain" id="environments">
+                        <label>Environments</label>
+                        <g:field type="text" name="environment" data-toggle="tooltip" trigger="manual" title="Environment Name cannot be blank"/>
+                        <g:field type="button" name="btnAddEnv" value="Add" onclick="addEnvironmentTag()"/>
+                        <ul class="one-to-many">
+                            <g:each status="i" var="env" in="${project.environments}">
+                                <li name="${env.name}">
+                                    <input type="button" value="x" data-test-id="remove-tag-button" onclick="removeEnvironmentTag(this, ${env.id})"/>
+                                    <input type="button" value="y" data-test-id="edit-tag-button" onclick="editTag(this)"/>
+                                    <span>${env.name}</span>
+                                    <input style="display: none;" type="text" id="environments[${i}].name"
+                                           name="environments[${i}].name" value="${env.name}" data-test-id="tag-input"
+                                           data-toggle="tooltip" trigger="manual" title="Environment Name cannot be blank"
                                     />
                                 </li>
                             </g:each>
@@ -52,7 +70,7 @@
                 </fieldset>
             </g:form>
         </div>
-        <asset:javascript src="area.js"/>
+        <asset:javascript src="project.js"/>
         <asset:javascript src="popper.min.js"/>
     </body>
 </html>

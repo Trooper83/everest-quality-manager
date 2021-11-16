@@ -4,7 +4,6 @@ import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.validation.Errors
 
 import static org.springframework.http.HttpStatus.*
 
@@ -12,7 +11,7 @@ class ProjectController {
 
     ProjectService projectService
 
-    static allowedMethods = [getAreas: "GET", save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [getProjectItems: "GET", save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
      * lists all projects
@@ -100,7 +99,7 @@ class ProjectController {
             respond project.errors, view:'edit'
             return
         } catch (DataIntegrityViolationException ignored) {
-            flash.error = 'Removed Area has associated items and cannot be deleted'
+            flash.error = 'Removed entity has associated items and cannot be deleted'
             project = Project.read(params.id)
             respond project, view:'edit'
             return
@@ -143,12 +142,12 @@ class ProjectController {
      * @return - a list of the areas
      */
     @Secured("ROLE_BASIC")
-    def getAreas(Project project) {
+    def getProjectItems(Project project) {
         if (project == null) {
             notFound()
             return
         }
-        respond project.areas
+        respond (["areas": project.areas, "environments": project.environments])
     }
 
     /**

@@ -6,15 +6,18 @@ class TestCase {
     String creator
     Date dateCreated
     String description
+    List environments
     String executionMethod
     String name
     Project project
     List steps
     String type
 
-    static hasMany = [steps: Step]
+    static hasMany = [environments: Environment, steps: Step]
 
     static mapping = {
+        area cascade: "none"
+        environments cascade: "none"
         project cascade: "none"
         steps cascade: "all-delete-orphan"
     }
@@ -23,6 +26,9 @@ class TestCase {
         area nullable: true, validator: { val, TestCase obj ->
             if(val == null) {
                 return
+            }
+            if(obj.project == null || obj.project.areas == null) {
+                return false
             }
             def ids = obj.project.areas*.id
             val.id in ids
@@ -34,5 +40,16 @@ class TestCase {
         project nullable: false
         steps nullable: true
         type blank: false, nullable: false, inList: ["UI", "API"]
+        environments nullable: true, validator: { val, TestCase obj ->
+            if(val == null) {
+                return
+            }
+            if(obj.project == null || obj.project.environments == null) {
+                return false
+            }
+            def ids = obj.project.environments*.id
+            def envIds = val.collect { it.id }
+            ids.containsAll(envIds)
+        }
     }
 }

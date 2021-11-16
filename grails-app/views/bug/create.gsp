@@ -27,7 +27,7 @@
             <g:form resource="${this.bug}" method="POST">
                 <fieldset class="form">
                     <input type="hidden" name="creator" value="<sec:username/>"/>
-                    <f:all bean="bug" except="area, creator, project, steps"/>
+                    <f:all bean="bug" except="area, creator, environments, project, steps"/>
                     <div class="fieldcontain required">
                         <label for="project">Project
                             <span class="required-indicator">*</span>
@@ -35,13 +35,19 @@
                         <g:select name="project" from="${projects}"
                               optionKey="id" optionValue="name"
                               noSelection="${['':'Select a Project...']}"
-                              onchange="getAreas()"
+                              onchange="getProjectItems()"
                         />
                     </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
                         <select name="area" id="area" disabled>
                             <option value=''>Select an Area...</option>
+                        </select>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="environments">Environments</label>
+                        <select name="environments" id="environments" disabled multiple>
+                            <option value=''>--No Environment--</option>
                         </select>
                     </div>
                 </fieldset>
@@ -52,6 +58,6 @@
             </g:form>
         </div>
         <asset:javascript src="step.js"/>
-        <asset:javascript src="getProjectAreas.js"/>
+        <asset:javascript src="getProjectItems.js"/>
     </body>
 </html>

@@ -22,7 +22,7 @@ function addEntryRow() {
 
 function removeEntryRow(element, id) {
     if(id) {
-       let input = $('<input style="display: none;" data-test-id="step-removed-input" type="text" id="removedItems.ids" name="removedItems.ids" value="' + id + '" />');
+       let input = $('<input style="display: none;" data-test-id="step-removed-input" type="text" id="removedItems.stepIds" name="removedItems.stepIds" value="' + id + '" />');
        $(element).parent().parent().parent().append(input);
        $(element).parent().parent().remove();
     } else {

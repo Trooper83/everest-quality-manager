@@ -3,6 +3,7 @@ package com.everlution.test.ui.support.pages.bug
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
+import geb.module.MultipleSelect
 import geb.module.Select
 
 class CreateBugPage extends BasePage {
@@ -13,6 +14,7 @@ class CreateBugPage extends BasePage {
         areaOptions { $("#area>option") }
         createButton { $("#create") }
         descriptionInput { $("#description") }
+        environmentsOptions { $("#environments>option") }
         errorsMessage { $("ul.errors") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
@@ -27,6 +29,13 @@ class CreateBugPage extends BasePage {
      */
     Select areaSelect() {
         $("#area").module(Select)
+    }
+
+    /**
+     * select elements strongly typed for convenience in tests
+     */
+    MultipleSelect environmentsSelect() {
+        $("#environments").module(MultipleSelect)
     }
 
     /**
@@ -67,7 +76,7 @@ class CreateBugPage extends BasePage {
     /**
      * creates a bug with the supplied data
      */
-    void createBug(String name, String description, String area,
+    void createBug(String name, String description, String area, List<String> environment,
                    String project, String action, String result) {
         nameInput = name
         descriptionInput = description
@@ -76,6 +85,7 @@ class CreateBugPage extends BasePage {
             areaSelect().enabled
         }
         areaSelect().selected = area
+        environmentsSelect().selected = environment
         stepsTable.addStep(action, result)
         createButton.click()
     }

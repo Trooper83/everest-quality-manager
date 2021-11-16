@@ -7,7 +7,9 @@ class DataFactory {
     static Faker faker = new Faker()
 
     static projectCodes = ["AAA", "AAB", "AAC", "AAD", "AAE", "AAF", "AAG", "AAH", "AAI", "AAJ", "AAK", "AAL", "AAM",
-        "AAN", "AAO", "AAP", "AAQ", "AAR", "AAS", "AAT", "AAU", "AAV", "AAW", "AAX", "AAY", "AAZ"]
+        "AAN", "AAO", "AAP", "AAQ", "AAR", "AAS", "AAT", "AAU", "AAV", "AAW", "AAX", "AAY", "AAZ", "ABA", "ACA",
+        "ADA", "AEA", "AFA", "AGA", "AHA", "AIA", "AJA", "AKA", "ALA", "AMA", "ANA", "AOA", "APA", "AQA", "ARA",
+        "ASA", "ATA", "AUA", "AVA", "AWA", "AXA", "AYA", "AZA"]
 
     /**
      * creates fake data to populate an area
@@ -24,6 +26,13 @@ class DataFactory {
         def creator = faker.zelda().character()
         def description = faker.lorem().sentence(3)
         return [creator: creator, name: name, description: description]
+    }
+
+    /**
+     * creates fake data to populate an environment
+     */
+    static Map<String, String> environment() {
+        return [name: faker.lordOfTheRings().location()]
     }
 
     /**

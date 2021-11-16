@@ -77,7 +77,7 @@ class EditPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.getFields() == ["Project", "Area", "Description", "Execution Method *", "Name *", "Type *"]
+        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method *", "Name *", "Type *"]
     }
 
     void "required fields indicator displayed for required fields"() {

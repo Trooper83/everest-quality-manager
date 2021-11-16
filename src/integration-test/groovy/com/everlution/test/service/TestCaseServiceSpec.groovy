@@ -133,7 +133,7 @@ class TestCaseServiceSpec extends Specification {
 
         when: "call saveUpdate"
         def removed = new RemovedItems()
-        removed.ids = [step.id]
+        removed.stepIds = [step.id]
         testCaseService.saveUpdate(testCase, removed)
 
         then: "step is removed"

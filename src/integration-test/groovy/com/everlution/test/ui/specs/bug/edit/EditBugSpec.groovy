@@ -3,6 +3,7 @@ package com.everlution.test.ui.specs.bug.edit
 import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
@@ -51,8 +52,10 @@ class EditBugSpec extends GebSpec {
     void "all edit from data saved"() {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
+        def env = new Environment(DataFactory.environment())
         def projectData = DataFactory.project()
-        def project = projectService.save(new Project(name: projectData.name, code: projectData.code, areas: [area]))
+        def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
+                areas: [area], environments: [env]))
         def bugData = DataFactory.bug()
         def bug = bugService.save(new Bug(creator: bugData.creator, name: bugData.name,
                 description: bugData.description, project: project, area: area))
@@ -68,7 +71,7 @@ class EditBugSpec extends GebSpec {
         and: "edit all bug data"
         EditBugPage editPage = browser.page(EditBugPage)
         def data = DataFactory.bug()
-        editPage.editBug(data.name, data.description, "")
+        editPage.editBug(data.name, data.description, "", [""])
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
@@ -77,6 +80,7 @@ class EditBugSpec extends GebSpec {
             showPage.projectValue.text() == project.name
             showPage.nameValue.text() == data.name
             showPage.descriptionValue.text() == data.description
+            !showPage.areEnvironmentsDisplayed([env.name])
         }
     }
 }

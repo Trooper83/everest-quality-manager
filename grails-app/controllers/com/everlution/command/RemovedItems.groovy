@@ -7,7 +7,9 @@ import grails.validation.Validateable
  */
 class RemovedItems implements Validateable {
 
-    List<String> ids
+    List<String> areaIds
+    List<String> environmentIds
+    List<String> stepIds
 
     static boolean defaultNullable() {
         true

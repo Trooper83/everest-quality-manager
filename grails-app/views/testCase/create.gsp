@@ -28,7 +28,7 @@
                         <g:select name="project" from="${projects}"
                                   optionKey="id" optionValue="name"
                                   noSelection="${['':'Select a Project...']}"
-                                  onchange="getAreas()"
+                                  onchange="getProjectItems()"
                         />
                     </div>
                     <div class="fieldcontain">
@@ -37,7 +37,13 @@
                             <option value=''>Select an Area...</option>
                         </select>
                     </div>
-                    <f:all bean="testCase" except="area, project, bugs, steps, creator"/>
+                    <div class="fieldcontain">
+                        <label for="environments">Environments</label>
+                        <select name="environments" id="environments" disabled multiple>
+                            <option value=''>--No Environment--</option>
+                        </select>
+                    </div>
+                    <f:all bean="testCase" except="area, environments, project, bugs, steps, creator"/>
                 </fieldset>
                 <g:render template="/shared/createStepsTableTemplate"/>
                 <fieldset class="buttons">
@@ -45,7 +51,7 @@
                 </fieldset>
             </g:form>
         </div>
-        <asset:javascript src="getProjectAreas.js"/>
+        <asset:javascript src="getProjectItems.js"/>
         <asset:javascript src="step.js"/>
     </body>
 </html>

@@ -12,6 +12,7 @@ class ShowProjectPage extends BasePage {
         createLink(required: false) { $("[data-test-id=show-create-link]") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
+        environmentsList { $("#environments") }
         fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
@@ -68,5 +69,13 @@ class ShowProjectPage extends BasePage {
      */
     boolean isAreaDisplayed(String name) {
         return areasList.find("div")*.text().contains(name)
+    }
+
+    /**
+     * determines if an environment is displayed
+     * @param name - name of the env to check
+     */
+    boolean isEnvironmentDisplayed(String name) {
+        return environmentsList.find("div")*.text().contains(name)
     }
 }

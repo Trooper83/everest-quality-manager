@@ -14,6 +14,7 @@ class ShowBugPage extends BasePage {
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         descriptionValue { $("#description") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
+        environmentsList { $("#environments") }
         fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
@@ -64,5 +65,13 @@ class ShowBugPage extends BasePage {
      */
     void goToList() {
         listLink.click()
+    }
+
+    /**
+     * determines if an area is displayed
+     * @param names - name of the area to check
+     */
+    boolean areEnvironmentsDisplayed(List<String> names) {
+        return environmentsList.find("div")*.text().containsAll(names)
     }
 }

@@ -51,8 +51,10 @@ class BootStrap {
     void seedTestData() {
         def area = new Area(name: "bootstrap area")
         def area1 = new Area(name: "bootstrap area 12")
-        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area]).save()
-        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1]).save()
+        def env = new Environment(name: "bootstrap environment")
+        def env1 = new Environment(name: "bootstrap environment12")
+        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env]).save()
+        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env, env1]).save()
         Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)
         Step testStep2 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)

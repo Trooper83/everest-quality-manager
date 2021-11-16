@@ -126,7 +126,7 @@ class BugServiceSpec extends Specification {
 
         when: "call saveUpdate"
         def removed = new RemovedItems()
-        removed.ids = [step.id]
+        removed.stepIds = [step.id]
         bugService.saveUpdate(bug, removed)
 
         then: "step is removed"

@@ -189,7 +189,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
-        page.getFields() == ["Creator", "Project", "Area", "Name", "Description", "Execution Method", "Type"]
+        page.getFields() == ["Creator", "Project", "Area", "Environments", "Name", "Description", "Execution Method", "Type"]
     }
 
     void "test case not deleted if alert is canceled"() {
