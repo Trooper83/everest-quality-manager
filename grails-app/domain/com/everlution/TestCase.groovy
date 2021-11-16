@@ -16,7 +16,8 @@ class TestCase {
     static hasMany = [environments: Environment, steps: Step]
 
     static mapping = {
-        environments cascade: 'none'
+        area cascade: "none"
+        environments cascade: "none"
         project cascade: "none"
         steps cascade: "all-delete-orphan"
     }
