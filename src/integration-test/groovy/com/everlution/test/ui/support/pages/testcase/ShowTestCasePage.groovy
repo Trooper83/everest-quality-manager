@@ -14,6 +14,7 @@ class ShowTestCasePage extends BasePage {
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         descriptionValue { $("#description") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
+        environmentsList { $("#environments") }
         executionMethodValue { $("#executionMethod") }
         fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
@@ -66,5 +67,13 @@ class ShowTestCasePage extends BasePage {
      */
     void goToList() {
         listLink.click()
+    }
+
+    /**
+     * determines if an area is displayed
+     * @param names - name of the area to check
+     */
+    boolean areEnvironmentsDisplayed(List<String> names) {
+        return environmentsList.find("div")*.text().containsAll(names)
     }
 }

@@ -42,7 +42,7 @@ class CreatePageSpec extends GebSpec {
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         def page = browser.page(CreateBugPage)
-        page.getFields() == ["Description", "Name *", "Project *", "Area"]
+        page.getFields() == ["Description", "Name *", "Project *", "Area", "Environments"]
     }
 
     void "required fields indicator displayed for required fields"() {

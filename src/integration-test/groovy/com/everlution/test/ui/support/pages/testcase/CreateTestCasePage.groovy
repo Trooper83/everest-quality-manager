@@ -3,6 +3,7 @@ package com.everlution.test.ui.support.pages.testcase
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
+import geb.module.MultipleSelect
 import geb.module.Select
 
 class CreateTestCasePage extends BasePage {
@@ -13,6 +14,7 @@ class CreateTestCasePage extends BasePage {
         areaOptions { $("#area>option") }
         createButton { $("#create") }
         descriptionInput { $("#description") }
+        environmentsOptions { $("#environments>option") }
         errorsMessage { $("ul.errors") }
         executionMethodOptions { $("#executionMethod>option") }
         fieldLabels { $("fieldset label") }
@@ -29,6 +31,10 @@ class CreateTestCasePage extends BasePage {
      */
     Select areaSelect() {
         $("#area").module(Select)
+    }
+
+    MultipleSelect environmentsSelect() {
+        $("#environments").module(MultipleSelect)
     }
 
     Select executionMethodSelect() {
@@ -74,13 +80,15 @@ class CreateTestCasePage extends BasePage {
     /**
      * creates a test case with the supplied data
      */
-    void createTestCase(String name, String description, String project, String area, String method, String type) {
+    void createTestCase(String name, String description, String project, String area, List<String> environments,
+                        String method, String type) {
         nameInput = name
         descriptionInput = description
         projectSelect().selected = project
         executionMethodSelect().selected = method
         typeSelect().selected = type
         areaSelect().selected = area
+        environmentsSelect().selected = environments
         createButton.click()
     }
 

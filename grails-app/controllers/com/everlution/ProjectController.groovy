@@ -13,7 +13,7 @@ class ProjectController {
 
     ProjectService projectService
 
-    static allowedMethods = [getAreas: "GET", save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [getProjectItems: "GET", save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
      * lists all projects

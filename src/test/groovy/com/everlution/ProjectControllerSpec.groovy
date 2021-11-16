@@ -356,16 +356,16 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         flash.message == "default.deleted.message"
     }
 
-    void "Test the getAreas action with a null instance"() {
+    void "Test the getProjectItems action with a null instance"() {
         when:"The delete action is called for a null instance"
         request.method = 'GET'
-        controller.getAreas(null)
+        controller.getProjectItems(null)
 
         then:"A 404 is returned"
         response.status == 404
     }
 
-    void "Test the getAreas action with an instance"() {
+    void "Test the getProjectItems action with an instance"() {
         given: "a valid project"
         params.name = "unit test project"
         params.code = "SOX"
@@ -374,22 +374,37 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when:"The domain instance is passed to the getAreas action"
         request.method = 'GET'
-        controller.getAreas(project)
+        controller.getProjectItems(project)
 
         then:"areas are returned"
         response.status == 200
     }
 
-    void "test the getAreas action method"(String httpMethod) {
-        when:"The domain instance is passed to the getAreas action"
+    void "test the getProjectItems action method"(String httpMethod) {
+        when:"The domain instance is passed to the getProjectItems action"
         request.method = httpMethod
-        controller.getAreas(null)
+        controller.getProjectItems(null)
 
         then:
         response.status == 405
 
         where:
         httpMethod << ["DELETE", "PUT", "POST", "PATCH"]
+    }
+
+    void "getProjectItems returns areas and environments from project"() {
+        given: "project with area and environments"
+        def areaList = [new Area(name: "area 51")]
+        def envList = [new Environment(name: "environment 51")]
+        def project = new Project(name: "testing project", code: "tpc", areas: areaList,
+                environments: envList).save()
+
+        when: "call action"
+        controller.getProjectItems(project)
+
+        then: "items returned"
+        model.areas == areaList
+        model.environments == envList
     }
 }
 

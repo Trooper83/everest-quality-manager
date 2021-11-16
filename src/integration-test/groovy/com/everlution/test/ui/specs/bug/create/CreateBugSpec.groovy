@@ -45,10 +45,13 @@ class CreateBugSpec extends GebSpec {
         setup: "get fake data"
         Faker faker = new Faker()
         def area = new Area(DataFactory.area())
-        def env = new Environment(DataFactory.environment())
+        def ed = DataFactory.environment()
+        def ed1 = DataFactory.environment()
+        def env = new Environment(ed)
+        def env1 = new Environment(ed1)
         def projectData = DataFactory.project()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
-                areas: [area], environments: [env]))
+                areas: [area], environments: [env, env1]))
         def name = faker.zelda().game()
         def description = faker.zelda().character()
         def action = faker.lorem().sentence(5)
@@ -61,7 +64,7 @@ class CreateBugSpec extends GebSpec {
 
         and: "create bug"
         CreateBugPage createPage = to CreateBugPage
-        createPage.createBug(name, description, area.name, project.name, action, result)
+        createPage.createBug(name, description, area.name, [env.name, env1.name], project.name, action, result)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
@@ -70,9 +73,8 @@ class CreateBugSpec extends GebSpec {
             showPage.projectValue.text() == project.name
             showPage.nameValue.text() == name
             showPage.descriptionValue.text() == description
+            showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.stepsTable.isRowDisplayed(action, result)
         }
-
-        //TODO: update for environment
     }
 }

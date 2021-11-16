@@ -2,6 +2,7 @@ package com.everlution.test.ui.support.pages.testcase
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
+import geb.module.MultipleSelect
 import geb.module.Select
 
 class EditTestCasePage extends BasePage {
@@ -11,6 +12,7 @@ class EditTestCasePage extends BasePage {
     static content = {
         areaOptions { $("#area>option") }
         descriptionInput { $("#description") }
+        environmentsOptions { $("#environments>option") }
         executionMethodOptions { $("#executionMethod>option") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
@@ -28,6 +30,10 @@ class EditTestCasePage extends BasePage {
      */
     Select areaSelect() {
         $("#area").module(Select)
+    }
+
+    MultipleSelect environmentsSelect() {
+        $("#environments").module(MultipleSelect)
     }
 
     Select executionMethodSelect() {

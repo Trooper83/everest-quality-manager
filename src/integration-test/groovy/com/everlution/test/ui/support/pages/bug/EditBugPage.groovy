@@ -2,6 +2,7 @@ package com.everlution.test.ui.support.pages.bug
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
+import geb.module.MultipleSelect
 import geb.module.Select
 
 class EditBugPage extends BasePage {
@@ -10,7 +11,8 @@ class EditBugPage extends BasePage {
 
     static content = {
         areaOptions { $("#area>option") }
-        descriptionInput { $("#description")}
+        descriptionInput { $("#description") }
+        environmentsOptions { $("#environments>option") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
@@ -26,6 +28,10 @@ class EditBugPage extends BasePage {
      */
     Select areaSelect() {
         $("#area").module(Select)
+    }
+
+    MultipleSelect environmentsSelect() {
+        $("#environments").module(MultipleSelect)
     }
 
     /**
@@ -54,10 +60,11 @@ class EditBugPage extends BasePage {
     /**
      * edits a bug with the supplied data
      */
-    void editBug(String name, String description, String area) {
+    void editBug(String name, String description, String area, List<String> environments) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
+        environmentsSelect().selected = environments
         updateButton.click()
     }
 

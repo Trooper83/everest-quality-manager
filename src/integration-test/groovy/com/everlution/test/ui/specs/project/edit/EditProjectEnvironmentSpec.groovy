@@ -41,7 +41,10 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
     void "environment tag can be edited on existing project"() {
         given: "save a project"
-        def project = new Project(name: "edited project", code: "edn", environments: [new Environment(name: "environment name")])
+        def pd = DataFactory.project()
+        def ed = DataFactory.environment()
+        def env = new Environment(ed)
+        def project = new Project(name: pd.name, code: pd.code, environments: [env])
         def id = projectService.save(project).id
 
         and: "login as an authorized user"
@@ -54,22 +57,25 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
         expect: "environment tag is displayed"
         def showPage = at ShowProjectPage
-        showPage.isEnvironmentDisplayed("environment name")
+        showPage.isEnvironmentDisplayed(ed.name)
 
         when: "edit the project"
         showPage.goToEdit()
         EditProjectPage page = browser.page(EditProjectPage)
-        page.editEnvironmentTag("environment name", "edited environment tag")
+        page.editEnvironmentTag(ed.name, "edited environment tag")
         page.editProject()
 
         then: "environment tag is displayed"
         showPage.isEnvironmentDisplayed("edited environment tag")
-        !showPage.isEnvironmentDisplayed("environment name")
+        !showPage.isEnvironmentDisplayed(ed.name)
     }
 
     void "tooltip displays for editing existing environment with blank name"() {
         given: "save a project"
-        def project = new Project(name: "edited project1", code: "ed1", environments: [new Environment(name: "environment name")])
+        def pd = DataFactory.project()
+        def ed = DataFactory.environment()
+        def env = new Environment(ed)
+        def project = new Project(name: pd.name, code: pd.code, environments: [env])
         def id = projectService.save(project).id
 
         and: "login as an authorized user"
@@ -82,7 +88,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
         when: "edit the project"
         EditProjectPage page = browser.page(EditProjectPage)
-        page.editEnvironmentTag("environment name", "")
+        page.editEnvironmentTag(env.name, "")
 
         then: "environment tag tooltip is displayed"
         page.tooltip.displayed
@@ -90,12 +96,12 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
     void "environment tag with associated test case cannot be deleted from existing project"() {
         given: "save a project"
-        def environment = new Environment(DataFactory.environment())
+        def env = new Environment(DataFactory.environment())
         def pd = DataFactory.project()
-        def project = new Project(name: pd.name, code: pd.code, environments: [environment])
+        def project = new Project(name: pd.name, code: pd.code, environments: [env])
         def tc = DataFactory.testCase()
         def testCase = new TestCase(creator: tc.creator, name: tc.name, description: tc.description,
-                project: project, environment: environment, executionMethod: tc.executionMethod, type: tc.type)
+                project: project, environments: [env], executionMethod: tc.executionMethod, type: tc.type)
         def id = projectService.save(project).id
         testCaseService.save(testCase)
 
@@ -109,12 +115,12 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
         when: "attempt to remove the environment tag"
         EditProjectPage page = browser.page(EditProjectPage)
-        page.removeEnvironmentTag(environment.name)
+        page.removeEnvironmentTag(env.name)
         page.editProject()
 
         then: "environment tag is displayed and was not deleted"
         page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
-        environmentService.get(environment.id) != null
+        environmentService.get(env.id) != null
     }
 
     void "environment tag with associated bug cannot be deleted from existing project"() {
@@ -123,7 +129,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environment: environment)
+        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environments: [environment])
         def id = projectService.save(project).id
         bugService.save(bug)
 
@@ -151,7 +157,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environment: environment)
+        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environments: [environment])
         def id = projectService.save(project).id
         bugService.save(bug)
 
@@ -209,7 +215,9 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
     void "Removed item input added when existing environment tag removed"() {
         given: "project with tag"
-        def project = new Project(name: "Environment Tag Removed Input Project II", code: "ATR", environments: [new Environment(name: "Environment Name")])
+        def env = new Environment(DataFactory.environment())
+        def project = new Project(name: "Environment Tag Removed Input Project II", code: "ATR",
+                environments: [env])
         def id = projectService.save(project).id
 
         and: "login as an authorized user"
@@ -222,7 +230,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
         when: "remove the environment tag"
         EditProjectPage page = browser.page(EditProjectPage)
-        page.removeEnvironmentTag("Environment Name")
+        page.removeEnvironmentTag(env.name)
 
         then: "removed input is added to dom"
         page.environmentRemovedInput.size() == 1

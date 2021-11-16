@@ -60,54 +60,10 @@ class CreatePageSpec extends GebSpec {
         })
     }
 
-    void "add test step row"() {
-        expect: "row count is 0"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.testStepTable.getRowCount() == 0
-
-        when: "add a test step row"
-        page.testStepTable.addRow()
-
-        then: "row count is 1"
-        page.testStepTable.getRowCount() == 1
-    }
-
-    void "remove test step row"() {
-        setup: "add a row"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.testStepTable.addRow()
-
-        expect: "row count is 1"
-        page.testStepTable.getRowCount() == 1
-
-        when: "remove the first row"
-        page.testStepTable.removeRow(0)
-
-        then: "row count is 1"
-        page.testStepTable.getRowCount() == 0
-    }
-
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.getFields() == ["Project *", "Area", "Description", "Execution Method *", "Name *", "Type *"]
-    }
-
-    void "project field has no value set"() {
-        expect: "default text selected"
-        def page = browser.page(CreateTestCasePage)
-        page.projectSelect().selectedText == "Select a Project..."
-        page.projectSelect().selected == ""
-    }
-
-    void "failed form submission populates projects"() {
-        when: "form submission without project selected"
-        def page = browser.page(CreateTestCasePage)
-        page.nameInput = "failure"
-        page.createButton.click()
-
-        then: "projects are populated"
-        page.projectOptions.size() > 1
+        page.getFields() == ["Project *", "Area", "Environments", "Description", "Execution Method *", "Name *", "Type *"]
     }
 
     void "null project message displays"() {
@@ -118,44 +74,5 @@ class CreatePageSpec extends GebSpec {
 
         then: "projects are populated"
         page.errorsMessage.text() == "Property [project] of class [class com.everlution.TestCase] cannot be null"
-    }
-
-    void "area field has no value set"() {
-        when: "project is selected"
-        def page = browser.page(CreateTestCasePage)
-        page.projectSelect().selected = "1"
-
-        then: "default text selected"
-        page.areaSelect().selectedText == "Select an Area..."
-        page.areaSelect().selected == ""
-    }
-
-    void "area field defaults disabled"() {
-        expect: "area is disabled"
-        def page = browser.page(CreateTestCasePage)
-        page.areaSelect().disabled
-    }
-
-    void "area field disabled and depopulated when project is set to default"() {
-        given: "project is selected"
-        def page = browser.page(CreateTestCasePage)
-        page.projectSelect().selected = "bootstrap project"
-
-        expect: "area field enabled and populated"
-        waitFor(2) { //need to wait for transition
-            !page.areaSelect().disabled
-            page.areaOptions.size() > 1
-        }
-
-        when: "project set to default"
-        page.projectSelect().selected = ""
-
-        then: "area is disabled, depopulated and set to default"
-        waitFor(2) { //need to wait for transition
-            page.areaSelect().disabled
-            page.areaOptions.size() == 1
-            page.areaSelect().selectedText == "Select an Area..."
-            page.areaSelect().selected == ""
-        }
     }
 }

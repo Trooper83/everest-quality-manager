@@ -1,6 +1,7 @@
 package com.everlution.test.ui.specs.testcase.create
 
 import com.everlution.Area
+import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
@@ -43,8 +44,14 @@ class CreateTestCaseSpec extends GebSpec {
     void "all create from data saved"() {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
+        def ed = DataFactory.environment()
+        def ed1 = DataFactory.environment()
+        def env = new Environment(ed)
+        def env1 = new Environment(ed1)
         def projectData = DataFactory.project()
-        def project = projectService.save(new Project(name: projectData.name, code: projectData.code, areas: [area]))
+        def project = projectService.save(
+                new Project(name: projectData.name, code: projectData.code, areas: [area], environments: [env, env1])
+        )
 
         when: "login as a basic user"
         to LoginPage
@@ -54,7 +61,8 @@ class CreateTestCaseSpec extends GebSpec {
         and: "create test case"
         CreateTestCasePage createPage = to CreateTestCasePage
         def tcd = DataFactory.testCase()
-        createPage.createTestCase(tcd.name, tcd.description, project.name, area.name, "Automated", "UI")
+        createPage.createTestCase(
+                tcd.name, tcd.description, project.name, area.name, [env.name, env1.name],"Automated", "UI")
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -65,6 +73,7 @@ class CreateTestCaseSpec extends GebSpec {
             showPage.descriptionValue.text() == tcd.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
+            showPage.areEnvironmentsDisplayed([env.name, env1.name])
         }
     }
 }
