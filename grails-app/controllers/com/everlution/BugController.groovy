@@ -57,7 +57,7 @@ class BugController {
 
         try {
             bugService.save(bug)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             respond bug.errors, view:'create', model: [projects: projectService.list()]
             return
         }

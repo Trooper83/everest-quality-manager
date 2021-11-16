@@ -50,6 +50,12 @@
             <span id="area-label" class="property-label">Area</span>
             <div class="property-value" id="area">${bug.area?.name}</div>
         </li>
+        <li class="fieldcontain" id="environments">
+            <span id="environments-label" class="property-label">Environments</span>
+            <g:each in="${bug?.environments}">
+                <div class="property-value" aria-labelledby="areas-label">${it.name}</div>
+            </g:each>
+        </li>
         <li class="fieldcontain">
             <span id="name-label" class="property-label">Name</span>
             <div class="property-value" id="name">${bug.name}</div>

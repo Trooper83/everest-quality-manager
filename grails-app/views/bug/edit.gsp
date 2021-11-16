@@ -38,7 +38,14 @@
                                   noSelection="${['':'']}"
                         />
                     </div>
-                    <f:all bean="bug" except="area, project, steps, creator"/>
+                    <div class="fieldcontain">
+                        <label for="environments">Environments</label>
+                        <g:select name="environments" id="environments" from="${bug.project.environments}"
+                                  optionKey="id" optionValue="name" value="${bug.environments?.id}"
+                                  noSelection="${['':'--No Environment--']}" multiple="true"
+                        />
+                    </div>
+                    <f:all bean="bug" except="area, environments, project, steps, creator"/>
                 </fieldset>
                 <g:render template="/shared/editStepsTableTemplate" bean="${bug}" var="entity"/>
                 <fieldset class="buttons">

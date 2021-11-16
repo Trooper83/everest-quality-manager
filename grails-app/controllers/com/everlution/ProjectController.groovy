@@ -1,6 +1,7 @@
 package com.everlution
 
 import com.everlution.command.RemovedItems
+import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import org.springframework.dao.DataIntegrityViolationException
@@ -143,12 +144,12 @@ class ProjectController {
      * @return - a list of the areas
      */
     @Secured("ROLE_BASIC")
-    def getAreas(Project project) {
+    def getProjectItems(Project project) {
         if (project == null) {
             notFound()
             return
         }
-        respond project.areas
+        respond (["areas": project.areas, "environments": project.environments])
     }
 
     /**
