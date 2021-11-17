@@ -37,7 +37,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "at show page with message displayed"
         ShowProjectPage showPage = at ShowProjectPage
-        showPage.statusMessage.text() ==~ /Project \d+ created/
+        showPage.statusMessage.text() ==~ /Project \S+ created/
     }
 
     void "home link directs to home view"() {
