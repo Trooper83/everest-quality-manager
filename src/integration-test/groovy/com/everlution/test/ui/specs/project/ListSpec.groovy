@@ -85,7 +85,7 @@ class ListSpec extends GebSpec {
 
         then: "at list page and message displayed"
         ListProjectPage listPage = at ListProjectPage
-        listPage.statusMessage.text() ==~ /Project \d+ deleted/
+        listPage.statusMessage.text() ==~ /Project \S+ deleted/
     }
 
     void "clicking name column directs to show page"() {

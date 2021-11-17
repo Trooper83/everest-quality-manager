@@ -1,6 +1,8 @@
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 
+cacheDriverPerThread = true
+
 environments {
 
     // run via “./gradlew -Dgeb.env=chrome iT”
