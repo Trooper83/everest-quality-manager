@@ -133,7 +133,6 @@ class EditTestCaseSpec extends GebSpec {
         ShowTestCasePage showPage = at ShowTestCasePage
         showPage.testStepTable.getRowCount() == 0
         !showPage.testStepTable.isRowDisplayed("action", "result")
-        testStepService.get(step.id) == null
     }
 
     void "all edit from data saved"() {

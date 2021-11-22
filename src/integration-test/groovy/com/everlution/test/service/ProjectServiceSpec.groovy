@@ -6,12 +6,10 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Environment
 import com.everlution.EnvironmentService
-import com.everlution.TestStepService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.Step
 import com.everlution.command.RemovedItems
 import com.everlution.test.support.DataFactory
 import grails.testing.mixin.integration.Integration
@@ -29,7 +27,6 @@ class ProjectServiceSpec extends Specification {
     ProjectService projectService
     SessionFactory sessionFactory
     TestCaseService testCaseService
-    TestStepService testStepService
 
     private Long setupData() {
         new Project(name: "project service 1", code: "ZZZ").save()
@@ -108,14 +105,12 @@ class ProjectServiceSpec extends Specification {
     void "delete project removes all test cases and steps"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        Step step = new Step(action: "first action", result: "first result").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project, steps: [step]).save()
+                executionMethod: "Automated", type: "API", project: project).save()
 
         expect:
         project.id != null
         testCase.id != null
-        step.id != null
 
         when: "delete project"
         projectService.delete(project.id)
@@ -124,7 +119,6 @@ class ProjectServiceSpec extends Specification {
         then: "test case and steps deleted"
         projectService.get(project.id) == null
         testCaseService.get(testCase.id) == null
-        testStepService.get(step.id) == null
     }
 
     void "delete project removes all bugs"() {

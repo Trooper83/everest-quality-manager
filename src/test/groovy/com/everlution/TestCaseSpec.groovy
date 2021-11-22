@@ -248,14 +248,6 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.errors["project"].code == "nullable"
     }
 
-    void "steps can be null"() {
-        when:
-        domain.steps = null
-
-        then:
-        domain.validate(["steps"])
-    }
-
     void "area can be null"() {
         when:
         domain.area = null

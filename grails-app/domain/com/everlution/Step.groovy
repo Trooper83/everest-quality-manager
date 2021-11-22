@@ -6,8 +6,6 @@ class Step {
     Date dateCreated
     String result
 
-    static belongsTo = [Bug, TestCase]
-
     static constraints = {
         action blank: true, maxSize: 500, nullable: false
         result blank: true, maxSize: 500, nullable: false
