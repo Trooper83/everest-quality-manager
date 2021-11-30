@@ -65,7 +65,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     }
 
     void "test the create action returns the correct view"() {
-        given: "mock project service"
+        given: "mock service"
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
         }

@@ -8,6 +8,8 @@ import com.everlution.Environment
 import com.everlution.EnvironmentService
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.Scenario
+import com.everlution.ScenarioService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.command.RemovedItems
@@ -26,6 +28,7 @@ class ProjectServiceSpec extends Specification {
     EnvironmentService environmentService
     ProjectService projectService
     SessionFactory sessionFactory
+    ScenarioService scenarioService
     TestCaseService testCaseService
 
     private Long setupData() {
@@ -102,7 +105,27 @@ class ProjectServiceSpec extends Specification {
         project.id != null
     }
 
-    void "delete project removes all test cases and steps"() {
+    void "delete project removes all scenarios"() {
+        given:
+        Project project = new Project(name: "Test Case Service Spec Project", code: "ZZD").save()
+        def scenario = new Scenario(creator: "test", name: "test", description: "desc",
+                executionMethod: "Automated", type: "API").save()
+        project.addToScenarios(scenario)
+
+        expect:
+        project.id != null
+        scenario.id != null
+
+        when: "delete project"
+        projectService.delete(project.id)
+        sessionFactory.currentSession.flush()
+
+        then: "scenario deleted"
+        projectService.get(project.id) == null
+        scenarioService.get(scenario.id) == null
+    }
+
+    void "delete project removes all test cases"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",

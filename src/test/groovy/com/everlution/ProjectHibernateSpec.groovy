@@ -6,7 +6,7 @@ import javax.persistence.PersistenceException
 
 class ProjectHibernateSpec extends HibernateSpec {
 
-    List<Class> getDomainClasses() { [Project] }
+    List<Class> getDomainClasses() { [Project, Bug, Scenario, TestCase] }
 
     void "delete project with bug throws persistence exception"() {
         given: "valid bug with a project"
@@ -26,6 +26,20 @@ class ProjectHibernateSpec extends HibernateSpec {
         given: "valid test case with project"
         Project project = new Project(name: "Delete Test Case Cascade Project000", code: "ZZ0").save()
         new TestCase(creator: "test", name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+
+        when: "delete project"
+        project.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "exception is thrown"
+        thrown(PersistenceException)
+    }
+
+    void "delete project with scenario throws persistence exception"() {
+        given: "valid scenario with project"
+        Project project = new Project(name: "Delete Test Case Cascade Project001", code: "ZZ6").save()
+        new Scenario(creator: "test", name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         when: "delete project"

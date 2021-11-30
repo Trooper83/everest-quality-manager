@@ -54,7 +54,7 @@ class BootStrap {
         def env = new Environment(name: "bootstrap environment")
         def env1 = new Environment(name: "bootstrap environment12")
         def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env]).save()
-        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env, env1]).save()
+        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1]).save()
         Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)
         Step testStep2 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
@@ -74,5 +74,11 @@ class BootStrap {
                 project: project, steps: [bugStep1], area: area).save(failOnError: true)
         new Bug(creator: "bug creator2", name: "seeded bug 3", description: "description of the bug 2",
                 project: project1, steps: [bugStep2, bugStep3], area: area1).save(failOnError: true)
+        new Scenario(creator: "test123", name: "everest123", description: "desc",
+                executionMethod: "Automated", type: "UI",
+                project: project1).save(failOnError: true)
+        new Scenario(creator: "test123", name: "everest123", description: "desc",
+                executionMethod: "Automated", type: "UI",
+                project: project).save(failOnError: true)
     }
 }

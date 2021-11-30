@@ -233,20 +233,4 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         then: "domain validates"
         domain.validate(["environments"])
     }
-
-    void "bugs can be null"() {
-        when: "bug is null"
-        domain.bugs = null
-
-        then: "domain validates"
-        domain.validate(["bugs"])
-    }
-
-    void "test cases can be null"() {
-        when: "testCases is null"
-        domain.testCases = null
-
-        then: "domain validates"
-        domain.validate(["testCases"])
-    }
 }
