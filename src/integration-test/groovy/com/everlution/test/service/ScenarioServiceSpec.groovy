@@ -1,5 +1,6 @@
 package com.everlution.test.service
 
+import com.everlution.Project
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import grails.testing.mixin.integration.Integration
@@ -15,62 +16,101 @@ class ScenarioServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     private Long setupData() {
-        // TODO: Populate valid domain instances and return a valid ID
-        //new Scenario(...).save(flush: true, failOnError: true)
-        //new Scenario(...).save(flush: true, failOnError: true)
-        //Scenario scenario = new Scenario(...).save(flush: true, failOnError: true)
-        //new Scenario(...).save(flush: true, failOnError: true)
-        //new Scenario(...).save(flush: true, failOnError: true)
-        assert false, "TODO: Provide a setupData() implementation for this generated test suite"
-        //scenario.id
+        Project project = new Project(name: "ScenarioServiceSpec Project", code: "TTT").save()
+        Scenario scenario = new Scenario(creator: "test",name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project).save()
+        new Scenario(creator: "test",name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: project).save()
+        new Scenario(creator: "test",name: "third", description: "desc3",
+                executionMethod: "Automated", type: "API", project: project).save()
+        new Scenario(creator: "test",name: "fourth", description: "desc4",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        scenario.id
     }
 
     void "test get"() {
-        setupData()
+        def id = setupData()
 
         expect:
-        scenarioService.get(1) != null
+        scenarioService.get(id) != null
     }
 
-    void "test list"() {
+    void "test list with no args"() {
         setupData()
 
         when:
-        List<Scenario> scenarioList = scenarioService.list(max: 2, offset: 2)
+        List<Scenario> scenarioList = scenarioService.list()
 
         then:
-        scenarioList.size() == 2
-        assert false, "TODO: Verify the correct instances are returned"
+        scenarioList.size() > 0
+    }
+
+    void "test list with max args"() {
+        setupData()
+
+        when:
+        List<Scenario> scenarioList = scenarioService.list(max: 1)
+
+        then:
+        scenarioList.size() == 1
+    }
+
+    void "test list with offset args"() {
+        setupData()
+
+        when:
+        List<Scenario> scenarioList = scenarioService.list(offset: 1)
+
+        then:
+        scenarioList.size() > 0
     }
 
     void "test count"() {
         setupData()
 
         expect:
-        scenarioService.count() == 5
+        scenarioService.count() > 1
     }
 
     void "test delete"() {
         Long scenarioId = setupData()
 
-        expect:
-        scenarioService.count() == 5
+        given:
+        def count = scenarioService.count()
 
         when:
         scenarioService.delete(scenarioId)
         sessionFactory.currentSession.flush()
 
         then:
-        scenarioService.count() == 4
+        scenarioService.count() == count - 1
     }
 
     void "test save"() {
         when:
-        assert false, "TODO: Provide a valid instance to save"
-        Scenario scenario = new Scenario()
+        Project project = new Project(name: "Test Case Save Project", code: "TCS").save()
+        Scenario scenario = new Scenario(creator: "test", name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project)
         scenarioService.save(scenario)
 
         then:
         scenario.id != null
+    }
+
+    void "test delete all by project"() {
+        Long id = setupData()
+
+        given:
+        def project = scenarioService.get(id).project
+
+        expect:
+        Scenario.findAllByProject(project).size() == 4
+
+        when:
+        scenarioService.deleteAllScenariosByProject(project)
+        sessionFactory.currentSession.flush()
+
+        then:
+        Scenario.findAllByProject(project).size() == 0
     }
 }

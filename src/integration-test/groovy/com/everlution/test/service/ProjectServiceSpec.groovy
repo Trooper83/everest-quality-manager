@@ -109,8 +109,7 @@ class ProjectServiceSpec extends Specification {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZD").save()
         def scenario = new Scenario(creator: "test", name: "test", description: "desc",
-                executionMethod: "Automated", type: "API").save()
-        project.addToScenarios(scenario)
+                executionMethod: "Automated", type: "API", project: project).save()
 
         expect:
         project.id != null

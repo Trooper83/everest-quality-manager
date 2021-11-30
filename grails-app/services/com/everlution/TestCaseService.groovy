@@ -13,7 +13,7 @@ abstract class TestCaseService implements ITestCaseService {
     void deleteAllTestCasesByProject(Project project) {
         def cases = TestCase.findAllByProject(project)
         cases.each {
-            it.delete()
+            delete(it.id)
         }
     }
 
