@@ -78,7 +78,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
         step.result == "edited result"
     }
 
-    void "delete test case does not cascade to steps"() {
+    void "delete test case cascades to steps"() {
         given: "valid domain instances"
         Project project = new Project(name: "TestStep Cascade Project", code: "TCP").save()
         Step testStep = new Step(action: "do something", result: "something happened")
@@ -95,7 +95,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
         sessionFactory.currentSession.flush()
 
         then: "steps are not found"
-        Step.findById(testStep.id) != null
+        Step.findById(testStep.id) == null
     }
 
     void "test steps order persists"() {
