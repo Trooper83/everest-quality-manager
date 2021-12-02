@@ -1,6 +1,7 @@
 package com.everlution.test.ui.specs.testcase.edit
 
 import com.everlution.Area
+import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
@@ -20,7 +21,6 @@ class EditTestCaseSpec extends GebSpec {
 
     ProjectService projectService
     TestCaseService testCaseService
-    TestStepService testStepService
 
     void "authorized users can edit test case"(String username, String password) {
         given: "create test case"
@@ -133,17 +133,18 @@ class EditTestCaseSpec extends GebSpec {
         ShowTestCasePage showPage = at ShowTestCasePage
         showPage.testStepTable.getRowCount() == 0
         !showPage.testStepTable.isRowDisplayed("action", "result")
-        testStepService.get(step.id) == null
     }
 
     void "all edit from data saved"() {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
+        def env = new Environment(DataFactory.environment())
         def projectData = DataFactory.project()
-        def project = projectService.save(new Project(name: projectData.name, code: projectData.code, areas: [area]))
+        def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
+                areas: [area], environments: [env]))
         def td = DataFactory.testCase()
         def testCase = new TestCase(name: td.name, description: td.description, creator: td.creator, project: project,
-            area: area, executionMethod: "Manual", type: "API")
+            area: area, executionMethod: "Manual", type: "API", environments: [env])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"
@@ -157,13 +158,14 @@ class EditTestCaseSpec extends GebSpec {
         when: "edit test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
         def edited = DataFactory.testCase()
-        page.editTestCase(edited.name, edited.description, "", "Automated", "UI")
+        page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI")
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
         verifyAll {
             showPage.areaValue.text() == ""
             showPage.projectValue.text() == project.name
+            !showPage.areEnvironmentsDisplayed([env.name])
             showPage.nameValue.text() == edited.name
             showPage.descriptionValue.text() == edited.description
             showPage.executionMethodValue.text() == "Automated"

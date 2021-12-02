@@ -1,17 +1,19 @@
 package com.everlution
 
-class Bug {
+class Scenario {
 
     Area area
     String creator
     Date dateCreated
     String description
     List environments
+    String executionMethod
+    String gherkin
     String name
     Project project
-    List steps
+    String type
 
-    static hasMany = [environments: Environment, steps: Step]
+    static hasMany = [environments: Environment]
 
     static mapping = {
         area cascade: "none"
@@ -20,7 +22,7 @@ class Bug {
     }
 
     static constraints = {
-        area nullable: true, validator: { val, Bug obj ->
+        area nullable: true, validator: { val, Scenario obj ->
             if(val == null) {
                 return
             }
@@ -32,9 +34,12 @@ class Bug {
         }
         creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000
+        executionMethod blank: false, nullable: false, inList: ["Automated", "Manual"]
+        gherkin blank: true, nullable: true, maxSize: 2500
         name blank: false, maxSize: 255, nullable: false
         project nullable: false
-        environments nullable: true, validator: { val, Bug obj ->
+        type blank: false, nullable: false, inList: ["UI", "API"]
+        environments nullable: true, validator: { val, Scenario obj ->
             if(val == null) {
                 return
             }

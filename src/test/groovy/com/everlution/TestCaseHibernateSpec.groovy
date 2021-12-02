@@ -78,7 +78,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
         step.result == "edited result"
     }
 
-    void "test delete case cascades to steps"() {
+    void "delete test case cascades to steps"() {
         given: "valid domain instances"
         Project project = new Project(name: "TestStep Cascade Project", code: "TCP").save()
         Step testStep = new Step(action: "do something", result: "something happened")

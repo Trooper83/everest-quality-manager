@@ -1,28 +1,28 @@
-package com.everlution.test.ui.support.pages.testcase
+package com.everlution.test.ui.support.pages.scenario
 
 import com.everlution.test.ui.support.pages.common.BasePage
-import com.everlution.test.ui.support.pages.modules.StepTableModule
+import com.github.javafaker.Faker
 import geb.module.MultipleSelect
 import geb.module.Select
 
-class EditTestCasePage extends BasePage {
-    static url = "/testCase/edit"
-    static at = { title == "Edit TestCase" }
+class CreateScenarioPage extends BasePage {
+    static url = "/scenario/create"
+    static at = { title == "Create Scenario" }
 
     static content = {
         areaOptions { $("#area>option") }
+        createButton { $("#create") }
         descriptionInput { $("#description") }
         environmentsOptions { $("#environments>option") }
+        errorsMessage { $("ul.errors") }
         executionMethodOptions { $("#executionMethod>option") }
         fieldLabels { $("fieldset label") }
-        homeLink { $("[data-test-id=edit-home-link]") }
-        listLink { $("[data-test-id=edit-list-link]") }
+        gherkinTextArea { $("#gherkin") }
+        homeLink { $("[data-test-id=create-home-link]") }
+        listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
-        projectNameField { $("[data-test-id=edit-project-name]") }
-        stepRemovedInput { $("input[data-test-id='step-removed-input']") }
-        testStepTable { module StepTableModule }
+        projectOptions { $("#project>option") }
         typeOptions { $("#type>option") }
-        updateButton { $("[data-test-id=edit-update-button]")}
     }
 
     /**
@@ -38,6 +38,10 @@ class EditTestCasePage extends BasePage {
 
     Select executionMethodSelect() {
         $("#executionMethod").module(Select)
+    }
+
+    Select projectSelect() {
+        $("#project").module(Select)
     }
 
     Select typeSelect() {
@@ -61,23 +65,31 @@ class EditTestCasePage extends BasePage {
     }
 
     /**
-     * clicks the update button
+     * adds a generic scenario
      */
-    void editTestCase() {
-        updateButton.click()
+    void createScenario() {
+        Faker faker = new Faker()
+        nameInput = faker.zelda().game()
+        descriptionInput = faker.zelda().character()
+        projectSelect().selected = "1"
+        gherkinTextArea = faker.lorem().sentence(5)
+        createButton.click()
     }
 
     /**
-     * edits a test case with the supplied data
+     * creates a scenario with the supplied data
      */
-    void editTestCase(String name, String description, String area, List<String> environments, String method, String type) {
+    void createScenario(String name, String description, String gherkin, String project, String area, List<String> environments,
+                        String method, String type) {
         nameInput = name
         descriptionInput = description
-        areaSelect().selected = area
-        environmentsSelect().selected = environments
+        projectSelect().selected = project
         executionMethodSelect().selected = method
         typeSelect().selected = type
-        updateButton.click()
+        areaSelect().selected = area
+        environmentsSelect().selected = environments
+        gherkinTextArea = gherkin
+        createButton.click()
     }
 
     /**

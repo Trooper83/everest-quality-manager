@@ -69,4 +69,23 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
             id = 123
         }
     }
+
+    void "verify scenario forward and reverse mappings"() {
+        mockController(ScenarioController)
+
+        expect:
+        verifyUrlMapping("/scenario/index", controller: 'scenario', action: 'index')
+        verifyUrlMapping("/scenario/create", controller: 'scenario', action: 'create')
+        verifyUrlMapping("/scenario/save", controller: 'scenario', action: 'save')
+        verifyUrlMapping("/scenario/update", controller: 'scenario', action: 'update')
+        verifyUrlMapping("/scenario/show/123", controller: 'scenario', action: 'show') {
+            id = 123
+        }
+        verifyUrlMapping("/scenario/edit/123", controller: 'scenario', action: 'edit') {
+            id = 123
+        }
+        verifyUrlMapping("/scenario/delete/123", controller: 'scenario', action: 'delete') {
+            id = 123
+        }
+    }
 }

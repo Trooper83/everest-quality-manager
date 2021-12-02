@@ -7,7 +7,7 @@ class Project {
     List environments
     String name
 
-    static hasMany = [areas: Area, bugs: Bug, environments: Environment, testCases: TestCase]
+    static hasMany = [areas: Area, environments: Environment]
 
     static mapping = {
         areas cascade: "all-delete-orphan"

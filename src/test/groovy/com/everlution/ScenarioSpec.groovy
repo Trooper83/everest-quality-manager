@@ -4,20 +4,20 @@ import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
 
-class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
+class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
 
     @Shared int id
 
     void "test instances are persisted"() {
         setup:
         def project = new Project(name: "tc domain project", code: "tdp")
-        new TestCase(creator: "test", name: "First Test Case", description: "test",
+        new Scenario(creator: "test", name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        new TestCase(creator: "test",name: "Second Test Case", description: "test",
+        new Scenario(creator: "test",name: "Second Test Case", description: "test",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         expect:
-        TestCase.count() == 2
+        Scenario.count() == 2
     }
 
     void "test domain instance"() {
@@ -29,10 +29,10 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.hashCode() == id
 
         when:
-        domain.name = "Test case name"
+        domain.name = "Scenario name"
 
         then:
-        domain.name == "Test case name"
+        domain.name == "Scenario name"
     }
 
     void "test we get a new domain"() {
@@ -114,12 +114,39 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.validate(["description"])
     }
 
-    void "test steps can be null"() {
+    void "gherkin cannot exceed 2500 characters"() {
+        when: "for a string of 2501 characters"
+        String str = "a" * 2501
+        domain.gherkin = str
+
+        then: "gherkin validation fails"
+        !domain.validate(["gherkin"])
+        domain.errors["gherkin"].code == "maxSize.exceeded"
+    }
+
+    void "gherkin validates with 2500 characters"() {
+        when: "for a string of 2500 characters"
+        String str = "a" * 2500
+        domain.gherkin = str
+
+        then: "gherkin validation passes"
+        domain.validate(["gherkin"])
+    }
+
+    void "gherkin can be null"() {
         when:
-        domain.steps = null
+        domain.gherkin = null
 
         then:
-        domain.validate(["steps"])
+        domain.validate(["gherkin"])
+    }
+
+    void "gherkin can be blank"() {
+        when:
+        domain.gherkin = ""
+
+        then:
+        domain.validate(["gherkin"])
     }
 
     void "test execution method cannot be null"() {

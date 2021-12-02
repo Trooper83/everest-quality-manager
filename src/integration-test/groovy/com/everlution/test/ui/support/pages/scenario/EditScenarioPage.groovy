@@ -1,13 +1,13 @@
-package com.everlution.test.ui.support.pages.testcase
+package com.everlution.test.ui.support.pages.scenario
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import geb.module.MultipleSelect
 import geb.module.Select
 
-class EditTestCasePage extends BasePage {
-    static url = "/testCase/edit"
-    static at = { title == "Edit TestCase" }
+class EditScenarioPage extends BasePage {
+    static url = "/scenario/edit"
+    static at = { title == "Edit Scenario" }
 
     static content = {
         areaOptions { $("#area>option") }
@@ -15,6 +15,7 @@ class EditTestCasePage extends BasePage {
         environmentsOptions { $("#environments>option") }
         executionMethodOptions { $("#executionMethod>option") }
         fieldLabels { $("fieldset label") }
+        gherkinTextArea { $("#gherkin") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
@@ -63,20 +64,22 @@ class EditTestCasePage extends BasePage {
     /**
      * clicks the update button
      */
-    void editTestCase() {
+    void editScenario() {
         updateButton.click()
     }
 
     /**
-     * edits a test case with the supplied data
+     * edits a scenario with the supplied data
      */
-    void editTestCase(String name, String description, String area, List<String> environments, String method, String type) {
+    void editScenario(String name, String description, String gherkin, String area, List<String> environment,
+                      String method, String type) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
-        environmentsSelect().selected = environments
+        environmentsSelect().selected = environment
         executionMethodSelect().selected = method
         typeSelect().selected = type
+        gherkinTextArea = gherkin
         updateButton.click()
     }
 

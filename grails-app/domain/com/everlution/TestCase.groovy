@@ -19,7 +19,6 @@ class TestCase {
         area cascade: "none"
         environments cascade: "none"
         project cascade: "none"
-        steps cascade: "all-delete-orphan"
     }
 
     static constraints = {

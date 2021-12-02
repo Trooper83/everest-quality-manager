@@ -13,7 +13,7 @@ abstract class BugService implements IBugService {
     void deleteAllBugsByProject(Project project) {
         def bugs = Bug.findAllByProject(project)
         bugs.each {
-            it.delete()
+            delete(it.id)
         }
     }
 

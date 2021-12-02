@@ -1,11 +1,10 @@
-package com.everlution.test.ui.support.pages.testcase
+package com.everlution.test.ui.support.pages.scenario
 
 import com.everlution.test.ui.support.pages.common.BasePage
-import com.everlution.test.ui.support.pages.modules.StepTableModule
 
-class ShowTestCasePage extends BasePage {
-    static url = "/testCase/show"
-    static at = { title == "Show TestCase" }
+class ShowScenarioPage extends BasePage {
+    static url = "/scenario/show"
+    static at = { title == "Show Scenario" }
 
     static content = {
         areaValue { $("#area") }
@@ -17,19 +16,19 @@ class ShowTestCasePage extends BasePage {
         environmentsList { $("#environments") }
         executionMethodValue { $("#executionMethod") }
         fieldLabels { $("ol.property-list>li>span") }
+        gherkinTextArea { $("#gherkin") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
         nameValue { $("#name") }
         projectValue { $("#project") }
         statusMessage { $("div.message") }
-        testStepTable { module StepTableModule }
         typeValue { $ ("#type") }
     }
 
     /**
      * clicks the delete link
      */
-    void deleteTestCase() {
+    void deleteScenario() {
         withConfirm(true) { deleteLink.click() }
     }
 
@@ -42,7 +41,7 @@ class ShowTestCasePage extends BasePage {
     }
 
     /**
-     * clicks the new test case link
+     * clicks the new scenario link
      */
     void goToCreate() {
         createLink.click()

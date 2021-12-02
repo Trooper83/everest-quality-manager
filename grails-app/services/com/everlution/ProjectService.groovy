@@ -10,6 +10,7 @@ abstract class ProjectService implements IProjectService {
     AreaService areaService
     BugService bugService
     EnvironmentService environmentService
+    ScenarioService scenarioService
     TestCaseService testCaseService
 
     /**
@@ -22,6 +23,7 @@ abstract class ProjectService implements IProjectService {
         def project = get(id)
         testCaseService.deleteAllTestCasesByProject(project)
         bugService.deleteAllBugsByProject(project)
+        scenarioService.deleteAllScenariosByProject(project)
         project.delete()
     }
 

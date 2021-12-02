@@ -92,6 +92,5 @@ class EditBugStepsSpec extends GebSpec {
         def showPage = at ShowBugPage
         !showPage.stepsTable.isRowDisplayed("bug action", "bug result")
         showPage.stepsTable.getRowCount() == 0
-        testStepService.get(step.id) == null
     }
 }
