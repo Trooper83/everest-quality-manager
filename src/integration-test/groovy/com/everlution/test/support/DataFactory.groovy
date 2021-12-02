@@ -45,6 +45,18 @@ class DataFactory {
     }
 
     /**
+     * creates fake data to populate a scenario instance
+     */
+    static Map<String, String> scenario() {
+        def name = faker.zelda().game()
+        def creator = faker.zelda().character()
+        def description = faker.lorem().sentence(3)
+        def gherkin = faker.lorem().sentence(5)
+        return [name: name, creator: creator, description: description, gherkin: gherkin,
+                executionMethod: "Automated", type: "UI"]
+    }
+
+    /**
      * creates fake data to populate a testCase instance
      */
     static Map<String, String> testCase() {

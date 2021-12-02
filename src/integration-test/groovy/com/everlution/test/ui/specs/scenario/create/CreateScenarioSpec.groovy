@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.testcase.create
+package com.everlution.test.ui.specs.scenario.create
 
 import com.everlution.Area
 import com.everlution.Environment
@@ -6,32 +6,32 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
-import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.scenario.CreateScenarioPage
+import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
-class CreateTestCaseSpec extends GebSpec {
+class CreateScenarioSpec extends GebSpec {
 
     ProjectService projectService
 
-    void "authorized users can create test case"(String username, String password) {
+    void "authorized users can create scenario"(String username, String password) {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
-        and: "go to the create test case page"
-        to CreateTestCasePage
+        and: "go to the create page"
+        to CreateScenarioPage
 
-        when: "create a test case"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.createTestCase()
+        when: "create a scenario"
+        CreateScenarioPage page = browser.page(CreateScenarioPage)
+        page.createScenario()
 
-        then: "at show test case page"
-        at ShowTestCasePage
+        then: "at show page"
+        at ShowScenarioPage
 
         where:
         username                         | password
@@ -59,21 +59,22 @@ class CreateTestCaseSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "create test case"
-        CreateTestCasePage createPage = to CreateTestCasePage
-        def tcd = DataFactory.testCase()
-        createPage.createTestCase(
-                tcd.name, tcd.description, project.name, area.name, [env.name, env1.name],"Automated", "UI")
+        def createPage = to CreateScenarioPage
+        def scn = DataFactory.scenario()
+        createPage.createScenario(scn.name, scn.description, scn.gherkin, project.name, area.name,
+                [env.name, env1.name],"Automated", "UI")
 
         then: "data is displayed on show page"
-        ShowTestCasePage showPage = at ShowTestCasePage
+        def showPage = at ShowScenarioPage
         verifyAll {
             showPage.areaValue.text() == area.name
             showPage.projectValue.text() == project.name
-            showPage.nameValue.text() == tcd.name
-            showPage.descriptionValue.text() == tcd.description
+            showPage.nameValue.text() == scn.name
+            showPage.descriptionValue.text() == scn.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
+            showPage.gherkinTextArea.text() == scn.gherkin
         }
     }
 }
