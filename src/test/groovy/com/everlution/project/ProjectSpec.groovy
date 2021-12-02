@@ -1,5 +1,8 @@
-package com.everlution
+package com.everlution.project
 
+import com.everlution.Area
+import com.everlution.Environment
+import com.everlution.Project
 import grails.testing.gorm.DomainUnitTest
 import org.hibernate.SessionFactory
 import spock.lang.Shared

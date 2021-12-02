@@ -1,5 +1,6 @@
-package com.everlution
+package com.everlution.step
 
+import com.everlution.Step
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

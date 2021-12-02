@@ -1,5 +1,9 @@
-package com.everlution
+package com.everlution.bug
 
+import com.everlution.Bug
+import com.everlution.BugController
+import com.everlution.BugService
+import com.everlution.ProjectService
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest

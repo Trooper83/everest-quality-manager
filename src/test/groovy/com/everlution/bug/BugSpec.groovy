@@ -1,5 +1,9 @@
-package com.everlution
+package com.everlution.bug
 
+import com.everlution.Area
+import com.everlution.Bug
+import com.everlution.Environment
+import com.everlution.Project
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

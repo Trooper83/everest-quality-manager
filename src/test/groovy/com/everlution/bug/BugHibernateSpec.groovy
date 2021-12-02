@@ -1,5 +1,8 @@
-package com.everlution
+package com.everlution.bug
 
+import com.everlution.Bug
+import com.everlution.Project
+import com.everlution.Step
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared

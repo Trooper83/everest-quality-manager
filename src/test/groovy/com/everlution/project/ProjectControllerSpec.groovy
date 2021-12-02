@@ -1,5 +1,10 @@
-package com.everlution
+package com.everlution.project
 
+import com.everlution.Area
+import com.everlution.Environment
+import com.everlution.Project
+import com.everlution.ProjectController
+import com.everlution.ProjectService
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
