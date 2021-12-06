@@ -1,8 +1,9 @@
 package com.everlution.test.ui.support.data
 
 enum Usernames {
-    READ_ONLY("read_only"), BASIC("basic"), PROJECT_ADMIN("project_admin"),
-    APP_ADMIN("app_admin"), ORG_ADMIN("org_admin")
+    READ_ONLY("read_only@readonly.com"), BASIC("basic@basic.com"),
+    PROJECT_ADMIN("project_admin@projectadmin.com"), APP_ADMIN("app_admin@appadmin.com"),
+    ORG_ADMIN("org_admin@orgadmin.com")
 
     Usernames(String username) {
         this.username = username

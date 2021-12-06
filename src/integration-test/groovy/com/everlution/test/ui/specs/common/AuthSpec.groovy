@@ -16,13 +16,14 @@ class AuthSpec extends GebSpec {
         loginPage.login(username, password)
 
         expect: "failed login message is displayed"
-        loginPage.loginFailureMessage.text() == "Sorry, we were not able to find a user with that username and password."
+        waitFor {
+            loginPage.loginFailureMessage.text() == "Sorry, we were not able to find a user with that username and password."
+        }
 
         where: "invalid credentials"
         username | password
-        "fail"| "password"
-        "basic" | "pass"
-        " " | " "
+        "fail@failing.com"| "password"
+        "basic@basic.com" | "pass"
     }
 
     void "welcome message displays for logged in user"() {
@@ -33,7 +34,7 @@ class AuthSpec extends GebSpec {
 
         expect: "welcome message is displayed"
         HomePage homePage = browser.page(HomePage)
-        homePage.navBar.verifyWelcomeMessage("basic")
+        homePage.navBar.verifyWelcomeMessage(Usernames.BASIC.username)
     }
 
     void "user can logout"() {
