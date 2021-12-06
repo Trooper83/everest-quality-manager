@@ -1,4 +1,4 @@
-package com.everlution.environment
+package com.everlution.test.environment
 
 import com.everlution.Environment
 import grails.testing.gorm.DomainUnitTest

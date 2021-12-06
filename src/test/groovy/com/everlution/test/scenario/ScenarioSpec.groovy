@@ -1,4 +1,4 @@
-package com.everlution.scenario
+package com.everlution.test.scenario
 
 import com.everlution.Area
 import com.everlution.Environment

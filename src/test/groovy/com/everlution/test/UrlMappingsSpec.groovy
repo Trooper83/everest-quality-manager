@@ -1,5 +1,10 @@
-package com.everlution
+package com.everlution.test
 
+import com.everlution.BugController
+import com.everlution.ProjectController
+import com.everlution.ScenarioController
+import com.everlution.TestCaseController
+import com.everlution.UrlMappings
 import grails.testing.web.UrlMappingsUnitTest
 import spock.lang.Specification
 

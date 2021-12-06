@@ -1,4 +1,4 @@
-package com.everlution.step
+package com.everlution.test.step
 
 import com.everlution.Step
 import grails.testing.gorm.DomainUnitTest

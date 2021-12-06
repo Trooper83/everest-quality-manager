@@ -1,4 +1,4 @@
-package com.everlution.area
+package com.everlution.test.area
 
 import com.everlution.Area
 import grails.testing.gorm.DomainUnitTest

@@ -1,4 +1,4 @@
-package com.everlution.testcase
+package com.everlution.test.testcase
 
 import com.everlution.ProjectService
 import com.everlution.TestCase

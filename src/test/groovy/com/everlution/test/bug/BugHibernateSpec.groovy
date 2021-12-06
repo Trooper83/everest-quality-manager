@@ -1,4 +1,4 @@
-package com.everlution.bug
+package com.everlution.test.bug
 
 import com.everlution.Bug
 import com.everlution.Project

@@ -1,4 +1,4 @@
-package com.everlution.project
+package com.everlution.test.project
 
 import com.everlution.Area
 import com.everlution.Bug

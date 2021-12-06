@@ -28,11 +28,11 @@ class BootStrap {
         def orgAdminRole = new Role(authority: "ROLE_ORG_ADMIN").save(failOnError: true)
         def appAdminRole = new Role(authority: "ROLE_APP_ADMIN").save(failOnError: true)
 
-        def readOnlyUser = new Person(username: "read_only", password: "password").save(failOnError: true)
-        def basicUser = new Person(username: "basic", password: "password").save(failOnError: true)
-        def projectAdminUser = new Person(username: "project_admin", password: "password").save(failOnError: true)
-        def orgAdminUser = new Person(username: "org_admin", password: "password").save(failOnError: true)
-        def appAdminUser = new Person(username: "app_admin", password: "password").save(failOnError: true)
+        def readOnlyUser = new Person(email: "read_only@readonly.com", password: "password").save(failOnError: true)
+        def basicUser = new Person(email: "basic@basic.com", password: "password").save(failOnError: true)
+        def projectAdminUser = new Person(email: "project_admin@projectadmin.com", password: "password").save(failOnError: true)
+        def orgAdminUser = new Person(email: "org_admin@orgadmin.com", password: "password").save(failOnError: true)
+        def appAdminUser = new Person(email: "app_admin@appadmin.com", password: "password").save(failOnError: true)
 
         PersonRole.create(readOnlyUser, readOnlyRole)
         PersonRole.create(basicUser, basicRole)
