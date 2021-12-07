@@ -26,6 +26,25 @@ class AuthSpec extends GebSpec {
         "basic@basic.com" | "pass"
     }
 
+    void "login with locked or expired user displays message"(String username, String password, String message) {
+        given: "login with invalid credentials"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(username, password)
+
+        expect: "failed login message is displayed"
+        waitFor {
+            loginPage.loginFailureMessage.text() == message
+        }
+
+        where: "valid credentials"
+        username | password | message
+        Usernames.ACCOUNT_EXPIRED.username | "password" | "Sorry, your account has expired."
+        Usernames.ACCOUNT_LOCKED.username | "password" | "Sorry, your account is locked."
+        Usernames.PASSWORD_LOCKED.username | "password" | "Sorry, your password has expired."
+        Usernames.DISABLED.username | "password" | "Sorry, your account is disabled."
+    }
+
     void "welcome message displays for logged in user"() {
         given: "login as basic user"
         to LoginPage
