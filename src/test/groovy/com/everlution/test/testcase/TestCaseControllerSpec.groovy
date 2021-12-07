@@ -1,5 +1,9 @@
-package com.everlution
+package com.everlution.test.testcase
 
+import com.everlution.ProjectService
+import com.everlution.TestCase
+import com.everlution.TestCaseController
+import com.everlution.TestCaseService
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest

@@ -1,5 +1,9 @@
-package com.everlution
+package com.everlution.test.scenario
 
+import com.everlution.ProjectService
+import com.everlution.Scenario
+import com.everlution.ScenarioController
+import com.everlution.ScenarioService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException

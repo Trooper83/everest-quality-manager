@@ -1,24 +1,27 @@
-package com.everlution
+package com.everlution.test.bug
 
+import com.everlution.Bug
+import com.everlution.BugController
+import com.everlution.BugService
+import com.everlution.ProjectService
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
-import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.*
 
-class ProjectControllerSpec extends Specification implements ControllerUnitTest<ProjectController>, DomainUnitTest<Project> {
+class BugControllerSpec extends Specification implements ControllerUnitTest<BugController>, DomainUnitTest<Bug> {
 
     def populateValidParams(params) {
         assert params != null
 
-        params.name = "unit test project"
-        params.code = "SOX"
+        params.name = "controller unit test bug"
+        params.description = "this is the description"
     }
 
     void "test index action renders index view"() {
         given:
-        controller.projectService = Mock(ProjectService) {
+        controller.bugService = Mock(BugService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -32,7 +35,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the index action returns the correct model"() {
         given:
-        controller.projectService = Mock(ProjectService) {
+        controller.bugService = Mock(BugService) {
             1 * list(_) >> []
             1 * count() >> 0
         }
@@ -41,13 +44,13 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.index()
 
         then:"The model is correct"
-        !model.projectList
-        model.projectCount == 0
+        !model.bugList
+        model.bugCount == 0
     }
 
     void "test the index action param max"(Integer max, int expected) {
         given:
-        controller.projectService = Mock(ProjectService) {
+        controller.bugService = Mock(BugService) {
             1 * list(_) >> []
         }
 
@@ -66,6 +69,11 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     }
 
     void "test the create action returns the correct view"() {
+        given: "mock service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:"the create action is executed"
         controller.create()
 
@@ -74,21 +82,27 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     }
 
     void "Test the create action returns the correct model"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:"The create action is executed"
         controller.create()
 
-        then:"The model is correctly created"
-        model.project != null
+        then:"The model is correctly populated with bug and projects"
+        model.bug instanceof Bug
+        model.projects instanceof List
     }
 
     void "test save action returns 405 with not allowed method types"(String httpMethod) {
         given:
         request.method = httpMethod
         populateValidParams(params)
-        def project = new Project(params)
+        def bug = new Bug(params)
 
         when:
-        controller.save(project)
+        controller.save(bug)
 
         then:
         response.status == 405
@@ -104,14 +118,14 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.save(null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/project/index'
+        response.redirectedUrl == '/bug/index'
         flash.message == "default.not.found.message"
     }
 
     void "Test the save action correctly persists"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * save(_ as Project)
+        controller.bugService = Mock(BugService) {
+            1 * save(_ as Bug)
         }
 
         when:"The save action is executed with a valid instance"
@@ -119,39 +133,43 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
-        def project = new Project(params)
-        project.id = 1
+        def bug = new Bug(params)
+        bug.id = 1
 
-        controller.save(project)
+        controller.save(bug)
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/project/show/1'
+        response.redirectedUrl == '/bug/show/1'
         controller.flash.message == "default.created.message"
     }
 
     void "Test the save action with an invalid instance"() {
-        given:
+        given: "mock services"
         controller.projectService = Mock(ProjectService) {
-            1 * save(_ as Project) >> { Project project ->
-                throw new ValidationException("Invalid instance", project.errors)
+            1 * list(_) >> []
+        }
+        controller.bugService = Mock(BugService) {
+            1 * save(_ as Bug) >> { Bug bug ->
+                throw new ValidationException("Invalid instance", bug.errors)
             }
         }
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
-        def project = new Project()
-        controller.save(project)
+        def bug = new Bug()
+        controller.save(bug)
 
         then:"The create view is rendered again with the correct model"
-        model.project != null
+        model.bug instanceof Bug
+        model.projects instanceof List
         view == 'create'
     }
 
     void "test the show action renders show view"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
+        controller.bugService = Mock(BugService) {
+            1 * get(2) >> new Bug()
         }
 
         when:"a domain instance is passed to the show action"
@@ -163,7 +181,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the show action with a null id"() {
         given:
-        controller.projectService = Mock(ProjectService) {
+        controller.bugService = Mock(BugService) {
             1 * get(null) >> null
         }
 
@@ -176,20 +194,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the show action with a valid id"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
+        controller.bugService = Mock(BugService) {
+            1 * get(2) >> new Bug()
         }
 
         when:"A domain instance is passed to the show action"
         controller.show(2)
 
         then:"A model is populated containing the domain instance"
-        model.project instanceof Project
+        model.bug instanceof Bug
     }
 
     void "Test the edit action with a null id"() {
         given:
-        controller.projectService = Mock(ProjectService) {
+        controller.bugService = Mock(BugService) {
             1 * get(null) >> null
         }
 
@@ -202,21 +220,21 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the edit action with a valid id"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
+        controller.bugService = Mock(BugService) {
+            1 * get(2) >> new Bug()
         }
 
         when:"A domain instance is passed to the show action"
         controller.edit(2)
 
         then:"A model is populated containing the domain instance"
-        model.project instanceof Project
+        model.bug instanceof Bug
     }
 
     void "test the edit action renders edit view"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
+        controller.bugService = Mock(BugService) {
+            1 * get(2) >> new Bug()
         }
 
         when:"a domain instance is passed to the show action"
@@ -230,10 +248,10 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         given:
         request.method = httpMethod
         populateValidParams(params)
-        def project = new Project(params)
+        def bug = new Bug(params)
 
         when:
-        controller.update(project, null)
+        controller.update(bug, new RemovedItems())
 
         then:
         response.status == 405
@@ -243,20 +261,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     }
 
     void "Test the update action with a null instance"() {
-        when:"Save is called for a domain instance that doesn't exist"
+        when:"update is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(null, null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/project/index'
+        response.redirectedUrl == '/bug/index'
         flash.message == "default.not.found.message"
     }
 
     void "Test the update action correctly persists"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * saveUpdate(_ as Project, _ as RemovedItems)
+        controller.bugService = Mock(BugService) {
+            1 * saveUpdate(_ as Bug, _ as RemovedItems)
         }
 
         when:"The save action is executed with a valid instance"
@@ -264,54 +282,31 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
-        def project = new Project(params)
-        project.id = 1
+        def bug = new Bug(params)
+        bug.id = 1
 
-        controller.update(project, new RemovedItems())
+        controller.update(bug, new RemovedItems())
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/project/show/1'
+        response.redirectedUrl == '/bug/show/1'
         controller.flash.message == "default.updated.message"
     }
 
     void "Test the update action with an invalid instance"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
-                throw new ValidationException("Invalid instance", project.errors)
+        controller.bugService = Mock(BugService) {
+            1 * saveUpdate(_ as Bug, _ as RemovedItems) >> { Bug bug, RemovedItems removedItems ->
+                throw new ValidationException("Invalid instance", bug.errors)
             }
         }
 
-        when:"The save action is executed with an invalid instance"
+        when:"The saveUpdate action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new Project(), new RemovedItems())
+        controller.update(new Bug(), new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
-        model.project instanceof Project
-        view == 'edit'
-    }
-
-    void "Test the update action with constraint violation"() {
-        given:
-        controller.projectService = Mock(ProjectService) {
-            1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
-                throw new DataIntegrityViolationException("Foreign Key constraint violation")
-            }
-        }
-
-        Project project = new Project(name: "test", code: "ccc").save()
-        params.id = project.id
-
-        when:"The update action is executed"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-
-        controller.update(project, new RemovedItems())
-
-        then:"The edit view is rendered again with the correct model"
-        model.project instanceof Project
-        controller.flash.error == "Removed entity has associated items and cannot be deleted"
+        model.bug instanceof Bug
         view == 'edit'
     }
 
@@ -336,13 +331,13 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.delete(null)
 
         then:"A 404 is returned"
-        response.redirectedUrl == '/project/index'
+        response.redirectedUrl == '/bug/index'
         flash.message == "default.not.found.message"
     }
 
     void "Test the delete action with an instance"() {
         given:
-        controller.projectService = Mock(ProjectService) {
+        controller.bugService = Mock(BugService) {
             1 * delete(2)
         }
 
@@ -352,59 +347,8 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.delete(2)
 
         then:"The user is redirected to index"
-        response.redirectedUrl == '/project/index'
+        response.redirectedUrl == '/bug/index'
         flash.message == "default.deleted.message"
-    }
-
-    void "Test the getProjectItems action with a null instance"() {
-        when:"The delete action is called for a null instance"
-        request.method = 'GET'
-        controller.getProjectItems(null)
-
-        then:"A 404 is returned"
-        response.status == 404
-    }
-
-    void "Test the getProjectItems action with an instance"() {
-        given: "a valid project"
-        params.name = "unit test project"
-        params.code = "SOX"
-        params.areas = [new Area(name:"testing")]
-        def project = new Project(params)
-
-        when:"The domain instance is passed to the getAreas action"
-        request.method = 'GET'
-        controller.getProjectItems(project)
-
-        then:"areas are returned"
-        response.status == 200
-    }
-
-    void "test the getProjectItems action method"(String httpMethod) {
-        when:"The domain instance is passed to the getProjectItems action"
-        request.method = httpMethod
-        controller.getProjectItems(null)
-
-        then:
-        response.status == 405
-
-        where:
-        httpMethod << ["DELETE", "PUT", "POST", "PATCH"]
-    }
-
-    void "getProjectItems returns areas and environments from project"() {
-        given: "project with area and environments"
-        def areaList = [new Area(name: "area 51")]
-        def envList = [new Environment(name: "environment 51")]
-        def project = new Project(name: "testing project", code: "tpc", areas: areaList,
-                environments: envList).save()
-
-        when: "call action"
-        controller.getProjectItems(project)
-
-        then: "items returned"
-        model.areas == areaList
-        model.environments == envList
     }
 }
 

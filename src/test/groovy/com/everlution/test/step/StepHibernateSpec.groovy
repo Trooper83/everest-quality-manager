@@ -1,5 +1,9 @@
-package com.everlution
+package com.everlution.test.step
 
+import com.everlution.Bug
+import com.everlution.Project
+import com.everlution.Step
+import com.everlution.TestCase
 import grails.test.hibernate.HibernateSpec
 
 class StepHibernateSpec extends HibernateSpec {

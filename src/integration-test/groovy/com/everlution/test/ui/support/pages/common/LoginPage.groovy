@@ -6,9 +6,9 @@ class LoginPage extends BasePage {
 
     static content = {
         loginButton { $(id: "submit") }
-        loginFailureMessage { $("div.login_message")}
+        loginFailureMessage { $("div.alert")}
         passwordTextField { $(id: "password") }
-        usernameTextField { $(id: "username") }
+        emailTextField { $(id: "email") }
     }
 
     /**
@@ -17,7 +17,7 @@ class LoginPage extends BasePage {
      * @param password
      */
     void login(String username, String password) {
-        usernameTextField << username
+        emailTextField << username
         passwordTextField << password
         loginButton.click()
     }

@@ -1,23 +1,25 @@
-package com.everlution
+package com.everlution.test.bug
 
+import com.everlution.Area
+import com.everlution.Bug
+import com.everlution.Environment
+import com.everlution.Project
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
 
-class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
+class BugSpec extends Specification implements DomainUnitTest<Bug> {
 
     @Shared int id
 
     void "test instances are persisted"() {
         setup:
-        def project = new Project(name: "tc domain project", code: "tdp")
-        new TestCase(creator: "test", name: "First Test Case", description: "test",
-                executionMethod: "Manual", type: "UI", project: project).save()
-        new TestCase(creator: "test",name: "Second Test Case", description: "test",
-                executionMethod: "Automated", type: "API", project: project).save()
+        def project = new Project(name: "tc domain project321", code: "td5").save()
+        new Bug(creator: "test", name: "First Bug", description: "test", project: project).save()
+        new Bug(creator: "test",name: "Second Bug", description: "test", project: project).save()
 
         expect:
-        TestCase.count() == 2
+        Bug.count() == 2
     }
 
     void "test domain instance"() {
@@ -29,10 +31,10 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.hashCode() == id
 
         when:
-        domain.name = "Test case name"
+        domain.name = "bug name"
 
         then:
-        domain.name == "Test case name"
+        domain.name == "bug name"
     }
 
     void "test we get a new domain"() {
@@ -114,94 +116,6 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.validate(["description"])
     }
 
-    void "test steps can be null"() {
-        when:
-        domain.steps = null
-
-        then:
-        domain.validate(["steps"])
-    }
-
-    void "test execution method cannot be null"() {
-        when:
-        domain.executionMethod = null
-
-        then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "nullable"
-    }
-
-    void "test execution method cannot be blank"() {
-        when:
-        domain.executionMethod = ""
-
-        then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "blank"
-    }
-
-    void "test execution method value in list"(String value) {
-        when:
-        domain.executionMethod = value
-
-        then:
-        domain.validate(["executionMethod"])
-
-        where:
-        value       | _
-        "Automated" | _
-        "Manual"    | _
-    }
-
-    void "test execution method value not in list"() {
-        when:
-        domain.executionMethod = "test"
-
-        then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "not.inList"
-    }
-
-    void "test type cannot be null"() {
-        when:
-        domain.type = null
-
-        then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "nullable"
-    }
-
-    void "test type cannot be blank"() {
-        when:
-        domain.type = ""
-
-        then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "blank"
-    }
-
-    void "test type value in list"(String value) {
-        when:
-        domain.type = value
-
-        then:
-        domain.validate(["type"])
-
-        where:
-        value | _
-        "API" | _
-        "UI"  | _
-    }
-
-    void "test type value not in list"() {
-        when:
-        domain.type = "test"
-
-        then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "not.inList"
-    }
-
     void "test creator cannot be null"() {
         when:
         domain.creator = null
@@ -237,15 +151,6 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
         then: "validation passes"
         domain.validate(["creator"])
-    }
-
-    void "project cannot be null"() {
-        when:
-        domain.project = null
-
-        then:
-        !domain.validate(["project"])
-        domain.errors["project"].code == "nullable"
     }
 
     void "area can be null"() {
@@ -330,6 +235,30 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.validate(["environments"])
     }
 
+    void "environment fails to validate for project with no environments"() {
+        when:
+        def e = new Environment(name: "test env").save()
+        def p = new Project(name: "testing project areas", code: "tpa").save()
+        domain.project = p
+        domain.environments = [e]
+
+        then:
+        !domain.validate(["environments"])
+        domain.errors["environments"].code == "validator.invalid"
+    }
+
+    void "environment not in project fails to validate for project with environments"() {
+        when:
+        def e = new Environment(name: "test env").save()
+        def p = new Project(name: "testing project areas", code: "tpa", environments: [new Environment(name: "failed")]).save()
+        domain.project = p
+        domain.environments = [e]
+
+        then:
+        !domain.validate(["environments"])
+        domain.errors["environments"].code == "validator.invalid"
+    }
+
     void "environment validates with multiple environments in project"() {
         when:
         def e = new Environment(name: "test env")
@@ -355,27 +284,20 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.errors["environments"].code == "validator.invalid"
     }
 
-    void "environment fails to validate for project with no environments"() {
+    void "project cannot be null"() {
         when:
-        def e = new Environment(name: "test env").save()
-        def p = new Project(name: "testing project areas", code: "tpa").save()
-        domain.project = p
-        domain.environments = [e]
+        domain.project = null
 
         then:
-        !domain.validate(["environments"])
-        domain.errors["environments"].code == "validator.invalid"
+        !domain.validate(["project"])
+        domain.errors["project"].code == "nullable"
     }
 
-    void "environment not in project fails to validate for project with environments"() {
+    void "steps can be null"() {
         when:
-        def e = new Environment(name: "test env").save()
-        def p = new Project(name: "testing project areas", code: "tpa", environments: [new Environment(name: "failed")]).save()
-        domain.project = p
-        domain.environments = [e]
+        domain.steps = null
 
         then:
-        !domain.validate(["environments"])
-        domain.errors["environments"].code == "validator.invalid"
+        domain.validate(["steps"])
     }
 }

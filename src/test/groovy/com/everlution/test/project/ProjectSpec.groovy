@@ -1,11 +1,11 @@
-package com.everlution
+package com.everlution.test.project
 
+import com.everlution.Area
+import com.everlution.Environment
+import com.everlution.Project
 import grails.testing.gorm.DomainUnitTest
-import org.hibernate.SessionFactory
 import spock.lang.Shared
 import spock.lang.Specification
-
-import javax.persistence.PersistenceException
 
 class ProjectSpec extends Specification implements DomainUnitTest<Project> {
 
@@ -33,13 +33,6 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
 
         then: "domain name equals the previous set value"
         domain.name == "project name"
-    }
-
-    void "test we get a new domain"() {
-        expect:
-        domain != null
-        domain.name == null
-        System.identityHashCode(domain) != id
     }
 
     void "project name cannot be null"() {

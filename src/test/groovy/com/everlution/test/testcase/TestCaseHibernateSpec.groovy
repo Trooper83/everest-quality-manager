@@ -1,5 +1,8 @@
-package com.everlution
+package com.everlution.test.testcase
 
+import com.everlution.Project
+import com.everlution.Step
+import com.everlution.TestCase
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 

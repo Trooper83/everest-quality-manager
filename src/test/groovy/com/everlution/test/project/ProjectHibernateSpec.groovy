@@ -1,5 +1,11 @@
-package com.everlution
+package com.everlution.test.project
 
+import com.everlution.Area
+import com.everlution.Bug
+import com.everlution.Environment
+import com.everlution.Project
+import com.everlution.Scenario
+import com.everlution.TestCase
 import grails.test.hibernate.HibernateSpec
 
 import javax.persistence.PersistenceException
