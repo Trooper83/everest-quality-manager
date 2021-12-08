@@ -296,6 +296,9 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
             1 * save(_ as Scenario) >> { Scenario scenario ->
                 throw new ValidationException("Invalid instance", scenario.errors)
             }
+            1 * read(_) >> {
+                Mock(Scenario)
+            }
         }
 
         when:"save action is executed with an invalid instance"
@@ -305,7 +308,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         then:"edit view is rendered again with the correct model"
         model.scenario instanceof Scenario
-        view == 'edit'
+        view == '/scenario/edit'
     }
 
     void "test the delete action method"(String httpMethod) {

@@ -10,6 +10,8 @@ interface IBugService {
 
     void delete(Serializable id)
 
+    Bug read(Serializable id)
+
     Bug save(Bug bug)
 
 }

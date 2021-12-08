@@ -95,7 +95,9 @@ class ScenarioController {
         try {
             scenarioService.save(scenario)
         } catch (ValidationException e) {
-            respond scenario.errors, view:'edit'
+            def scn = scenarioService.read(scenario.id)
+            scn.errors = e.errors
+            render view:'edit', model: [scenario: scn]
             return
         }
 

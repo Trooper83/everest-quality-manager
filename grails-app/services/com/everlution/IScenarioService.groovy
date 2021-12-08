@@ -10,6 +10,8 @@ interface IScenarioService {
 
     void delete(Serializable id)
 
+    Scenario read(Serializable id)
+
     Scenario save(Scenario scenario)
 
 }

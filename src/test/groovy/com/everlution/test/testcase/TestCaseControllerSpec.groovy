@@ -302,6 +302,9 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
             1 * saveUpdate(_ as TestCase, _ as RemovedItems) >> { TestCase testCase, RemovedItems removedItems ->
                 throw new ValidationException("Invalid instance", testCase.errors)
             }
+            1 * read(_) >> {
+                Mock(TestCase)
+            }
         }
 
         when:"the action is executed with an invalid instance"
@@ -311,7 +314,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         then:"the edit view is rendered again with the correct model"
         model.testCase != null
-        view == 'edit'
+        view == '/testCase/edit'
     }
 
     void "test the delete action method"(String httpMethod) {

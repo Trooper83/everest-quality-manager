@@ -10,6 +10,8 @@ interface IProjectService {
 
     void delete(Serializable id)
 
+    Project read(Serializable id)
+
     Project save(Project project)
 
 }

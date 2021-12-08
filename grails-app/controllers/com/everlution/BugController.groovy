@@ -1,14 +1,17 @@
 package com.everlution
 
 import com.everlution.command.RemovedItems
+import grails.core.support.proxy.ProxyHandler
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
+
 import static org.springframework.http.HttpStatus.*
 
 class BugController {
 
     BugService bugService
     ProjectService projectService
+    ProxyHandler proxyHandler
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -95,7 +98,9 @@ class BugController {
         try {
             bugService.saveUpdate(bug, removedItems)
         } catch (ValidationException e) {
-            respond bug.errors, view:'edit'
+            def b = bugService.read(bug.id)
+            b.errors = e.errors
+            render view: 'edit', model: [bug: b]
             return
         }
 

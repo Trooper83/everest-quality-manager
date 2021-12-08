@@ -8,6 +8,8 @@ import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.hibernate.exception.ConstraintViolationException
+import org.springframework.validation.Errors
 import spock.lang.*
 
 class BugControllerSpec extends Specification implements ControllerUnitTest<BugController>, DomainUnitTest<Bug> {
@@ -292,11 +294,14 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         controller.flash.message == "default.updated.message"
     }
 
-    void "Test the update action with an invalid instance"() {
+    void "update action with an invalid instance"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * saveUpdate(_ as Bug, _ as RemovedItems) >> { Bug bug, RemovedItems removedItems ->
                 throw new ValidationException("Invalid instance", bug.errors)
+            }
+            1 * read(_) >> {
+                Mock(Bug)
             }
         }
 
@@ -307,7 +312,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
 
         then:"The edit view is rendered again with the correct model"
         model.bug instanceof Bug
-        view == 'edit'
+        view == '/bug/edit'
     }
 
     void "test the delete action method"(String httpMethod) {

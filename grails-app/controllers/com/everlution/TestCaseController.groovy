@@ -95,8 +95,10 @@ class TestCaseController {
 
         try {
             testCaseService.saveUpdate(testCase, removedItems)
-        } catch (ValidationException ignored) {
-            respond testCase.errors, view:"edit"
+        } catch (ValidationException e) {
+            def tc = testCaseService.read(testCase.id)
+            tc.errors = e.errors
+            render view:'edit', model: [testCase: tc]
             return
         }
 
