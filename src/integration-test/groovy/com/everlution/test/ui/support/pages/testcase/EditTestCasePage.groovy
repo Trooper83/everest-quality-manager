@@ -20,7 +20,7 @@ class EditTestCasePage extends BasePage {
         nameInput { $("#name") }
         projectNameField { $("[data-test-id=edit-project-name]") }
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
-        testStepTable { module StepTableModule }
+        stepsTable { module StepTableModule }
         typeOptions { $("#type>option") }
         updateButton { $("[data-test-id=edit-update-button]")}
     }

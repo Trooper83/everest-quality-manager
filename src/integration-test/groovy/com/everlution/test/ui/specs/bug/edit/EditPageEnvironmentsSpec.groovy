@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.bug.edit
 
+import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Environment
@@ -90,5 +91,38 @@ class EditPageEnvironmentsSpec extends GebSpec {
         then: "environment defaults with no selection"
         EditBugPage page = browser.page(EditBugPage)
         page.environmentsSelect().selectedText.empty
+    }
+
+    void "exception handled when validation error present and environment set to null"() {
+        given: "project & bug instances with areas"
+        def env = new Environment(name: "area testing env I")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
+        def bug = bugService.save(new Bug(name: "env testing bug II", project: project, creator: "testing",
+                environments: [env]))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to edit page"
+        go "/bug/edit/${bug.id}"
+
+        and: "bug.environment is set to null"
+        EditBugPage page = browser.page(EditBugPage)
+        page.environmentsSelect().selected = [""]
+
+        expect: "env set to null"
+        page.environmentsSelect().selectedText == ["--No Environment--"]
+
+        when: "add empty steps"
+        page.stepsTable.addStep("", "")
+
+        and: "submit"
+        page.editBug()
+
+        then: "at the edit page"
+        at EditBugPage
     }
 }

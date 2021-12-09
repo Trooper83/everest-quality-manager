@@ -9,6 +9,7 @@ import com.everlution.TestStepService
 import com.everlution.command.RemovedItems
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
+import grails.validation.ValidationException
 import org.hibernate.SessionFactory
 import spock.lang.Specification
 
@@ -33,6 +34,11 @@ class BugServiceSpec extends Specification {
 
         expect:
         bugService.get(1) != null
+    }
+
+    void "get returns null for not found id"() {
+        expect:
+        bugService.get(9999999999) == null
     }
 
     void "test list with no args"() {
@@ -113,6 +119,24 @@ class BugServiceSpec extends Specification {
         bug.id != null
     }
 
+    void "save throws exception with validation fail"() {
+        when:
+        Bug bug = new Bug(creator: "Athena", description: "Found a bug123", name: "Name of the bug123")
+        bugService.save(bug)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "saveUpdate throws exception with validation fail"() {
+        when:
+        Bug bug = new Bug(creator: "Athena", description: "Found a bug123", name: "Name of the bug123")
+        bugService.saveUpdate(bug, new RemovedItems())
+
+        then:
+        thrown(ValidationException)
+    }
+
     void "saveUpdate removes steps"() {
         given: "valid test case with step"
         def project = projectService.list(max: 1).first()
@@ -132,5 +156,18 @@ class BugServiceSpec extends Specification {
         then: "step is removed"
         bug.steps.size() == 0
         bugService.get(bug.id).steps.size() == 0
+    }
+
+    void "read returns instance"() {
+        setup:
+        def id = setupData()
+
+        expect:
+        bugService.read(id) instanceof Bug
+    }
+
+    void "read returns null for not found id"() {
+        expect:
+        bugService.read(999999999) == null
     }
 }

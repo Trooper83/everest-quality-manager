@@ -39,13 +39,13 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         System.identityHashCode(domain) != id
     }
 
-    void "test action cannot be null"() {
+    void "action can be null when result is not"() {
         when:
         domain.action = null
+        domain.result = "test"
 
         then:
-        !domain.validate(["action"])
-        domain.errors["action"].code == "nullable"
+        domain.validate(["action"])
     }
 
     void "test action can be blank"() {
@@ -54,6 +54,16 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
         then:
         domain.validate(["action"])
+    }
+
+    void "validation fails if action and result are null"() {
+        when:
+        domain.action = null
+        domain.result = null
+
+        then:
+        !domain.validate(["action"])
+        domain.errors["action"].code == "validator.invalid"
     }
 
     void "test action cannot exceed 500 characters"() {
@@ -75,13 +85,23 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.validate(["action"])
     }
 
-    void "test result cannot be null"() {
+    void "validation fails if result and action are null"() {
         when:
         domain.result = null
+        domain.action = null
 
         then:
         !domain.validate(["result"])
-        domain.errors["result"].code == "nullable"
+        domain.errors["result"].code == "validator.invalid"
+    }
+
+    void "result can be null when action is not"() {
+        when:
+        domain.result = null
+        domain.action = "test"
+
+        then:
+        domain.validate(["result"])
     }
 
     void "test result can be blank"() {

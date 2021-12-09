@@ -16,6 +16,7 @@ import com.everlution.command.RemovedItems
 import com.everlution.test.support.DataFactory
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
+import grails.validation.ValidationException
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -43,6 +44,13 @@ class ProjectServiceSpec extends Specification {
 
         expect:
         projectService.get(1) != null
+    }
+
+    void "get returns null for not found id"() {
+        setupData()
+
+        expect:
+        projectService.get(9999999999) == null
     }
 
     void "test list with no args"() {
@@ -103,6 +111,15 @@ class ProjectServiceSpec extends Specification {
 
         then:
         project.id != null
+    }
+
+    void "save throws exception with validation fail"() {
+        when:
+        Project project = new Project(name: "testing save project")
+        projectService.save(project)
+
+        then:
+        thrown(ValidationException)
     }
 
     void "delete project removes all scenarios"() {
@@ -182,6 +199,15 @@ class ProjectServiceSpec extends Specification {
         areaService.get(area.id) == null
     }
 
+    void "saveUpdate throws exception with validation fail"() {
+        when:
+        Project project = new Project(name: "testing save project")
+        projectService.saveUpdate(project, new RemovedItems())
+
+        then:
+        thrown(ValidationException)
+    }
+
     void "saveUpdate removes area"() {
         given: "project with area"
         def area = new Area(name: "area name").save()
@@ -238,5 +264,18 @@ class ProjectServiceSpec extends Specification {
 
         then: "env is removed"
         project.environments.size() == 0
+    }
+
+    void "read returns instance"() {
+        setup:
+        def id = setupData()
+
+        expect:
+        projectService.read(id) instanceof Project
+    }
+
+    void "read returns null for not found id"() {
+        expect:
+        projectService.read(999999999) == null
     }
 }

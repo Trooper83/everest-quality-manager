@@ -5,6 +5,7 @@ import com.everlution.Scenario
 import com.everlution.ScenarioService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
+import grails.validation.ValidationException
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -33,6 +34,11 @@ class ScenarioServiceSpec extends Specification {
 
         expect:
         scenarioService.get(id) != null
+    }
+
+    void "get returns null for not found id"() {
+        expect:
+        scenarioService.get(9999999999) == null
     }
 
     void "test list with no args"() {
@@ -97,6 +103,16 @@ class ScenarioServiceSpec extends Specification {
         scenario.id != null
     }
 
+    void "save throws validation exception for failed validation"() {
+        when:
+        Scenario scenario = new Scenario(creator: "test", name: "test", description: "desc",
+                executionMethod: "Automated", type: "API")
+        scenarioService.save(scenario)
+
+        then:
+        thrown(ValidationException)
+    }
+
     void "test delete all by project"() {
         Long id = setupData()
 
@@ -112,5 +128,18 @@ class ScenarioServiceSpec extends Specification {
 
         then:
         Scenario.findAllByProject(project).size() == 0
+    }
+
+    void "read returns instance"() {
+        setup:
+        def id = setupData()
+
+        expect:
+        scenarioService.read(id) instanceof Scenario
+    }
+
+    void "read returns null for not found id"() {
+        expect:
+        scenarioService.read(999999999) == null
     }
 }

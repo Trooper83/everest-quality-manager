@@ -285,6 +285,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
                 throw new ValidationException("Invalid instance", project.errors)
             }
+            1 * read(_) >> {
+                Mock(Project)
+            }
         }
 
         when:"The save action is executed with an invalid instance"
@@ -294,7 +297,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:"The edit view is rendered again with the correct model"
         model.project instanceof Project
-        view == 'edit'
+        view == '/project/edit'
     }
 
     void "Test the update action with constraint violation"() {
@@ -302,6 +305,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projectService = Mock(ProjectService) {
             1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
                 throw new DataIntegrityViolationException("Foreign Key constraint violation")
+            }
+            1 * read(_) >> {
+                Mock(Project)
             }
         }
 
@@ -317,7 +323,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         then:"The edit view is rendered again with the correct model"
         model.project instanceof Project
         controller.flash.error == "Removed entity has associated items and cannot be deleted"
-        view == 'edit'
+        view == '/project/edit'
     }
 
     void "test the delete action method"(String httpMethod) {

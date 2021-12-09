@@ -10,6 +10,8 @@ interface ITestCaseService {
 
     void delete(Serializable id)
 
+    TestCase read(Serializable id)
+
     TestCase save(TestCase testCase)
 
 }

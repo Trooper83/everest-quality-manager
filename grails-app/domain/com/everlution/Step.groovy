@@ -9,7 +9,17 @@ class Step {
     static belongsTo = [Bug, TestCase]
 
     static constraints = {
-        action blank: true, maxSize: 500, nullable: false
-        result blank: true, maxSize: 500, nullable: false
+        action blank: true, maxSize: 500, nullable: true, validator: {
+            val, Step obj ->
+                if(val == null && obj.result == null) {
+                    return false
+            }
+        }
+        result blank: true, maxSize: 500, nullable: true, validator: {
+            val, Step obj ->
+                if(val == null && obj.action == null) {
+                    return false
+                }
+        }
     }
 }

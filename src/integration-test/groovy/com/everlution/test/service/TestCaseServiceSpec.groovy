@@ -9,6 +9,7 @@ import com.everlution.TestStepService
 import com.everlution.command.RemovedItems
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
+import grails.validation.ValidationException
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -39,6 +40,11 @@ class TestCaseServiceSpec extends Specification {
 
         expect:
         testCaseService.get(id) != null
+    }
+
+    void "get returns null for not found id"() {
+        expect:
+        testCaseService.get(99999999) == null
     }
 
     void "test list with no args"() {
@@ -103,6 +109,26 @@ class TestCaseServiceSpec extends Specification {
         testCase.id != null
     }
 
+    void "save throws validation exception for failed validation"() {
+        when:
+        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
+                executionMethod: "Automated", type: "API")
+        testCaseService.save(testCase)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "saveUpdate throws validation exception for failed validation"() {
+        when:
+        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
+                executionMethod: "Automated", type: "API")
+        testCaseService.save(testCase)
+
+        then:
+        thrown(ValidationException)
+    }
+
     void "test delete all by project"() {
         Long caseId = setupData()
 
@@ -138,5 +164,18 @@ class TestCaseServiceSpec extends Specification {
 
         then: "step is removed"
         testCase.steps.size() == 0
+    }
+
+    void "read returns instance"() {
+        setup:
+        def id = setupData()
+
+        expect:
+        testCaseService.read(id) instanceof TestCase
+    }
+
+    void "read returns null for not found id"() {
+        expect:
+        testCaseService.read(999999999) == null
     }
 }

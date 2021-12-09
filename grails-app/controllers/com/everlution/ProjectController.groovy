@@ -95,13 +95,15 @@ class ProjectController {
 
         try {
             projectService.saveUpdate(project, removedItems)
-        } catch (ValidationException ignored) {
-            respond project.errors, view:'edit'
+        } catch (ValidationException e) {
+            def p = projectService.read(project.id)
+            p.errors = e.errors
+            render view:'edit', model: [project: p]
             return
         } catch (DataIntegrityViolationException ignored) {
             flash.error = 'Removed entity has associated items and cannot be deleted'
-            project = Project.read(params.id)
-            respond project, view:'edit'
+            def p = projectService.read(params.id)
+            render view:'edit', model: [project: p]
             return
         }
 
