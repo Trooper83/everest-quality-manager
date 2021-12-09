@@ -5,6 +5,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
@@ -74,5 +75,38 @@ class EditPageAreaSpec extends GebSpec {
         then: "testCase.area is selected"
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.areaSelect().selectedText == ""
+    }
+
+    void "exception handled when validation error present and area set to null"() {
+        given: "project & test case instances with areas"
+        def area = new Area(name: "area testing area II")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
+        def testCase = testCaseService.save(new TestCase(name: "area testing test case II", project: project,
+                creator: "testing", executionMethod: "Automated", type: "UI", area: area))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to edit page"
+        go "/testCase/edit/${testCase.id}"
+
+        and: "testCase.area is set to null"
+        def page = browser.page(EditTestCasePage)
+        page.areaSelect().selected = ""
+
+        expect: "area set to null"
+        page.areaSelect().selectedText == ""
+
+        when: "add empty steps"
+        page.stepsTable.addStep("", "")
+
+        and: "submit"
+        page.editTestCase()
+
+        then: "at the edit page"
+        at EditTestCasePage
     }
 }

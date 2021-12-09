@@ -83,4 +83,37 @@ class EditPageEnvironmentsSpec extends GebSpec {
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.environmentsSelect().selected.empty
     }
+
+    void "exception handled when validation error present and area set to null"() {
+        given: "project & test case instances with areas"
+        def env = new Environment(DataFactory.environment())
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
+        def testCase = testCaseService.save(new TestCase(name: "area testing test case II", project: project,
+                creator: "testing", executionMethod: "Automated", type: "UI", environments: [env]))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to edit page"
+        go "/testCase/edit/${testCase.id}"
+
+        and: "testCase.env is set to null"
+        def page = browser.page(EditTestCasePage)
+        page.environmentsSelect().selected = [""]
+
+        expect: "env set to null"
+        page.environmentsSelect().selectedText == ["--No Environment--"]
+
+        when: "add empty steps"
+        page.stepsTable.addStep("", "")
+
+        and: "submit"
+        page.editTestCase()
+
+        then: "at the edit page"
+        at EditTestCasePage
+    }
 }

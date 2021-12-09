@@ -7,7 +7,6 @@ import com.everlution.ProjectService
 import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.TestStepService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -69,7 +68,7 @@ class EditTestCaseSpec extends GebSpec {
 
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testStepTable.addStep("added action", "added result")
+        page.stepsTable.addStep("added action", "added result")
         page.editTestCase()
 
         then: "at show view with added step"
@@ -95,7 +94,7 @@ class EditTestCaseSpec extends GebSpec {
 
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testStepTable.editTestStep(0, "edited action", "edited result")
+        page.stepsTable.editTestStep(0, "edited action", "edited result")
         page.editTestCase()
 
         then: "at show view with edited step values"
@@ -123,10 +122,10 @@ class EditTestCaseSpec extends GebSpec {
         expect:
         step.id != null
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testStepTable.getRowCount() == 1
+        page.stepsTable.getRowCount() == 1
 
         when: "edit the test case"
-        page.testStepTable.removeRow(0)
+        page.stepsTable.removeRow(0)
         page.editTestCase()
 
         then: "at show view with edited step values"

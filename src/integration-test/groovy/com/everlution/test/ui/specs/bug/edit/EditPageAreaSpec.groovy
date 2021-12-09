@@ -5,6 +5,7 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -71,5 +72,37 @@ class EditPageAreaSpec extends GebSpec {
         then: "area defaults with no selection"
         EditBugPage page = browser.page(EditBugPage)
         page.areaSelect().selectedText == ""
+    }
+
+    void "exception handled when validation error present and area set to null"() {
+        given: "project & bug instances with areas"
+        def area = new Area(name: "area testing area II")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
+        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, creator: "testing", area: area))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to edit page"
+        go "/bug/edit/${bug.id}"
+
+        and: "bug.area is set to null"
+        EditBugPage page = browser.page(EditBugPage)
+        page.areaSelect().selected = ""
+
+        expect: "area set to null"
+        page.areaSelect().selectedText == ""
+
+        when: "add empty steps"
+        page.stepsTable.addStep("", "")
+
+        and: "submit"
+        page.editBug()
+
+        then: "at the edit page"
+        at EditBugPage
     }
 }

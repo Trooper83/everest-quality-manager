@@ -35,13 +35,13 @@ class EditPageStepsSpec extends GebSpec {
 
         expect: "row count is 1"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testStepTable.getRowCount() == 1
+        page.stepsTable.getRowCount() == 1
 
         when: "add a test step row"
-        page.testStepTable.addRow()
+        page.stepsTable.addRow()
 
         then: "row count is 2"
-        page.testStepTable.getRowCount() == 2
+        page.stepsTable.getRowCount() == 2
     }
 
     void "remove test step row"() {
@@ -62,16 +62,16 @@ class EditPageStepsSpec extends GebSpec {
 
         and: "add a row"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testStepTable.addRow()
+        page.stepsTable.addRow()
 
         expect: "row count is 2"
-        page.testStepTable.getRowCount() == 2
+        page.stepsTable.getRowCount() == 2
 
         when: "remove the second row"
-        page.testStepTable.removeRow(1)
+        page.stepsTable.removeRow(1)
 
         then: "row count is 1"
-        page.testStepTable.getRowCount() == 1
+        page.stepsTable.getRowCount() == 1
     }
 
     void "removing step adds hidden input"() {
@@ -95,7 +95,7 @@ class EditPageStepsSpec extends GebSpec {
 
         when: "remove step"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testStepTable.removeRow(0)
+        page.stepsTable.removeRow(0)
 
         then: "hidden input added"
         page.stepRemovedInput.size() == 1
