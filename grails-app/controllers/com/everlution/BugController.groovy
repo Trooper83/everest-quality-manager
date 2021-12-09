@@ -1,7 +1,6 @@
 package com.everlution
 
 import com.everlution.command.RemovedItems
-import grails.core.support.proxy.ProxyHandler
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
@@ -11,7 +10,6 @@ class BugController {
 
     BugService bugService
     ProjectService projectService
-    ProxyHandler proxyHandler
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 

@@ -4,14 +4,11 @@ import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
-import com.github.javafaker.Faker
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
 class CreatePageStepsSpec extends GebSpec {
-
-    ProjectService projectService
 
     def setup() {
         given: "login as a basic user"
