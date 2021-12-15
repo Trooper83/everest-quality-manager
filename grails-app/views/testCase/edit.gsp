@@ -30,7 +30,7 @@
                     <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" id="area" from="${testCase.project.areas}"
-                                  optionKey="id" optionValue="name" value="${testCase.area?.id}"
+                                  optionKey="id" optionValue="name" value="${fieldValue(bean: testCase, field: 'area.id')}"
                                   noSelection="${['':'']}"
                         />
                     </div>

@@ -61,6 +61,18 @@ class EditTestCasePage extends BasePage {
     }
 
     /**
+     * fills in all data but does not submit the form
+     */
+    void completeEditForm(String name, String description, String area, List<String> environments, String method, String type) {
+        nameInput = name
+        descriptionInput = description
+        areaSelect().selected = area
+        environmentsSelect().selected = environments
+        executionMethodSelect().selected = method
+        typeSelect().selected = type
+    }
+
+    /**
      * clicks the update button
      */
     void editTestCase() {
@@ -71,12 +83,7 @@ class EditTestCasePage extends BasePage {
      * edits a test case with the supplied data
      */
     void editTestCase(String name, String description, String area, List<String> environments, String method, String type) {
-        nameInput = name
-        descriptionInput = description
-        areaSelect().selected = area
-        environmentsSelect().selected = environments
-        executionMethodSelect().selected = method
-        typeSelect().selected = type
+        completeEditForm(name, description, area, environments, method, type)
         updateButton.click()
     }
 
