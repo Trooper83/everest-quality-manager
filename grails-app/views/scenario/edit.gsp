@@ -37,7 +37,7 @@
                                   noSelection="${['':'--No Environment--']}" multiple="true"
                         />
                     </div>
-                    <f:all bean="scenario" except="area, environments, project, creator, gherkin"/>
+                    <f:all bean="scenario" except="area, environments, project, person, gherkin"/>
                     <div class="fieldcontain">
                         <label for="gherkin">Gherkin</label>
                         <g:textArea name="gherkin"/>

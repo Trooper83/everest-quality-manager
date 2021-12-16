@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.scenario
 
+import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
@@ -13,6 +14,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class DeleteScenarioSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     ScenarioService scenarioService
 
@@ -20,7 +22,8 @@ class DeleteScenarioSpec extends GebSpec {
 
     def setup() {
         def project = projectService.list(max: 1).first()
-        def scn = new Scenario(name: "delete scenario", creator: "testing creator", project: project,
+        def person = personService.list(max: 1).first()
+        def scn = new Scenario(name: "delete scenario", person: person, project: project,
                 executionMethod: "Manual", type: "UI")
         id = scenarioService.save(scn).id
     }

@@ -1,6 +1,8 @@
 package com.everlution.test.ui.specs.scenario.edit
 
 import com.everlution.Environment
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Scenario
@@ -11,12 +13,20 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.EditScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditPageEnvironmentsSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     ScenarioService scenarioService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "environment select populates with only elements within the associated project"() {
         setup: "project & scenario instances with environments"
@@ -24,7 +34,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
         def sd = DataFactory.scenario()
-        def scn = new Scenario(creator: sd.creator, name: sd.name, executionMethod: sd.executionMethod,
+        def scn = new Scenario(person: person, name: sd.name, executionMethod: sd.executionMethod,
                 type: sd.type, project: project, environments: [env])
         def scenario = scenarioService.save(scn)
 
@@ -49,7 +59,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def p = new Project(name: pd.name, code: pd.code, environments: [env, env1])
         def project = projectService.save(p)
         def sd = DataFactory.scenario()
-        def scn = new Scenario(creator: sd.creator, name: sd.name, executionMethod: sd.executionMethod,
+        def scn = new Scenario(person: person, name: sd.name, executionMethod: sd.executionMethod,
                 type: sd.type, project: project, environments: [env, env1])
         def scenario = scenarioService.save(scn)
 
@@ -71,7 +81,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code))
         def sd = DataFactory.scenario()
-        def scn = new Scenario(creator: sd.creator, name: sd.name, executionMethod: sd.executionMethod,
+        def scn = new Scenario(person: person, name: sd.name, executionMethod: sd.executionMethod,
                 type: sd.type, project: project)
         def scenario = scenarioService.save(scn)
 

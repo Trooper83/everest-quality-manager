@@ -1,5 +1,6 @@
 package com.everlution
 
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -8,6 +9,7 @@ class ScenarioController {
 
     ProjectService projectService
     ScenarioService scenarioService
+    SpringSecurityService springSecurityService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -54,6 +56,9 @@ class ScenarioController {
             notFound()
             return
         }
+
+        def person = springSecurityService.getCurrentUser() as Person
+        scenario.person = person
 
         try {
             scenarioService.save(scenario)

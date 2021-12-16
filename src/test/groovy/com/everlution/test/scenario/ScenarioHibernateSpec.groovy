@@ -1,5 +1,6 @@
 package com.everlution.test.scenario
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Scenario
 import grails.test.hibernate.HibernateSpec
@@ -9,14 +10,16 @@ import spock.lang.Shared
 class ScenarioHibernateSpec extends HibernateSpec {
 
     @Shared Project project
+    @Shared Person person
 
     def setup() {
         project = new Project(name: "scn domain project", code: "sdp").save()
+        person = new Person(email: "scnPerson@scn.com", password: "password").save()
     }
 
     void "date created auto generated"() {
         when:
-        def scn = new Scenario(creator: "test", name: "test", description: "desc",
+        def scn = new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         then:
@@ -26,7 +29,17 @@ class ScenarioHibernateSpec extends HibernateSpec {
     void "save does not cascade to project"() {
         when: "unsaved project is added to scenario"
         Project project = new Project(name: "Scenario Project2", code: "BMP")
-        new Scenario(creator: "test", name: "test", description: "desc",
+        new Scenario(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+
+        then: "exception is thrown"
+        thrown(InvalidDataAccessApiUsageException)
+    }
+
+    void "save does not cascade to person"() {
+        when: "unsaved person is added to scenario"
+        def p = new Person(email: "fail@fail.com", password: "password")
+        new Scenario(person: p, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         then: "exception is thrown"
@@ -35,7 +48,7 @@ class ScenarioHibernateSpec extends HibernateSpec {
 
     void "delete scenario does not cascade to project"() {
         given:
-        def scn = new Scenario(creator: "test", name: "test", description: "desc",
+        def scn = new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         expect:

@@ -79,10 +79,10 @@ class BootStrap {
                 project: project, steps: [bugStep1], area: area).save(failOnError: true)
         new Bug(person: person, name: "seeded bug 3", description: "description of the bug 2",
                 project: project1, steps: [bugStep2, bugStep3], area: area1).save(failOnError: true)
-        new Scenario(creator: "test123", name: "everest123", description: "desc",
+        new Scenario(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project1).save(failOnError: true)
-        new Scenario(creator: "test123", name: "everest123", description: "desc",
+        new Scenario(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project).save(failOnError: true)
     }

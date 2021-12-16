@@ -17,6 +17,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
     BugService bugService
     PersonService personService
     ProjectService projectService
+    ScenarioService scenarioService
     TestCaseService testCaseService
 
     @Shared Person person
@@ -157,6 +158,35 @@ class EditProjectEnvironmentSpec extends GebSpec {
         then: "environment tag is displayed and was not deleted"
         page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
         environmentService.get(environment.id) != null
+    }
+
+    void "environment tag with associated scenario cannot be deleted from existing project"() {
+        given: "save a project"
+        def env = new Environment(DataFactory.environment())
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, environments: [env])
+        def sd = DataFactory.scenario()
+        def scn = new Scenario(name: "delete scenario", person: person, project: project,
+                executionMethod: "Manual", type: "UI", environments: [env])
+        def id = projectService.save(project).id
+        scenarioService.save(scn)
+
+        and: "login as an authorized user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+
+        and: "go to edit page"
+        go "/project/edit/${id}"
+
+        when: "attempt to remove the environment tag"
+        EditProjectPage page = browser.page(EditProjectPage)
+        page.removeEnvironmentTag(env.name)
+        page.editProject()
+
+        then: "environment tag is displayed and was not deleted"
+        page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
+        environmentService.get(env.id) != null
     }
 
     void "project data repopulated when environment tag fails to be removed"() {

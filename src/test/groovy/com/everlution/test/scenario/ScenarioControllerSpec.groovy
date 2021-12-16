@@ -4,6 +4,7 @@ import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioController
 import com.everlution.ScenarioService
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -124,6 +125,9 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         controller.scenarioService = Mock(ScenarioService) {
             1 * save(_ as Scenario)
         }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
 
         when:"the save action is executed with a valid instance"
         response.reset()
@@ -146,6 +150,10 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
             1 * save(_ as Scenario) >> { Scenario scenario ->
                 throw new ValidationException("Invalid instance", scenario.errors)
             }
+        }
+
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
         }
 
         controller.projectService = Mock(ProjectService) {

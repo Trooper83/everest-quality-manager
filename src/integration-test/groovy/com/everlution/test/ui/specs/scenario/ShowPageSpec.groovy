@@ -162,7 +162,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ShowScenarioPage)
-        page.getFields() == ["Creator", "Project", "Area", "Environments", "Name", "Description",
+        page.getFields() == ["Created By", "Project", "Area", "Environments", "Name", "Description",
                              "Execution Method", "Type", "Gherkin"]
     }
 

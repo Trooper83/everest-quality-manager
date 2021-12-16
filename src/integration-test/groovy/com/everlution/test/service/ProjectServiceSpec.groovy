@@ -7,6 +7,7 @@ import com.everlution.BugService
 import com.everlution.Environment
 import com.everlution.EnvironmentService
 import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Scenario
@@ -18,6 +19,7 @@ import com.everlution.test.support.DataFactory
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import grails.validation.ValidationException
+import spock.lang.Shared
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -28,10 +30,17 @@ class ProjectServiceSpec extends Specification {
     AreaService areaService
     BugService bugService
     EnvironmentService environmentService
+    PersonService personService
     ProjectService projectService
     SessionFactory sessionFactory
     ScenarioService scenarioService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     private Long setupData() {
         new Project(name: "project service 1", code: "ZZZ").save()
@@ -126,7 +135,7 @@ class ProjectServiceSpec extends Specification {
     void "delete project removes all scenarios"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZD").save()
-        def scenario = new Scenario(creator: "test", name: "test", description: "desc",
+        def scenario = new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         expect:
@@ -144,7 +153,6 @@ class ProjectServiceSpec extends Specification {
 
     void "delete project removes all test cases"() {
         given:
-        def person = new Person(email: "test2@test.com", password: "password").save()
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
@@ -165,7 +173,6 @@ class ProjectServiceSpec extends Specification {
     void "delete project removes all bugs"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        def person = new Person(email: "test123@test.com", password: "password").save()
         Bug bug = new Bug(name: "cascade project", description: "this should delete", person: person,
                 project: project).save()
 

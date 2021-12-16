@@ -8,6 +8,7 @@ import com.everlution.Project
 import com.everlution.Scenario
 import com.everlution.TestCase
 import grails.test.hibernate.HibernateSpec
+import spock.lang.Shared
 
 import javax.persistence.PersistenceException
 
@@ -15,10 +16,15 @@ class ProjectHibernateSpec extends HibernateSpec {
 
     List<Class> getDomainClasses() { [Project, Bug, Scenario, TestCase] }
 
+    @Shared Person person
+
+    def setup() {
+        person = new Person(email: "test@test.com", password: "pass").save()
+    }
+
     void "delete project with bug throws persistence exception"() {
         given: "valid bug with a project"
         Project project = new Project(name: "Delete Bug Cascade Project777", code: "ZZ7").save()
-        def person = new Person(email: "test@test.com", password: "pass").save()
         new Bug(name: "cascade project", description: "this should delete", person: person,
                 project: project).save()
 
@@ -33,7 +39,6 @@ class ProjectHibernateSpec extends HibernateSpec {
     void "delete project with test case throws persistence exception"() {
         given: "valid test case with project"
         Project project = new Project(name: "Delete Test Case Cascade Project000", code: "ZZ0").save()
-        def person = new Person(email: "test@test.com", password: "password").save()
         new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
@@ -48,7 +53,7 @@ class ProjectHibernateSpec extends HibernateSpec {
     void "delete project with scenario throws persistence exception"() {
         given: "valid scenario with project"
         Project project = new Project(name: "Delete Test Case Cascade Project001", code: "ZZ6").save()
-        new Scenario(creator: "test", name: "test", description: "desc",
+        new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         when: "delete project"

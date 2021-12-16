@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.scenario
 
+import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
@@ -16,6 +17,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ListSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     ScenarioService scenarioService
 
@@ -30,7 +32,7 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListScenarioPage page = browser.page(ListScenarioPage)
-        page.scenarioTable.getHeaders() == ["Name", "Creator", "Type", "Execution Method", "Project"]
+        page.scenarioTable.getHeaders() == ["Name", "Person", "Type", "Execution Method", "Project"]
     }
 
     void "home link directs to home view"() {
@@ -106,7 +108,8 @@ class ListSpec extends GebSpec {
         given: "scenario"
         def project = projectService.list(max: 1).first()
         def sd = DataFactory.scenario()
-        def scn = new Scenario(creator: sd.creator, name: sd.name, executionMethod: "Manual", type: "UI",
+        def person = personService.list(max: 1).first()
+        def scn = new Scenario(person: person, name: sd.name, executionMethod: "Manual", type: "UI",
                 description: sd.description, project: project)
         def id = scenarioService.save(scn).id
 
