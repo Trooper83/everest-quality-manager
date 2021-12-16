@@ -1,6 +1,7 @@
 package com.everlution
 
 import com.everlution.command.RemovedItems
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -8,6 +9,7 @@ import static org.springframework.http.HttpStatus.*
 class TestCaseController {
 
     ProjectService projectService
+    SpringSecurityService springSecurityService
     TestCaseService testCaseService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -56,6 +58,8 @@ class TestCaseController {
             return
         }
 
+        Person person = springSecurityService.getCurrentUser() as Person
+        testCase.person = person
         try {
             testCaseService.save(testCase)
         } catch (ValidationException e) {

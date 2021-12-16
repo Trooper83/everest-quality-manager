@@ -1,9 +1,10 @@
 package com.everlution.test.ui.specs.bug.edit
 
-import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Environment
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
@@ -12,12 +13,20 @@ import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditPageEnvironmentsSpec extends GebSpec {
 
     BugService bugService
+    PersonService personService
     ProjectService projectService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "environment select populates with only elements within the associated project"() {
         setup: "project & bug instances with environments"
@@ -27,7 +36,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
                 new Project(name: pd.name, code: pd.code, environments: [env])
         )
         def bug = bugService.save(
-                new Bug(name: "environment testing bug", project: project, creator: "testing")
+                new Bug(name: "environment testing bug", project: project, person: person)
         )
 
         and: "login as a basic user"
@@ -52,7 +61,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
                 new Project(name: pd.name, code: pd.code, environments: [env, env1])
         )
         def bug = bugService.save(
-                new Bug(name: "environment testing bug II", project: project, creator: "testing",
+                new Bug(name: "environment testing bug II", project: project, person: person,
                         environments: [env, env1]
                 )
         )
@@ -77,7 +86,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
                 new Project(name: pd.name, code: pd.code)
         )
         def bug = bugService.save(
-                new Bug(name: "environment testing bug", project: project, creator: "testing")
+                new Bug(name: "environment testing bug", project: project, person: person)
         )
 
         and: "login as a basic user"
@@ -98,7 +107,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def env = new Environment(name: "area testing env I")
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
-        def bug = bugService.save(new Bug(name: "env testing bug II", project: project, creator: "testing",
+        def bug = bugService.save(new Bug(name: "env testing bug II", project: project, person: person,
                 environments: [env]))
 
         and: "login as a basic user"

@@ -35,8 +35,8 @@
     <g:render template="/shared/messagesTemplate" bean="${scenario}" var="entity"/>
     <ol class="property-list scenario">
         <li class="fieldcontain">
-            <span id="creator-label" class="property-label">Creator</span>
-            <div class="property-value" id="creator">${scenario.creator}</div>
+            <span id="person-label" class="property-label">Created By</span>
+            <div class="property-value" id="person">${scenario.person}</div>
         </li>
         <li class="fieldcontain">
             <span id="project-label" class="property-label">Project</span>

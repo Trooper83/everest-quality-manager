@@ -2,27 +2,35 @@ package com.everlution.test.ui.specs.bug.edit
 
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.Step
-import com.everlution.TestStepService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditBugStepsSpec extends GebSpec {
 
     BugService bugService
+    PersonService personService
     ProjectService projectService
-    TestStepService testStepService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "step can be added to existing bug"() {
         setup: "create bug"
         def project = projectService.list(max: 1).first()
-        def bug = new Bug(creator: "bug creator", name: "name of bug", project: project,
+        def bug = new Bug(person: person, name: "name of bug", project: project,
                 steps: [new Step(action: "bug action", result: "bug result")])
         def id = bugService.save(bug).id
 
@@ -47,7 +55,7 @@ class EditBugStepsSpec extends GebSpec {
     void "step can be updated on existing bug"() {
         setup: "create bug"
         def project = projectService.list(max: 1).first()
-        def bug = new Bug(creator: "bug creator", name: "name of bug", project: project,
+        def bug = new Bug(person: person, name: "name of bug", project: project,
                 steps: [new Step(action: "bug action", result: "bug result")])
         def id = bugService.save(bug).id
 
@@ -72,7 +80,7 @@ class EditBugStepsSpec extends GebSpec {
         setup: "create bug"
         def project = projectService.list(max: 1).first()
         def step = new Step(action: "bug action", result: "bug result")
-        def bug = new Bug(creator: "bug creator", name: "name of bug", project: project,
+        def bug = new Bug(person: person, name: "name of bug", project: project,
                 steps: [step])
         def id = bugService.save(bug).id
 

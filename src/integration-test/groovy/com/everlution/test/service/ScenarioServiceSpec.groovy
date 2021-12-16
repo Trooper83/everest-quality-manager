@@ -1,11 +1,14 @@
 package com.everlution.test.service
 
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import grails.validation.ValidationException
+import spock.lang.Shared
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -13,18 +16,25 @@ import org.hibernate.SessionFactory
 @Rollback
 class ScenarioServiceSpec extends Specification {
 
+    PersonService personService
     ScenarioService scenarioService
     SessionFactory sessionFactory
 
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
+
     private Long setupData() {
         Project project = new Project(name: "ScenarioServiceSpec Project", code: "TTT").save()
-        Scenario scenario = new Scenario(creator: "test",name: "first", description: "desc1",
+        Scenario scenario = new Scenario(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new Scenario(creator: "test",name: "second", description: "desc2",
+        new Scenario(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: project).save()
-        new Scenario(creator: "test",name: "third", description: "desc3",
+        new Scenario(person: person, name: "third", description: "desc3",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new Scenario(creator: "test",name: "fourth", description: "desc4",
+        new Scenario(person: person, name: "fourth", description: "desc4",
                 executionMethod: "Manual", type: "UI", project: project).save()
         scenario.id
     }
@@ -95,7 +105,7 @@ class ScenarioServiceSpec extends Specification {
     void "test save"() {
         when:
         Project project = new Project(name: "Test Case Save Project", code: "TCS").save()
-        Scenario scenario = new Scenario(creator: "test", name: "test", description: "desc",
+        Scenario scenario = new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project)
         scenarioService.save(scenario)
 
@@ -105,7 +115,7 @@ class ScenarioServiceSpec extends Specification {
 
     void "save throws validation exception for failed validation"() {
         when:
-        Scenario scenario = new Scenario(creator: "test", name: "test", description: "desc",
+        Scenario scenario = new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API")
         scenarioService.save(scenario)
 

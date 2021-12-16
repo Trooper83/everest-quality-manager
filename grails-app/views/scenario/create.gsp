@@ -26,7 +26,6 @@
             <g:render template="/shared/messagesTemplate" bean="${scenario}" var="entity"/>
             <g:form resource="${this.scenario}" method="POST">
                 <fieldset class="form">
-                    <input type="hidden" name="creator" value="<sec:username/>"/>
                     <div class="fieldcontain required">
                         <label for="project">Project
                             <span class="required-indicator">*</span>
@@ -53,7 +52,7 @@
                         <label for="gherkin">Gherkin</label>
                         <g:textArea name="gherkin"/>
                     </div>
-                    <f:all bean="scenario" except="area, gherkin, environments, project, steps, creator"/>
+                    <f:all bean="scenario" except="area, gherkin, environments, project, steps, person"/>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />

@@ -2,6 +2,8 @@ package com.everlution.test.ui.specs.testcase.edit
 
 import com.everlution.Area
 import com.everlution.Environment
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
@@ -14,17 +16,25 @@ import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditTestCaseSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "authorized users can edit test case"(String username, String password) {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
-        TestCase testCase = new TestCase(creator: "testing", name: "first1", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project)
         def id = testCaseService.save(testCase).id
 
@@ -54,7 +64,7 @@ class EditTestCaseSpec extends GebSpec {
     void "step can be added to existing test case"() {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
-        TestCase testCase = new TestCase(creator: "testing", name: "first1", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project)
         def id = testCaseService.save(testCase).id
 
@@ -79,7 +89,7 @@ class EditTestCaseSpec extends GebSpec {
     void "step can be edited on existing test case"() {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
-        TestCase testCase = new TestCase(creator: "testing", name: "first1", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project,
                 steps: [new Step(action: "initial entry", result: "initial entry")])
         def id = testCaseService.save(testCase).id
@@ -106,7 +116,7 @@ class EditTestCaseSpec extends GebSpec {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
         def step = new Step(action: "action", result: "result")
-        TestCase testCase = new TestCase(creator: "testing", name: "first1", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project,
                 steps: [step])
         def id = testCaseService.save(testCase).id
@@ -142,7 +152,7 @@ class EditTestCaseSpec extends GebSpec {
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
                 areas: [area], environments: [env]))
         def td = DataFactory.testCase()
-        def testCase = new TestCase(name: td.name, description: td.description, creator: td.creator, project: project,
+        def testCase = new TestCase(name: td.name, description: td.description, person: person, project: project,
             area: area, executionMethod: "Manual", type: "API", environments: [env])
         def id = testCaseService.save(testCase).id
 

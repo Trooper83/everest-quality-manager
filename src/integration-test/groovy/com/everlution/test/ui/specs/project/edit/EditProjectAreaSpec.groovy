@@ -4,6 +4,8 @@ import com.everlution.Area
 import com.everlution.AreaService
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
@@ -15,14 +17,22 @@ import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditProjectAreaSpec extends GebSpec {
 
     AreaService areaService
     BugService bugService
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "area tag can be added to existing project"() {
         given: "get a project"
@@ -101,7 +111,7 @@ class EditProjectAreaSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, areas: [area])
         def tc = DataFactory.testCase()
-        def testCase = new TestCase(creator: tc.creator, name: tc.name, description: tc.description,
+        def testCase = new TestCase(person: person, name: tc.name, description: tc.description,
                 project: project, area: area, executionMethod: tc.executionMethod, type: tc.type)
         def id = projectService.save(project).id
         testCaseService.save(testCase)
@@ -130,7 +140,7 @@ class EditProjectAreaSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, areas: [area])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, area: area)
+        def bug = new Bug(name: bd.name, person: person, project: project, area: area)
         def id = projectService.save(project).id
         bugService.save(bug)
 
@@ -158,7 +168,7 @@ class EditProjectAreaSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, areas: [area])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, area: area)
+        def bug = new Bug(name: bd.name, person: person, project: project, area: area)
         def id = projectService.save(project).id
         bugService.save(bug)
 

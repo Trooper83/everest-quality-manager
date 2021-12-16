@@ -8,14 +8,23 @@ import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditProjectEnvironmentSpec extends GebSpec {
 
     EnvironmentService environmentService
     BugService bugService
+    PersonService personService
     ProjectService projectService
+    ScenarioService scenarioService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "environment tag can be added to existing project"() {
         given: "get a project"
@@ -100,7 +109,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [env])
         def tc = DataFactory.testCase()
-        def testCase = new TestCase(creator: tc.creator, name: tc.name, description: tc.description,
+        def testCase = new TestCase(person: person, name: tc.name, description: tc.description,
                 project: project, environments: [env], executionMethod: tc.executionMethod, type: tc.type)
         def id = projectService.save(project).id
         testCaseService.save(testCase)
@@ -129,7 +138,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environments: [environment])
+        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment])
         def id = projectService.save(project).id
         bugService.save(bug)
 
@@ -151,13 +160,42 @@ class EditProjectEnvironmentSpec extends GebSpec {
         environmentService.get(environment.id) != null
     }
 
+    void "environment tag with associated scenario cannot be deleted from existing project"() {
+        given: "save a project"
+        def env = new Environment(DataFactory.environment())
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, environments: [env])
+        def sd = DataFactory.scenario()
+        def scn = new Scenario(name: "delete scenario", person: person, project: project,
+                executionMethod: "Manual", type: "UI", environments: [env])
+        def id = projectService.save(project).id
+        scenarioService.save(scn)
+
+        and: "login as an authorized user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+
+        and: "go to edit page"
+        go "/project/edit/${id}"
+
+        when: "attempt to remove the environment tag"
+        EditProjectPage page = browser.page(EditProjectPage)
+        page.removeEnvironmentTag(env.name)
+        page.editProject()
+
+        then: "environment tag is displayed and was not deleted"
+        page.errorMessages.text() == "Removed entity has associated items and cannot be deleted"
+        environmentService.get(env.id) != null
+    }
+
     void "project data repopulated when environment tag fails to be removed"() {
         given: "save a project"
         def environment = new Environment(DataFactory.environment())
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environments: [environment])
+        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment])
         def id = projectService.save(project).id
         bugService.save(bug)
 

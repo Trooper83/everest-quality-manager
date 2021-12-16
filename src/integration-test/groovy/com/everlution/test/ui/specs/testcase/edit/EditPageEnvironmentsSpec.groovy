@@ -7,12 +7,20 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditPageEnvironmentsSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "environment select populates with only elements within the associated project"() {
         setup: "project & testCase instances with environments"
@@ -20,7 +28,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
         def tcd = DataFactory.testCase()
-        def tc = new TestCase(creator: tcd.creator, name: tcd.name, executionMethod: tcd.executionMethod,
+        def tc = new TestCase(person: person, name: tcd.name, executionMethod: tcd.executionMethod,
                 type: tcd.type, project: project, environments: [env])
         def testCase = testCaseService.save(tc)
 
@@ -45,7 +53,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def p = new Project(name: pd.name, code: pd.code, environments: [env, env1])
         def project = projectService.save(p)
         def tcd = DataFactory.testCase()
-        def tc = new TestCase(creator: tcd.creator, name: tcd.name, executionMethod: tcd.executionMethod,
+        def tc = new TestCase(person: person, name: tcd.name, executionMethod: tcd.executionMethod,
                 type: tcd.type, project: project, environments: [env, env1])
         def testCase = testCaseService.save(tc)
 
@@ -67,7 +75,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code))
         def tcd = DataFactory.testCase()
-        def tc = new TestCase(creator: tcd.creator, name: tcd.name, executionMethod: tcd.executionMethod,
+        def tc = new TestCase(person: person, name: tcd.name, executionMethod: tcd.executionMethod,
                 type: tcd.type, project: project)
         def testCase = testCaseService.save(tc)
 
@@ -90,7 +98,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
         def testCase = testCaseService.save(new TestCase(name: "area testing test case II", project: project,
-                creator: "testing", executionMethod: "Automated", type: "UI", environments: [env]))
+                person: person, executionMethod: "Automated", type: "UI", environments: [env]))
 
         and: "login as a basic user"
         to LoginPage

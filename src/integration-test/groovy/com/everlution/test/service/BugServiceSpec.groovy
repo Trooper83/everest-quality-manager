@@ -2,6 +2,7 @@ package com.everlution.test.service
 
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
@@ -24,8 +25,9 @@ class BugServiceSpec extends Specification {
 
     private Long setupData() {
         Project project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
-        Bug bug = new Bug(creator: "God", description: "Found a bug", name: "Name of the bug", project: project).save()
-        new Bug(creator: "Zeus", description: "Found a bug again!", name: "Name of the bug again", project: project).save()
+        def person = new Person(email: "test123@test.com", password: "password").save()
+        Bug bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project).save()
+        new Bug(person: person, description: "Found a bug again!", name: "Name of the bug again", project: project).save()
         bug.id
     }
 
@@ -111,8 +113,9 @@ class BugServiceSpec extends Specification {
 
     void "test save"() {
         when:
+        def person = new Person(email: "test988@test.com", password: "password").save()
         Project project = new Project(name: "BugServiceSpec Project", code: "BPM").save()
-        Bug bug = new Bug(creator: "Athena", description: "Found a bug123", name: "Name of the bug123", project: project)
+        Bug bug = new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: project)
         bugService.save(bug)
 
         then:
@@ -121,7 +124,8 @@ class BugServiceSpec extends Specification {
 
     void "save throws exception with validation fail"() {
         when:
-        Bug bug = new Bug(creator: "Athena", description: "Found a bug123", name: "Name of the bug123")
+        def person = new Person(email: "test@test.com", password: "password").save()
+        Bug bug = new Bug(person: person, description: "Found a bug123", name: "Name of the bug123")
         bugService.save(bug)
 
         then:
@@ -130,7 +134,8 @@ class BugServiceSpec extends Specification {
 
     void "saveUpdate throws exception with validation fail"() {
         when:
-        Bug bug = new Bug(creator: "Athena", description: "Found a bug123", name: "Name of the bug123")
+        def person = new Person(email: "test@test.com", password: "password").save()
+        Bug bug = new Bug(person: person, description: "Found a bug123", name: "Name of the bug123")
         bugService.saveUpdate(bug, new RemovedItems())
 
         then:
@@ -140,8 +145,9 @@ class BugServiceSpec extends Specification {
     void "saveUpdate removes steps"() {
         given: "valid test case with step"
         def project = projectService.list(max: 1).first()
+        def person = new Person(email: "test999@test.com", password: "password").save()
         def step = new Step(action: "action", result: "result")
-        def bug = new Bug(creator: "test", name: "second", description: "desc2",
+        def bug = new Bug(person: person, name: "second", description: "desc2",
                 project: project, steps: [step]).save(failOnError: true)
 
         expect:

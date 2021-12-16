@@ -1,5 +1,7 @@
 package com.everlution.test.ui.specs.testcase.edit
 
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
@@ -10,18 +12,26 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditPageStepsSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "add test step row"() {
         given: "test case"
         Project project = projectService.list(max: 1).first()
         Step testStep = new Step(action: "step1", result: "result1")
-        TestCase testCase = new TestCase(creator: "test", name: "first", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
 
@@ -48,7 +58,7 @@ class EditPageStepsSpec extends GebSpec {
         given: "test case"
         Project project = projectService.list(max: 1).first()
         Step testStep = new Step(action: "step123", result: "result123")
-        TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
 
@@ -78,7 +88,7 @@ class EditPageStepsSpec extends GebSpec {
         given: "test case"
         Project project = projectService.list(max: 1).first()
         Step testStep = new Step(action: "step123", result: "result123")
-        TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
 

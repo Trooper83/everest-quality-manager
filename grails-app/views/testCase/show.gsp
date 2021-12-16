@@ -39,8 +39,8 @@
     </g:if>
     <ol class="property-list testCase">
         <li class="fieldcontain">
-            <span id="creator-label" class="property-label">Creator</span>
-            <div class="property-value" id="creator">${testCase.creator}</div>
+            <span id="person-label" class="property-label">Created By</span>
+            <div class="property-value" id="person">${testCase.person}</div>
         </li>
         <li class="fieldcontain">
             <span id="project-label" class="property-label">Project</span>

@@ -53,6 +53,7 @@ class BootStrap {
 
     @Transactional
     void seedTestData() {
+        def person = new Person(email: "test@bootstrapped.com", password: "password").save()
         def area = new Area(name: "bootstrap area")
         def area1 = new Area(name: "bootstrap area 12")
         def env = new Environment(name: "bootstrap environment")
@@ -62,26 +63,26 @@ class BootStrap {
         Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)
         Step testStep2 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
-        new TestCase(creator: "test", name: "everest", description: "desc",
+        new TestCase(person: person, name: "everest", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep, testStep1],
                 project: project, area: area).save(failOnError: true)
-        new TestCase(creator: "test123", name: "everest123", description: "desc",
+        new TestCase(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep2],
                 project: project1, area: area1).save(failOnError: true)
         def bugStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep1 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep2 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep3 = new Step(action: "do something", result: "something happened").save(failOnError: true)
-        new Bug(creator: "bug creator", name: "seeded bug 1", description: "description of the bug",
+        new Bug(person: person, name: "seeded bug 1", description: "description of the bug",
                 project: project1, steps: [bugStep], area: area1).save(failOnError: true)
-        new Bug(creator: "bug creator1", name: "seeded bug 2", description: "description of the bug 1",
+        new Bug(person: person, name: "seeded bug 2", description: "description of the bug 1",
                 project: project, steps: [bugStep1], area: area).save(failOnError: true)
-        new Bug(creator: "bug creator2", name: "seeded bug 3", description: "description of the bug 2",
+        new Bug(person: person, name: "seeded bug 3", description: "description of the bug 2",
                 project: project1, steps: [bugStep2, bugStep3], area: area1).save(failOnError: true)
-        new Scenario(creator: "test123", name: "everest123", description: "desc",
+        new Scenario(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project1).save(failOnError: true)
-        new Scenario(creator: "test123", name: "everest123", description: "desc",
+        new Scenario(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project).save(failOnError: true)
     }

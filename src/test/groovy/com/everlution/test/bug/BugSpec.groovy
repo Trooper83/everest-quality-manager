@@ -3,6 +3,7 @@ package com.everlution.test.bug
 import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.Environment
+import com.everlution.Person
 import com.everlution.Project
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
@@ -15,8 +16,9 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
     void "test instances are persisted"() {
         setup:
         def project = new Project(name: "tc domain project321", code: "td5").save()
-        new Bug(creator: "test", name: "First Bug", description: "test", project: project).save()
-        new Bug(creator: "test",name: "Second Bug", description: "test", project: project).save()
+        def person = new Person(email: "test@test.com", password: "test")
+        new Bug(person: person, name: "First Bug", description: "test", project: project).save()
+        new Bug(person: person, name: "Second Bug", description: "test", project: project).save()
 
         expect:
         Bug.count() == 2
@@ -116,41 +118,13 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         domain.validate(["description"])
     }
 
-    void "test creator cannot be null"() {
+    void "person cannot be null"() {
         when:
-        domain.creator = null
+        domain.person = null
 
         then:
-        !domain.validate(["creator"])
-        domain.errors["creator"].code == "nullable"
-    }
-
-    void "test creator cannot be blank"() {
-        when:
-        domain.creator = ""
-
-        then:
-        !domain.validate(["creator"])
-        domain.errors["creator"].code == "blank"
-    }
-
-    void "test creator cannot exceed 100 characters"() {
-        when: "for a string of 101 characters"
-        String str = "a" * 101
-        domain.creator = str
-
-        then: "creator validation fails"
-        !domain.validate(["creator"])
-        domain.errors["creator"].code == "maxSize.exceeded"
-    }
-
-    void "test creator validates with 100 characters"() {
-        when: "for a string of 100 characters"
-        String str = "a" * 100
-        domain.creator = str
-
-        then: "validation passes"
-        domain.validate(["creator"])
+        !domain.validate(["person"])
+        domain.errors["person"].code == "nullable"
     }
 
     void "area can be null"() {

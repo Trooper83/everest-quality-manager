@@ -2,6 +2,7 @@ package com.everlution.test.testcase
 
 import com.everlution.Area
 import com.everlution.Environment
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.TestCase
 import grails.testing.gorm.DomainUnitTest
@@ -14,10 +15,11 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
 
     void "test instances are persisted"() {
         setup:
+        def person = new Person(email: "test@test.com", password: "test")
         def project = new Project(name: "tc domain project", code: "tdp")
-        new TestCase(creator: "test", name: "First Test Case", description: "test",
+        new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        new TestCase(creator: "test",name: "Second Test Case", description: "test",
+        new TestCase(person: person,name: "Second Test Case", description: "test",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         expect:
@@ -206,41 +208,13 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.errors["type"].code == "not.inList"
     }
 
-    void "test creator cannot be null"() {
+    void "person cannot be null"() {
         when:
-        domain.creator = null
+        domain.person = null
 
         then:
-        !domain.validate(["creator"])
-        domain.errors["creator"].code == "nullable"
-    }
-
-    void "test creator cannot be blank"() {
-        when:
-        domain.creator = ""
-
-        then:
-        !domain.validate(["creator"])
-        domain.errors["creator"].code == "blank"
-    }
-
-    void "test creator cannot exceed 100 characters"() {
-        when: "for a string of 101 characters"
-        String str = "a" * 101
-        domain.creator = str
-
-        then: "creator validation fails"
-        !domain.validate(["creator"])
-        domain.errors["creator"].code == "maxSize.exceeded"
-    }
-
-    void "test creator validates with 100 characters"() {
-        when: "for a string of 100 characters"
-        String str = "a" * 100
-        domain.creator = str
-
-        then: "validation passes"
-        domain.validate(["creator"])
+        !domain.validate(["person"])
+        domain.errors["person"].code == "nullable"
     }
 
     void "project cannot be null"() {

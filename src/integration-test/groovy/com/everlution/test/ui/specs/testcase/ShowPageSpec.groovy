@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
@@ -17,6 +18,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ShowPageSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
 
@@ -189,7 +191,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
-        page.getFields() == ["Creator", "Project", "Area", "Environments", "Name", "Description", "Execution Method", "Type"]
+        page.getFields() == ["Created By", "Project", "Area", "Environments", "Name", "Description", "Execution Method", "Type"]
     }
 
     void "test case not deleted if alert is canceled"() {
@@ -216,7 +218,8 @@ class ShowPageSpec extends GebSpec {
     void "updated message displays after updating test case"() {
         given: "create test case"
         Project project = projectService.list(max: 10).first()
-        TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
+        def person = personService.list(max: 1).first()
+        TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project)
         def id = testCaseService.save(testCase).id
 

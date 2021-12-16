@@ -11,6 +11,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreatePageEnvironmentsSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     ScenarioService scenarioService
 
@@ -29,7 +30,8 @@ class CreatePageEnvironmentsSpec extends GebSpec {
                 new Project(name: pd.name, code: pd.code, environments: [env])
         )
         def sd = DataFactory.scenario()
-        def scn = new Scenario(creator: sd.creator, name: sd.name, executionMethod: sd.executionMethod,
+        def person = personService.list(max: 1).first()
+        def scn = new Scenario(person: person, name: sd.name, executionMethod: sd.executionMethod,
                 type: sd.type, project: project, environments: [env])
         scenarioService.save(scn)
 

@@ -79,7 +79,7 @@ class PersonDomainSpec extends Specification implements DomainUnitTest<Person> {
         domain.errors["password"].code == "blank"
     }
 
-    void "person username must be unique"() {
+    void "email must be unique"() {
         given: "create person instance"
         new Person(email: "test@test.com", password: "CHI").save()
 

@@ -3,13 +3,13 @@ package com.everlution
 class Scenario {
 
     Area area
-    String creator
     Date dateCreated
     String description
     List environments
     String executionMethod
     String gherkin
     String name
+    Person person
     Project project
     String type
 
@@ -18,6 +18,7 @@ class Scenario {
     static mapping = {
         area cascade: "none"
         environments cascade: "none"
+        person cascade: "none"
         project cascade: "none"
     }
 
@@ -32,11 +33,11 @@ class Scenario {
             def ids = obj.project.areas*.id
             val.id in ids
         }
-        creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000
         executionMethod blank: false, nullable: false, inList: ["Automated", "Manual"]
         gherkin blank: true, nullable: true, maxSize: 2500
         name blank: false, maxSize: 255, nullable: false
+        person nullable: false
         project nullable: false
         type blank: false, nullable: false, inList: ["UI", "API"]
         environments nullable: true, validator: { val, Scenario obj ->

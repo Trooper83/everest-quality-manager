@@ -2,6 +2,7 @@ package com.everlution.test.ui.specs.scenario.edit
 
 import com.everlution.Area
 import com.everlution.Environment
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Scenario
@@ -17,6 +18,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class EditScenarioSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     ScenarioService scenarioService
 
@@ -53,10 +55,11 @@ class EditScenarioSpec extends GebSpec {
         def area = new Area(DataFactory.area())
         def env = new Environment(DataFactory.environment())
         def projectData = DataFactory.project()
+        def person = personService.list(max: 1).first()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
                 areas: [area], environments: [env]))
         def sd = DataFactory.scenario()
-        def scenario = new Scenario(name: sd.name, description: sd.description, creator: sd.creator, project: project,
+        def scenario = new Scenario(name: sd.name, description: sd.description, person: person, project: project,
                 area: area, executionMethod: "Manual", type: "API", environments: [env])
         def id = scenarioService.save(scenario).id
 

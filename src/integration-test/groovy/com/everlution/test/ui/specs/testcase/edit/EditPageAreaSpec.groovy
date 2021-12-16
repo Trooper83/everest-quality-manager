@@ -1,6 +1,8 @@
 package com.everlution.test.ui.specs.testcase.edit
 
 import com.everlution.Area
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
@@ -11,19 +13,27 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditPageAreaSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "area select populates with only elements within the associated project"() {
         setup: "project & test case instances with areas"
         def area = new Area(name: "area testing area")
         def project = projectService.save(new Project(name: "area tc testing project", code: "ACP", areas: [area]))
         def testCase = testCaseService.save(new TestCase(name: "area testing test case", project: project,
-                creator: "testing", executionMethod: "Automated", type: "UI"))
+                person: person, executionMethod: "Automated", type: "UI"))
 
         and: "login as a basic user"
         to LoginPage
@@ -43,7 +53,7 @@ class EditPageAreaSpec extends GebSpec {
         def area = new Area(name: "area testing area")
         def project = projectService.save(new Project(name: "area tc testing project I", code: "AP1", areas: [area]))
         def testCase = testCaseService.save(new TestCase(name: "area testing test case I", project: project,
-                creator: "testing", executionMethod: "Automated", type: "UI", area: area))
+                person: person, executionMethod: "Automated", type: "UI", area: area))
 
         and: "login as a basic user"
         to LoginPage
@@ -62,7 +72,7 @@ class EditPageAreaSpec extends GebSpec {
         setup: "project & test case instances with areas"
         def project = projectService.save(new Project(name: "area tc testing project II", code: "AP2"))
         def testCase = testCaseService.save(new TestCase(name: "area testing test case II", project: project,
-                creator: "testing", executionMethod: "Automated", type: "UI"))
+                person: person, executionMethod: "Automated", type: "UI"))
 
         and: "login as a basic user"
         to LoginPage
@@ -83,7 +93,7 @@ class EditPageAreaSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
         def testCase = testCaseService.save(new TestCase(name: "area testing test case II", project: project,
-                creator: "testing", executionMethod: "Automated", type: "UI", area: area))
+                person: person, executionMethod: "Automated", type: "UI", area: area))
 
         and: "login as a basic user"
         to LoginPage

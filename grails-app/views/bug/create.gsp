@@ -26,8 +26,7 @@
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
             <g:form resource="${this.bug}" method="POST">
                 <fieldset class="form">
-                    <input type="hidden" name="creator" value="<sec:username/>"/>
-                    <f:all bean="bug" except="area, creator, environments, project, steps"/>
+                    <f:all bean="bug" except="area, person, environments, project, steps"/>
                     <div class="fieldcontain required">
                         <label for="project">Project
                             <span class="required-indicator">*</span>
