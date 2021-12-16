@@ -8,6 +8,7 @@ import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class EditProjectEnvironmentSpec extends GebSpec {
@@ -17,6 +18,12 @@ class EditProjectEnvironmentSpec extends GebSpec {
     PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+
+    @Shared Person person
+
+    def setup() {
+        person = personService.list(max: 1).first()
+    }
 
     void "environment tag can be added to existing project"() {
         given: "get a project"
@@ -101,7 +108,6 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [env])
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(person: person, name: tc.name, description: tc.description,
                 project: project, environments: [env], executionMethod: tc.executionMethod, type: tc.type)
         def id = projectService.save(project).id
@@ -131,7 +137,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environments: [environment])
+        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment])
         def id = projectService.save(project).id
         bugService.save(bug)
 
@@ -159,7 +165,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, creator: bd.creator, project: project, environments: [environment])
+        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment])
         def id = projectService.save(project).id
         bugService.save(bug)
 

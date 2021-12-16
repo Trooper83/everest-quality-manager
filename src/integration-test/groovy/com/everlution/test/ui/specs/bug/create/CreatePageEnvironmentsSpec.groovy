@@ -3,6 +3,7 @@ package com.everlution.test.ui.specs.bug.create
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Environment
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
@@ -16,6 +17,7 @@ import grails.testing.mixin.integration.Integration
 class CreatePageEnvironmentsSpec extends GebSpec {
 
     BugService bugService
+    PersonService personService
     ProjectService projectService
 
     def setup() {
@@ -32,8 +34,9 @@ class CreatePageEnvironmentsSpec extends GebSpec {
         def project = projectService.save(
                 new Project(name: pd.name, code: pd.code, environments: [env])
         )
+        def person = personService.list(max: 1).first()
         bugService.save(
-                new Bug(name: "environment testing bug", project: project, creator: "testing", environments: [env])
+                new Bug(name: "environment testing bug", project: project, person: person, environments: [env])
         )
 
         and: "go to the create page"

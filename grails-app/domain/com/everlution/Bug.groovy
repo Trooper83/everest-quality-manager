@@ -3,11 +3,11 @@ package com.everlution
 class Bug {
 
     Area area
-    String creator
     Date dateCreated
     String description
     List environments
     String name
+    Person person
     Project project
     List steps
 
@@ -16,6 +16,7 @@ class Bug {
     static mapping = {
         area cascade: "none"
         environments cascade: "none"
+        person cascade: "none"
         project cascade: "none"
     }
 
@@ -30,9 +31,9 @@ class Bug {
             def ids = obj.project.areas*.id
             val.id in ids
         }
-        creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000
         name blank: false, maxSize: 255, nullable: false
+        person nullable: false
         project nullable: false
         environments nullable: true, validator: { val, Bug obj ->
             if(val == null) {

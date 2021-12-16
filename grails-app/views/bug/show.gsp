@@ -39,8 +39,8 @@
     </g:if>
     <ol class="property-list bug">
         <li class="fieldcontain">
-            <span id="creator-label" class="property-label">Creator</span>
-            <div class="property-value" id="creator">${bug.creator}</div>
+            <span id="person-label" class="property-label">Created By</span>
+            <div class="property-value" id="person">${bug.person}</div>
         </li>
         <li class="fieldcontain">
             <span id="project-label" class="property-label">Project</span>

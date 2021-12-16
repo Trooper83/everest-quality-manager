@@ -18,7 +18,8 @@ class ProjectHibernateSpec extends HibernateSpec {
     void "delete project with bug throws persistence exception"() {
         given: "valid bug with a project"
         Project project = new Project(name: "Delete Bug Cascade Project777", code: "ZZ7").save()
-        new Bug(name: "cascade project", description: "this should delete", creator: "testing",
+        def person = new Person(email: "test@test.com", password: "pass").save()
+        new Bug(name: "cascade project", description: "this should delete", person: person,
                 project: project).save()
 
         when: "delete project"

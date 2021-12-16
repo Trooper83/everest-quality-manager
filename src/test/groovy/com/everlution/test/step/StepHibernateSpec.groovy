@@ -46,7 +46,8 @@ class StepHibernateSpec extends HibernateSpec {
         given: "valid domain instances"
         Project project = new Project(name: "TestStep Cascade Project", code: "TCC").save()
         Step testStep = new Step(action: "do something", result: "something happened")
-        Bug bug = new Bug(creator: "test", name: "test", description: "desc",
+        def person = new Person(email: "test@test.com", password: "pass").save()
+        Bug bug = new Bug(person: person, name: "test", description: "desc",
                project: project).addToSteps(testStep)
         bug.save()
 

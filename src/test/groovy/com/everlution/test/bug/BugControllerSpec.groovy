@@ -5,6 +5,7 @@ import com.everlution.BugController
 import com.everlution.BugService
 import com.everlution.ProjectService
 import com.everlution.command.RemovedItems
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -97,7 +98,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         model.projects instanceof List
     }
 
-    void "test save action returns 405 with not allowed method types"(String httpMethod) {
+    void "save action returns 405 with not allowed method types"(String httpMethod) {
         given:
         request.method = httpMethod
         populateValidParams(params)
@@ -113,7 +114,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         httpMethod << ["GET", "DELETE", "PUT", "PATCH"]
     }
 
-    void "Test the save action with a null instance"() {
+    void "save action with a null instance"() {
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
@@ -124,10 +125,13 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         flash.message == "default.not.found.message"
     }
 
-    void "Test the save action correctly persists"() {
+    void "save action correctly persists"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * save(_ as Bug)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
         }
 
         when:"The save action is executed with a valid instance"
@@ -145,7 +149,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         controller.flash.message == "default.created.message"
     }
 
-    void "Test the save action with an invalid instance"() {
+    void "save action with an invalid instance"() {
         given: "mock services"
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
@@ -154,6 +158,9 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
             1 * save(_ as Bug) >> { Bug bug ->
                 throw new ValidationException("Invalid instance", bug.errors)
             }
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
         }
 
         when:"The save action is executed with an invalid instance"

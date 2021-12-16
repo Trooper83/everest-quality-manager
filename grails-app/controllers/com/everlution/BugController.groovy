@@ -1,6 +1,7 @@
 package com.everlution
 
 import com.everlution.command.RemovedItems
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
@@ -10,6 +11,7 @@ class BugController {
 
     BugService bugService
     ProjectService projectService
+    SpringSecurityService springSecurityService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -55,6 +57,9 @@ class BugController {
             notFound()
             return
         }
+
+        def person = springSecurityService.getCurrentUser() as Person
+        bug.person = person
 
         try {
             bugService.save(bug)

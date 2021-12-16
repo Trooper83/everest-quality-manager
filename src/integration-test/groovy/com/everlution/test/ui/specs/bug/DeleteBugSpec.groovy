@@ -2,6 +2,7 @@ package com.everlution.test.ui.specs.bug
 
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.ListBugPage
@@ -14,13 +15,15 @@ import grails.testing.mixin.integration.Integration
 class DeleteBugSpec extends GebSpec {
 
     BugService bugService
+    PersonService personService
     ProjectService projectService
 
     int id
 
     def setup() {
         def project = projectService.list(max: 1).first()
-        def bug = new Bug(name: "delete bug", creator: "testing creator", project: project)
+        def person = personService.list(max: 1).first()
+        def bug = new Bug(name: "delete bug", person: person, project: project)
         id = bugService.save(bug).id
     }
 

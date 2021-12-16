@@ -53,7 +53,7 @@ class BootStrap {
 
     @Transactional
     void seedTestData() {
-        def person = new Person(email: "test@test.com", password: "password").save()
+        def person = new Person(email: "test@bootstrapped.com", password: "password").save()
         def area = new Area(name: "bootstrap area")
         def area1 = new Area(name: "bootstrap area 12")
         def env = new Environment(name: "bootstrap environment")
@@ -73,11 +73,11 @@ class BootStrap {
         def bugStep1 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep2 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep3 = new Step(action: "do something", result: "something happened").save(failOnError: true)
-        new Bug(creator: "bug creator", name: "seeded bug 1", description: "description of the bug",
+        new Bug(person: person, name: "seeded bug 1", description: "description of the bug",
                 project: project1, steps: [bugStep], area: area1).save(failOnError: true)
-        new Bug(creator: "bug creator1", name: "seeded bug 2", description: "description of the bug 1",
+        new Bug(person: person, name: "seeded bug 2", description: "description of the bug 1",
                 project: project, steps: [bugStep1], area: area).save(failOnError: true)
-        new Bug(creator: "bug creator2", name: "seeded bug 3", description: "description of the bug 2",
+        new Bug(person: person, name: "seeded bug 3", description: "description of the bug 2",
                 project: project1, steps: [bugStep2, bugStep3], area: area1).save(failOnError: true)
         new Scenario(creator: "test123", name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI",

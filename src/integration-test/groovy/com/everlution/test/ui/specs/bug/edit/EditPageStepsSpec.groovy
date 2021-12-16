@@ -2,6 +2,7 @@ package com.everlution.test.ui.specs.bug.edit
 
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
@@ -16,6 +17,7 @@ import spock.lang.Shared
 class EditPageStepsSpec extends GebSpec {
 
     BugService bugService
+    PersonService personService
     ProjectService projectService
     @Shared int id
 
@@ -70,7 +72,8 @@ class EditPageStepsSpec extends GebSpec {
         given: "valid bug with step"
         Project project = projectService.list(max: 1).first()
         Step step = new Step(action: "step123", result: "result123")
-        Bug bug = new Bug(creator: "test",name: "first", description: "desc1",
+        def person = personService.list(max: 1).first()
+        Bug bug = new Bug(person: person,name: "first", description: "desc1",
                 project: project, steps: [step])
         def id = bugService.save(bug).id
 

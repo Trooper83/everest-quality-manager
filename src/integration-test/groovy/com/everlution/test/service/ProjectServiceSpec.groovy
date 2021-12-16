@@ -165,7 +165,8 @@ class ProjectServiceSpec extends Specification {
     void "delete project removes all bugs"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        Bug bug = new Bug(name: "cascade project", description: "this should delete", creator: "testing",
+        def person = new Person(email: "test123@test.com", password: "password").save()
+        Bug bug = new Bug(name: "cascade project", description: "this should delete", person: person,
                 project: project).save()
 
         expect:
