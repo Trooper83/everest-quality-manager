@@ -6,6 +6,7 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Environment
 import com.everlution.EnvironmentService
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Scenario
@@ -143,8 +144,9 @@ class ProjectServiceSpec extends Specification {
 
     void "delete project removes all test cases"() {
         given:
+        def person = new Person(email: "test2@test.com", password: "password").save()
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         expect:

@@ -1,5 +1,6 @@
 package com.everlution.test.service
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
@@ -23,14 +24,15 @@ class TestCaseServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     private Long setupData() {
+        def person = new Person(email: "test1@test.com", password: "password").save()
         Project project = new Project(name: "TestCaseServiceSpec Project", code: "TTT").save()
-        TestCase testCase = new TestCase(creator: "test",name: "first", description: "desc1",
+        TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new TestCase(creator: "test",name: "second", description: "desc2",
+        new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: project).save()
-        new TestCase(creator: "test",name: "third", description: "desc3",
+        new TestCase(person: person, name: "third", description: "desc3",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new TestCase(creator: "test",name: "fourth", description: "desc4",
+        new TestCase(person: person, name: "fourth", description: "desc4",
                 executionMethod: "Manual", type: "UI", project: project).save()
         testCase.id
     }
@@ -100,8 +102,9 @@ class TestCaseServiceSpec extends Specification {
 
     void "test save"() {
         when:
+        def person = new Person(email: "test1@test.com", password: "password").save()
         Project project = new Project(name: "Test Case Save Project", code: "TCS").save()
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project)
         testCaseService.save(testCase)
 
@@ -111,7 +114,8 @@ class TestCaseServiceSpec extends Specification {
 
     void "save throws validation exception for failed validation"() {
         when:
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
+        def person = new Person(email: "test1@test.com", password: "password").save()
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API")
         testCaseService.save(testCase)
 
@@ -121,7 +125,8 @@ class TestCaseServiceSpec extends Specification {
 
     void "saveUpdate throws validation exception for failed validation"() {
         when:
-        TestCase testCase = new TestCase(creator: "test", name: "test", description: "desc",
+        def person = new Person(email: "test1@test.com", password: "password").save()
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API")
         testCaseService.save(testCase)
 
@@ -150,7 +155,8 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def project = projectService.list(max: 1).first()
         def step = new Step(action: "action", result: "result")
-        def testCase = new TestCase(creator: "test", name: "second", description: "desc2",
+        def person = new Person(email: "test1@test.com", password: "password").save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: project, steps: [step]).save()
 
         expect:

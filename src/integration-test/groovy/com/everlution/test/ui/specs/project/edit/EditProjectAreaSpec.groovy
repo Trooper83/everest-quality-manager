@@ -4,6 +4,7 @@ import com.everlution.Area
 import com.everlution.AreaService
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
@@ -21,6 +22,7 @@ class EditProjectAreaSpec extends GebSpec {
 
     AreaService areaService
     BugService bugService
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
 
@@ -101,7 +103,8 @@ class EditProjectAreaSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, areas: [area])
         def tc = DataFactory.testCase()
-        def testCase = new TestCase(creator: tc.creator, name: tc.name, description: tc.description,
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(person: person, name: tc.name, description: tc.description,
                 project: project, area: area, executionMethod: tc.executionMethod, type: tc.type)
         def id = projectService.save(project).id
         testCaseService.save(testCase)

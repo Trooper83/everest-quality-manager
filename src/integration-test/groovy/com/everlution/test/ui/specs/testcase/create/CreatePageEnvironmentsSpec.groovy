@@ -1,6 +1,8 @@
 package com.everlution.test.ui.specs.testcase.create
 
 import com.everlution.Environment
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
@@ -11,18 +13,24 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class CreatePageEnvironmentsSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+
+    @Shared Person person
 
     def setup() {
         setup: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
+
+        person = personService.list(max: 1).first()
     }
 
     void "environments field has no value set"() {
@@ -90,7 +98,7 @@ class CreatePageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
         def tcd = DataFactory.testCase()
-        def tc = new TestCase(creator: tcd.creator, name: tcd.name, executionMethod: tcd.executionMethod,
+        def tc = new TestCase(person: person, name: tcd.name, executionMethod: tcd.executionMethod,
                 type: tcd.type, project: project, environments: [env])
         testCaseService.save(tc)
 

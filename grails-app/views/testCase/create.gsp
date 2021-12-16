@@ -20,7 +20,6 @@
             <g:render template="/shared/messagesTemplate" bean="${testCase}" var="entity"/>
             <g:form controller="testCase" action="save" method="POST">
                 <fieldset class="form">
-                    <input type="hidden" name="creator" value="<sec:username/>"/>
                     <div class="fieldcontain required">
                         <label for="project">Project
                             <span class="required-indicator">*</span>
@@ -43,7 +42,7 @@
                             <option value=''>--No Environment--</option>
                         </select>
                     </div>
-                    <f:all bean="testCase" except="area, environments, project, steps, creator"/>
+                    <f:all bean="testCase" except="area, environments, project, steps, person"/>
                 </fieldset>
                 <g:render template="/shared/createStepsTableTemplate"/>
                 <fieldset class="buttons">

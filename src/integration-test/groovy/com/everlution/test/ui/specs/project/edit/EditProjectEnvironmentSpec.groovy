@@ -14,6 +14,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
 
     EnvironmentService environmentService
     BugService bugService
+    PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
 
@@ -100,7 +101,8 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [env])
         def tc = DataFactory.testCase()
-        def testCase = new TestCase(creator: tc.creator, name: tc.name, description: tc.description,
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(person: person, name: tc.name, description: tc.description,
                 project: project, environments: [env], executionMethod: tc.executionMethod, type: tc.type)
         def id = projectService.save(project).id
         testCaseService.save(testCase)

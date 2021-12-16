@@ -53,6 +53,7 @@ class BootStrap {
 
     @Transactional
     void seedTestData() {
+        def person = new Person(email: "test@test.com", password: "password").save()
         def area = new Area(name: "bootstrap area")
         def area1 = new Area(name: "bootstrap area 12")
         def env = new Environment(name: "bootstrap environment")
@@ -62,10 +63,10 @@ class BootStrap {
         Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)
         Step testStep2 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
-        new TestCase(creator: "test", name: "everest", description: "desc",
+        new TestCase(person: person, name: "everest", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep, testStep1],
                 project: project, area: area).save(failOnError: true)
-        new TestCase(creator: "test123", name: "everest123", description: "desc",
+        new TestCase(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep2],
                 project: project1, area: area1).save(failOnError: true)
         def bugStep = new Step(action: "do something", result: "something happened").save(failOnError: true)

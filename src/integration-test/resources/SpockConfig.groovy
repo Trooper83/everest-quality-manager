@@ -3,7 +3,7 @@ import org.spockframework.runtime.model.parallel.ExecutionMode
 runner {
     parallel {
         enabled true
-        fixed(2)
+        fixed(1)
         defaultSpecificationExecutionMode = ExecutionMode.CONCURRENT
         defaultExecutionMode = ExecutionMode.SAME_THREAD
     }

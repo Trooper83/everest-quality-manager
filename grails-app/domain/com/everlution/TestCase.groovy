@@ -3,12 +3,12 @@ package com.everlution
 class TestCase {
 
     Area area
-    String creator
     Date dateCreated
     String description
     List environments
     String executionMethod
     String name
+    Person person
     Project project
     List steps
     String type
@@ -18,6 +18,7 @@ class TestCase {
     static mapping = {
         area cascade: "none"
         environments cascade: "none"
+        person cascade: "none"
         project cascade: "none"
     }
 
@@ -32,10 +33,10 @@ class TestCase {
             def ids = obj.project.areas*.id
             val.id in ids
         }
-        creator blank: false, nullable: false, maxSize: 100
         description blank: true, nullable: true, maxSize: 1000
         executionMethod blank: false, nullable: false, inList: ["Automated", "Manual"]
         name blank: false, maxSize: 255, nullable: false
+        person nullable: false
         project nullable: false
         steps nullable: true
         type blank: false, nullable: false, inList: ["UI", "API"]

@@ -3,6 +3,7 @@ package com.everlution.test.project
 import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.Environment
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Scenario
 import com.everlution.TestCase
@@ -31,7 +32,8 @@ class ProjectHibernateSpec extends HibernateSpec {
     void "delete project with test case throws persistence exception"() {
         given: "valid test case with project"
         Project project = new Project(name: "Delete Test Case Cascade Project000", code: "ZZ0").save()
-        new TestCase(creator: "test", name: "test", description: "desc",
+        def person = new Person(email: "test@test.com", password: "password").save()
+        new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         when: "delete project"

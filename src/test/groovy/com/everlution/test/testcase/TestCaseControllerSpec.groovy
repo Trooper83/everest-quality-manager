@@ -5,6 +5,7 @@ import com.everlution.TestCase
 import com.everlution.TestCaseController
 import com.everlution.TestCaseService
 import com.everlution.command.RemovedItems
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -129,6 +130,9 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase)
         }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
 
         when:"the save action is executed with a valid instance"
         response.reset()
@@ -154,6 +158,9 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
             1 * save(_ as TestCase) >> { TestCase testCase ->
                 throw new ValidationException("Invalid instance", testCase.errors)
             }
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
         }
 
         when:"the save action is executed with an invalid instance"
