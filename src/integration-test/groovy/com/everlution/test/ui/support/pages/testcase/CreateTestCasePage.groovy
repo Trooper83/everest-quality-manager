@@ -21,6 +21,7 @@ class CreateTestCasePage extends BasePage {
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
+        platformOptions { $("#platform>option") }
         projectOptions { $("#project>option") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
@@ -39,6 +40,10 @@ class CreateTestCasePage extends BasePage {
 
     Select executionMethodSelect() {
         $("#executionMethod").module(Select)
+    }
+
+    Select platformSelect() {
+        $("#platform").module(Select)
     }
 
     Select projectSelect() {
@@ -81,11 +86,12 @@ class CreateTestCasePage extends BasePage {
      * creates a test case with the supplied data
      */
     void createTestCase(String name, String description, String project, String area, List<String> environments,
-                        String method, String type) {
+                        String method, String type, String platform) {
         nameInput = name
         descriptionInput = description
         projectSelect().selected = project
         executionMethodSelect().selected = method
+        platformSelect().selected = platform
         typeSelect().selected = type
         areaSelect().selected = area
         environmentsSelect().selected = environments

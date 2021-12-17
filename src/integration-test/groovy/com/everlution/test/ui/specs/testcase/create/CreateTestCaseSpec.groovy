@@ -62,7 +62,7 @@ class CreateTestCaseSpec extends GebSpec {
         CreateTestCasePage createPage = to CreateTestCasePage
         def tcd = DataFactory.testCase()
         createPage.createTestCase(
-                tcd.name, tcd.description, project.name, area.name, [env.name, env1.name],"Automated", "UI")
+                tcd.name, tcd.description, project.name, area.name, [env.name, env1.name],"Automated", "UI", "Web")
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -73,6 +73,7 @@ class CreateTestCaseSpec extends GebSpec {
             showPage.descriptionValue.text() == tcd.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
+            showPage.platformValue.text() == "Web"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
         }
     }

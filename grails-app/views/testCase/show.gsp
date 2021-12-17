@@ -72,6 +72,10 @@
             <span id="type-label" class="property-label">Type</span>
             <div class="property-value" id="type">${testCase.type}</div>
         </li>
+        <li class="fieldcontain">
+            <span id="platform-label" class="property-label">Platform</span>
+            <div class="property-value" id="platform">${testCase.platform}</div>
+        </li>
     </ol>
     <g:render template="/shared/showStepsTableTemplate" bean="${testCase}" var="entity"/>
     <sec:ifAnyGranted roles="ROLE_BASIC">

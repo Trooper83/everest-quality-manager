@@ -5,10 +5,11 @@ class TestCase {
     Area area
     Date dateCreated
     String description
-    List environments
+    Collection environments
     String executionMethod
     String name
     Person person
+    String platform
     Project project
     List steps
     String type
@@ -34,12 +35,13 @@ class TestCase {
             val.id in ids
         }
         description blank: true, nullable: true, maxSize: 1000
-        executionMethod blank: false, nullable: false, inList: ["Automated", "Manual"]
+        executionMethod blank: true, nullable: true, inList: ["Automated", "Manual"]
         name blank: false, maxSize: 255, nullable: false
         person nullable: false
+        platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
         project nullable: false
         steps nullable: true
-        type blank: false, nullable: false, inList: ["UI", "API"]
+        type blank: true, nullable: true, inList: ["UI", "API"]
         environments nullable: true, validator: { val, TestCase obj ->
             if(val == null) {
                 return
