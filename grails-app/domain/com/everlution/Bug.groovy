@@ -8,6 +8,7 @@ class Bug {
     List environments
     String name
     Person person
+    String platform
     Project project
     List steps
 
@@ -34,6 +35,7 @@ class Bug {
         description blank: true, nullable: true, maxSize: 1000
         name blank: false, maxSize: 255, nullable: false
         person nullable: false
+        platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
         project nullable: false
         environments nullable: true, validator: { val, Bug obj ->
             if(val == null) {

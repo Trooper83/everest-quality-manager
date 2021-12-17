@@ -163,7 +163,7 @@ class ShowPageSpec extends GebSpec {
         then: "correct fields are displayed"
         def page = browser.page(ShowScenarioPage)
         page.getFields() == ["Created By", "Project", "Area", "Environments", "Name", "Description",
-                             "Execution Method", "Type", "Gherkin"]
+                             "Execution Method", "Type", "Platform", "Gherkin"]
     }
 
     void "scenario not deleted if alert is canceled"() {

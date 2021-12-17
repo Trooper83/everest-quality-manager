@@ -69,6 +69,10 @@
             <div class="property-value" id="type">${scenario.type}</div>
         </li>
         <li class="fieldcontain">
+            <span id="platform-label" class="property-label">Platform</span>
+            <div class="property-value" id="platform">${scenario.platform}</div>
+        </li>
+        <li class="fieldcontain">
             <span id="gherkin-label" class="property-label">Gherkin</span>
             <div class="property-value" id="gherkin">${scenario.gherkin}</div>
         </li>

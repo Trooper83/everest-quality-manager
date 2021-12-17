@@ -65,7 +65,7 @@ class EditPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(EditBugPage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Name *"]
+        page.getFields() == ["Project", "Area", "Environments", "Description", "Name *", "Platform"]
     }
 
     void "required fields indicator displayed for required fields"() {
@@ -80,5 +80,13 @@ class EditPageSpec extends GebSpec {
         then: "required field indicators displayed"
         def page = browser.page(EditBugPage)
         page.areRequiredFieldIndicatorsDisplayed(["name"])
+    }
+
+    void "verify platform options"() {
+        expect: "correct options are populated"
+        EditBugPage page = browser.page(EditBugPage)
+        verifyAll {
+            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+        }
     }
 }

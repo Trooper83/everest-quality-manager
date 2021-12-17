@@ -10,6 +10,7 @@ class Scenario {
     String gherkin
     String name
     Person person
+    String platform
     Project project
     String type
 
@@ -34,12 +35,13 @@ class Scenario {
             val.id in ids
         }
         description blank: true, nullable: true, maxSize: 1000
-        executionMethod blank: false, nullable: false, inList: ["Automated", "Manual"]
+        executionMethod blank: true, nullable: true, inList: ["Automated", "Manual"]
         gherkin blank: true, nullable: true, maxSize: 2500
         name blank: false, maxSize: 255, nullable: false
         person nullable: false
+        platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
         project nullable: false
-        type blank: false, nullable: false, inList: ["UI", "API"]
+        type blank: true, nullable: true, inList: ["UI", "API"]
         environments nullable: true, validator: { val, Scenario obj ->
             if(val == null) {
                 return

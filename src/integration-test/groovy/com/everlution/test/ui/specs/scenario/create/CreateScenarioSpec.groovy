@@ -62,7 +62,7 @@ class CreateScenarioSpec extends GebSpec {
         def createPage = to CreateScenarioPage
         def scn = DataFactory.scenario()
         createPage.createScenario(scn.name, scn.description, scn.gherkin, project.name, area.name,
-                [env.name, env1.name],"Automated", "UI")
+                [env.name, env1.name],"Automated", "UI", "Web")
 
         then: "data is displayed on show page"
         def showPage = at ShowScenarioPage
@@ -73,6 +73,7 @@ class CreateScenarioSpec extends GebSpec {
             showPage.descriptionValue.text() == scn.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
+            showPage.platformValue.text() == "Web"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.gherkinTextArea.text() == scn.gherkin
         }

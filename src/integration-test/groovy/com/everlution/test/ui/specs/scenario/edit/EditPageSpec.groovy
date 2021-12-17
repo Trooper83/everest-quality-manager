@@ -18,17 +18,14 @@ class EditPageSpec extends GebSpec {
 
     def setup() {
         id = scenarioService.list(max:1).first().id
-    }
 
-    void "home link directs to home view"() {
-        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to edit"
         go "/scenario/edit/${id}"
+    }
 
+    void "home link directs to home view"() {
         when: "click the home button"
         def page = browser.page(EditScenarioPage)
         page.goToHome()
@@ -38,14 +35,6 @@ class EditPageSpec extends GebSpec {
     }
 
     void "list link directs to list view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to edit"
-        go "/scenario/edit/${id}"
-
         when: "click the list link"
         def page = browser.page(EditScenarioPage)
         page.goToList()
@@ -55,31 +44,32 @@ class EditPageSpec extends GebSpec {
     }
 
     void "correct fields are displayed"() {
-        given: "login as basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/scenario/edit/${id}"
-
-        then: "correct fields are displayed"
+        expect: "correct fields are displayed"
         def page = browser.page(EditScenarioPage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method *", "Name *",
-                             "Type *", "Gherkin"]
+        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method", "Name *",
+                             "Platform", "Type", "Gherkin"]
     }
 
     void "required fields indicator displayed for required fields"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/scenario/edit/${id}"
-
-        then: "required field indicators displayed"
+        expect: "required field indicators displayed"
         def page = browser.page(EditScenarioPage)
         page.areRequiredFieldIndicatorsDisplayed(["name"])
+    }
+
+    void "verify method and type field options"() {
+        expect: "correct options populate for executionMethod and type"
+        EditScenarioPage page = browser.page(EditScenarioPage)
+        verifyAll {
+            page.executionMethodOptions*.text() == ["", "Automated", "Manual"]
+            page.typeOptions*.text() == ["", "UI", "API"]
+        }
+    }
+
+    void "verify platform field options"() {
+        expect: "correct options populate"
+        EditScenarioPage page = browser.page(EditScenarioPage)
+        verifyAll {
+            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+        }
     }
 }

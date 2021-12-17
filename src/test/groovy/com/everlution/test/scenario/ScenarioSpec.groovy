@@ -155,25 +155,23 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         domain.validate(["gherkin"])
     }
 
-    void "test execution method cannot be null"() {
+    void "execution method can be null"() {
         when:
         domain.executionMethod = null
 
         then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "nullable"
+        domain.validate(["executionMethod"])
     }
 
-    void "test execution method cannot be blank"() {
+    void "test execution method can be blank"() {
         when:
         domain.executionMethod = ""
 
         then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "blank"
+        domain.validate(["executionMethod"])
     }
 
-    void "test execution method value in list"(String value) {
+    void "execution method value in list"(String value) {
         when:
         domain.executionMethod = value
 
@@ -195,22 +193,20 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         domain.errors["executionMethod"].code == "not.inList"
     }
 
-    void "test type cannot be null"() {
+    void "type can be null"() {
         when:
         domain.type = null
 
         then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "nullable"
+        domain.validate(["type"])
     }
 
-    void "test type cannot be blank"() {
+    void "type can be blank"() {
         when:
         domain.type = ""
 
         then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "blank"
+        domain.validate(["type"])
     }
 
     void "test type value in list"(String value) {
@@ -233,6 +229,42 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         then:
         !domain.validate(["type"])
         domain.errors["type"].code == "not.inList"
+    }
+
+    void "platform can be null"() {
+        when:
+        domain.platform = null
+
+        then:
+        domain.validate(["platform"])
+    }
+
+    void "platform can be blank"() {
+        when:
+        domain.platform = ""
+
+        then:
+        domain.validate(["platform"])
+    }
+
+    void "platform value in list"(String value) {
+        when:
+        domain.platform = value
+
+        then:
+        domain.validate(["platform"])
+
+        where:
+        value << ["Android", "iOS", "Web"]
+    }
+
+    void "platform value not in list"() {
+        when:
+        domain.platform = "test"
+
+        then:
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "not.inList"
     }
 
     void "person cannot be null"() {

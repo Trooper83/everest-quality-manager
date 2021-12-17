@@ -64,7 +64,8 @@ class CreateBugSpec extends GebSpec {
 
         and: "create bug"
         CreateBugPage createPage = to CreateBugPage
-        createPage.createBug(name, description, area.name, [env.name, env1.name], project.name, action, result)
+        createPage.createBug(name, description, area.name, [env.name, env1.name], project.name,
+                "Web", action, result)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
@@ -73,6 +74,7 @@ class CreateBugSpec extends GebSpec {
             showPage.projectValue.text() == project.name
             showPage.nameValue.text() == name
             showPage.descriptionValue.text() == description
+            showPage.platformValue.text() == "Web"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.stepsTable.isRowDisplayed(action, result)
         }

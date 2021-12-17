@@ -42,12 +42,25 @@ class CreatePageSpec extends GebSpec {
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         def page = browser.page(CreateBugPage)
-        page.getFields() == ["Description", "Name *", "Project *", "Area", "Environments"]
+        page.getFields() == ["Description", "Name *", "Platform", "Project *", "Area", "Environments"]
     }
 
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         def page = browser.page(CreateBugPage)
         page.areRequiredFieldIndicatorsDisplayed(["project", "name"])
+    }
+
+    void "verify platform options"() {
+        expect: "correct options are populated"
+        CreateBugPage page = browser.page(CreateBugPage)
+        verifyAll {
+            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+        }
+
+        and: "default value is blank"
+        verifyAll( {
+            page.platformSelect().selected == ""
+        })
     }
 }

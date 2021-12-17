@@ -274,4 +274,40 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         then:
         domain.validate(["steps"])
     }
+
+    void "platform can be null"() {
+        when:
+        domain.platform = null
+
+        then:
+        domain.validate(["platform"])
+    }
+
+    void "platform can be blank"() {
+        when:
+        domain.platform = ""
+
+        then:
+        domain.validate(["platform"])
+    }
+
+    void "platform value in list"(String value) {
+        when:
+        domain.platform = value
+
+        then:
+        domain.validate(["platform"])
+
+        where:
+        value << ["Android", "iOS", "Web"]
+    }
+
+    void "platform value not in list"() {
+        when:
+        domain.platform = "test"
+
+        then:
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "not.inList"
+    }
 }
