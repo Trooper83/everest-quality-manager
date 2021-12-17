@@ -18,6 +18,7 @@ class EditTestCasePage extends BasePage {
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
+        platformOptions { $("#platform>option") }
         projectNameField { $("[data-test-id=edit-project-name]") }
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         stepsTable { module StepTableModule }
@@ -38,6 +39,10 @@ class EditTestCasePage extends BasePage {
 
     Select executionMethodSelect() {
         $("#executionMethod").module(Select)
+    }
+
+    Select platformSelect() {
+        $("#platform").module(Select)
     }
 
     Select typeSelect() {
@@ -63,12 +68,14 @@ class EditTestCasePage extends BasePage {
     /**
      * fills in all data but does not submit the form
      */
-    void completeEditForm(String name, String description, String area, List<String> environments, String method, String type) {
+    void completeEditForm(String name, String description, String area, List<String> environments, String method,
+                          String type, String platform) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
         environmentsSelect().selected = environments
         executionMethodSelect().selected = method
+        platformSelect().selected = platform
         typeSelect().selected = type
     }
 
@@ -82,8 +89,9 @@ class EditTestCasePage extends BasePage {
     /**
      * edits a test case with the supplied data
      */
-    void editTestCase(String name, String description, String area, List<String> environments, String method, String type) {
-        completeEditForm(name, description, area, environments, method, type)
+    void editTestCase(String name, String description, String area, List<String> environments, String method,
+                      String type, String platform) {
+        completeEditForm(name, description, area, environments, method, type, platform)
         updateButton.click()
     }
 

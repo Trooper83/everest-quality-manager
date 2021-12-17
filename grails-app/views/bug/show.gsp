@@ -64,6 +64,10 @@
             <span id="description-label" class="property-label">Description</span>
             <div class="property-value" id="description">${bug.description}</div>
         </li>
+        <li class="fieldcontain">
+            <span id="platform-label" class="property-label">Platform</span>
+            <div class="property-value" id="platform">${bug.platform}</div>
+        </li>
     </ol>
     <g:render template="/shared/showStepsTableTemplate" bean="${bug}" var="entity"/>
     <sec:ifAnyGranted roles="ROLE_BASIC">

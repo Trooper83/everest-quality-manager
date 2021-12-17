@@ -42,28 +42,42 @@ class CreatePageSpec extends GebSpec {
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.areRequiredFieldIndicatorsDisplayed(["executionMethod", "name", "type", "project"])
+        page.areRequiredFieldIndicatorsDisplayed(["name", "project"])
     }
 
     void "verify method and type field options"() {
         expect: "correct options populate for executionMethod and type"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         verifyAll {
-            page.executionMethodOptions*.text() == ["Automated", "Manual"]
-            page.typeOptions*.text() == ["UI", "API"]
+            page.executionMethodOptions*.text() == ["", "Automated", "Manual"]
+            page.typeOptions*.text() == ["", "UI", "API"]
         }
 
-        and: "default values are correct"
+        and: "default values are blank"
         verifyAll( {
-            page.executionMethodSelect().selected == "Automated"
-            page.typeSelect().selected == "UI"
+            page.executionMethodSelect().selected == ""
+            page.typeSelect().selected == ""
+        })
+    }
+
+    void "verify platform options"() {
+        expect: "correct options are populated"
+        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        verifyAll {
+            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+        }
+
+        and: "default value is blank"
+        verifyAll( {
+            page.platformSelect().selected == ""
         })
     }
 
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.getFields() == ["Project *", "Area", "Environments", "Description", "Execution Method *", "Name *", "Type *"]
+        page.getFields() == ["Project *", "Area", "Environments", "Description", "Execution Method",
+                             "Name *", "Platform", "Type"]
     }
 
     void "null project message displays"() {

@@ -16,7 +16,8 @@ class EditBugPage extends BasePage {
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
-        nameInput { $("#name")}
+        nameInput { $("#name") }
+        platformOptions { $("#platform>option") }
         projectNameField { $("[data-test-id=edit-project-name]") }
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         stepsTable { module StepTableModule }
@@ -32,6 +33,10 @@ class EditBugPage extends BasePage {
 
     MultipleSelect environmentsSelect() {
         $("#environments").module(MultipleSelect)
+    }
+
+    Select platformSelect() {
+        $("#platform").module(Select)
     }
 
     /**
@@ -60,10 +65,11 @@ class EditBugPage extends BasePage {
     /**
      * edits a bug with the supplied data
      */
-    void editBug(String name, String description, String area, List<String> environments) {
+    void editBug(String name, String description, String area, List<String> environments, String platform) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
+        platformSelect().selected = platform
         environmentsSelect().selected = environments
         updateButton.click()
     }

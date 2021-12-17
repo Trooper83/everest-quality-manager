@@ -120,7 +120,7 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.validate(["description"])
     }
 
-    void "test steps can be null"() {
+    void "steps can be null"() {
         when:
         domain.steps = null
 
@@ -128,22 +128,20 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.validate(["steps"])
     }
 
-    void "test execution method cannot be null"() {
+    void "execution method can be null"() {
         when:
         domain.executionMethod = null
 
         then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "nullable"
+        domain.validate(["executionMethod"])
     }
 
-    void "test execution method cannot be blank"() {
+    void "execution method can be blank"() {
         when:
         domain.executionMethod = ""
 
         then:
-        !domain.validate(["executionMethod"])
-        domain.errors["executionMethod"].code == "blank"
+        domain.validate(["executionMethod"])
     }
 
     void "test execution method value in list"(String value) {
@@ -168,22 +166,20 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         domain.errors["executionMethod"].code == "not.inList"
     }
 
-    void "test type cannot be null"() {
+    void "type can be null"() {
         when:
         domain.type = null
 
         then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "nullable"
+        domain.validate(["type"])
     }
 
-    void "test type cannot be blank"() {
+    void "type cannot be blank"() {
         when:
         domain.type = ""
 
         then:
-        !domain.validate(["type"])
-        domain.errors["type"].code == "blank"
+        domain.validate(["type"])
     }
 
     void "test type value in list"(String value) {
@@ -355,5 +351,41 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         then:
         !domain.validate(["environments"])
         domain.errors["environments"].code == "validator.invalid"
+    }
+
+    void "platform can be null"() {
+        when: "property is null"
+        domain.platform = null
+
+        then: "domain validates"
+        domain.validate(["platform"])
+    }
+
+    void "platform can be blank"() {
+        when: "property is blank"
+        domain.platform = ""
+
+        then: "domain validates"
+        domain.validate(["platform"])
+    }
+
+    void "platform validates with value in list"(String value) {
+        when: "value in list"
+        domain.platform = value
+
+        then: "domain validates"
+        domain.validate(["platform"])
+
+        where:
+        value << ["Android", "iOS", "Web"]
+    }
+
+    void "platform fails validation with value not in list"() {
+        when: "value not in list"
+        domain.platform = "test"
+
+        then: "validation fails"
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "not.inList"
     }
 }

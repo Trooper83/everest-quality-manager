@@ -43,12 +43,39 @@ class CreatePageSpec extends GebSpec {
         expect: "correct fields are displayed"
         def page = browser.page(CreateScenarioPage)
         page.getFields() == ["Project *", "Area", "Environments", "Gherkin", "Description",
-                             "Execution Method *", "Name *", "Type *"]
+                             "Execution Method", "Name *", "Platform", "Type"]
     }
 
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         def page = browser.page(CreateScenarioPage)
-        page.areRequiredFieldIndicatorsDisplayed(["project", "name", "type", "executionMethod"])
+        page.areRequiredFieldIndicatorsDisplayed(["project", "name"])
+    }
+
+    void "verify platform options"() {
+        expect: "correct options are populated"
+        CreateScenarioPage page = browser.page(CreateScenarioPage)
+        verifyAll {
+            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+        }
+
+        and: "default value is blank"
+        verifyAll( {
+            page.platformSelect().selected == ""
+        })
+    }
+    void "verify method and type field options"() {
+        expect: "correct options populate for executionMethod and type"
+        CreateScenarioPage page = browser.page(CreateScenarioPage)
+        verifyAll {
+            page.executionMethodOptions*.text() == ["", "Automated", "Manual"]
+            page.typeOptions*.text() == ["", "UI", "API"]
+        }
+
+        and: "default values are blank"
+        verifyAll( {
+            page.executionMethodSelect().selected == ""
+            page.typeSelect().selected == ""
+        })
     }
 }

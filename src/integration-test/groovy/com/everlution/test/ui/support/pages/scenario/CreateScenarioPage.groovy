@@ -21,6 +21,7 @@ class CreateScenarioPage extends BasePage {
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
+        platformOptions { $("#platform>option") }
         projectOptions { $("#project>option") }
         typeOptions { $("#type>option") }
     }
@@ -38,6 +39,10 @@ class CreateScenarioPage extends BasePage {
 
     Select executionMethodSelect() {
         $("#executionMethod").module(Select)
+    }
+
+    Select platformSelect() {
+        $("#platform").module(Select)
     }
 
     Select projectSelect() {
@@ -80,7 +85,7 @@ class CreateScenarioPage extends BasePage {
      * creates a scenario with the supplied data
      */
     void createScenario(String name, String description, String gherkin, String project, String area, List<String> environments,
-                        String method, String type) {
+                        String method, String type, String platform) {
         nameInput = name
         descriptionInput = description
         projectSelect().selected = project
@@ -88,6 +93,7 @@ class CreateScenarioPage extends BasePage {
         typeSelect().selected = type
         areaSelect().selected = area
         environmentsSelect().selected = environments
+        platformSelect().selected = platform
         gherkinTextArea = gherkin
         createButton.click()
     }

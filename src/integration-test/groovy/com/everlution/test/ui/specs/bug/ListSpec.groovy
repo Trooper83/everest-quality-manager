@@ -25,7 +25,7 @@ class ListSpec extends GebSpec {
         def page = to ListBugPage
 
         then: "correct headers are displayed"
-        page.bugTable.getHeaders() == ["Name", "Description", "Person", "Project"]
+        page.bugTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform"]
     }
 
     void "home link directs to home view"() {

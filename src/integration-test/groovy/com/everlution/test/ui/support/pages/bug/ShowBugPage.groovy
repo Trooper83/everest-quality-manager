@@ -19,6 +19,7 @@ class ShowBugPage extends BasePage {
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
         nameValue { $("#name") }
+        platformValue { $("#platform") }
         projectValue { $("#project") }
         statusMessage { $("div.message") }
         stepsTable { module StepTableModule }

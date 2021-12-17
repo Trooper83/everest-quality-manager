@@ -19,6 +19,7 @@ class EditScenarioPage extends BasePage {
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
+        platformOptions { $("#platform>option") }
         projectNameField { $("[data-test-id=edit-project-name]") }
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         testStepTable { module StepTableModule }
@@ -39,6 +40,10 @@ class EditScenarioPage extends BasePage {
 
     Select executionMethodSelect() {
         $("#executionMethod").module(Select)
+    }
+
+    Select platformSelect() {
+        $("#platform").module(Select)
     }
 
     Select typeSelect() {
@@ -72,13 +77,14 @@ class EditScenarioPage extends BasePage {
      * edits a scenario with the supplied data
      */
     void editScenario(String name, String description, String gherkin, String area, List<String> environment,
-                      String method, String type) {
+                      String method, String type, String platform) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
         environmentsSelect().selected = environment
         executionMethodSelect().selected = method
         typeSelect().selected = type
+        platformSelect().selected = platform
         gherkinTextArea = gherkin
         updateButton.click()
     }

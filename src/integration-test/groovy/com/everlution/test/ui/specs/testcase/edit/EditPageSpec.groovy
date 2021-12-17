@@ -43,27 +43,30 @@ class EditPageSpec extends GebSpec {
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method *", "Name *", "Type *"]
+        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method", "Name *",
+                             "Platform", "Type"]
     }
 
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.areRequiredFieldIndicatorsDisplayed(["executionMethod", "name", "type"])
+        page.areRequiredFieldIndicatorsDisplayed(["name"])
     }
 
     void "verify method and type field options"() {
         expect: "correct options populate for executionMethod and type"
         EditTestCasePage page = browser.page(EditTestCasePage)
         verifyAll {
-            page.executionMethodOptions*.text() == ["Automated", "Manual"]
-            page.typeOptions*.text() == ["UI", "API"]
+            page.executionMethodOptions*.text() == ["", "Automated", "Manual"]
+            page.typeOptions*.text() == ["", "UI", "API"]
         }
+    }
 
-        and: "default values are correct"
-        verifyAll( {
-            page.executionMethodSelect().selected == "Automated"
-            page.typeSelect().selected == "UI"
-        })
+    void "verify platform field options"() {
+        expect: "correct options populate for executionMethod and type"
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        verifyAll {
+            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+        }
     }
 }

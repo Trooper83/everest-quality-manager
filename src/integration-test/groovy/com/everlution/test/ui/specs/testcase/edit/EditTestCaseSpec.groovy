@@ -153,7 +153,7 @@ class EditTestCaseSpec extends GebSpec {
                 areas: [area], environments: [env]))
         def td = DataFactory.testCase()
         def testCase = new TestCase(name: td.name, description: td.description, person: person, project: project,
-            area: area, executionMethod: "Manual", type: "API", environments: [env])
+            area: area, executionMethod: "Manual", type: "API", platform: "Web", environments: [env])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"
@@ -167,7 +167,7 @@ class EditTestCaseSpec extends GebSpec {
         when: "edit test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
         def edited = DataFactory.testCase()
-        page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI")
+        page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI", "iOS")
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -179,6 +179,7 @@ class EditTestCaseSpec extends GebSpec {
             showPage.descriptionValue.text() == edited.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
+            showPage.platformValue.text() == "iOS"
         }
     }
 }

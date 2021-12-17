@@ -32,7 +32,7 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListScenarioPage page = browser.page(ListScenarioPage)
-        page.scenarioTable.getHeaders() == ["Name", "Person", "Type", "Execution Method", "Project"]
+        page.scenarioTable.getHeaders() == ["Name", "Person", "Type", "Execution Method", "Platform", "Project"]
     }
 
     void "home link directs to home view"() {

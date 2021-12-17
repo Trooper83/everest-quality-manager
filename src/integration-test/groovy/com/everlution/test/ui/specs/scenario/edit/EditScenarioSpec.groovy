@@ -60,7 +60,7 @@ class EditScenarioSpec extends GebSpec {
                 areas: [area], environments: [env]))
         def sd = DataFactory.scenario()
         def scenario = new Scenario(name: sd.name, description: sd.description, person: person, project: project,
-                area: area, executionMethod: "Manual", type: "API", environments: [env])
+                area: area, executionMethod: "Manual", type: "API", platform: "Web", environments: [env])
         def id = scenarioService.save(scenario).id
 
         and: "login as a basic user"
@@ -74,7 +74,8 @@ class EditScenarioSpec extends GebSpec {
         when: "edit test case"
         EditScenarioPage page = browser.page(EditScenarioPage)
         def edited = DataFactory.scenario()
-        page.editScenario(edited.name, edited.description, edited.gherkin, "", [""], "Automated", "UI")
+        page.editScenario(edited.name, edited.description, edited.gherkin, "", [""],
+                "Automated", "UI", "iOS")
 
         then: "data is displayed on show page"
         ShowScenarioPage showPage = at ShowScenarioPage
@@ -85,6 +86,7 @@ class EditScenarioSpec extends GebSpec {
             showPage.nameValue.text() == edited.name
             showPage.descriptionValue.text() == edited.description
             showPage.executionMethodValue.text() == "Automated"
+            showPage.platformValue.text() == "iOS"
             showPage.typeValue.text() == "UI"
             showPage.gherkinTextArea.text() == edited.gherkin
         }

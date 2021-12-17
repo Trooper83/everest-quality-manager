@@ -20,6 +20,7 @@ class CreateBugPage extends BasePage {
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
+        platformOptions { $("#platform>option") }
         projectOptions { $("#project>option") }
         stepsTable { module StepTableModule }
     }
@@ -31,16 +32,14 @@ class CreateBugPage extends BasePage {
         $("#area").module(Select)
     }
 
-    /**
-     * select elements strongly typed for convenience in tests
-     */
     MultipleSelect environmentsSelect() {
         $("#environments").module(MultipleSelect)
     }
 
-    /**
-     * select element strongly typed for convenience in tests
-     */
+    Select platformSelect() {
+        $("#platform").module(Select)
+    }
+
     Select projectSelect() {
         $("#project").module(Select)
     }
@@ -77,7 +76,7 @@ class CreateBugPage extends BasePage {
      * creates a bug with the supplied data
      */
     void createBug(String name, String description, String area, List<String> environment,
-                   String project, String action, String result) {
+                   String project, String platform, String action, String result) {
         nameInput = name
         descriptionInput = description
         projectSelect().selected = project
@@ -85,6 +84,7 @@ class CreateBugPage extends BasePage {
             areaSelect().enabled
         }
         areaSelect().selected = area
+        platformSelect().selected = platform
         environmentsSelect().selected = environment
         stepsTable.addStep(action, result)
         createButton.click()

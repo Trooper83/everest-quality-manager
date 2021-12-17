@@ -59,7 +59,7 @@ class CreatePageStepsSpec extends GebSpec {
 
         when: "create bug"
         CreateBugPage createPage = to CreateBugPage
-        createPage.createBug(name, description, "", [], project.name, "", "")
+        createPage.createBug(name, description, "", [], project.name, "", "", "")
 
         then:
         createPage.errorsMessage.text() ==
