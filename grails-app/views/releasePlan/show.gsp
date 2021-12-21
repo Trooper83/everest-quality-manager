@@ -46,8 +46,10 @@
             <sec:ifAnyGranted roles="ROLE_BASIC">
             <g:form resource="${this.releasePlan}" method="DELETE">
                 <fieldset class="buttons">
-                    <g:link class="edit" action="edit" resource="${this.releasePlan}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-                    <input class="delete" type="submit" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                    <g:link class="edit" action="edit" resource="${this.releasePlan}" data-test-id="show-edit-link">
+                        <g:message code="default.button.edit.label" default="Edit" />
+                    </g:link>
+                    <input class="delete" type="submit" data-test-id="show-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
                 </fieldset>
             </g:form>
             </sec:ifAnyGranted>

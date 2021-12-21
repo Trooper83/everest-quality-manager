@@ -46,14 +46,14 @@ class ReleasePlanServiceSpec extends Specification {
         setupData()
 
         expect:
-        releasePlanService.count() == 4
+        releasePlanService.count() == 5
     }
 
     void "delete removes plan"() {
         Long releasePlanId = setupData()
 
         expect:
-        releasePlanService.count() == 4
+        releasePlanService.count() == 5
 
         when:
         releasePlanService.delete(releasePlanId)

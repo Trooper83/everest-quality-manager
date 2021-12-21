@@ -45,6 +45,13 @@ class DataFactory {
     }
 
     /**
+     * creates fake data to populate a release plan instance
+     */
+    static Map<String, String> releasePlan() {
+        return [name: faker.name().title()]
+    }
+
+    /**
      * creates fake data to populate a scenario instance
      */
     static Map<String, String> scenario() {

@@ -1,25 +1,18 @@
 package com.everlution.test.ui.support.pages.releaseplan
 
 import com.everlution.test.ui.support.pages.common.BasePage
-import com.github.javafaker.Faker
-import geb.module.Select
 
-class CreateReleasePlanPage extends BasePage {
-    static url = "/releasePlan/create"
-    static at = { title == "Create ReleasePlan" }
+class EditReleasePlanPage extends BasePage {
+    static url = "/releasePlan/edit"
+    static at = { title == "Edit ReleasePlan" }
 
     static content = {
-        createButton { $("#create") }
-        errorsMessage { $("ul.errors") }
         fieldLabels { $("fieldset label") }
-        homeLink { $("[data-test-id=create-home-link]") }
-        listLink { $("[data-test-id=create-list-link]") }
+        homeLink { $("[data-test-id=edit-home-link]") }
+        listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
-        projectOptions { $("#project>option") }
-    }
-
-    Select projectSelect() {
-        $("#project").module(Select)
+        projectNameField { $("[data-test-id=edit-project-name]") }
+        updateButton { $("[data-test-id=edit-update-button]") }
     }
 
     /**
@@ -39,22 +32,18 @@ class CreateReleasePlanPage extends BasePage {
     }
 
     /**
-     * creates a generic plan
+     * clicks the update button
      */
-    void createReleasePlan() {
-        Faker faker = new Faker()
-        projectSelect().selected = "1"
-        nameInput << faker.name().title()
-        createButton.click()
+    void editReleasePlan() {
+        updateButton.click()
     }
 
     /**
-     * creates a plan with the supplied data
+     * edits a plan with the supplied data
      */
-    void createReleasePlan(String name, String project) {
-        projectSelect().selected = project
-        nameInput << name
-        createButton.click()
+    void editReleasePlan(String name) {
+        nameInput = name
+        updateButton.click()
     }
 
     /**

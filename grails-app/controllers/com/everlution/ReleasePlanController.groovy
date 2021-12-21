@@ -57,7 +57,7 @@ class ReleasePlanController {
         try {
             releasePlanService.save(releasePlan)
         } catch (ValidationException e) {
-            respond releasePlan.errors, view:'create'
+            respond releasePlan.errors, view:'create', model: [projects: projectService.list()]
             return
         }
 
