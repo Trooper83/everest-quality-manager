@@ -11,6 +11,7 @@ class ReleasePlan {
 
     static mapping = {
         project cascade: "none"
+        testCycles cascade: "all-delete-orphan"
     }
 
     static constraints = {

@@ -71,4 +71,20 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
         ReleasePlan.findById(plan.id) != null
         TestCycle.findById(cycle.id) != null
     }
+
+    void "removeFromTestCycles deletes test cycles"() {
+        given:
+        def cycle = new TestCycle(name: "cycle name")
+        def plan = new ReleasePlan(name: "name", project: project).addToTestCycles(cycle).save()
+
+        expect:
+        ReleasePlan.findById(plan.id) != null
+        TestCycle.findById(cycle.id) != null
+
+        when:
+        plan.removeFromTestCycles(cycle).save(flush: true)
+
+        then:
+        TestCycle.findById(cycle.id) == null
+    }
 }
