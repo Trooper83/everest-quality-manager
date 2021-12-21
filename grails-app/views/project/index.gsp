@@ -14,11 +14,13 @@
                         <g:message code="default.home.label"/>
                     </a>
                 </li>
+                <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
                 <li>
                     <g:link class="create" action="create" data-test-id="index-create-link">
                         <g:message code="default.new.label" args="[entityName]" />
                     </g:link>
                 </li>
+                </sec:ifAnyGranted>
             </ul>
         </div>
         <div id="list-project" class="content scaffold-list" role="main">

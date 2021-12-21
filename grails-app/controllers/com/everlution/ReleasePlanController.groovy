@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.*
 
 class ReleasePlanController {
 
+    ProjectService projectService
     ReleasePlanService releasePlanService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -39,7 +40,7 @@ class ReleasePlanController {
      */
     @Secured("ROLE_BASIC")
     def create() {
-        respond new ReleasePlan(params)
+        respond new ReleasePlan(params), model: [projects: projectService.list()]
     }
 
     /**

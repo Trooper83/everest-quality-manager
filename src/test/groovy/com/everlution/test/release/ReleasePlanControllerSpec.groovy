@@ -1,5 +1,6 @@
 package com.everlution.test.release
 
+import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanController
 import com.everlution.ReleasePlanService
@@ -66,6 +67,11 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
     }
 
     void "create action returns create view"() {
+        given: "mock service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:
         controller.create()
 
@@ -74,11 +80,17 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
     }
 
     void "create action returns the correct model"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
         when:"The create action is executed"
         controller.create()
 
         then:"The model is correctly created"
-        model.releasePlan != null
+        model.releasePlan instanceof ReleasePlan
+        model.projects instanceof List
     }
 
     void "save action method type"(String httpMethod) {
