@@ -60,7 +60,7 @@ class ReleasePlanServiceSpec extends Specification {
         sessionFactory.currentSession.flush()
 
         then:
-        releasePlanService.count() == 3
+        releasePlanService.count() == 4
     }
 
     void "save persists instance"() {
