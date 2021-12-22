@@ -135,6 +135,28 @@ class ProjectServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
+    void "save throws exception with two areas with same name"() {
+        when:
+        def area = new Area(name: "area")
+        def area1 = new Area(name: "area")
+        Project project = new Project(name: "testing save project", areas: [area, area1])
+        projectService.save(project)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "save throws exception with two environments with same name"() {
+        when:
+        def env = new Environment(name: "env")
+        def env1 = new Environment(name: "env")
+        Project project = new Project(name: "testing save project", areas: [env, env1])
+        projectService.save(project)
+
+        then:
+        thrown(ValidationException)
+    }
+
     void "delete throws constraint exception when project has associated scenarios"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZD").save()
@@ -224,6 +246,28 @@ class ProjectServiceSpec extends Specification {
         then: "area and project are deleted"
         projectService.get(project.id) == null
         areaService.get(area.id) == null
+    }
+
+    void "saveUpdate throws exception with two areas with same name"() {
+        when:
+        def area = new Area(name: "area")
+        def area1 = new Area(name: "area")
+        Project project = new Project(name: "testing save project", areas: [area, area1])
+        projectService.saveUpdate(project, new RemovedItems())
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "saveUpdate throws exception with two environments with same name"() {
+        when:
+        def env = new Environment(name: "env")
+        def env1 = new Environment(name: "env")
+        Project project = new Project(name: "testing save project", areas: [env, env1])
+        projectService.saveUpdate(project, new RemovedItems())
+
+        then:
+        thrown(ValidationException)
     }
 
     void "saveUpdate throws exception with validation fail"() {
