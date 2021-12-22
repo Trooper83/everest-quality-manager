@@ -367,6 +367,28 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         flash.message == "default.deleted.message"
     }
 
+    void "delete action responds when data integrity violation exception thrown"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * delete(2) >> { Long id ->
+                throw new DataIntegrityViolationException("Foreign Key constraint violation")
+            }
+            1 * read(_) >> {
+                new Project(params)
+            }
+        }
+
+        when:"The domain instance is passed to the delete action"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2)
+
+        then:"The edit view is rendered again with the correct model"
+        model.project instanceof Project
+        flash.error == "Project has associated items and cannot be deleted"
+        view == 'show'
+    }
+
     void "Test the getProjectItems action with a null instance"() {
         when:"The delete action is called for a null instance"
         request.method = 'GET'

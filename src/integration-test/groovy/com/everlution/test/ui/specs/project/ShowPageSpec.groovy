@@ -1,6 +1,8 @@
 package com.everlution.test.ui.specs.project
 
 import com.everlution.ProjectService
+import com.everlution.ReleasePlan
+import com.everlution.ReleasePlanService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -18,9 +20,10 @@ class ShowPageSpec extends GebSpec {
     @Shared int id
 
     ProjectService projectService
+    ReleasePlanService releasePlanService
 
     def setup() {
-        id = projectService.list(max: 1)[0].id
+        id = projectService.list(max: 1).first().id
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -120,5 +123,23 @@ class ShowPageSpec extends GebSpec {
         then: "at show page with message displayed"
         ShowProjectPage showPage = at ShowProjectPage
         showPage.statusMessage.text() == "Project ${id} updated"
+    }
+
+    void "error message displayed when project cannot be deleted with associated items"() {
+        given: "a project with a release plan"
+        def project = projectService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "test plan", project: project)
+        releasePlanService.save(plan)
+
+        and: "go to show project page"
+        go "/project/show/${id}"
+
+        when: "delete project"
+        ShowProjectPage page = at ShowProjectPage
+        page.deleteProject()
+
+        then: "message displayed"
+        at ShowProjectPage
+        page.errorsMessage.text() == "Project has associated items and cannot be deleted"
     }
 }

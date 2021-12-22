@@ -5,6 +5,7 @@ import com.everlution.Bug
 import com.everlution.Environment
 import com.everlution.Person
 import com.everlution.Project
+import com.everlution.ReleasePlan
 import com.everlution.Scenario
 import com.everlution.TestCase
 import grails.test.hibernate.HibernateSpec
@@ -14,7 +15,7 @@ import javax.persistence.PersistenceException
 
 class ProjectHibernateSpec extends HibernateSpec {
 
-    List<Class> getDomainClasses() { [Project, Bug, Scenario, TestCase] }
+    List<Class> getDomainClasses() { [Project, Bug, ReleasePlan, Scenario, TestCase] }
 
     @Shared Person person
 
@@ -52,9 +53,22 @@ class ProjectHibernateSpec extends HibernateSpec {
 
     void "delete project with scenario throws persistence exception"() {
         given: "valid scenario with project"
-        Project project = new Project(name: "Delete Test Case Cascade Project001", code: "ZZ6").save()
+        Project project = new Project(name: "Delete Test Case Cascade Project001", code: "Z16").save()
         new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
+
+        when: "delete project"
+        project.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "exception is thrown"
+        thrown(PersistenceException)
+    }
+
+    void "delete project with release plan throws persistence exception"() {
+        given: "valid scenario with project"
+        Project project = new Project(name: "Delete Test Case Cascade Project001", code: "ZZ6").save()
+        new ReleasePlan(name: "test plan", project: project).save()
 
         when: "delete project"
         project.delete()

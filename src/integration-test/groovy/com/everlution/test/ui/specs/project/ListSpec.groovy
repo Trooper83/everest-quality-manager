@@ -103,4 +103,23 @@ class ListSpec extends GebSpec {
         then: "at show page"
         at ShowProjectPage
     }
+
+    void "create button displayed on list for authorized users"(String username, String password) {
+        given: "login as authorized user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(username, password)
+
+        when: "go to list page"
+        def page = to ListProjectPage
+
+        then: "create button is displayed"
+        page.createProjectLink.displayed
+
+        where:
+        username                         | password
+        Usernames.PROJECT_ADMIN.username | "password"
+        Usernames.ORG_ADMIN.username     | "password"
+        Usernames.APP_ADMIN.username     | "password"
+    }
 }

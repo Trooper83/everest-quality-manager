@@ -2,6 +2,7 @@ package com.everlution.test
 
 import com.everlution.BugController
 import com.everlution.ProjectController
+import com.everlution.ReleasePlanController
 import com.everlution.ScenarioController
 import com.everlution.TestCaseController
 import com.everlution.UrlMappings
@@ -93,4 +94,25 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
             id = 123
         }
     }
+
+    void "verify release plan forward and reverse mappings"() {
+        mockController(ReleasePlanController)
+
+        expect:
+        verifyUrlMapping("/releasePlan/index", controller: 'releasePlan', action: 'index')
+        verifyUrlMapping("/releasePlan/create", controller: 'releasePlan', action: 'create')
+        verifyUrlMapping("/releasePlan/save", controller: 'releasePlan', action: 'save')
+        verifyUrlMapping("/releasePlan/update", controller: 'releasePlan', action: 'update')
+        verifyUrlMapping("/releasePlan/show/123", controller: 'releasePlan', action: 'show') {
+            id = 123
+        }
+        verifyUrlMapping("/releasePlan/edit/123", controller: 'releasePlan', action: 'edit') {
+            id = 123
+        }
+        verifyUrlMapping("/releasePlan/delete/123", controller: 'releasePlan', action: 'delete') {
+            id = 123
+        }
+    }
+
+    //TODO: testCycle
 }

@@ -1,30 +1,27 @@
-package com.everlution.test.ui.support.pages.project
+package com.everlution.test.ui.support.pages.releaseplan
 
 import com.everlution.test.ui.support.pages.common.BasePage
 
-class ShowProjectPage extends BasePage {
-    static url = "/project/show"
-    static at = { title == "Show Project" }
+class ShowReleasePlanPage extends BasePage {
+    static url = "/releasePlan/show"
+    static at = { title == "Show ReleasePlan" }
 
     static content = {
-        areasList { $("#areas") }
-        codeValue { $("#code") }
         createLink(required: false) { $("[data-test-id=show-create-link]") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
-        environmentsList { $("#environments") }
-        errorsMessage { $("ul.errors") }
         fieldLabels { $("ol.property-list>li>span") }
         homeLink { $("[data-test-id=show-home-link]") }
         listLink { $("[data-test-id=show-list-link]") }
         nameValue { $("#name") }
+        projectValue { $("#project") }
         statusMessage { $("div.message") }
     }
 
     /**
      * clicks the delete link
      */
-    void deleteProject() {
+    void deletePlan() {
         withConfirm(true) { deleteLink.click() }
     }
 
@@ -37,7 +34,7 @@ class ShowProjectPage extends BasePage {
     }
 
     /**
-     * clicks the new link
+     * clicks the new test case link
      */
     void goToCreate() {
         createLink.click()
@@ -62,21 +59,5 @@ class ShowProjectPage extends BasePage {
      */
     void goToList() {
         listLink.click()
-    }
-
-    /**
-     * determines if an area is displayed
-     * @param name - name of the area to check
-     */
-    boolean isAreaDisplayed(String name) {
-        return areasList.find("div")*.text().contains(name)
-    }
-
-    /**
-     * determines if an environment is displayed
-     * @param name - name of the env to check
-     */
-    boolean isEnvironmentDisplayed(String name) {
-        return environmentsList.find("div")*.text().contains(name)
     }
 }

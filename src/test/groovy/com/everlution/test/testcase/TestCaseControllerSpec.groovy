@@ -20,7 +20,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         params.description = "unit testing description"
     }
 
-    void "test index action renders index view"() {
+    void "index action renders index view"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
             1 * list(_) >> []

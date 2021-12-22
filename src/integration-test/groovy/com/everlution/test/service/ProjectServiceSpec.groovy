@@ -10,6 +10,8 @@ import com.everlution.Person
 import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.ReleasePlan
+import com.everlution.ReleasePlanService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import com.everlution.TestCase
@@ -23,6 +25,8 @@ import spock.lang.Shared
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
+import javax.persistence.PersistenceException
+
 @Integration
 @Rollback
 class ProjectServiceSpec extends Specification {
@@ -32,6 +36,7 @@ class ProjectServiceSpec extends Specification {
     EnvironmentService environmentService
     PersonService personService
     ProjectService projectService
+    ReleasePlanService releasePlanService
     SessionFactory sessionFactory
     ScenarioService scenarioService
     TestCaseService testCaseService
@@ -187,6 +192,24 @@ class ProjectServiceSpec extends Specification {
         then: "bug and project are deleted"
         projectService.get(project.id) == null
         bugService.get(bug.id) == null
+    }
+
+    void "delete throws constraint exception when project has associated release plans"() {
+        given:
+        Project project = new Project(name: "Release Plan Service Spec Project", code: "ZZX").save()
+        def plan = new ReleasePlan(name: "name", project: project).save()
+
+
+        expect:
+        project.id != null
+        plan.id != null
+
+        when: "delete project"
+        projectService.delete(project.id)
+        sessionFactory.currentSession.flush()
+
+        then: "exception thrown"
+        thrown(PersistenceException)
     }
 
     void "delete project removes all associated areas"() {

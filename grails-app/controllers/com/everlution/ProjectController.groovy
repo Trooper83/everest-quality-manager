@@ -127,7 +127,14 @@ class ProjectController {
             return
         }
 
-        projectService.delete(id)
+        try {
+            projectService.delete(id)
+        } catch (DataIntegrityViolationException ignored) {
+            def project = projectService.read(id)
+            flash.error = 'Project has associated items and cannot be deleted'
+            respond project, view:'show'
+            return
+        }
 
         request.withFormat {
             form multipartForm {
