@@ -123,23 +123,6 @@ class ScenarioServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "test delete all by project"() {
-        Long id = setupData()
-
-        given:
-        def project = scenarioService.get(id).project
-
-        expect:
-        Scenario.findAllByProject(project).size() == 4
-
-        when:
-        scenarioService.deleteAllScenariosByProject(project)
-        sessionFactory.currentSession.flush()
-
-        then:
-        Scenario.findAllByProject(project).size() == 0
-    }
-
     void "read returns instance"() {
         setup:
         def id = setupData()

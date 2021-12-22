@@ -9,14 +9,6 @@ abstract class TestCaseService implements ITestCaseService {
 
     TestStepService testStepService
 
-    @Transactional
-    void deleteAllTestCasesByProject(Project project) {
-        def cases = TestCase.findAllByProject(project)
-        cases.each {
-            delete(it.id)
-        }
-    }
-
     /**
      * save an updated test case, deletes any removed steps
      * @param testCase - the test case to update

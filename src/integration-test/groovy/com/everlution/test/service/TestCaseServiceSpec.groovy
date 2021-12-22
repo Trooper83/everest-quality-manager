@@ -134,23 +134,6 @@ class TestCaseServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "test delete all by project"() {
-        Long caseId = setupData()
-
-        given:
-        def project = testCaseService.get(caseId).project
-
-        expect:
-        TestCase.findAllByProject(project).size() == 4
-
-        when:
-        testCaseService.deleteAllTestCasesByProject(project)
-        sessionFactory.currentSession.flush()
-
-        then:
-        TestCase.findAllByProject(project).size() == 0
-    }
-
     void "saveUpdate removes steps"() {
         given: "valid test case with step"
         def project = projectService.list(max: 1).first()
