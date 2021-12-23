@@ -9,14 +9,6 @@ abstract class BugService implements IBugService {
 
     TestStepService testStepService
 
-    @Transactional
-    void deleteAllBugsByProject(Project project) {
-        def bugs = Bug.findAllByProject(project)
-        bugs.each {
-            delete(it.id)
-        }
-    }
-
     /**
      * save an updated bug, deletes any removed steps
      * @param bug - the bug to update

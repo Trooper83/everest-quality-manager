@@ -11,7 +11,6 @@ import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import com.everlution.TestCase
@@ -36,7 +35,6 @@ class ProjectServiceSpec extends Specification {
     EnvironmentService environmentService
     PersonService personService
     ProjectService projectService
-    ReleasePlanService releasePlanService
     SessionFactory sessionFactory
     ScenarioService scenarioService
     TestCaseService testCaseService
@@ -137,7 +135,29 @@ class ProjectServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "delete project removes all scenarios"() {
+    void "save throws exception with two areas with same name"() {
+        when:
+        def area = new Area(name: "area")
+        def area1 = new Area(name: "area")
+        Project project = new Project(name: "testing save project", areas: [area, area1])
+        projectService.save(project)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "save throws exception with two environments with same name"() {
+        when:
+        def env = new Environment(name: "env")
+        def env1 = new Environment(name: "env")
+        Project project = new Project(name: "testing save project", areas: [env, env1])
+        projectService.save(project)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "delete throws constraint exception when project has associated scenarios"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZD").save()
         def scenario = new Scenario(person: person, name: "test", description: "desc",
@@ -151,12 +171,11 @@ class ProjectServiceSpec extends Specification {
         projectService.delete(project.id)
         sessionFactory.currentSession.flush()
 
-        then: "scenario deleted"
-        projectService.get(project.id) == null
-        scenarioService.get(scenario.id) == null
+        then: "exception thrown"
+        thrown(PersistenceException)
     }
 
-    void "delete project removes all test cases"() {
+    void "delete throws constraint exception when project has associated test case"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
@@ -170,12 +189,11 @@ class ProjectServiceSpec extends Specification {
         projectService.delete(project.id)
         sessionFactory.currentSession.flush()
 
-        then: "test case and steps deleted"
-        projectService.get(project.id) == null
-        testCaseService.get(testCase.id) == null
+        then: "exception thrown"
+        thrown(PersistenceException)
     }
 
-    void "delete project removes all bugs"() {
+    void "delete throws constraint exception when project has associated bug"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         Bug bug = new Bug(name: "cascade project", description: "this should delete", person: person,
@@ -189,16 +207,14 @@ class ProjectServiceSpec extends Specification {
         projectService.delete(project.id)
         sessionFactory.currentSession.flush()
 
-        then: "bug and project are deleted"
-        projectService.get(project.id) == null
-        bugService.get(bug.id) == null
+        then: "exception thrown"
+        thrown(PersistenceException)
     }
 
     void "delete throws constraint exception when project has associated release plans"() {
         given:
         Project project = new Project(name: "Release Plan Service Spec Project", code: "ZZX").save()
         def plan = new ReleasePlan(name: "name", project: project).save()
-
 
         expect:
         project.id != null
@@ -230,6 +246,28 @@ class ProjectServiceSpec extends Specification {
         then: "area and project are deleted"
         projectService.get(project.id) == null
         areaService.get(area.id) == null
+    }
+
+    void "saveUpdate throws exception with two areas with same name"() {
+        when:
+        def area = new Area(name: "area")
+        def area1 = new Area(name: "area")
+        Project project = new Project(name: "testing save project", areas: [area, area1])
+        projectService.saveUpdate(project, new RemovedItems())
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "saveUpdate throws exception with two environments with same name"() {
+        when:
+        def env = new Environment(name: "env")
+        def env1 = new Environment(name: "env")
+        Project project = new Project(name: "testing save project", areas: [env, env1])
+        projectService.saveUpdate(project, new RemovedItems())
+
+        then:
+        thrown(ValidationException)
     }
 
     void "saveUpdate throws exception with validation fail"() {

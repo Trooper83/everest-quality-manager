@@ -93,6 +93,36 @@ class ProjectHibernateSpec extends HibernateSpec {
         Area.count() == 0
     }
 
+    void "removeFrom project deletes orphaned area"() {
+        given: "project with valid area params"
+        def a = new Area(name: "area name")
+        Project p = new Project(name: "Cascades To Area", code: "CTA", areas: [a]).save()
+
+        expect: "area is saved"
+        Area.findById(a.id) != null
+
+        when: "remove area from project"
+        p.removeFromAreas(a).save(flush: true)
+
+        then: "area was deleted"
+        Area.findById(a.id) == null
+    }
+
+    void "removeFrom project deletes orphaned environments"() {
+        given: "project with valid area params"
+        def e = new Environment(name: "env name")
+        Project p = new Project(name: "Cascades To Area", code: "CTA", environments: [e]).save()
+
+        expect: "env is saved"
+        Environment.findById(e.id) != null
+
+        when: "remove env from project"
+        p.removeFromEnvironments(e).save(flush: true)
+
+        then: "env was deleted"
+        Environment.findById(e.id) == null
+    }
+
     void "update project cascades to area"() {
         given: "project with valid area params"
         Project p = new Project(name: "Cascades To Area", code: "CTA", areas: [new Area(name: "area name")]).save()

@@ -1,16 +1,20 @@
 package com.everlution
 
 import grails.gorm.services.Service
-import grails.gorm.transactions.Transactional
 
 @Service(Scenario)
-abstract class ScenarioService implements IScenarioService {
+interface ScenarioService {
 
-    @Transactional
-    void deleteAllScenariosByProject(Project project) {
-        def scenarios = Scenario.findAllByProject(project)
-        scenarios.each {
-            delete(it.id)
-        }
-    }
+    Scenario get(Serializable id)
+
+    List<Scenario> list(Map args)
+
+    Long count()
+
+    void delete(Serializable id)
+
+    Scenario read(Serializable id)
+
+    Scenario save(Scenario scenario)
+
 }

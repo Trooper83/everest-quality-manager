@@ -94,23 +94,6 @@ class BugServiceSpec extends Specification {
         bugService.count() == c - 1
     }
 
-    void "test delete all by project"() {
-        Long bugId = setupData()
-
-        given:
-        def project = bugService.get(bugId).project
-
-        expect:
-        Bug.findAllByProject(project).size() == 2
-
-        when:
-        bugService.deleteAllBugsByProject(project)
-        sessionFactory.currentSession.flush()
-
-        then:
-        Bug.findAllByProject(project).size() == 0
-    }
-
     void "test save"() {
         when:
         def person = new Person(email: "test988@test.com", password: "password").save()

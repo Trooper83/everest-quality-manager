@@ -79,4 +79,34 @@ class CreatePageSpec extends GebSpec {
         expect: "correct fields are displayed"
         browser.page(CreateProjectPage).getFields() == ["Code *", "Name *", "Areas", "Environments"]
     }
+
+    void "errors message displayed when two areas with same name are added"() {
+        given: "add two tags with same name"
+        def tag = "Test Area"
+        def page = browser.page(CreateProjectPage)
+        page.addAreaTag(tag)
+        page.addAreaTag(tag)
+
+        when: "attempt to create project"
+        page.createProject("Test failure", "DFG")
+
+        then: "message displayed"
+        page.errors.text() ==
+                "Property [areas] of class [class com.everlution.Project] with value [[com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
+    }
+
+    void "errors message displayed when two envs with same name are added"() {
+        given: "add two tags with same name"
+        def tag = "Test Env"
+        def page = browser.page(CreateProjectPage)
+        page.addEnvironmentTag(tag)
+        page.addEnvironmentTag(tag)
+
+        when: "attempt to create project"
+        page.createProject("Test failure", "DFG")
+
+        then: "message displayed"
+        page.errors.text() ==
+                "Property [environments] of class [class com.everlution.Project] with value [[com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
+    }
 }

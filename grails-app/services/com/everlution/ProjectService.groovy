@@ -8,24 +8,7 @@ import grails.gorm.transactions.Transactional
 abstract class ProjectService implements IProjectService {
 
     AreaService areaService
-    BugService bugService
     EnvironmentService environmentService
-    ScenarioService scenarioService
-    TestCaseService testCaseService
-
-    /**
-     * deletes a project and all associated objects
-     * @param id
-     */
-    @Transactional
-    @Override
-    void delete(Serializable id) {
-        def project = get(id)
-        testCaseService.deleteAllTestCasesByProject(project)
-        bugService.deleteAllBugsByProject(project)
-        scenarioService.deleteAllScenariosByProject(project)
-        project.delete()
-    }
 
     /**
      * save an updated project, deletes any removed areas
