@@ -8,6 +8,7 @@ import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.Scenario
 import com.everlution.TestCase
+import com.everlution.TestGroup
 import grails.test.hibernate.HibernateSpec
 import spock.lang.Shared
 
@@ -108,21 +109,6 @@ class ProjectHibernateSpec extends HibernateSpec {
         Area.findById(a.id) == null
     }
 
-    void "removeFrom project deletes orphaned environments"() {
-        given: "project with valid area params"
-        def e = new Environment(name: "env name")
-        Project p = new Project(name: "Cascades To Area", code: "CTA", environments: [e]).save()
-
-        expect: "env is saved"
-        Environment.findById(e.id) != null
-
-        when: "remove env from project"
-        p.removeFromEnvironments(e).save(flush: true)
-
-        then: "env was deleted"
-        Environment.findById(e.id) == null
-    }
-
     void "update project cascades to area"() {
         given: "project with valid area params"
         Project p = new Project(name: "Cascades To Area", code: "CTA", areas: [new Area(name: "area name")]).save()
@@ -154,6 +140,21 @@ class ProjectHibernateSpec extends HibernateSpec {
         p.areas[0].id == area1.id
         p.areas[1].id == area2.id
         p.areas[2].id == area3.id
+    }
+
+    void "removeFrom project deletes orphaned environments"() {
+        given: "project with valid area params"
+        def e = new Environment(name: "env name")
+        Project p = new Project(name: "Cascades To Area", code: "CTA", environments: [e]).save()
+
+        expect: "env is saved"
+        Environment.findById(e.id) != null
+
+        when: "remove env from project"
+        p.removeFromEnvironments(e).save(flush: true)
+
+        then: "env was deleted"
+        Environment.findById(e.id) == null
     }
 
     void "delete project cascades to environment"() {
@@ -202,5 +203,51 @@ class ProjectHibernateSpec extends HibernateSpec {
         p.environments[0].id == env1.id
         p.environments[1].id == env2.id
         p.environments[2].id == env3.id
+    }
+
+    void "removeFrom project deletes orphaned test groups"() {
+        given: "project with valid area params"
+        def g = new TestGroup(name: "group name")
+        Project p = new Project(name: "Cascades To group", code: "CTA", testGroups: [g]).save()
+
+        expect: "group is saved"
+        TestGroup.findById(g.id) != null
+
+        when: "remove from project"
+        p.removeFromTestGroups(g).save(flush: true)
+
+        then: "group was deleted"
+        TestGroup.findById(g.id) == null
+    }
+
+    void "delete project cascades to test group"() {
+        given: "project with valid params"
+        Project p = new Project(name: "Cascades To Group", code: "CTE", testGroups: [new TestGroup(name: "group name")]).save()
+
+        expect: "group is saved"
+        TestGroup.count() == 1
+
+        when: "delete project"
+        p.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "group was deleted"
+        TestGroup.count() == 0
+    }
+
+    void "update project cascades to test group"() {
+        given: "project with valid params"
+        Project p = new Project(name: "Cascades To Group", code: "CTE", testGroups: [new TestGroup(name: "group name")]).save()
+
+        expect: "group is saved"
+        p.testGroups[0].name == "group name"
+
+        when: "update group"
+        p.testGroups[0].name = "edited name"
+        p.save()
+        sessionFactory.currentSession.flush()
+
+        then: "group was updated"
+        Project.findById(p.id).testGroups[0].name == "edited name"
     }
 }

@@ -4,6 +4,7 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
 import com.everlution.TestCase
+import com.everlution.TestGroup
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
@@ -136,5 +137,22 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
         then: "exception is thrown"
         thrown(InvalidDataAccessApiUsageException)
+    }
+
+    void "delete does not cascade to test group"() {
+        given: "test case with group"
+        TestGroup group = new TestGroup(name: "group")
+        Project project = new Project(name: "Test Case Project for groups", code: "TCF", testGroups: [group]).save()
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project, testGroups: [group]).save()
+
+        expect:
+        TestGroup.findById(group.id) != null
+
+        when:
+        testCase.delete(flush: true)
+
+        then:
+        TestGroup.findById(group.id) != null
     }
 }
