@@ -12,7 +12,7 @@ class ReleasePlanController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
-     * lists all projects
+     * lists all plans
      * /releasePlan/index
      * @param max - maximum plans to retrieve
      * @return - list of release plans
@@ -45,7 +45,7 @@ class ReleasePlanController {
 
     /**
      * saves a release plan instance
-     * @param project - the plan to save
+     * @param releasePlan - the plan to save
      */
     @Secured("ROLE_BASIC")
     def save(ReleasePlan releasePlan) {
