@@ -86,5 +86,7 @@ class BootStrap {
                 executionMethod: "Automated", type: "UI",
                 project: project).save(failOnError: true)
         new ReleasePlan(name: "Bootstrapped release plan", project: project).save(failOnError: true)
+        new TestGroup(name: "Bootstrapped test group", project: project).save(failOnError: true)
+        new TestGroup(name: "Bootstrapped test group1", project: project).save(failOnError: true)
     }
 }

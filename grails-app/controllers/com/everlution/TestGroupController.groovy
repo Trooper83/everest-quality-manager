@@ -1,5 +1,6 @@
 package com.everlution
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
@@ -16,6 +17,7 @@ class TestGroupController {
      * @param max - maximum groups to retrieve
      * @return - list of groups
      */
+    @Secured("ROLE_READ_ONLY")
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond testGroupService.list(params), model:[testGroupCount: testGroupService.count()]
@@ -27,6 +29,7 @@ class TestGroupController {
      * @param id - id of the group
      * @return - the group to show
      */
+    @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         respond testGroupService.get(id), view: 'show'
     }
@@ -35,6 +38,7 @@ class TestGroupController {
      * displays the create test group view
      * /testGroup/create
      */
+    @Secured("ROLE_BASIC")
     def create() {
         respond new TestGroup(params), model: [projects: projectService.list()]
     }
@@ -43,6 +47,7 @@ class TestGroupController {
      * saves a test group instance
      * @param testGroup - the test group to save
      */
+    @Secured("ROLE_BASIC")
     def save(TestGroup testGroup) {
         if (testGroup == null) {
             notFound()
@@ -70,6 +75,7 @@ class TestGroupController {
      * /testGroup/edit/${id}
      * @param id - id of the group
      */
+    @Secured("ROLE_BASIC")
     def edit(Long id) {
         respond testGroupService.get(id), view: 'edit'
     }
@@ -78,6 +84,7 @@ class TestGroupController {
      * updates a groups data
      * @param testGroup - group to update
      */
+    @Secured("ROLE_BASIC")
     def update(TestGroup testGroup) {
         if (testGroup == null) {
             notFound()
@@ -104,6 +111,7 @@ class TestGroupController {
      * deletes a test group
      * @param id - id of the group to delete
      */
+    @Secured("ROLE_BASIC")
     def delete(Long id) {
         if (id == null) {
             notFound()

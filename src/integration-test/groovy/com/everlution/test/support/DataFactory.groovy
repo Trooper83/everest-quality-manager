@@ -72,4 +72,11 @@ class DataFactory {
         def description = faker.lorem().sentence(3)
         return [name: name, creator: creator, description: description, executionMethod: "Automated", type: "UI"]
     }
+
+    /**
+     * creates fake data to populate a test group instance
+     */
+    static Map<String, String> testGroup() {
+        return [name: faker.name().title()]
+    }
 }

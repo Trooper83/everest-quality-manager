@@ -2,7 +2,9 @@ package com.everlution
 
 class TestGroup {
 
+    Date dateCreated
     String name
+    Project project
     Collection testCases
 
     static belongsTo = [ Project ]
@@ -15,6 +17,7 @@ class TestGroup {
 
     static constraints = {
         name blank: false, maxSize: 255, nullable: false
+        project nullable: false
         testCases nullable: true
     }
 }

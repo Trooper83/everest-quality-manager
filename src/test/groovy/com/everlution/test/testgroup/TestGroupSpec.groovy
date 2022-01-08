@@ -1,5 +1,6 @@
 package com.everlution.test.testgroup
 
+import com.everlution.Project
 import com.everlution.TestGroup
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
@@ -11,8 +12,9 @@ class TestGroupSpec extends Specification implements DomainUnitTest<TestGroup> {
 
     void "instances are persisted"() {
         setup:
-        new TestGroup(name: "test group 1").save()
-        new TestGroup(name: "test group 2").save()
+        def project = new Project(name: "test group project", code: "tgp")
+        new TestGroup(name: "test group 1", project: project).save()
+        new TestGroup(name: "test group 2", project: project).save()
 
         expect:
         TestGroup.count() == 2
@@ -83,5 +85,14 @@ class TestGroupSpec extends Specification implements DomainUnitTest<TestGroup> {
 
         then:
         domain.validate(["testCases"])
+    }
+
+    void "project cannot be null"() {
+        when:
+        domain.project = null
+
+        then:
+        !domain.validate(["project"])
+        domain.errors["project"].code == "nullable"
     }
 }
