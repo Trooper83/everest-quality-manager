@@ -41,7 +41,7 @@
                                   noSelection="${['':'--No Environment--']}" multiple="true"
                         />
                     </div>
-                    <f:all bean="testCase" except="area, environments, project, steps, person"/>
+                    <f:all bean="testCase" except="area, environments, project, steps, person, testGroups"/>
                 </fieldset>
                 <g:render template="/shared/editStepsTableTemplate" bean="${testCase}" var="entity"/>
                 <fieldset class="buttons">

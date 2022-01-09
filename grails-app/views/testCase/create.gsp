@@ -42,7 +42,7 @@
                             <option value=''>--No Environment--</option>
                         </select>
                     </div>
-                    <f:all bean="testCase" except="area, environments, project, steps, person"/>
+                    <f:all bean="testCase" except="area, environments, project, steps, person, testGroups"/>
                 </fieldset>
                 <g:render template="/shared/createStepsTableTemplate"/>
                 <fieldset class="buttons">

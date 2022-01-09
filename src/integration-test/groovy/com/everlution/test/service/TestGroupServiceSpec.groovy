@@ -1,5 +1,6 @@
 package com.everlution.test.service
 
+import com.everlution.Project
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
 import grails.testing.mixin.integration.Integration
@@ -16,11 +17,12 @@ class TestGroupServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     private Long setupData() {
-        new TestGroup(name: "name 1").save(flush: true, failOnError: true)
-        new TestGroup(name: "name 12").save(flush: true, failOnError: true)
-        TestGroup testGroup = new TestGroup(name: "name 123").save(flush: true, failOnError: true)
-        new TestGroup(name: "name 1234").save(flush: true, failOnError: true)
-        new TestGroup(name: "name 12345").save(flush: true, failOnError: true)
+        def project = new Project(name: "group service project", code: "gsp").save()
+        new TestGroup(name: "name 1", project: project).save(flush: true, failOnError: true)
+        new TestGroup(name: "name 12", project: project).save(flush: true, failOnError: true)
+        TestGroup testGroup = new TestGroup(name: "name 123", project: project).save(flush: true, failOnError: true)
+        new TestGroup(name: "name 1234", project: project).save(flush: true, failOnError: true)
+        new TestGroup(name: "name 12345", project: project).save(flush: true, failOnError: true)
         testGroup.id
     }
 
@@ -45,26 +47,27 @@ class TestGroupServiceSpec extends Specification {
         setupData()
 
         expect:
-        testGroupService.count() == 5
+        testGroupService.count() == 7
     }
 
     void "test delete"() {
         Long testGroupId = setupData()
 
         expect:
-        testGroupService.count() == 5
+        testGroupService.count() == 7
 
         when:
         testGroupService.delete(testGroupId)
         sessionFactory.currentSession.flush()
 
         then:
-        testGroupService.count() == 4
+        testGroupService.count() == 6
     }
 
     void "test save"() {
         when:
-        TestGroup testGroup = new TestGroup(name: "name 21")
+        def project = new Project(name: "group service project", code: "gsp").save()
+        TestGroup testGroup = new TestGroup(name: "name 21", project: project)
         testGroupService.save(testGroup)
 
         then:

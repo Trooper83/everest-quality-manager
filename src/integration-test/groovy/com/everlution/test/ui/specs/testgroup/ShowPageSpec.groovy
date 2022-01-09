@@ -163,7 +163,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ShowTestGroupPage)
-        page.getFields() == ["Name", "Project"]
+        page.getFields() == ["Project", "Name"]
     }
 
     void "test group not deleted if alert is canceled"() {

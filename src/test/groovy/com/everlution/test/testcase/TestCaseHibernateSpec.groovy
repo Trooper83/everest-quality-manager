@@ -141,16 +141,36 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "delete does not cascade to test group"() {
         given: "test case with group"
-        TestGroup group = new TestGroup(name: "group")
-        Project project = new Project(name: "Test Case Project for groups", code: "TCF", testGroups: [group]).save()
+        Project project = new Project(name: "Test Case Project for groups", code: "TCF").save()
+        TestGroup group = new TestGroup(name: "group", project: project).save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project, testGroups: [group]).save()
+                executionMethod: "Automated", type: "API", project: project).save()
+        group.addToTestCases(testCase)
 
         expect:
         TestGroup.findById(group.id) != null
 
         when:
         testCase.delete(flush: true)
+
+        then:
+        TestGroup.findById(group.id) != null
+        TestCase.findById(testCase.id) == null
+    }
+
+    void "removeFrom does not cascade to test group"() {
+        given: "test case with group"
+        Project project = new Project(name: "Test Case Project for groups", code: "TCF").save()
+        TestGroup group = new TestGroup(name: "group", project: project).save()
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+        group.addToTestCases(testCase)
+
+        expect:
+        TestGroup.findById(group.id) != null
+
+        when:
+        testCase.removeFromTestGroups(group)
 
         then:
         TestGroup.findById(group.id) != null

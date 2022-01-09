@@ -205,49 +205,19 @@ class ProjectHibernateSpec extends HibernateSpec {
         p.environments[2].id == env3.id
     }
 
-    void "removeFrom project deletes orphaned test groups"() {
-        given: "project with valid area params"
-        def g = new TestGroup(name: "group name")
-        Project p = new Project(name: "Cascades To group", code: "CTA", testGroups: [g]).save()
-
-        expect: "group is saved"
-        TestGroup.findById(g.id) != null
-
-        when: "remove from project"
-        p.removeFromTestGroups(g).save(flush: true)
-
-        then: "group was deleted"
-        TestGroup.findById(g.id) == null
-    }
-
     void "delete project cascades to test group"() {
         given: "project with valid params"
-        Project p = new Project(name: "Cascades To Group", code: "CTE", testGroups: [new TestGroup(name: "group name")]).save()
+        Project p = new Project(name: "Cascades To Group", code: "CTE").save()
+        def group = new TestGroup(name: "group name", project: p).save()
 
         expect: "group is saved"
-        TestGroup.count() == 1
+        group.id != null
 
         when: "delete project"
         p.delete()
         sessionFactory.currentSession.flush()
 
-        then: "group was deleted"
-        TestGroup.count() == 0
-    }
-
-    void "update project cascades to test group"() {
-        given: "project with valid params"
-        Project p = new Project(name: "Cascades To Group", code: "CTE", testGroups: [new TestGroup(name: "group name")]).save()
-
-        expect: "group is saved"
-        p.testGroups[0].name == "group name"
-
-        when: "update group"
-        p.testGroups[0].name = "edited name"
-        p.save()
-        sessionFactory.currentSession.flush()
-
-        then: "group was updated"
-        Project.findById(p.id).testGroups[0].name == "edited name"
+        then: "exception thrown"
+        thrown(PersistenceException)
     }
 }
