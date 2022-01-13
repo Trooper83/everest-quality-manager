@@ -1,6 +1,10 @@
 package com.everlution.test.service
 
+import com.everlution.Person
 import com.everlution.Project
+import com.everlution.ProjectService
+import com.everlution.TestCase
+import com.everlution.TestCaseService
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
 import grails.testing.mixin.integration.Integration
@@ -13,6 +17,8 @@ import org.hibernate.SessionFactory
 @Rollback
 class TestGroupServiceSpec extends Specification {
 
+    ProjectService projectService
+    TestCaseService testCaseService
     TestGroupService testGroupService
     SessionFactory sessionFactory
 
@@ -81,5 +87,26 @@ class TestGroupServiceSpec extends Specification {
 
         then:
         thrown(ValidationException)
+    }
+
+    void "delete test group with case"() {
+        given:
+        def project = projectService.list(max: 1).first()
+        def group = new TestGroup(name: "test group", project: project).save()
+        def person = new Person(email: "test1@test.com", password: "password").save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: project).save()
+        group.addToTestCases(testCase)
+
+        expect:
+        group.testCases.size() == 1
+
+        when:
+        testGroupService.delete(group.id)
+        sessionFactory.currentSession.flush()
+
+        then:
+        testGroupService.get(group.id) == null
+        testCaseService.get(testCase.id) != null
     }
 }

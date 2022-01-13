@@ -62,7 +62,7 @@ class TestCaseController {
         testCase.person = person
         try {
             testCaseService.save(testCase)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             respond testCase.errors, view:"create", model: [projects: projectService.list()]
             return
         }

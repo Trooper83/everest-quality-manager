@@ -5,6 +5,7 @@ import com.everlution.Project
 import com.everlution.TestCase
 import com.everlution.TestGroup
 import grails.test.hibernate.HibernateSpec
+import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.Shared
 
 class TestGroupHibernateSpec extends HibernateSpec {
@@ -23,7 +24,7 @@ class TestGroupHibernateSpec extends HibernateSpec {
         group.dateCreated != null
     }
 
-    void "delete does not cascade to test case"() {
+    void "delete group with test cases throws exception"() {
         given: "test group with case"
         def person = new Person(email: "test@test.com", password: "password").save()
         Project project = new Project(name: "Test Case Project for groups", code: "TCF").save()
@@ -40,8 +41,7 @@ class TestGroupHibernateSpec extends HibernateSpec {
         group.delete(flush: true)
 
         then:
-        TestGroup.findById(group.id) == null
-        TestCase.findById(testCase.id) != null
+        thrown(DataIntegrityViolationException)
     }
 
     void "removeFrom does not cascade to test case"() {

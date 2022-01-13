@@ -4,6 +4,7 @@ import com.everlution.TestGroupService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import com.everlution.test.ui.support.pages.testgroup.CreateTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.EditTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
@@ -199,5 +200,36 @@ class ShowPageSpec extends GebSpec {
         then: "at show page with message displayed"
         ShowTestGroupPage showPage = at ShowTestGroupPage
         showPage.statusMessage.text() == "TestGroup ${id} updated"
+    }
+
+    void "verify table headers order"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        when: "go to show page"
+        go "/testGroup/show/${id}"
+
+        then: "at show page"
+        ShowTestGroupPage showPage = at ShowTestGroupPage
+        showPage.testCaseTable.getHeaders() == ["Id", "Name", "Area", "Platform", "Environments", "Type", "Execution Method"]
+    }
+
+    void "test case table id link opens show test case"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to edit page"
+        go "/testGroup/show/${id}"
+
+        when: "at show page with message displayed"
+        ShowTestGroupPage showPage = at ShowTestGroupPage
+        showPage.testCaseTable.clickCell("Id", 0)
+
+        then: "at show test case page"
+        at ShowTestCasePage
     }
 }

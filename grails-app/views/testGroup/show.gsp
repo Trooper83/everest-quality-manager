@@ -21,6 +21,10 @@
                     <div class="property-value" id="name">${testGroup.name}</div>
                 </li>
             </ol>
+                <f:table collection="${testGroup.testCases}" order="id, name, area, platform, environments, type, executionMethod"/>
+                <div class="pagination">
+                    <g:paginate total="${testGroup.testCases.size() ?: 0}"/>
+                </div>
             <sec:ifAnyGranted roles="ROLE_BASIC">
                 <g:form resource="${this.testGroup}" method="DELETE">
                     <fieldset class="buttons">

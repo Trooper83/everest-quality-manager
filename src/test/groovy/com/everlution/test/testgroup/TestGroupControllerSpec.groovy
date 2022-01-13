@@ -1,7 +1,6 @@
 package com.everlution.test.testgroup
 
 import com.everlution.ProjectService
-import com.everlution.ReleasePlan
 import com.everlution.TestGroup
 import com.everlution.TestGroupController
 import com.everlution.TestGroupService

@@ -145,7 +145,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
         TestGroup group = new TestGroup(name: "group", project: project).save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
-        group.addToTestCases(testCase)
+        testCase.addToTestGroups(group)
 
         expect:
         TestGroup.findById(group.id) != null

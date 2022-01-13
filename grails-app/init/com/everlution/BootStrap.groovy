@@ -63,12 +63,16 @@ class BootStrap {
         Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)
         Step testStep2 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
-        new TestCase(person: person, name: "everest", description: "desc",
+        def group = new TestGroup(name: "Bootstrapped test group", project: project).save(failOnError: true)
+        def group1 = new TestGroup(name: "Bootstrapped test group1", project: project).save(failOnError: true)
+        def testCase = new TestCase(person: person, name: "everest", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep, testStep1],
                 project: project, area: area).save(failOnError: true)
         new TestCase(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep2],
                 project: project1, area: area1).save(failOnError: true)
+        testCase.addToTestGroups(group)
+        testCase.addToTestGroups(group1)
         def bugStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep1 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep2 = new Step(action: "do something", result: "something happened").save(failOnError: true)
@@ -86,7 +90,5 @@ class BootStrap {
                 executionMethod: "Automated", type: "UI",
                 project: project).save(failOnError: true)
         new ReleasePlan(name: "Bootstrapped release plan", project: project).save(failOnError: true)
-        new TestGroup(name: "Bootstrapped test group", project: project).save(failOnError: true)
-        new TestGroup(name: "Bootstrapped test group1", project: project).save(failOnError: true)
     }
 }

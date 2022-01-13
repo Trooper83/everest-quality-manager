@@ -1,6 +1,6 @@
 package com.everlution.test.ui.specs.testgroup.edit
 
-import com.everlution.TestGroupService
+import com.everlution.ITestGroupService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -15,7 +15,7 @@ class EditPageSpec extends GebSpec {
 
     @Shared int id
 
-    TestGroupService testGroupService
+    ITestGroupService testGroupService
 
     def setup() {
         id = testGroupService.list(max:1).first().id

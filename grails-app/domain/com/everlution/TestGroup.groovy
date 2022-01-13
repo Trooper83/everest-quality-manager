@@ -7,7 +7,7 @@ class TestGroup {
     Project project
     Collection testCases
 
-    static belongsTo = [ Project ]
+    static belongsTo = [ Project, TestCase ]
 
     static hasMany = [ testCases: TestCase ]
 

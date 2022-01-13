@@ -1,18 +1,28 @@
 package com.everlution
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 
 @Service(TestGroup)
-interface TestGroupService {
+abstract class TestGroupService implements ITestGroupService {
 
-    TestGroup get(Serializable id)
-
-    List<TestGroup> list(Map args)
-
-    Long count()
-
-    void delete(Serializable id)
-
-    TestGroup save(TestGroup testGroup)
-
+    /**
+     * removes all test cases from the group and
+     * deletes the group
+     * @param id
+     */
+    @Transactional
+    void delete(Serializable id) {
+        def group = get(id)
+        if (group) {
+            if (group.testCases) {
+                def testCases = []
+                testCases += group.testCases
+                testCases.each {
+                    group.removeFromTestCases(it)
+                }
+            }
+            group.delete()
+        }
+    }
 }

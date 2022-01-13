@@ -1,6 +1,8 @@
 package com.everlution.test.testgroup
 
+import com.everlution.Person
 import com.everlution.Project
+import com.everlution.TestCase
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
 import grails.testing.gorm.DataTest
@@ -71,6 +73,32 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
 
         then:
         service.get(id) == null
+    }
+
+    void "delete with test case"() {
+        given:
+        def person = new Person(email: "test1@test.com", password: "password").save()
+        TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project).save()
+        def group = new TestGroup(name: "name2", project: project).save(flush: true)
+        group.addToTestCases(testCase)
+
+        expect:
+        service.get(group.id) != null
+
+        when:
+        service.delete(group.id)
+
+        then:
+        service.get(group.id) == null
+    }
+
+    void "delete with invalid id"() {
+        when:
+        service.delete(99999999999999)
+
+        then:
+        noExceptionThrown()
     }
 
     void "save with valid group returns instance"() {

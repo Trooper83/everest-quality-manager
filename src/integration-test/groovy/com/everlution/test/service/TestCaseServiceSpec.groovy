@@ -6,6 +6,8 @@ import com.everlution.ProjectService
 import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.TestGroup
+import com.everlution.TestGroupService
 import com.everlution.TestStepService
 import com.everlution.command.RemovedItems
 import grails.testing.mixin.integration.Integration
@@ -20,6 +22,7 @@ class TestCaseServiceSpec extends Specification {
 
     ProjectService projectService
     TestCaseService testCaseService
+    TestGroupService testGroupService
     TestStepService testStepService
     SessionFactory sessionFactory
 
@@ -166,5 +169,26 @@ class TestCaseServiceSpec extends Specification {
     void "read returns null for not found id"() {
         expect:
         testCaseService.read(999999999) == null
+    }
+
+    void "delete test case with group"() {
+        given:
+        def project = projectService.list(max: 1).first()
+        def group = new TestGroup(name: "test group", project: project).save()
+        def person = new Person(email: "test1@test.com", password: "password").save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: project).save()
+        testCase.addToTestGroups(group)
+
+        expect:
+        testCase.testGroups.size() == 1
+
+        when:
+        testCaseService.delete(testCase.id)
+        sessionFactory.currentSession.flush()
+
+        then:
+        testCaseService.get(testCase.id) == null
+        testGroupService.get(group.id) != null
     }
 }
