@@ -11,6 +11,7 @@ import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.PendingFeature
 import spock.lang.Shared
 
 @Integration
@@ -202,6 +203,7 @@ class ShowPageSpec extends GebSpec {
         showPage.statusMessage.text() == "TestGroup ${id} updated"
     }
 
+    @PendingFeature
     void "verify table headers order"() {
         given: "login as a basic user"
         to LoginPage
@@ -209,13 +211,14 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to show page"
-        go "/testGroup/show/${id}"
+        go "/testGroup/show/${groupId}"
 
         then: "at show page"
         ShowTestGroupPage showPage = at ShowTestGroupPage
         showPage.testCaseTable.getHeaders() == ["Id", "Name", "Area", "Platform", "Environments", "Type", "Execution Method"]
     }
 
+    @PendingFeature
     void "test case table id link opens show test case"() {
         given: "login as a basic user"
         to LoginPage
