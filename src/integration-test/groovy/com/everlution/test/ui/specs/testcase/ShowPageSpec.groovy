@@ -191,7 +191,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
-        page.getFields() == ["Created By", "Project", "Area", "Environments", "Name",
+        page.getFields() == ["Created By", "Project", "Area", "Environments", "Test Groups", "Name",
                              "Description", "Execution Method", "Type", "Platform"]
     }
 

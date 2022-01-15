@@ -5,6 +5,7 @@ import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectController
 import com.everlution.ProjectService
+import com.everlution.TestGroup
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -431,6 +432,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         def envList = [new Environment(name: "environment 51")]
         def project = new Project(name: "testing project", code: "tpc", areas: areaList,
                 environments: envList).save()
+        new TestGroup(name: "group name", project: project).save()
 
         when: "call action"
         controller.getProjectItems(project)
@@ -438,6 +440,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         then: "items returned"
         model.areas == areaList
         model.environments == envList
+        model.testGroups != null
     }
 }
 

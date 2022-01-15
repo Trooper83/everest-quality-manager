@@ -4,6 +4,7 @@ import com.everlution.Area
 import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
@@ -48,9 +49,14 @@ class CreateTestCaseSpec extends GebSpec {
         def ed1 = DataFactory.environment()
         def env = new Environment(ed)
         def env1 = new Environment(ed1)
+        def gd = DataFactory.testGroup()
+        def gd1 = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def group1 = new TestGroup(name: gd.name)
         def projectData = DataFactory.project()
         def project = projectService.save(
-                new Project(name: projectData.name, code: projectData.code, areas: [area], environments: [env, env1])
+                new Project(name: projectData.name, code: projectData.code, areas: [area], environments: [env, env1],
+                testGroups: [gd, gd1])
         )
 
         when: "login as a basic user"
@@ -62,7 +68,8 @@ class CreateTestCaseSpec extends GebSpec {
         CreateTestCasePage createPage = to CreateTestCasePage
         def tcd = DataFactory.testCase()
         createPage.createTestCase(
-                tcd.name, tcd.description, project.name, area.name, [env.name, env1.name],"Automated", "UI", "Web")
+                tcd.name, tcd.description, project.name, area.name, [env.name, env1.name], [group.name, group1.name],
+                "Automated", "UI", "Web")
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -75,6 +82,7 @@ class CreateTestCaseSpec extends GebSpec {
             showPage.typeValue.text() == "UI"
             showPage.platformValue.text() == "Web"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
+            showPage.areTestGroupsDisplayed([group.name, group1.name])
         }
     }
 }

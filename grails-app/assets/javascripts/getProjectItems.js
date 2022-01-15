@@ -13,6 +13,7 @@ function getProjectItems() {
             success:function(response) {
                populateAreas(response.areas);
                populateEnvironments(response.environments);
+               populateTestGroups(response.testGroups);
             }
         });
     } else {
@@ -23,6 +24,10 @@ function getProjectItems() {
         $("#environments").empty();
         $("#environments").append("<option value=''>--No Environment--</option>");
         $("#environments").prop("disabled", true);
+
+        $("#testGroups").empty();
+        $("#testGroups").append("<option value=''>--No Test Group--</option>");
+        $("#testGroups").prop("disabled", true);
     }
 }
 
@@ -54,4 +59,19 @@ function populateEnvironments(environments) {
        $("#environments").append("<option value='"+id+"'>"+name+"</option>");
     }
     $("#environments").prop("disabled", false);
+}
+
+/**
+* populates the test groups select field
+*/
+function populateTestGroups(testGroups) {
+    const len = testGroups.length;
+    $("#testGroups").empty();
+    $("#testGroups").append("<option value=''>--No Test Group--</option>");
+    for(let i = 0; i < len; i++){
+       let id = testGroups[i]['id'];
+       let name = testGroups[i]['name'];
+       $("#testGroups").append("<option value='"+id+"'>"+name+"</option>");
+    }
+    $("#testGroups").prop("disabled", false);
 }

@@ -1,6 +1,13 @@
 package com.everlution.test.ui.specs.testgroup
 
+import com.everlution.PersonService
+import com.everlution.Project
+import com.everlution.ProjectService
+import com.everlution.TestCase
+import com.everlution.TestCaseService
+import com.everlution.TestGroup
 import com.everlution.TestGroupService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -11,12 +18,14 @@ import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.PendingFeature
 import spock.lang.Shared
 
 @Integration
 class ShowPageSpec extends GebSpec {
 
+    PersonService personService
+    ProjectService projectService
+    TestCaseService testCaseService
     TestGroupService testGroupService
 
     @Shared Long id
@@ -203,24 +212,44 @@ class ShowPageSpec extends GebSpec {
         showPage.statusMessage.text() == "TestGroup ${id} updated"
     }
 
-    @PendingFeature
     void "verify table headers order"() {
-        given: "login as a basic user"
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def tc = DataFactory.testCase()
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to show page"
-        go "/testGroup/show/${groupId}"
+        go "/testGroup/show/${group.id}"
 
         then: "at show page"
         ShowTestGroupPage showPage = at ShowTestGroupPage
         showPage.testCaseTable.getHeaders() == ["Id", "Name", "Area", "Platform", "Environments", "Type", "Execution Method"]
     }
 
-    @PendingFeature
     void "test case table id link opens show test case"() {
-        given: "login as a basic user"
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def tc = DataFactory.testCase()
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")

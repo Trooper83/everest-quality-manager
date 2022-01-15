@@ -23,6 +23,7 @@ class CreateTestCasePage extends BasePage {
         nameInput { $("#name") }
         platformOptions { $("#platform>option") }
         projectOptions { $("#project>option") }
+        testGroupsOptions { $("#testGroups>option") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
     }
@@ -48,6 +49,10 @@ class CreateTestCasePage extends BasePage {
 
     Select projectSelect() {
         $("#project").module(Select)
+    }
+
+    MultipleSelect testGroupsSelect() {
+        $("#testGroups").module(MultipleSelect)
     }
 
     Select typeSelect() {
@@ -86,7 +91,7 @@ class CreateTestCasePage extends BasePage {
      * creates a test case with the supplied data
      */
     void createTestCase(String name, String description, String project, String area, List<String> environments,
-                        String method, String type, String platform) {
+                        List<String> testGroups, String method, String type, String platform) {
         nameInput = name
         descriptionInput = description
         projectSelect().selected = project
@@ -95,6 +100,7 @@ class CreateTestCasePage extends BasePage {
         typeSelect().selected = type
         areaSelect().selected = area
         environmentsSelect().selected = environments
+        testGroupsSelect().selected = testGroups
         createButton.click()
     }
 
