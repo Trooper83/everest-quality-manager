@@ -12,7 +12,7 @@ class TestCase {
     String platform
     Project project
     List steps
-    Collection testGroups
+    List testGroups
     String type
 
     static hasMany = [ environments: Environment, steps: Step, testGroups: TestGroup ]

@@ -43,7 +43,7 @@
                     </div>
                     <div class="fieldcontain">
                         <label for="testGroups">Test Groups</label>
-                        <g:select name="testGroups" id="testGroups" from="${testCase.project.testGroups.sort()}"
+                        <g:select name="testGroups" id="testGroups" from="${testCase.project.testGroups}"
                                   optionKey="id" optionValue="name" value="${testCase.testGroups?.id}"
                                   noSelection="${['':'--No Test Group--']}" multiple="true"
                         />
