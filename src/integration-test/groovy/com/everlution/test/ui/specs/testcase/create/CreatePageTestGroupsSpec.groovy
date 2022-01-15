@@ -41,7 +41,7 @@ class CreatePageTestGroupsSpec extends GebSpec {
         page.testGroupsSelect().selected == []
     }
 
-    void "test groups field defaults with no environment option"() {
+    void "test groups field defaults with no group option"() {
         given: "go to the create page"
         to CreateTestCasePage
 
