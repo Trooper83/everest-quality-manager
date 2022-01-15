@@ -2,7 +2,6 @@ package com.everlution.test.area
 
 import com.everlution.Area
 import com.everlution.AreaService
-import com.everlution.Step
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification

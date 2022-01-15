@@ -30,7 +30,7 @@
     <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
     <g:form resource="${this.project}" method="POST">
         <fieldset class="form">
-            <f:all bean="project" except="areas, bugs, environments, testCases"/>
+            <f:all bean="project" except="areas, bugs, environments, testCases, testGroups"/>
             <div class="fieldcontain" id="areas">
                 <label>Areas</label>
                 <g:field type="text" name="area" data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"/>

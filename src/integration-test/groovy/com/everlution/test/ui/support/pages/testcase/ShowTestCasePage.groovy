@@ -23,6 +23,7 @@ class ShowTestCasePage extends BasePage {
         platformValue { $("#platform") }
         projectValue { $("#project") }
         statusMessage { $("div.message") }
+        testGroupsList { $("#testGroups") }
         testStepTable { module StepTableModule }
         typeValue { $ ("#type") }
     }
@@ -76,5 +77,13 @@ class ShowTestCasePage extends BasePage {
      */
     boolean areEnvironmentsDisplayed(List<String> names) {
         return environmentsList.find("div")*.text().containsAll(names)
+    }
+
+    /**
+     * determines if test groups are displayed
+     * @param names - name of the test group to check
+     */
+    boolean areTestGroupsDisplayed(List<String> names) {
+        return testGroupsList.find("div")*.text().containsAll(names)
     }
 }

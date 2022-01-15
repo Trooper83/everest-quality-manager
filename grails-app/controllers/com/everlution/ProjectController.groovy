@@ -156,7 +156,7 @@ class ProjectController {
             notFound()
             return
         }
-        respond (["areas": project.areas, "environments": project.environments])
+        respond (["areas": project.areas, "environments": project.environments, "testGroups": project.testGroups])
     }
 
     /**

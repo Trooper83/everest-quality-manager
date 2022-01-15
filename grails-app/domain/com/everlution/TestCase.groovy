@@ -12,21 +12,23 @@ class TestCase {
     String platform
     Project project
     List steps
+    List testGroups
     String type
 
-    static hasMany = [environments: Environment, steps: Step]
+    static hasMany = [ environments: Environment, steps: Step, testGroups: TestGroup ]
 
     static mapping = {
         area cascade: "none"
         environments cascade: "none"
         person cascade: "none"
         project cascade: "none"
+        testGroups cascade: "none"
     }
 
     static constraints = {
         area nullable: true, validator: { val, TestCase obj ->
             if(val == null) {
-                return
+                return true
             }
             if(obj.project == null || obj.project.areas == null) {
                 return false
@@ -42,7 +44,7 @@ class TestCase {
         project nullable: false
         steps nullable: true
         type blank: true, nullable: true, inList: ["UI", "API"]
-        environments nullable: true, validator: { val, TestCase obj ->
+        environments validator: { val, TestCase obj ->
             if(val == null) {
                 return
             }
@@ -52,6 +54,17 @@ class TestCase {
             def ids = obj.project.environments*.id
             def envIds = val.collect { it.id }
             ids.containsAll(envIds)
+        }
+        testGroups validator: { val, TestCase obj ->
+            if(val == null) {
+                return
+            }
+            if(obj.project == null || obj.project.testGroups == null) {
+                return false
+            }
+            def ids = obj.project.testGroups*.id
+            def groupIds = val.collect { it.id }
+            ids.containsAll(groupIds)
         }
     }
 }

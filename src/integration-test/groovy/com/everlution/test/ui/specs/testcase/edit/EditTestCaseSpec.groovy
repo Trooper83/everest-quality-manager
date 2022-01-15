@@ -9,6 +9,7 @@ import com.everlution.ProjectService
 import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -148,12 +149,14 @@ class EditTestCaseSpec extends GebSpec {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
         def env = new Environment(DataFactory.environment())
+        def group = new TestGroup(name: "test group 1")
         def projectData = DataFactory.project()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
-                areas: [area], environments: [env]))
+                areas: [area], environments: [env], testGroups: [group]))
         def td = DataFactory.testCase()
         def testCase = new TestCase(name: td.name, description: td.description, person: person, project: project,
-            area: area, executionMethod: "Manual", type: "API", platform: "Web", environments: [env])
+            area: area, executionMethod: "Manual", type: "API", platform: "Web", environments: [env],
+            testGroups: [group])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"
@@ -167,7 +170,8 @@ class EditTestCaseSpec extends GebSpec {
         when: "edit test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
         def edited = DataFactory.testCase()
-        page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI", "iOS")
+        page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI", "iOS",
+                [""])
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -175,6 +179,7 @@ class EditTestCaseSpec extends GebSpec {
             showPage.areaValue.text() == ""
             showPage.projectValue.text() == project.name
             !showPage.areEnvironmentsDisplayed([env.name])
+            !showPage.areTestGroupsDisplayed([group.name])
             showPage.nameValue.text() == edited.name
             showPage.descriptionValue.text() == edited.description
             showPage.executionMethodValue.text() == "Automated"

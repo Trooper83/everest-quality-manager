@@ -8,6 +8,7 @@ import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.Scenario
 import com.everlution.TestCase
+import com.everlution.TestGroup
 import grails.test.hibernate.HibernateSpec
 import spock.lang.Shared
 
@@ -108,21 +109,6 @@ class ProjectHibernateSpec extends HibernateSpec {
         Area.findById(a.id) == null
     }
 
-    void "removeFrom project deletes orphaned environments"() {
-        given: "project with valid area params"
-        def e = new Environment(name: "env name")
-        Project p = new Project(name: "Cascades To Area", code: "CTA", environments: [e]).save()
-
-        expect: "env is saved"
-        Environment.findById(e.id) != null
-
-        when: "remove env from project"
-        p.removeFromEnvironments(e).save(flush: true)
-
-        then: "env was deleted"
-        Environment.findById(e.id) == null
-    }
-
     void "update project cascades to area"() {
         given: "project with valid area params"
         Project p = new Project(name: "Cascades To Area", code: "CTA", areas: [new Area(name: "area name")]).save()
@@ -154,6 +140,21 @@ class ProjectHibernateSpec extends HibernateSpec {
         p.areas[0].id == area1.id
         p.areas[1].id == area2.id
         p.areas[2].id == area3.id
+    }
+
+    void "removeFrom project deletes orphaned environments"() {
+        given: "project with valid area params"
+        def e = new Environment(name: "env name")
+        Project p = new Project(name: "Cascades To Area", code: "CTA", environments: [e]).save()
+
+        expect: "env is saved"
+        Environment.findById(e.id) != null
+
+        when: "remove env from project"
+        p.removeFromEnvironments(e).save(flush: true)
+
+        then: "env was deleted"
+        Environment.findById(e.id) == null
     }
 
     void "delete project cascades to environment"() {
@@ -202,5 +203,21 @@ class ProjectHibernateSpec extends HibernateSpec {
         p.environments[0].id == env1.id
         p.environments[1].id == env2.id
         p.environments[2].id == env3.id
+    }
+
+    void "delete project cascades to test group"() {
+        given: "project with valid params"
+        Project p = new Project(name: "Cascades To Group", code: "CTE").save()
+        def group = new TestGroup(name: "group name", project: p).save()
+
+        expect: "group is saved"
+        group.id != null
+
+        when: "delete project"
+        p.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "exception thrown"
+        thrown(PersistenceException)
     }
 }

@@ -22,6 +22,7 @@ class EditTestCasePage extends BasePage {
         projectNameField { $("[data-test-id=edit-project-name]") }
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         stepsTable { module StepTableModule }
+        testGroupsOptions { $("#testGroups>option") }
         typeOptions { $("#type>option") }
         updateButton { $("[data-test-id=edit-update-button]")}
     }
@@ -43,6 +44,10 @@ class EditTestCasePage extends BasePage {
 
     Select platformSelect() {
         $("#platform").module(Select)
+    }
+
+    MultipleSelect testGroupsSelect() {
+        $("#testGroups").module(MultipleSelect)
     }
 
     Select typeSelect() {
@@ -69,11 +74,12 @@ class EditTestCasePage extends BasePage {
      * fills in all data but does not submit the form
      */
     void completeEditForm(String name, String description, String area, List<String> environments, String method,
-                          String type, String platform) {
+                          String type, String platform, List<String> testGroups) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
         environmentsSelect().selected = environments
+        testGroupsSelect().selected = testGroups
         executionMethodSelect().selected = method
         platformSelect().selected = platform
         typeSelect().selected = type
@@ -90,8 +96,8 @@ class EditTestCasePage extends BasePage {
      * edits a test case with the supplied data
      */
     void editTestCase(String name, String description, String area, List<String> environments, String method,
-                      String type, String platform) {
-        completeEditForm(name, description, area, environments, method, type, platform)
+                      String type, String platform, List<String> testGroups) {
+        completeEditForm(name, description, area, environments, method, type, platform, testGroups)
         updateButton.click()
     }
 

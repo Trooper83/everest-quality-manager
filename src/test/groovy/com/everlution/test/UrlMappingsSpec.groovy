@@ -5,6 +5,7 @@ import com.everlution.ProjectController
 import com.everlution.ReleasePlanController
 import com.everlution.ScenarioController
 import com.everlution.TestCaseController
+import com.everlution.TestGroupController
 import com.everlution.UrlMappings
 import grails.testing.web.UrlMappingsUnitTest
 import spock.lang.Specification
@@ -114,5 +115,22 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         }
     }
 
-    //TODO: testCycle
+    void "verify test group forward and reverse mappings"() {
+        mockController(TestGroupController)
+
+        expect:
+        verifyUrlMapping("/testGroup/index", controller: 'testGroup', action: 'index')
+        verifyUrlMapping("/testGroup/create", controller: 'testGroup', action: 'create')
+        verifyUrlMapping("/testGroup/save", controller: 'testGroup', action: 'save')
+        verifyUrlMapping("/testGroup/update", controller: 'testGroup', action: 'update')
+        verifyUrlMapping("/testGroup/show/123", controller: 'testGroup', action: 'show') {
+            id = 123
+        }
+        verifyUrlMapping("/testGroup/edit/123", controller: 'testGroup', action: 'edit') {
+            id = 123
+        }
+        verifyUrlMapping("/testGroup/delete/123", controller: 'testGroup', action: 'delete') {
+            id = 123
+        }
+    }
 }

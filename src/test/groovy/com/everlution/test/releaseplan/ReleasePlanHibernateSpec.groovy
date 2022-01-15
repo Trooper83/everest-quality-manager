@@ -1,4 +1,4 @@
-package com.everlution.test.release
+package com.everlution.test.releaseplan
 
 import com.everlution.Project
 import com.everlution.ReleasePlan

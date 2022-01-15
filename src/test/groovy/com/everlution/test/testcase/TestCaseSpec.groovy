@@ -5,6 +5,7 @@ import com.everlution.Environment
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.TestCase
+import com.everlution.TestGroup
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
@@ -387,5 +388,83 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         then: "validation fails"
         !domain.validate(["platform"])
         domain.errors["platform"].code == "not.inList"
+    }
+
+    void "test group can be null"() {
+        when:
+        domain.testGroups = null
+
+        then:
+        domain.validate(["testGroups"])
+    }
+
+    void "test group fails to validate when project null"() {
+        when:
+        domain.project = null
+        domain.testGroups = [new TestGroup(name: "test")]
+
+        then:
+        !domain.validate(["testGroups"])
+        domain.errors["testGroups"].code == "validator.invalid"
+    }
+
+    void "test group validates with group in project"() {
+        when:
+        def g = new TestGroup(name: "test group")
+        def p = new Project(name: "testing project groups", code: "tpg", testGroups: [g]).save()
+        domain.project = p
+        domain.testGroups = [g]
+
+        then:
+        domain.validate(["testGroups"])
+    }
+
+    void "test group validates with multiple group in project"() {
+        when:
+        def g = new TestGroup(name: "test group")
+        def gr = new TestGroup(name: "test grouping")
+        def p = new Project(name: "testing project areas", code: "tpa", testGroups: [g, gr]).save()
+        domain.project = p
+        domain.testGroups = [g, gr]
+
+        then:
+        domain.validate(["testGroups"])
+    }
+
+    void "test groups fails to validate with multiple groups only one in project"() {
+        when:
+        def g = new TestGroup(name: "test group")
+        def gr = new TestGroup(name: "test grouping")
+        def p = new Project(name: "testing project areas", code: "tpa", testGroups: [g]).save()
+        domain.project = p
+        domain.testGroups = [g, gr]
+
+        then:
+        !domain.validate(["testGroups"])
+        domain.errors["testGroups"].code == "validator.invalid"
+    }
+
+    void "test groups fails to validate for project with no test groups"() {
+        when:
+        def g = new TestGroup(name: "test").save()
+        def p = new Project(name: "testing project areas", code: "tpa").save()
+        domain.project = p
+        domain.testGroups = [g]
+
+        then:
+        !domain.validate(["testGroups"])
+        domain.errors["testGroups"].code == "validator.invalid"
+    }
+
+    void "test groups not in project fails to validate for project with test groups"() {
+        when:
+        def g = new TestGroup(name: "test group").save()
+        def p = new Project(name: "testing project areas", code: "tpa", testGroups: [new TestGroup(name: "failed")]).save()
+        domain.project = p
+        domain.testGroups = [g]
+
+        then:
+        !domain.validate(["testGroups"])
+        domain.errors["testGroups"].code == "validator.invalid"
     }
 }

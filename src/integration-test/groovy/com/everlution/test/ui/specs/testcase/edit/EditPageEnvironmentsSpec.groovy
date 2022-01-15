@@ -92,7 +92,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         page.environmentsSelect().selected.empty
     }
 
-    void "exception handled when validation error present and area set to null"() {
+    void "exception handled when validation error present and env set to null"() {
         given: "project & test case instances with areas"
         def env = new Environment(DataFactory.environment())
         def pd = DataFactory.project()

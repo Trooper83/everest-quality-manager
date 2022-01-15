@@ -7,33 +7,13 @@
     </head>
     <body>
         <a href="#show-releasePlan" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <div class="nav" role="navigation">
-            <ul>
-                <li>
-                    <a class="home" href="${createLink(uri: '/')}" data-test-id="show-home-link">
-                        <g:message code="default.home.label"/>
-                    </a>
-                </li>
-                <li>
-                    <g:link class="list" action="index" data-test-id="show-list-link">
-                        <g:message code="default.list.label" args="[entityName]"/>
-                    </g:link>
-                </li>
-                <sec:ifAnyGranted roles="ROLE_BASIC">
-                    <li>
-                        <g:link class="create" action="create" data-test-id="show-create-link">
-                            <g:message code="default.new.label" args="[entityName]"/>
-                        </g:link>
-                    </li>
-                </sec:ifAnyGranted>
-            </ul>
-        </div>
+        <g:render template="/shared/showPageNavigationTemplate"/>
         <div id="show-releasePlan" class="content scaffold-show" role="main">
             <h1><g:message code="default.show.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <ol class="property-list bug">
+            <ol class="property-list releasePlan">
                 <li class="fieldcontain">
                     <span id="name-label" class="property-label">Name</span>
                     <div class="property-value" id="name">${releasePlan.name}</div>

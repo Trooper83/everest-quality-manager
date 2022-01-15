@@ -56,6 +56,12 @@
                 <div class="property-value" aria-labelledby="environments-label">${it.name}</div>
             </g:each>
         </li>
+        <li class="fieldcontain" id="testGroups">
+            <span id="testGroups-label" class="property-label">Test Groups</span>
+            <g:each in="${testCase?.testGroups}">
+                <div class="property-value" aria-labelledby="testGroups-label">${it.name}</div>
+            </g:each>
+        </li>
         <li class="fieldcontain">
             <span id="name-label" class="property-label">Name</span>
             <div class="property-value" id="name">${testCase.name}</div>

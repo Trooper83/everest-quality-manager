@@ -43,7 +43,7 @@ class EditPageSpec extends GebSpec {
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method", "Name *",
+        page.getFields() == ["Project", "Area", "Environments", "Test Groups", "Description", "Execution Method", "Name *",
                              "Platform", "Type"]
     }
 

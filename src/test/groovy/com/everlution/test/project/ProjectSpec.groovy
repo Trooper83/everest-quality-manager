@@ -3,6 +3,7 @@ package com.everlution.test.project
 import com.everlution.Area
 import com.everlution.Environment
 import com.everlution.Project
+import com.everlution.TestGroup
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
@@ -215,7 +216,7 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         when: "project with duplicate env params"
         domain.environments = [new Environment(name: "name"), new Environment(name: "name123")]
 
-        then: "project validation fails"
+        then: "project validates"
         domain.validate(["environments"])
     }
 
@@ -225,5 +226,41 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
 
         then: "domain validates"
         domain.validate(["environments"])
+    }
+
+    void "save project cascades to test group"() {
+        expect:
+        TestGroup.count() == 0
+
+        when: "project with valid group params"
+        new Project(name: "Cascades To Env", code: "CTE", testGroups: [new TestGroup(name: "test")]).save()
+
+        then: "group is saved"
+        TestGroup.count() == 1
+    }
+
+    void "project cannot have duplicate group names"() {
+        when: "project with duplicate group params"
+        domain.testGroups = [new TestGroup(name: "name"), new TestGroup(name: "name")]
+
+        then: "project validation fails"
+        !domain.validate(["testGroups"])
+        domain.errors["testGroups"].code == "validator.invalid"
+    }
+
+    void "project validates with non-duplicate test group names"() {
+        when: "project with duplicate group params"
+        domain.testGroups = [new TestGroup(name: "name"), new TestGroup(name: "name123")]
+
+        then: "domain validates"
+        domain.validate(["testGroups"])
+    }
+
+    void "groups can be null"() {
+        when: "property is null"
+        domain.testGroups = null
+
+        then: "domain validates"
+        domain.validate(["testGroups"])
     }
 }
