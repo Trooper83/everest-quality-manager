@@ -5,21 +5,25 @@ import com.everlution.Project
 import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestGroup
+import com.everlution.TestIteration
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
 
+import javax.persistence.EntityNotFoundException
+
 class TestCaseHibernateSpec extends HibernateSpec {
 
     @Shared Person person
+    @Shared Project project
 
     def setup() {
         person = new Person(email: "test@test.com", password: "password").save()
+        project = new Project(name: "Test Case Date Project", code: "TCD").save()
     }
 
     void "test date created auto generated"() {
         when:
-        Project project = new Project(name: "Test Case Date Project", code: "TCD").save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
@@ -29,9 +33,9 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "test save does not cascade to project"() {
         when: "unsaved project is added to test case"
-        Project project = new Project(name: "BugServiceSpec Project2", code: "BMP")
+        def proj = new Project(name: "Test Case cascade Project", code: "TCL")
         new TestCase(person: person, name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project).save()
+                executionMethod: "Automated", type: "API", project: proj).save()
 
         then: "exception is thrown"
         thrown(InvalidDataAccessApiUsageException)
@@ -39,7 +43,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "delete test case does not cascade to project"() {
         given:
-        Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         Step step = new Step(action: "first action", result: "first result").save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project, steps: [step]).save()
@@ -55,7 +58,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "test save case with steps cascades"() {
         given: "unsaved test case and test steps"
-        Project project = new Project(name: "TestStep Save Project", code: "TPS").save()
         Step testStep = new Step(action: "do something", result: "something happened")
         Step testStep1 = new Step(action: "do something", result: "something happened")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
@@ -75,7 +77,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "test update case with steps"() {
         given: "valid test case instance"
-        Project project = new Project(name: "TestStep Update Project", code: "TUP").save()
         Step testStep = new Step(action: "do something", result: "something happened")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep], project: project).save()
@@ -92,7 +93,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "delete test case cascades to steps"() {
         given: "valid domain instances"
-        Project project = new Project(name: "TestStep Cascade Project", code: "TCP").save()
         Step testStep = new Step(action: "do something", result: "something happened")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
@@ -112,7 +112,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "test steps order persists"() {
         given: "save a test case"
-        Project project = new Project(name: "TestStep Cascade Project666", code: "TC1").save()
         Step testStep = new Step(action: "do something", result: "something happened123")
         Step testStep1 = new Step(action: "I did something", result: "something happened231")
         Step testStep2 = new Step(action: "something happened", result: "something happened321")
@@ -131,7 +130,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "save does not cascade to person"() {
         when: "unsaved person is added to test case"
-        Project project = new Project(name: "BugServiceSpec Project2", code: "BMP").save()
         new TestCase(person: new Person(email: "test@test.com", password: "password"), name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
@@ -141,7 +139,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "delete does not cascade to test group"() {
         given: "test case with group"
-        Project project = new Project(name: "Test Case Project for groups", code: "TCF").save()
         TestGroup group = new TestGroup(name: "group", project: project).save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
@@ -160,7 +157,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "removeFrom does not cascade to test group"() {
         given: "test case with group"
-        Project project = new Project(name: "Test Case Project for groups", code: "TCF").save()
         TestGroup group = new TestGroup(name: "group", project: project).save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
@@ -174,5 +170,21 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
         then:
         TestGroup.findById(group.id) != null
+    }
+
+    void "delete test case with iteration"() {
+        given:
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
+
+        expect:
+        TestIteration.findById(iteration.id) != null
+
+        when:
+        testCase.delete(flush: true)
+
+        then:
+        thrown(EntityNotFoundException)
     }
 }
