@@ -7,6 +7,8 @@ class TestIteration {
     TestCase testCase
     List steps
 
+    static belongsTo = [ TestCycle ]
+
     static hasMany = [ steps: IterationStep ]
 
     static mapping = {

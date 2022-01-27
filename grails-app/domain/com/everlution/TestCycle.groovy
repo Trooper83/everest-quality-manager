@@ -7,8 +7,15 @@ class TestCycle {
     String name
     String platform
     ReleasePlan releasePlan
+    Collection testIterations
+
+    static hasMany = [ testIterations: TestIteration ]
 
     static belongsTo = [ ReleasePlan ]
+
+    static mapping = {
+        testIterations cascade: "all-delete-orphan"
+    }
 
     static constraints = {
         environment nullable: true, validator: { val, TestCycle obj ->
@@ -24,5 +31,6 @@ class TestCycle {
         name nullable: false, blank: false, maxSize: 500
         platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
         releasePlan nullable: false
+        testIterations nullable: true
     }
 }

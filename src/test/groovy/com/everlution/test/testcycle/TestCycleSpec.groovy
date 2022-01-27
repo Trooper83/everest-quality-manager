@@ -183,4 +183,12 @@ class TestCycleSpec extends Specification implements DomainUnitTest<TestCycle> {
         !domain.validate(["releasePlan"])
         domain.errors["releasePlan"].code == "nullable"
     }
+
+    void "test iterations can be null"() {
+        when:
+        domain.testIterations = null
+
+        then:
+        domain.validate(["testIterations"])
+    }
 }

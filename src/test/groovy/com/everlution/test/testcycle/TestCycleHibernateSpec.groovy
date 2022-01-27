@@ -1,24 +1,34 @@
 package com.everlution.test.testcycle
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
+import com.everlution.TestCase
 import com.everlution.TestCycle
+import com.everlution.TestIteration
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
 
 class TestCycleHibernateSpec extends HibernateSpec {
 
+    @Shared Person person
     @Shared Project project
+    @Shared ReleasePlan releasePlan
+    @Shared TestCase testCase
 
     def setup() {
         project = new Project(name: "Test Case Date Project For Cycle", code: "TCC").save()
+        releasePlan = new ReleasePlan(name: "this is the name", project: project).save()
+        person = new Person(email: "test@test.com", password: "test").save()
+        testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
     }
 
     void "test date created auto generated"() {
         when:
         def cycle = new TestCycle(name: "testing")
-        new ReleasePlan(name: "name", project: project).addToTestCycles(cycle).save()
+        releasePlan.addToTestCycles(cycle).save(flush: true)
 
         then:
         cycle.dateCreated != null
@@ -37,18 +47,50 @@ class TestCycleHibernateSpec extends HibernateSpec {
 
     void "delete cycle does not cascade to release plan"() {
         given: "saved release plan & cycle"
-        def plan = new ReleasePlan(name: "this is the name", project: project).save()
-        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan).save()
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan).save()
 
         expect:
         TestCycle.findById(cycle.id) != null
-        ReleasePlan.findById(plan.id) != null
+        ReleasePlan.findById(releasePlan.id) != null
 
         when: "delete test cycle"
         cycle.delete(flush: true)
 
         then: "cycle deleted & plan is not"
         TestCycle.findById(cycle.id) == null
-        ReleasePlan.findById(plan.id) != null
+        ReleasePlan.findById(releasePlan.id) != null
+    }
+
+    void "delete cycle cascades to iteration"() {
+        given:
+        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan, testIterations: [iteration]).save()
+
+        expect:
+        TestCycle.findById(cycle.id) != null
+        TestIteration.findById(iteration.id) != null
+
+        when: "delete test cycle"
+        cycle.delete(flush: true)
+
+        then: "cycle and iteration deleted"
+        TestCycle.findById(cycle.id) == null
+        TestIteration.findById(iteration.id) == null
+    }
+
+    void "removeFrom cycle deletes iteration"() {
+        given:
+        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan, testIterations: [iteration]).save()
+
+        expect:
+        TestCycle.findById(cycle.id) != null
+        TestIteration.findById(iteration.id) != null
+
+        when: "delete test cycle"
+        cycle.removeFromTestIterations(iteration).save(flush: true)
+
+        then: "iteration deleted"
+        TestIteration.findById(iteration.id) == null
     }
 }

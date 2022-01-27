@@ -13,7 +13,7 @@ import spock.lang.Specification
 class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestCaseService>, DataTest {
 
     def setupSpec() {
-        mockDomain(TestCase)
+        mockDomains(TestCase, Person, Project)
     }
 
     private void setupData() {

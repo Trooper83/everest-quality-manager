@@ -3,15 +3,23 @@ package com.everlution.test.releaseplan
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
+import com.everlution.TestCycle
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException
+import spock.lang.Shared
 import spock.lang.Specification
 
 class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<ReleasePlanService>, DataTest {
 
+    @Shared Project project
+
     def setupSpec() {
         mockDomain(ReleasePlan)
+    }
+
+    def setup() {
+        project = new Project(name: "name", code: "cod").save()
     }
 
     void "get with valid id returns instance"() {
@@ -91,5 +99,22 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
         then:
         thrown(ValidationException)
+    }
+
+    void "removeTestCycle removes test cycle"() {
+        given:
+        def cycle = new TestCycle(name: "testing cycle")
+        ReleasePlan plan = new ReleasePlan(name: "name", project: project).addToTestCycles(cycle).save()
+
+        expect:
+        cycle.releasePlan == plan
+        plan.testCycles.size() == 1
+
+        when:
+        service.removeTestCycle(plan, cycle)
+
+        then:
+        cycle.releasePlan == null
+        plan.testCycles.empty
     }
 }
