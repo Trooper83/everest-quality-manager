@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.*
 
 class TestCycleController {
 
+    ReleasePlanService releasePlanService
     TestCycleService testCycleService
 
     static allowedMethods = [save: "POST"]
@@ -16,7 +17,8 @@ class TestCycleController {
      */
     @Secured("ROLE_BASIC")
     def create() {
-        respond new TestCycle(params), view: 'create'
+        def releasePlan = releasePlanService.get(params.releasePlan.id)
+        respond new TestCycle(params), view: 'create', model: [releasePlan: releasePlan]
     }
 
     /**
@@ -35,7 +37,7 @@ class TestCycleController {
      */
     @Secured("ROLE_BASIC")
     def save(TestCycle testCycle) {
-        def id = null //TODO: need to get releaseplan id from url?
+        Long id = params.releasePlan.id
         if (testCycle == null) {
             notFound(id)
             return

@@ -1,5 +1,7 @@
 package com.everlution.test.testcycle
 
+import com.everlution.ReleasePlan
+import com.everlution.ReleasePlanService
 import com.everlution.TestCycle
 import com.everlution.TestCycleController
 import com.everlution.TestCycleService
@@ -12,13 +14,21 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
     def populateValidParams(params) {
         assert params != null
+        def plan = new ReleasePlan().save()
 
         params["name"] = 'someValidName'
-        params["id"] = '3'
+        params["releasePlan.id"] = plan.id
+        params["releasePlan"] = plan
     }
 
     void "test the create action returns the correct view"() {
+        given:
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * get(_) >> new ReleasePlan()
+        }
+
         when:"the create action is executed"
+        populateValidParams(params)
         controller.create()
 
         then:"the model is correctly created"
@@ -26,11 +36,19 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
     }
 
     void "test the create action returns the correct model"() {
+        given:
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * get(_) >> new ReleasePlan()
+        }
+
         when:"the create action is executed"
+        populateValidParams(params)
         controller.create()
 
         then:"the model is correctly created"
+        def m = model
         model.testCycle!= null
+        model.releasePlan != null
     }
 
     void "save action with a null instance"() {
@@ -41,7 +59,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         controller.save(null)
 
         then:"404 error is returned"
-        response.redirectedUrl == '/releasePlan/show/3'
+        response.redirectedUrl == '/releasePlan/show/1'
         flash.message != null
     }
 
@@ -62,7 +80,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         controller.save(testCycle)
 
         then:"redirect is issued to the show action"
-        response.redirectedUrl == '/releasePlan/show/3'
+        response.redirectedUrl == '/releasePlan/show/1'
         controller.flash.message != null
     }
 
@@ -77,6 +95,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         when:"save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        populateValidParams(params)
         def testCycle = new TestCycle()
         controller.save(testCycle)
 

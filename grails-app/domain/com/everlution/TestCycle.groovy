@@ -3,7 +3,7 @@ package com.everlution
 class TestCycle {
 
     Date dateCreated
-    Environment environment
+    Environment environ
     String name
     String platform
     ReleasePlan releasePlan
@@ -18,7 +18,7 @@ class TestCycle {
     }
 
     static constraints = {
-        environment nullable: true, validator: { val, TestCycle obj ->
+        environ nullable: true, validator: { val, TestCycle obj ->
             if(val == null) {
                 return
             }
