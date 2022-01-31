@@ -17,7 +17,11 @@ class TestCycleController {
      */
     @Secured("ROLE_BASIC")
     def create() {
-        def releasePlan = releasePlanService.get(params.releasePlan.id)
+        def releasePlan = releasePlanService.get(params.releasePlan?.id)
+        if(releasePlan == null) {
+            notFound()
+            return
+        }
         respond new TestCycle(params), view: 'create', model: [releasePlan: releasePlan]
     }
 
@@ -62,7 +66,15 @@ class TestCycleController {
     /**
      * generic not found response
      */
-    protected void notFound(Long id) {
+    protected void notFound() {
+        render status: NOT_FOUND
+    }
+
+    /**
+     * generic not found response
+     * @param id - id of the release plan to redirect to
+     */
+    protected  void notFound(Long id) {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.not.found.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), params.id])

@@ -51,6 +51,32 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         model.releasePlan != null
     }
 
+    void "create action renders 404 not found view with null release plan"() {
+        given:
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * get(_) >> null
+        }
+
+        when:"the create action is executed"
+        controller.create()
+
+        then:"the model is correctly created"
+        status == 404
+    }
+
+    void "null pointer not thrown when release plan not found in params"() {
+        given:
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * get(_) >> null
+        }
+
+        when:
+        controller.create()
+
+        then:
+        notThrown(NullPointerException)
+    }
+
     void "save action with a null instance"() {
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
