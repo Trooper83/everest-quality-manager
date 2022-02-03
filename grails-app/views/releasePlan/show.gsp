@@ -27,9 +27,11 @@
             </ol>
             <div class="container">
                 <h1>Test Cycles</h1>
+                <sec:ifAnyGranted roles="ROLE_BASIC">
                 <g:link elementId="addTestCycleBtn" class="btn btn-primary" controller="testCycle" action="create"
                         params="['releasePlan.id': releasePlan.id]">Add Test Cycle
                 </g:link>
+                </sec:ifAnyGranted>
             <div class="accordion" id="testCycles">
                 <g:each status="i" var="cycle" in="${releasePlan.testCycles}">
                 <div class="card">

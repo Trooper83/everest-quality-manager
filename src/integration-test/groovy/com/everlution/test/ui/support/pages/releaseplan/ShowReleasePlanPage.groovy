@@ -7,7 +7,7 @@ class ShowReleasePlanPage extends BasePage {
     static at = { title == "Show ReleasePlan" }
 
     static content = {
-        addTestCycleButton { $("#addTestCycleBtn") }
+        addTestCycleButton(required: false) { $("#addTestCycleBtn") }
         createLink(required: false) { $("[data-test-id=show-create-link]") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }

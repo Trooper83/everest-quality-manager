@@ -109,31 +109,32 @@ class ShowPageSpec extends GebSpec {
         at EditReleasePlanPage
     }
 
-    void "create delete edit buttons not displayed for Read Only user"() {
+    void "create delete edit add test cycle buttons not displayed for Read Only user"() {
         given: "login as a read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        when: "go to bug"
+        when: "go to plan"
         go "/releasePlan/show/${id}"
 
-        then: "create delete edit buttons are not displayed"
+        then: "create delete edit add test cycle buttons are not displayed"
         def page = browser.page(ShowReleasePlanPage)
         verifyAll {
             !page.createLink.displayed
             !page.deleteLink.displayed
             !page.editLink.displayed
+            !page.addTestCycleButton.displayed
         }
     }
 
-    void "create delete edit buttons displayed for authorized users"(String username, String password) {
+    void "create delete edit add test cycle buttons displayed for authorized users"(String username, String password) {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to bug"
+        when: "go to plan"
         go "/releasePlan/show/${id}"
 
         then: "create delete edit buttons are not displayed"
@@ -142,6 +143,7 @@ class ShowPageSpec extends GebSpec {
             page.createLink.displayed
             page.deleteLink.displayed
             page.editLink.displayed
+            page.addTestCycleButton.displayed
         }
 
         where:
