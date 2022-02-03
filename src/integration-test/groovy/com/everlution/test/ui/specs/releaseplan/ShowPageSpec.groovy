@@ -8,6 +8,7 @@ import com.everlution.test.ui.support.pages.releaseplan.CreateReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.EditReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
+import com.everlution.test.ui.support.pages.testcycle.CreateTestCyclePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -198,5 +199,63 @@ class ShowPageSpec extends GebSpec {
         then: "at show page with message displayed"
         def showPage = at ShowReleasePlanPage
         showPage.statusMessage.text() == "ReleasePlan ${id} updated"
+    }
+
+    void "add test cycle button adds release plan id url param"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to edit page"
+        go "/releasePlan/show/${id}"
+
+        when: "click add test cycle button"
+        ShowReleasePlanPage showPage = browser.page(ShowReleasePlanPage)
+        showPage.goToAddTestCycle()
+
+        then:
+        at CreateTestCyclePage
+        currentUrl.endsWith("?releasePlan.id=${id}")
+    }
+
+    void "create message displayed after test cycle created"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to create test cycle"
+        go "/testCycle/create?releasePlan.id=${id}"
+        def create = at CreateTestCyclePage
+
+        when: "create test cycle"
+        create.createTestCycle()
+
+        then:
+        def showPage = at ShowReleasePlanPage
+        showPage.statusMessage.text() ==~ /TestCycle \d+ created/
+    }
+
+    void "test cycle content displays when button clicked"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to create test cycle"
+        go "/testCycle/create?releasePlan.id=${id}"
+        def create = at CreateTestCyclePage
+
+        when: "create test cycle"
+        create.createTestCycle()
+
+        then: "content not displayed"
+        def showPage = at ShowReleasePlanPage
+        !showPage.testCyclesContent.first().isDisplayed()
+
+        and: "expand test cycle and content is displayed"
+        showPage.testCycleButtons.first().click()
+        showPage.testCyclesContent.first().isDisplayed()
     }
 }

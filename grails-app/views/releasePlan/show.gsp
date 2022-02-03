@@ -27,7 +27,9 @@
             </ol>
             <div class="container">
                 <h1>Test Cycles</h1>
-                <g:link class="btn btn-primary" controller="testCycle" action="create" params="['releasePlan.id': releasePlan.id]">Add Test Cycle</g:link>
+                <g:link elementId="addTestCycleBtn" class="btn btn-primary" controller="testCycle" action="create"
+                        params="['releasePlan.id': releasePlan.id]">Add Test Cycle
+                </g:link>
             <div class="accordion" id="testCycles">
                 <g:each status="i" var="cycle" in="${releasePlan.testCycles}">
                 <div class="card">
@@ -39,7 +41,7 @@
                         </h2>
                     </div>
                     <div id="collapse-${i}" class="collapse" data-parent="#testCycles">
-                        <div class="card-body">
+                        <div class="card-body" data-test-id="testCycle-content">
                             <div>
                                 <label>Environment: </label><span>${cycle.environ?.name}</span>
                             </div>
