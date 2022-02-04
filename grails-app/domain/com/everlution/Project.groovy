@@ -13,7 +13,7 @@ class Project {
     static mapping = {
         areas cascade: "all-delete-orphan"
         environments cascade: "all-delete-orphan"
-        testGroups cascade: "none"
+        testGroups cascade: "all-delete-orphan"
     }
 
     static constraints = {

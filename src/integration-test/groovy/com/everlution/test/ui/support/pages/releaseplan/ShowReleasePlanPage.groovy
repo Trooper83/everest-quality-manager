@@ -7,6 +7,7 @@ class ShowReleasePlanPage extends BasePage {
     static at = { title == "Show ReleasePlan" }
 
     static content = {
+        addTestCycleButton(required: false) { $("#addTestCycleBtn") }
         createLink(required: false) { $("[data-test-id=show-create-link]") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
@@ -16,6 +17,8 @@ class ShowReleasePlanPage extends BasePage {
         nameValue { $("#name") }
         projectValue { $("#project") }
         statusMessage { $("div.message") }
+        testCycleButtons { $("#testCycles button") }
+        testCyclesContent { $("#testCycles [data-test-id=testCycle-content]") }
     }
 
     /**
@@ -31,6 +34,13 @@ class ShowReleasePlanPage extends BasePage {
      */
     List<String> getFields() {
         return fieldLabels*.text()
+    }
+
+    /**
+     * clicks the add test cycle button
+     */
+    void goToAddTestCycle() {
+        addTestCycleButton.click()
     }
 
     /**
@@ -59,5 +69,12 @@ class ShowReleasePlanPage extends BasePage {
      */
     void goToList() {
         listLink.click()
+    }
+
+    /**
+     * determines if a test cycle is present
+     */
+    boolean isTestCyclePresent(String name) {
+        return testCycleButtons*.text().contains(name)
     }
 }

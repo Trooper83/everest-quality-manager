@@ -90,53 +90,53 @@ class TestCycleSpec extends Specification implements DomainUnitTest<TestCycle> {
         domain.validate(["dateCreated"])
     }
 
-    void "environment can be null"() {
+    void "environ can be null"() {
         when:
-        domain.environment = null
+        domain.environ = null
 
         then:
-        domain.validate(["environment"])
+        domain.validate(["environ"])
     }
 
-    void "environment validates with environment in releasePlan.project"() {
+    void "environ validates with environment in releasePlan.project"() {
         when:
         def e = new Environment(name: "test env")
         def p = new Project(name: "testing project areas", code: "tpa", environments: [e]).save()
         def plan = new ReleasePlan(name: "release plan", project: p).save()
 
         domain.releasePlan = plan
-        domain.environment = e
+        domain.environ = e
 
         then:
-        domain.validate(["environment"])
+        domain.validate(["environ"])
     }
 
-    void "environment fails to validate for project with no environments"() {
+    void "environ fails to validate for project with no environments"() {
         when:
         def e = new Environment(name: "test env").save()
         def p = new Project(name: "testing project areas", code: "tpa").save()
         def plan = new ReleasePlan(name: "release plan", project: p).save()
 
         domain.releasePlan = plan
-        domain.environment = e
+        domain.environ = e
 
         then:
-        !domain.validate(["environment"])
-        domain.errors["environment"].code == "validator.invalid"
+        !domain.validate(["environ"])
+        domain.errors["environ"].code == "validator.invalid"
     }
 
-    void "environment not in project fails to validate for project with environments"() {
+    void "environ not in project fails to validate for project with environments"() {
         when:
         def e = new Environment(name: "test env").save()
         def p = new Project(name: "testing project areas", code: "tpa", environments: [new Environment(name: "failed")]).save()
         def plan = new ReleasePlan(name: "release plan", project: p).save()
 
         domain.releasePlan = plan
-        domain.environment = e
+        domain.environ = e
 
         then:
-        !domain.validate(["environment"])
-        domain.errors["environment"].code == "validator.invalid"
+        !domain.validate(["environ"])
+        domain.errors["environ"].code == "validator.invalid"
     }
 
     void "platform can be null"() {
@@ -182,5 +182,13 @@ class TestCycleSpec extends Specification implements DomainUnitTest<TestCycle> {
         then:
         !domain.validate(["releasePlan"])
         domain.errors["releasePlan"].code == "nullable"
+    }
+
+    void "test iterations can be null"() {
+        when:
+        domain.testIterations = null
+
+        then:
+        domain.validate(["testIterations"])
     }
 }

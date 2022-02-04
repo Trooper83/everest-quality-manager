@@ -26,8 +26,10 @@ class EditPageTestGroupsSpec extends GebSpec {
         setup: "project & testCase instances with test groups"
         def gd = DataFactory.testGroup()
         def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code))
         def group = new TestGroup(name: gd.name)
-        def project = projectService.save(new Project(name: pd.name, code: pd.code, testGroups: [group]))
+        project.addToTestGroups(group)
+        projectService.save(project)
         def tcd = DataFactory.testCase()
         def tc = new TestCase(person: person, name: tcd.name, executionMethod: tcd.executionMethod,
                 type: tcd.type, project: project, testGroups: [group])

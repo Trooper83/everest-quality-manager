@@ -3,6 +3,8 @@ package com.everlution.test.service
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
+import com.everlution.TestCycle
+import com.everlution.TestCycleService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import grails.validation.ValidationException
@@ -14,6 +16,7 @@ import org.hibernate.SessionFactory
 class ReleasePlanServiceSpec extends Specification {
 
     ReleasePlanService releasePlanService
+    TestCycleService testCycleService
     SessionFactory sessionFactory
 
     private Long setupData() {
@@ -80,5 +83,23 @@ class ReleasePlanServiceSpec extends Specification {
 
         then:
         thrown(ValidationException)
+    }
+
+    void "removeTestCycle removes and deletes test cycle"() {
+        given:
+        def project = new Project(name: "project name 123", code: "pn1").save()
+        def cycle = new TestCycle(name: "test cycle")
+        ReleasePlan releasePlan = new ReleasePlan(name: "test name", project: project, testCycles: [cycle])
+        releasePlanService.save(releasePlan)
+
+        expect:
+        testCycleService.get(cycle.id) != null
+
+        when:
+        releasePlanService.removeTestCycle(releasePlan, cycle)
+        sessionFactory.currentSession.flush()
+
+        then:
+        testCycleService.get(cycle.id) == null
     }
 }

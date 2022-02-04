@@ -7,7 +7,7 @@ class ReleasePlan {
     Project project
     Collection testCycles
 
-    static hasMany = [testCycles: TestCycle]
+    static hasMany = [ testCycles: TestCycle ]
 
     static mapping = {
         project cascade: "none"

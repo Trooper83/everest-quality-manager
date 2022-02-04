@@ -74,6 +74,14 @@ class DataFactory {
     }
 
     /**
+     * creates fake data to populate a testCycle instance
+     * @return
+     */
+    static Map<String, String> testCycle() {
+        return [name: faker.country().capital()]
+    }
+
+    /**
      * creates fake data to populate a test group instance
      */
     static Map<String, String> testGroup() {

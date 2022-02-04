@@ -6,7 +6,9 @@
         <title><g:message code="default.show.label" args="[entityName]" /></title>
     </head>
     <body>
-        <a href="#show-releasePlan" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
+        <a href="#show-releasePlan" class="skip" tabindex="-1">
+            <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
+        </a>
         <g:render template="/shared/showPageNavigationTemplate"/>
         <div id="show-releasePlan" class="content scaffold-show" role="main">
             <h1><g:message code="default.show.label" args="[entityName]" /></h1>
@@ -23,6 +25,37 @@
                     <div class="property-value" id="project">${releasePlan.project.name}</div>
                 </li>
             </ol>
+            <div class="container">
+                <h1>Test Cycles</h1>
+                <sec:ifAnyGranted roles="ROLE_BASIC">
+                <g:link elementId="addTestCycleBtn" class="btn btn-primary" controller="testCycle" action="create"
+                        params="['releasePlan.id': releasePlan.id]">Add Test Cycle
+                </g:link>
+                </sec:ifAnyGranted>
+            <div class="accordion" id="testCycles">
+                <g:each status="i" var="cycle" in="${releasePlan.testCycles}">
+                <div class="card">
+                    <div class="card-header" id="testCycle-${i}">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                                    data-target="#collapse-${i}">${cycle.name}
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse-${i}" class="collapse" data-parent="#testCycles">
+                        <div class="card-body" data-test-id="testCycle-content">
+                            <div>
+                                <label>Environment: </label><span>${cycle.environ?.name}</span>
+                            </div>
+                            <div>
+                                <label>Platform: </label><span>${cycle.platform}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </g:each>
+            </div>
+            </div>
             <sec:ifAnyGranted roles="ROLE_BASIC">
             <g:form resource="${this.releasePlan}" method="DELETE">
                 <fieldset class="buttons">
