@@ -68,4 +68,22 @@ class TestCycleServiceSpec extends Specification {
         then: "iteration deleted"
         testIterationService.get(iteration.id) == null
     }
+
+    void "add iterations persists iterations"() {
+        given:
+        def project = new Project(name: "release project name", code: "rpn").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan)
+        testCycleService.save(cycle)
+
+        when: "add iteration"
+        testCycleService.addTestIterations(cycle, [testCase])
+        sessionFactory.currentSession.flush()
+
+        then: "iteration saved"
+        cycle.testIterations.size() == 1
+    }
 }

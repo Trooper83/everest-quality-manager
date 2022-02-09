@@ -7,6 +7,7 @@ import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestIteration
+import com.everlution.TestIterationService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException
@@ -84,5 +85,29 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
 
         then:
         tc.testIterations.empty
+    }
+
+    void "add test iterations populates property on instance"() {
+        service.testIterationService = Mock(TestIterationService) {
+            1 * createIterations(_) >> [new TestIteration()]
+        }
+
+        given:
+        def project = new Project(name: "release name", code: "doc").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan).save(flush: true)
+
+        expect:
+        tc.id != null
+        tc.testIterations == null
+
+        when:
+        service.addTestIterations(tc, [testCase])
+
+        then:
+        tc.testIterations.size() == 1
     }
 }

@@ -36,9 +36,9 @@ class TestIterationServiceSpec extends Specification {
         def testCase = new TestCase(person: person, name: "First Test Case", project: project, steps: [step]).save()
 
         when:
-        def iteration = testIterationService.createIterationFromTestCase(testCase)
+        def iteration = testIterationService.createIterations([testCase])
 
         then:
-        iteration instanceof TestIteration
+        iteration.first() instanceof TestIteration
     }
 }

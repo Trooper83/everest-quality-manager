@@ -41,7 +41,7 @@ class TestCycleController {
      */
     @Secured("ROLE_BASIC")
     def save(TestCycle testCycle) {
-        def id = params.releasePlan.id
+        def id = params.releasePlan.id as Long
         if (testCycle == null) {
             notFound(id)
             return

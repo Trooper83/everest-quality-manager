@@ -7,17 +7,19 @@ import grails.gorm.transactions.Transactional
 abstract class TestIterationService implements ITestIterationService {
 
     /**
-     * creates a test iteration from a test case
-     * @param testCase
-     * @return - the test iteration
+     * creates test iterations from a list of test cases
      */
     @Transactional
-    TestIteration createIterationFromTestCase(TestCase testCase) {
-        def steps = []
-        testCase.steps.each {
-            def s = new IterationStep(action: it.action, result: it.result)
-            steps.add(s)
+    List<TestIteration> createIterations(List<TestCase> testCases) {
+        def iterations = []
+        testCases.each { TestCase testCase ->
+            List<IterationStep> steps = []
+            testCase.steps.each { Step step ->
+                def s = new IterationStep(action: step.action, result: step.result)
+                steps.add(s)
+            }
+            iterations.add(new TestIteration(name: testCase.name, result: "ToDo", steps: steps, testCase: testCase))
         }
-        new TestIteration(name: testCase.name, result: "ToDo", steps: steps, testCase: testCase)
+        return iterations
     }
 }

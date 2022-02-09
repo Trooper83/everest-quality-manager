@@ -42,54 +42,94 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         service.get(null) == null
     }
 
-    void "create iteration from test case returns iteration"() {
+    void "create iterations from test cases returns iteration"() {
         when:
-        def iteration = service.createIterationFromTestCase(testCase)
+        def iterations = service.createIterations([testCase])
 
         then:
-        iteration instanceof TestIteration
+        iterations.first() instanceof TestIteration
     }
 
-    void "create iteration from test case returns iteration with test case name"() {
+    void "create iterations from test cases returns iterations with test case name"() {
         when:
-        def iteration = service.createIterationFromTestCase(testCase)
+        def iterations = service.createIterations([testCase])
 
         then:
-        iteration.name == testCase.name
+        iterations.first().name == testCase.name
     }
 
-    void "create iteration from test case returns iteration with todo result"() {
+    void "create iterations from test cases returns iteration with todo result"() {
         when:
-        def iteration = service.createIterationFromTestCase(testCase)
+        def iterations = service.createIterations([testCase])
 
         then:
-        iteration.result == "ToDo"
+        iterations.first().result == "ToDo"
     }
 
-    void "create iteration from test case returns iteration with test case"() {
+    void "create iterations from test cases returns iteration with test case"() {
         when:
-        def iteration = service.createIterationFromTestCase(testCase)
+        def iterations = service.createIterations([testCase])
 
         then:
-        iteration.testCase == testCase
+        iterations.first().testCase == testCase
     }
 
     void "create iteration from test case returns iteration with steps"() {
         when:
-        def iteration = service.createIterationFromTestCase(testCase)
+        def iterations = service.createIterations([testCase])
 
         then:
-        iteration.steps.size() == testCase.steps.size()
+        iterations.first().steps.size() == testCase.steps.size()
     }
 
-    void "create iteration from test case returns iteration with steps in order"() {
+    void "create iterations from test cases returns iterations with steps in order"() {
         when:
-        def iteration = service.createIterationFromTestCase(testCase)
+        def iterations = service.createIterations([testCase])
 
         then:
-        iteration.steps[0].action == testCase.steps[0].action
-        iteration.steps[1].action == testCase.steps[1].action
-        iteration.steps[0].result == testCase.steps[0].result
-        iteration.steps[1].result == testCase.steps[1].result
+        iterations.first().steps[0].action == testCase.steps[0].action
+        iterations.first().steps[1].action == testCase.steps[1].action
+        iterations.first().steps[0].result == testCase.steps[0].result
+        iterations.first().steps[1].result == testCase.steps[1].result
+    }
+
+    void "create iterations from test cases returns same number of tests cases"() {
+        when:
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        def iterations = service.createIterations([testCase, testCase1])
+
+        then:
+        iterations.size() == 2
+    }
+
+    void "create iterations with empty test case list does not throw exception"() {
+        when:
+        service.createIterations([])
+
+        then:
+        noExceptionThrown()
+    }
+
+    void "create iterations with null does not throw exception"() {
+        when:
+        def iterations = service.createIterations(null)
+
+        then:
+        noExceptionThrown()
+        iterations.empty
+    }
+
+    void "create iterations with null steps on test case does not throw exception"() {
+        given:
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+
+        expect:
+        testCase1.steps == null
+
+        when:
+        service.createIterations([testCase1])
+
+        then:
+        noExceptionThrown()
     }
 }
