@@ -52,6 +52,24 @@ class TestCaseServiceSpec extends Specification {
         testCaseService.get(99999999) == null
     }
 
+    void "get all returns list of tests"() {
+        when:
+        def tests = testCaseService.getAll([1,2,3])
+
+        then:
+        tests.size() == 3
+    }
+
+    void "get all with invalid id returns list of tests"() {
+        when:
+        def tests = testCaseService.getAll([1,9999999,3])
+
+        then:
+        tests.size() == 3
+        tests.get(1) == null
+        tests.get(0) != null
+    }
+
     void "test list with no args"() {
         setupData()
 

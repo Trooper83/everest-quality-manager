@@ -260,4 +260,9 @@ class ShowPageSpec extends GebSpec {
         showPage.testCycleButtons.first().click()
         showPage.testCyclesContent.first().isDisplayed()
     }
+
+    void "view test cycle goes to test cycle"() {
+        expect:
+        assert false
+    }
 }

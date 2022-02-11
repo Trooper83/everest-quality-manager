@@ -25,4 +25,12 @@ abstract class TestGroupService implements ITestGroupService {
             group.delete()
         }
     }
+
+    /**
+     * gets all the test groups of the ids supplied
+     */
+    @Transactional
+    List<TestGroup> getAll(List<Serializable> ids) {
+        return TestGroup.getAll(ids)
+    }
 }

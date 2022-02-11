@@ -39,6 +39,16 @@ class TestGroupServiceSpec extends Specification {
         testGroupService.get(1) instanceof TestGroup
     }
 
+    void "get all returns instances"() {
+        setupData()
+
+        when:
+        def groups = testGroupService.getAll([1,2,3])
+
+        then:
+        groups.size() == 3
+    }
+
     void "test list"() {
         setupData()
 

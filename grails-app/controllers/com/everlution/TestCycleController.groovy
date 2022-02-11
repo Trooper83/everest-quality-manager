@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.IterationsCmd
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -7,9 +8,32 @@ import static org.springframework.http.HttpStatus.*
 class TestCycleController {
 
     ReleasePlanService releasePlanService
+    TestCaseService testCaseService
     TestCycleService testCycleService
+    TestGroupService testGroupService
+    TestIterationService testIterationService
 
     static allowedMethods = [save: "POST"]
+
+    /**
+     * adds iterations to test cycle
+     */
+    @Secured("ROLE_BASIC")
+    def addIterations(IterationsCmd cmd) {
+        //TODO: Test me, test me, test me
+        def tests = []
+        if(cmd.testGroupIds) {
+            def groups = testGroupService.getAll(cmd.testGroupIds)
+            groups.each {
+                tests.add(it.testCases)
+            }
+        } else {
+            def testCases = testCaseService.getAll(cmd.testCaseIds)
+            tests.add(testCases)
+        }
+        def cycle = testCycleService.get(cmd.testCycleId)
+        testCycleService.addTestIterations(cycle, tests)
+    }
 
     /**
      * display the create view
