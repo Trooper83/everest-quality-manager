@@ -1,10 +1,18 @@
 package com.everlution.test.testcycle
 
+import com.everlution.Person
+import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
+import com.everlution.TestCase
+import com.everlution.TestCaseService
 import com.everlution.TestCycle
 import com.everlution.TestCycleController
 import com.everlution.TestCycleService
+import com.everlution.TestGroup
+import com.everlution.TestGroupService
+import com.everlution.TestIteration
+import com.everlution.command.IterationsCmd
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -174,6 +182,94 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         then:"A model is populated containing the domain instance"
         model.testCycle instanceof TestCycle
         view == 'show'
+    }
+
+    void "add iterations renders success message"() {
+        given:
+        def cmd = new IterationsCmd()
+        cmd.testCycleId = 1
+        cmd.testGroupIds = [1]
+
+        when:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * getAll(_) >> []
+        }
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * get(_) >> new TestCycle()
+            1 * addTestIterations(_, _)
+        }
+        controller.addIterations(cmd)
+
+        then:
+        controller.flash.message == "Tests successfully added"
+        view == 'show'
+    }
+
+    void "add iterations renders error message"() {
+        given:
+        def cmd = new IterationsCmd()
+        cmd.testCycleId = 1
+        cmd.testGroupIds = [1]
+
+        when:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * getAll(_) >> []
+        }
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * get(_) >> new TestCycle()
+            1 * addTestIterations(_, _) >> {
+                throw new Exception()
+            }
+        }
+        controller.addIterations(cmd)
+
+        then:
+        controller.flash.error == "Error occurred attempting to add tests"
+        view == 'show'
+    }
+
+    void "add iterations executes groups logic when group ids specified"() {
+        given:
+        def cmd = new IterationsCmd()
+        cmd.testCycleId = 1
+        cmd.testGroupIds = [1]
+
+        when:
+        controller.addIterations(cmd)
+
+        then:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * getAll(_) >> []
+        }
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * get(_) >> new TestCycle()
+            1 * addTestIterations(_, _)
+        }
+        controller.testCaseService = Mock(TestCaseService) {
+            0 * getAll(_)
+        }
+    }
+
+    void "add iterations executes test case logic when test case ids specified"() {
+        given:
+        def cmd = new IterationsCmd()
+        cmd.testCycleId = 1
+        cmd.testCaseIds = [1]
+
+        when:
+        controller.addIterations(cmd)
+
+        then:
+        controller.testGroupService = Mock(TestGroupService) {
+            0 * getAll(_) >> []
+        }
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * get(_) >> new TestCycle()
+            1 * addTestIterations(_, _)
+        }
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * getAll(_)
+        }
     }
 }
 

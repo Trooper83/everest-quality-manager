@@ -11,7 +11,6 @@ class TestCycleController {
     TestCaseService testCaseService
     TestCycleService testCycleService
     TestGroupService testGroupService
-    TestIterationService testIterationService
 
     static allowedMethods = [save: "POST"]
 
@@ -20,7 +19,6 @@ class TestCycleController {
      */
     @Secured("ROLE_BASIC")
     def addIterations(IterationsCmd cmd) {
-        //TODO: Test me, test me, test me
         def tests = []
         if(cmd.testGroupIds) {
             def groups = testGroupService.getAll(cmd.testGroupIds)
@@ -32,7 +30,15 @@ class TestCycleController {
             tests.add(testCases)
         }
         def cycle = testCycleService.get(cmd.testCycleId)
-        testCycleService.addTestIterations(cycle, tests)
+        try {
+            testCycleService.addTestIterations(cycle, tests)
+        } catch(Exception ignored) {
+            flash.error = "Error occurred attempting to add tests"
+            respond cycle, view: 'show'
+            return
+        }
+        flash.message = "Tests successfully added"
+        respond cycle, view: 'show'
     }
 
     /**

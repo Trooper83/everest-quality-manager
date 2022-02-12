@@ -6,14 +6,13 @@ import grails.gorm.transactions.Transactional
 @Service(TestCycle)
 abstract class TestCycleService implements ITestCycleService {
 
-    TestIterationService testIterationService
-
     /**
      * adds test cases to a test cycle
      */
     @Transactional
     void addTestIterations(TestCycle testCycle, List<TestCase> testCases) {
-        def iterations = testIterationService.createIterations(testCases)
+        //TODO: filter out the tests by platform and environment
+        def iterations = createIterations(testCases)
         iterations.each {
             testCycle.addToTestIterations(it)
         }
@@ -25,5 +24,21 @@ abstract class TestCycleService implements ITestCycleService {
     @Transactional
     void removeTestIteration(TestCycle testCycle, TestIteration testIteration) {
         testCycle.removeFromTestIterations(testIteration)
+    }
+
+    /**
+     * creates test iterations from a list of test cases
+     */
+    private List<TestIteration> createIterations(List<TestCase> testCases) {
+        def iterations = []
+        testCases.each { TestCase testCase ->
+            List<IterationStep> steps = []
+            testCase.steps.each { Step step ->
+                def s = new IterationStep(action: step.action, result: step.result)
+                steps.add(s)
+            }
+            iterations.add(new TestIteration(name: testCase.name, result: "ToDo", steps: steps, testCase: testCase))
+        }
+        return iterations
     }
 }

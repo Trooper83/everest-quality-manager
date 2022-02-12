@@ -7,7 +7,6 @@ import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestIteration
-import com.everlution.TestIterationService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification
@@ -18,7 +17,6 @@ import org.hibernate.SessionFactory
 class TestCycleServiceSpec extends Specification {
 
     TestCycleService testCycleService
-    TestIterationService testIterationService
     SessionFactory sessionFactory
 
     private Long setupData() {
@@ -46,6 +44,7 @@ class TestCycleServiceSpec extends Specification {
         testCycle.id != null
     }
 
+    //TODO: need to update this test with removal of iteration service
     void "removeFrom cycle deletes iteration"() {
         given:
         def project = new Project(name: "release project name", code: "rpn").save()

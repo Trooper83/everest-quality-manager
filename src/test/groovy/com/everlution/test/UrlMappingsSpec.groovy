@@ -7,7 +7,7 @@ import com.everlution.ScenarioController
 import com.everlution.TestCaseController
 import com.everlution.TestCycleController
 import com.everlution.TestGroupController
-import com.everlution.TestIterationController
+
 import com.everlution.UrlMappings
 import grails.testing.web.UrlMappingsUnitTest
 import spock.lang.Specification
@@ -143,15 +143,6 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         verifyUrlMapping("/testCycle/create", controller: 'testCycle', action: 'create')
         verifyUrlMapping("/testCycle/save", controller: 'testCycle', action: 'save')
         verifyUrlMapping("/testCycle/show/123", controller: 'testCycle', action: 'show') {
-            id = 123
-        }
-    }
-
-    void "verify test iteration forward and reverse mappings"() {
-        mockController(TestIterationController)
-
-        expect:
-        verifyUrlMapping("/testIteration/show/123", controller: 'testIteration', action: 'show') {
             id = 123
         }
     }
