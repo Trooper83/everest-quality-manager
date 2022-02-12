@@ -5,8 +5,8 @@ import grails.validation.Validateable
 class IterationsCmd implements Validateable {
 
     Long testCycleId
-    List<Long> testGroupIds
-    List<Long> testCaseIds
+    List<Long> testGroups
+    List<Long> testCases
 
     static boolean defaultNullable() {
         true

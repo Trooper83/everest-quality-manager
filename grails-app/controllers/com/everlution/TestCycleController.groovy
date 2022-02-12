@@ -18,27 +18,31 @@ class TestCycleController {
      * adds iterations to test cycle
      */
     @Secured("ROLE_BASIC")
-    def addIterations(IterationsCmd cmd) {
+    def addTests(IterationsCmd cmd) {
+        def cycle = testCycleService.get(cmd.testCycleId)
+        if(cycle == null) {
+            notFound()
+            return
+        }
         def tests = []
-        if(cmd.testGroupIds) {
-            def groups = testGroupService.getAll(cmd.testGroupIds)
+        if(cmd.testGroups != null) {
+            def groups = testGroupService.getAll(cmd.testGroups)
             groups.each {
                 tests.add(it.testCases)
             }
         } else {
-            def testCases = testCaseService.getAll(cmd.testCaseIds)
+            def testCases = testCaseService.getAll(cmd.testCases)
             tests.add(testCases)
         }
-        def cycle = testCycleService.get(cmd.testCycleId)
         try {
             testCycleService.addTestIterations(cycle, tests)
         } catch(Exception ignored) {
             flash.error = "Error occurred attempting to add tests"
-            respond cycle, view: 'show'
+            redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
             return
         }
         flash.message = "Tests successfully added"
-        respond cycle, view: 'show'
+        redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
     }
 
     /**
@@ -90,6 +94,28 @@ class TestCycleController {
                 redirect controller: "releasePlan", action: "show", id: id, method: "GET"
             }
             '*' { respond testCycle, [status: CREATED] }
+        }
+    }
+
+    /**
+     * deletes a test cycle
+     * @param id - id of the test cycle to delete
+     */
+    @Secured("ROLE_BASIC")
+    def delete(Long id) {
+        if (id == null) {
+            notFound()
+            return
+        }
+
+        testCycleService.delete(id)
+
+        request.withFormat {
+            form multipartForm {
+                flash.message = message(code: 'default.deleted.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), id])
+                redirect action:"index", method:"GET"
+            }
+            '*'{ render status: NO_CONTENT }
         }
     }
 
