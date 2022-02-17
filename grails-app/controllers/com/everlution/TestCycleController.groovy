@@ -98,28 +98,6 @@ class TestCycleController {
     }
 
     /**
-     * deletes a test cycle
-     * @param id - id of the test cycle to delete
-     */
-    @Secured("ROLE_BASIC")
-    def delete(Long id) {
-        if (id == null) {
-            notFound()
-            return
-        }
-
-        testCycleService.delete(id)
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), id])
-                redirect action:"index", method:"GET"
-            }
-            '*'{ render status: NO_CONTENT }
-        }
-    }
-
-    /**
      * generic not found response
      */
     protected void notFound() {

@@ -14,7 +14,7 @@
         <g:message code="default.show.label" args="[entityName]"/>
     </h1>
     <g:render template="/shared/messagesTemplate" bean="${testCycle}" var="entity"/>
-    <g:link controller="releasePlan" action="show" id="${testCycle.releasePlan.id}">Back to Release Plan</g:link>
+    <g:link elementId="backToPlan" controller="releasePlan" action="show" id="${testCycle.releasePlan.id}">Back to Release Plan</g:link>
     <ol class="property-list testCycle">
         <li class="fieldcontain">
             <span id="releasePlan-label" class="property-label">Release Plan</span>
@@ -33,20 +33,22 @@
             <div class="property-value" id="platform">${testCycle.platform}</div>
         </li>
     </ol>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#iterationsModal">
+    <sec:ifAnyGranted roles="ROLE_BASIC">
+    <button id="addTestsBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#testsModal">
         Add Tests
     </button>
-    <f:table collection="${testCycle.testIterations}" order="id, name"/>
+    </sec:ifAnyGranted>
+    <f:table collection="${testCycle.testIterations}" order="id, name, result"/>
     <div class="pagination">
         <g:paginate total="${testCycle.testIterations.size() ?: 0}"/>
     </div>
 </div>
-<div class="modal fade" id="iterationsModal" tabindex="-1" aria-labelledby="iterationsModalLabel" aria-hidden="true">
+<div class="modal fade" id="testsModal" tabindex="-1" aria-labelledby="testsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="iterationsModalLabel">Add Tests</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="testsModalLabel">Add Tests</h5>
+                <button data-test-id="modal-close-button" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -62,8 +64,10 @@
                         </div>
                     </fieldset>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <g:submitButton class="btn btn-primary" name="submit" value="Add Tests"/>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                data-test-id="modal-cancel-button">Cancel
+                        </button>
+                        <g:submitButton data-test-id="modal-submit-button" class="btn btn-primary" name="submit" value="Add Tests"/>
                     </div>
                 </form>
             </div>

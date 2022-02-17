@@ -19,6 +19,7 @@ class ShowReleasePlanPage extends BasePage {
         statusMessage { $("div.message") }
         testCycleButtons { $("#testCycles button") }
         testCyclesContent { $("#testCycles [data-test-id=testCycle-content]") }
+        testCycleViewLink { $("#testCycles [data-test-id=view-test-cycle-link]") }
     }
 
     /**
@@ -69,6 +70,16 @@ class ShowReleasePlanPage extends BasePage {
      */
     void goToList() {
         listLink.click()
+    }
+
+    /**
+     * clicks the view link for a test cycle
+     * @param index
+     */
+    void goToTestCycle(int index) {
+        testCycleButtons[index].click()
+        waitFor { testCycleViewLink[index].displayed }
+        testCycleViewLink[index].click()
     }
 
     /**

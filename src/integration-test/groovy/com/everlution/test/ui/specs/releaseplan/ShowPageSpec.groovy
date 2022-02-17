@@ -9,6 +9,7 @@ import com.everlution.test.ui.support.pages.releaseplan.EditReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import com.everlution.test.ui.support.pages.testcycle.CreateTestCyclePage
+import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -262,7 +263,23 @@ class ShowPageSpec extends GebSpec {
     }
 
     void "view test cycle goes to test cycle"() {
-        expect:
-        assert false
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to create test cycle"
+        go "/testCycle/create?releasePlan.id=${id}"
+        def create = at CreateTestCyclePage
+
+        and: "create test cycle"
+        create.createTestCycle()
+
+        when: "content not displayed"
+        def showPage = at ShowReleasePlanPage
+        showPage.goToTestCycle(0)
+
+        then: "at show test cycle view"
+        at ShowTestCyclePage
     }
 }

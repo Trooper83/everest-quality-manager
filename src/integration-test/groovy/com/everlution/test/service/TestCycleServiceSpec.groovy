@@ -44,7 +44,6 @@ class TestCycleServiceSpec extends Specification {
         testCycle.id != null
     }
 
-    //TODO: need to update this test with removal of iteration service
     void "removeFrom cycle deletes iteration"() {
         given:
         def project = new Project(name: "release project name", code: "rpn").save()
@@ -58,14 +57,14 @@ class TestCycleServiceSpec extends Specification {
 
         expect:
         testCycleService.get(cycle.id) != null
-        testIterationService.get(iteration.id) != null
+        TestIteration.findById(iteration.id) != null
 
         when: "remove iteration"
         testCycleService.removeTestIteration(cycle, iteration)
         sessionFactory.currentSession.flush()
 
         then: "iteration deleted"
-        testIterationService.get(iteration.id) == null
+        TestIteration.findById(iteration.id) == null
     }
 
     void "add iterations persists iterations"() {
