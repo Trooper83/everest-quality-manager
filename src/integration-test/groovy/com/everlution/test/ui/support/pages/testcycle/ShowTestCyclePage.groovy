@@ -57,12 +57,19 @@ class ShowTestCyclePage extends ShowPage {
      * cancels the add tests modal
      */
     void cancelAddTestsModal() {
+        waitFor {
+            addTestsModalSubmitButton.displayed
+            addTestsModalCancelButton.displayed
+        }
         addTestsModalCancelButton.click()
     }
     /**
      * closes the add tests modal
      */
     void closeAddTestsModal() {
+        waitFor {
+            addTestsModalCloseButton.displayed
+        }
         addTestsModalCloseButton.click()
     }
 

@@ -255,7 +255,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to show page"
-        go "/testGroup/show/${id}"
+        go "/testGroup/show/${group.id}"
 
         when: "at show page"
         ShowTestGroupPage showPage = at ShowTestGroupPage
