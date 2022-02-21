@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.IterationsCmd
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -7,9 +8,42 @@ import static org.springframework.http.HttpStatus.*
 class TestCycleController {
 
     ReleasePlanService releasePlanService
+    TestCaseService testCaseService
     TestCycleService testCycleService
+    TestGroupService testGroupService
 
     static allowedMethods = [save: "POST"]
+
+    /**
+     * adds iterations to test cycle
+     */
+    @Secured("ROLE_BASIC")
+    def addTests(IterationsCmd cmd) {
+        def cycle = testCycleService.get(cmd.testCycleId)
+        if(cycle == null) {
+            notFound()
+            return
+        }
+        def tests = []
+        if(cmd.testGroups != null) {
+            def groups = testGroupService.getAll(cmd.testGroups)
+            groups.each {
+                tests.add(it.testCases)
+            }
+        } else {
+            def testCases = testCaseService.getAll(cmd.testCases)
+            tests.add(testCases)
+        }
+        try {
+            testCycleService.addTestIterations(cycle, tests)
+        } catch(Exception ignored) {
+            flash.error = "Error occurred attempting to add tests"
+            redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
+            return
+        }
+        flash.message = "Tests successfully added"
+        redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
+    }
 
     /**
      * display the create view
@@ -41,7 +75,7 @@ class TestCycleController {
      */
     @Secured("ROLE_BASIC")
     def save(TestCycle testCycle) {
-        def id = params.releasePlan.id
+        def id = params.releasePlan.id as Long
         if (testCycle == null) {
             notFound(id)
             return

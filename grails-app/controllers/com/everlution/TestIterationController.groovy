@@ -9,7 +9,7 @@ class TestIterationController {
     /**
      * displays the show view
      * /testIteration/show/${id}
-     * @param id - id of the iteration
+     * @param id - id of the instance to display
      */
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {

@@ -2,7 +2,6 @@ package com.everlution.test.testiteration
 
 import com.everlution.Person
 import com.everlution.Project
-import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestIteration
 import com.everlution.TestIterationService
@@ -24,72 +23,20 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
     def setup() {
         person = new Person(email: "test@test.com", password: "test").save()
         project = new Project(name: "tc domain project", code: "tdp").save()
-        def step = new Step(action: "action", result: "result")
-        def step1 = new Step(action: "action1", result: "result1")
-        testCase = new TestCase(person: person, name: "First Test Case", project: project, steps: [step, step1]).save()
+        testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
     }
 
-    void "get with valid parameter returns instance"() {
+    void "get with valid id returns instance"() {
         when:
-        new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
+        new TestIteration(name: "name", testCase: testCase, steps: [], result: "ToDo").save()
 
         then:
-        service.get(1) != null
+        service.get(1) instanceof TestIteration
     }
 
-    void "get with invalid instance returns null"() {
+    void "get with invalid id returns null"() {
         expect:
-        service.get(null) == null
-    }
-
-    void "create iteration from test case returns iteration"() {
-        when:
-        def iteration = service.createIterationFromTestCase(testCase)
-
-        then:
-        iteration instanceof TestIteration
-    }
-
-    void "create iteration from test case returns iteration with test case name"() {
-        when:
-        def iteration = service.createIterationFromTestCase(testCase)
-
-        then:
-        iteration.name == testCase.name
-    }
-
-    void "create iteration from test case returns iteration with todo result"() {
-        when:
-        def iteration = service.createIterationFromTestCase(testCase)
-
-        then:
-        iteration.result == "ToDo"
-    }
-
-    void "create iteration from test case returns iteration with test case"() {
-        when:
-        def iteration = service.createIterationFromTestCase(testCase)
-
-        then:
-        iteration.testCase == testCase
-    }
-
-    void "create iteration from test case returns iteration with steps"() {
-        when:
-        def iteration = service.createIterationFromTestCase(testCase)
-
-        then:
-        iteration.steps.size() == testCase.steps.size()
-    }
-
-    void "create iteration from test case returns iteration with steps in order"() {
-        when:
-        def iteration = service.createIterationFromTestCase(testCase)
-
-        then:
-        iteration.steps[0].action == testCase.steps[0].action
-        iteration.steps[1].action == testCase.steps[1].action
-        iteration.steps[0].result == testCase.steps[0].result
-        iteration.steps[1].result == testCase.steps[1].result
+        service.get(999999) == null
     }
 }

@@ -254,10 +254,10 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to edit page"
-        go "/testGroup/show/${id}"
+        and: "go to show page"
+        go "/testGroup/show/${group.id}"
 
-        when: "at show page with message displayed"
+        when: "at show page"
         ShowTestGroupPage showPage = at ShowTestGroupPage
         showPage.testCaseTable.clickCell("Id", 0)
 

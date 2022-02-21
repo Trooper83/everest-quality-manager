@@ -72,7 +72,7 @@ class EditPageTestGroupsSpec extends GebSpec {
 
         then: "groups are selected"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testGroupsSelect().selectedText == [group.name, group1.name]
+        page.testGroupsSelect().selectedText.containsAll([group.name, group1.name])
     }
 
     void "test group select defaults no selection when no group set"() {

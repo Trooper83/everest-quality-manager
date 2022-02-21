@@ -50,6 +50,9 @@
                             <div>
                                 <label>Platform: </label><span>${cycle.platform}</span>
                             </div>
+                            <div>
+                                <g:link data-test-id="view-test-cycle-link" controller="testCycle" action="show" id="${cycle.id}">view test cycle</g:link>
+                            </div>
                         </div>
                     </div>
                 </div>

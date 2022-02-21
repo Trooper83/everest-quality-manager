@@ -122,4 +122,32 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         thrown(ValidationException)
     }
+
+    void "get all returns list of groups"() {
+        given:
+        def tg1 = new TestGroup(name: "name", project: project).save()
+        def tg2 = new TestGroup(name: "name1", project: project).save()
+        def tg3 = new TestGroup(name: "name2", project: project).save(flush: true)
+
+        when:
+        def groups = service.getAll([tg1.id, tg2.id, tg3.id])
+
+        then:
+        groups.size() == 3
+    }
+
+    void "get all with invalid ids returns null values with valid values"() {
+        given:
+        def tg1 = new TestGroup(name: "name", project: project).save()
+        def tg2 = new TestGroup(name: "name1", project: project).save()
+        def tg3 = new TestGroup(name: "name2", project: project).save(flush: true)
+
+        when:
+        def groups = service.getAll([tg1.id, tg2.id, 99999999, tg3.id])
+
+        then:
+        groups.size() == 4
+        groups.get(2) == null
+        groups.get(0) != null
+    }
 }

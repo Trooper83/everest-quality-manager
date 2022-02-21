@@ -1,5 +1,8 @@
 package com.everlution.test.support
 
+import com.everlution.Project
+import com.everlution.ReleasePlan
+import com.everlution.TestCycle
 import com.github.javafaker.Faker
 
 class DataFactory {
@@ -9,7 +12,9 @@ class DataFactory {
     static projectCodes = ["AAA", "AAB", "AAC", "AAD", "AAE", "AAF", "AAG", "AAH", "AAI", "AAJ", "AAK", "AAL", "AAM",
         "AAN", "AAO", "AAP", "AAQ", "AAR", "AAS", "AAT", "AAU", "AAV", "AAW", "AAX", "AAY", "AAZ", "ABA", "ACA",
         "ADA", "AEA", "AFA", "AGA", "AHA", "AIA", "AJA", "AKA", "ALA", "AMA", "ANA", "AOA", "APA", "AQA", "ARA",
-        "ASA", "ATA", "AUA", "AVA", "AWA", "AXA", "AYA", "AZA"]
+        "ASA", "ATA", "AUA", "AVA", "AWA", "AXA", "AYA", "AZA", "BAA", "BAB", "BAC", "BAD", "BAE", "BAF", "BAG", "BAH",
+        "BAI", "BAJ", "BAK", "BAL", "BAM", "BAN", "BAO", "BAP", "BAQ", "BAR", "BAS", "BAT", "BAU", "BAV", "BAW",
+        "BAX", "BAY", "BAZ"]
 
     /**
      * creates fake data to populate an area
@@ -39,7 +44,7 @@ class DataFactory {
      * creates fake data to populate a project instance
      */
     static Map<String, String> project() {
-        def name = faker.lorem().sentence(3)
+        def name = faker.lorem().sentence(2)
         def code = projectCodes.removeAt(0)
         return [name: name, code: code]
     }
@@ -86,5 +91,25 @@ class DataFactory {
      */
     static Map<String, String> testGroup() {
         return [name: faker.name().title()]
+    }
+
+    static Project getProject() {
+        Project.withNewSession { session ->
+            new Project(name: faker.lorem().sentence(2), code: projectCodes.removeAt(0)).save()
+        }
+    }
+
+    static ReleasePlan getReleasePlan() {
+        ReleasePlan.withNewSession { session ->
+            new ReleasePlan(name: faker.ancient().god(), project: getProject()).save()
+        }
+    }
+
+    static TestCycle getTestCycle() {
+        TestCycle.withNewSession { session ->
+            def project = new Project(name: faker.lorem().sentence(2), code: projectCodes.removeAt(0)).save()
+            def plan = new ReleasePlan(name: faker.ancient().god(), project: project).save()
+            new TestCycle(name: faker.animal().name(), releasePlan: plan).save()
+        }
     }
 }

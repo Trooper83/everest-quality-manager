@@ -7,7 +7,6 @@ import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestIteration
-import com.everlution.TestIterationService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification
@@ -18,7 +17,6 @@ import org.hibernate.SessionFactory
 class TestCycleServiceSpec extends Specification {
 
     TestCycleService testCycleService
-    TestIterationService testIterationService
     SessionFactory sessionFactory
 
     private Long setupData() {
@@ -59,13 +57,31 @@ class TestCycleServiceSpec extends Specification {
 
         expect:
         testCycleService.get(cycle.id) != null
-        testIterationService.get(iteration.id) != null
+        TestIteration.findById(iteration.id) != null
 
         when: "remove iteration"
         testCycleService.removeTestIteration(cycle, iteration)
         sessionFactory.currentSession.flush()
 
         then: "iteration deleted"
-        testIterationService.get(iteration.id) == null
+        TestIteration.findById(iteration.id) == null
+    }
+
+    void "add iterations persists iterations"() {
+        given:
+        def project = new Project(name: "release project name", code: "rpn").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan)
+        testCycleService.save(cycle)
+
+        when: "add iteration"
+        testCycleService.addTestIterations(cycle, [testCase])
+        sessionFactory.currentSession.flush()
+
+        then: "iteration saved"
+        cycle.testIterations.size() == 1
     }
 }

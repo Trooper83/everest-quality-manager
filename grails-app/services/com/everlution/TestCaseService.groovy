@@ -10,6 +10,14 @@ abstract class TestCaseService implements ITestCaseService {
     TestStepService testStepService
 
     /**
+     * gets all test cases for the supplied ids
+     */
+    @Transactional
+    List<TestCase> getAll(List<Serializable> ids) {
+        return TestCase.getAll(ids)
+    }
+
+    /**
      * save an updated test case, deletes any removed steps
      * @param testCase - the test case to update
      * @param removedItems - ids of the steps to remove
