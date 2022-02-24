@@ -24,24 +24,32 @@ class TestCycleController {
             notFound()
             return
         }
-        def tests = []
+        ArrayList<TestCase> tests = []
         if(cmd.testGroups != null) {
             def groups = testGroupService.getAll(cmd.testGroups)
-            groups.each {
-                tests.add(it.testCases)
+            groups.each { TestGroup tg ->
+                tg.testCases.each { TestCase tc ->
+                    tests.add(tc)
+                }
             }
         } else {
             def testCases = testCaseService.getAll(cmd.testCases)
-            tests.add(testCases)
+            testCases.each { TestCase tc ->
+                tests.add(tc)
+            }
         }
-        try {
-            testCycleService.addTestIterations(cycle, tests)
-        } catch(Exception ignored) {
-            flash.error = "Error occurred attempting to add tests"
-            redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
-            return
+        if (tests.size() > 0) {
+            try {
+                testCycleService.addTestIterations(cycle, tests)
+                flash.message = "Tests successfully added"
+            } catch(Exception ignored) {
+                flash.error = "Error occurred attempting to add tests"
+                redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
+                return
+            }
+        } else { // no tests to add
+            flash.message = "No tests added"
         }
-        flash.message = "Tests successfully added"
         redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
     }
 
@@ -66,7 +74,13 @@ class TestCycleController {
      */
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
-        respond testCycleService.get(id), view: 'show'
+        def testCycle = testCycleService.get(id)
+        if (testCycle == null) {
+            notFound(id)
+            return
+        }
+        def groups = testCycle.releasePlan.project.testGroups.findAll { TestGroup tg -> tg.testCases.size() > 0 }
+        respond testCycle, view: 'show', model: [ testGroups: groups ]
     }
 
     /**

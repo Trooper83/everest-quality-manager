@@ -58,7 +58,7 @@
                         <div class="fieldcontain">
                             <label for="testGroups">Test Groups</label>
                             <g:select
-                                    name="testGroups" from="${testCycle.releasePlan.project.testGroups}"
+                                    name="testGroups" from="${testGroups}"
                                     optionKey="id" optionValue="name" multiple="true"
                             />
                         </div>

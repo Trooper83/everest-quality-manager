@@ -2,7 +2,9 @@ package com.everlution.test.testiteration
 
 import com.everlution.Person
 import com.everlution.Project
+import com.everlution.ReleasePlan
 import com.everlution.TestCase
+import com.everlution.TestCycle
 import com.everlution.TestIteration
 import com.everlution.TestIterationService
 import grails.testing.gorm.DataTest
@@ -29,7 +31,9 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
 
     void "get with valid id returns instance"() {
         when:
-        new TestIteration(name: "name", testCase: testCase, steps: [], result: "ToDo").save()
+        def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
+        def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
+        new TestIteration(name: "name", testCase: testCase, steps: [], result: "ToDo", testCycle: testCycle).save()
 
         then:
         service.get(1) instanceof TestIteration

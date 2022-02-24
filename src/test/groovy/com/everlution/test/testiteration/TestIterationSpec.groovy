@@ -2,7 +2,9 @@ package com.everlution.test.testiteration
 
 import com.everlution.Person
 import com.everlution.Project
+import com.everlution.ReleasePlan
 import com.everlution.TestCase
+import com.everlution.TestCycle
 import com.everlution.TestIteration
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
@@ -18,8 +20,10 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         def project = new Project(name: "tc domain project", code: "tdp")
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
-        new TestIteration(name: "test name123", testCase: testCase, result: "ToDo", steps: []).save()
+        def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
+        def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
+        new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: testCycle).save()
+        new TestIteration(name: "test name123", testCase: testCase, result: "ToDo", steps: [], testCycle: testCycle).save()
 
         expect:
         TestIteration.count() == 2
@@ -154,5 +158,14 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
 
         then:
         domain.validate(["testCase"])
+    }
+
+    void "test cycle cannot be null"() {
+        when:
+        domain.testCycle = null
+
+        then:
+        !domain.validate(["testCycle"])
+        domain.errors["testCycle"].code == "nullable"
     }
 }

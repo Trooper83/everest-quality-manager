@@ -4,6 +4,8 @@ import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
+import org.springframework.dao.DataIntegrityViolationException
+
 import static org.springframework.http.HttpStatus.*
 
 class TestCaseController {
@@ -127,7 +129,13 @@ class TestCaseController {
             return
         }
 
-        testCaseService.delete(id)
+        try {
+            testCaseService.delete(id)
+        } catch(DataIntegrityViolationException ignored) { //TODO: test me in all levels
+            flash.error = "Test Case has associated Test Iterations and cannot be deleted"
+            render view: 'show', model: [ testCase: testCaseService.get(id) ]
+            return
+        }
 
         request.withFormat {
             form multipartForm {
