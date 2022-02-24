@@ -61,7 +61,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ShowTestIterationPage)
-        page.getFields() == ["Test Case", "Name", "Result"]
+        page.getFields() == ["Test Case", "Name", "Result", "Test Cycle"]
     }
 
     void "test case link directs to test case"() {

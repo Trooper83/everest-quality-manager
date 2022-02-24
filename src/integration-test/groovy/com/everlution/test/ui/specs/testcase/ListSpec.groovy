@@ -110,7 +110,7 @@ class ListSpec extends GebSpec {
 
         when: "delete test case"
         ShowTestCasePage showPage = browser.page(ShowTestCasePage)
-        showPage.deleteTestCase()
+        showPage.delete()
 
         then: "at list page and message displayed"
         at ListTestCasePage

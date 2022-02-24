@@ -35,7 +35,7 @@ class DeleteTestCaseSpec extends GebSpec {
 
         when: "delete test case"
         def showPage = browser.at(ShowTestCasePage)
-        showPage.deleteTestCase()
+        showPage.delete()
 
         then: "at list page"
         at ListTestCasePage

@@ -238,7 +238,7 @@ class ShowPageSpec extends GebSpec {
         show.addTestsModalSubmitButton.click()
 
         then:
-        show.errorsMessage.text() == "Error occurred attempting to add tests"
+        show.statusMessage.text() == "No tests added"
     }
 
     void "added tests display in tests table"() {

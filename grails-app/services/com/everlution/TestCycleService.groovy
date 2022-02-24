@@ -14,7 +14,7 @@ abstract class TestCycleService implements ITestCycleService {
         //TODO: filter out the tests by platform and environment
         def iterations = createIterations(testCases)
         iterations.each {
-            testCycle.addToTestIterations(it)
+            testCycle.addToTestIterations(it).save()
         }
     }
 

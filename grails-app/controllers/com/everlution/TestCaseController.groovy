@@ -131,7 +131,7 @@ class TestCaseController {
 
         try {
             testCaseService.delete(id)
-        } catch(DataIntegrityViolationException ignored) { //TODO: test me in all levels
+        } catch(DataIntegrityViolationException ignored) {
             flash.error = "Test Case has associated Test Iterations and cannot be deleted"
             render view: 'show', model: [ testCase: testCaseService.get(id) ]
             return

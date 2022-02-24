@@ -51,9 +51,11 @@ class TestCycleServiceSpec extends Specification {
         def person = new Person(email: "test@test.com", password: "test").save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
-        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan, testIterations: [iteration])
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan)
         testCycleService.save(cycle)
+        testCycleService.addTestIterations(cycle, [testCase])
+        sessionFactory.currentSession.flush()
+        def iteration = cycle.testIterations.first()
 
         expect:
         testCycleService.get(cycle.id) != null
