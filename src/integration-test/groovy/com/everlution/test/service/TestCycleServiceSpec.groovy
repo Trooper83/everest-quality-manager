@@ -158,4 +158,39 @@ class TestCycleServiceSpec extends Specification {
         then:
         tc.testIterations.size() == 3
     }
+
+    void "add test iterations filters out test cases by already on test cycle"() {
+        given:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
+
+        when:
+        testCycleService.addTestIterations(testCycleService.get(tc.id), [testCase])
+
+        then:
+        !tc.testIterations
+    }
+
+    void "add test iterations adds test cases ids to test cycle"() {
+        given:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
+
+        expect:
+        def cycle = testCycleService.get(tc.id)
+        cycle.testCaseIds.size() == 1
+
+        when:
+        testCycleService.addTestIterations(cycle, [testCase, testCase1])
+
+        then:
+        testCycleService.get(tc.id).testCaseIds.size() == 2
+    }
 }

@@ -138,7 +138,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         noExceptionThrown()
     }
 
-    void "add iterations with null does not throw exception"() {
+    void "add iterations with null test case list does not throw exception"() {
         when:
         service.addTestIterations(new TestCycle(), null)
 
@@ -218,5 +218,55 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
 
         then:
         tc.testIterations.size() == 3
+    }
+
+    void "add test iterations filters out test cases by unique"() {
+        when:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web").save(flush: true)
+        service.addTestIterations(tc, [testCase, testCase, testCase])
+
+        then:
+        tc.testIterations.size() == 1
+    }
+
+    void "add test iterations filters out test cases by already on test cycle"() {
+        when:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
+        service.addTestIterations(tc, [testCase])
+
+        then:
+        !tc.testIterations
+    }
+
+    void "add test iterations adds test case ids to test cycle with null test case ids"() {
+        given:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web").save(flush: true)
+
+        expect:
+        tc.testCaseIds == null
+
+        when:
+        service.addTestIterations(tc, [testCase])
+
+        then:
+        tc.testCaseIds.size() == 1
+    }
+
+    void "add test iterations adds test case ids to test cycle with existing test case ids"() {
+        given:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web", testCaseIds: [9999]).save(flush: true)
+
+        expect:
+        tc.testCaseIds.size() == 1
+
+        when:
+        service.addTestIterations(tc, [testCase])
+
+        then:
+        tc.testCaseIds.size() == 2
     }
 }
