@@ -1,5 +1,6 @@
 package com.everlution.test.testcycle
 
+import com.everlution.Environment
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
@@ -118,7 +119,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.first().steps[1].result == testCase.steps[1].result
     }
 
-    void "create iterations from test cases returns same number of tests cases"() {
+    void "add iterations from test cases returns same number of tests cases"() {
         when:
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project).save()
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project).save()
@@ -129,7 +130,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.size() == 2
     }
 
-    void "create iterations with empty test case list does not throw exception"() {
+    void "add iterations with empty test case list does not throw exception"() {
         when:
         service.addTestIterations(new TestCycle(), [])
 
@@ -137,7 +138,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         noExceptionThrown()
     }
 
-    void "create iterations with null does not throw exception"() {
+    void "add iterations with null does not throw exception"() {
         when:
         service.addTestIterations(new TestCycle(), null)
 
@@ -145,7 +146,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         noExceptionThrown()
     }
 
-    void "create iterations with null steps on test case does not throw exception"() {
+    void "add iterations with null steps on test case does not throw exception"() {
         given:
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project).save()
 
@@ -157,5 +158,65 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
 
         then:
         noExceptionThrown()
+    }
+
+    void "add test iterations does not filter test cases when platform is null"() {
+        when:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "").save(flush: true)
+        service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 4
+    }
+
+    //TODO: add to this test once platform is on iteration to verify the correct platforms
+    void "add test iterations filters out test cases by platform"() {
+        when:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web").save(flush: true)
+        service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 2
+    }
+
+    void "add test iterations does not filter test cases when environ is null"() {
+        when:
+        def env1 = new Environment(name: "env1")
+        def env2 = new Environment(name: "env2")
+        project.addToEnvironments(env1).addToEnvironments(env2).save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1]).save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan).save(flush: true)
+        service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 4
+    }
+
+    //TODO: add to this test once environ is on iteration to verify the correct environs
+    void "add test iterations filters out test cases by environ"() {
+        when:
+        def env1 = new Environment(name: "env1")
+        def env2 = new Environment(name: "env2")
+        project.addToEnvironments(env1).addToEnvironments(env2).save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1]).save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, environ: env1).save(flush: true)
+        service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 3
     }
 }

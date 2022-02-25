@@ -11,7 +11,12 @@ abstract class TestCycleService implements ITestCycleService {
      */
     @Transactional
     void addTestIterations(TestCycle testCycle, List<TestCase> testCases) {
-        //TODO: filter out the tests by platform and environment
+        if (testCycle.platform != null) {
+            testCases.removeIf(test -> (test.platform != testCycle.platform & test.platform != null))
+        }
+        if (testCycle.environ != null) {
+            testCases.removeIf(test -> (!test.environments?.contains(testCycle.environ)) & test.environments != null)
+        }
         def iterations = createIterations(testCases)
         iterations.each {
             testCycle.addToTestIterations(it).save()
