@@ -38,7 +38,26 @@
         Add Tests
     </button>
     </sec:ifAnyGranted>
-    <f:table collection="${testCycle.testIterations}" order="id, name, result"/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Result</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <g:each var="iteration" in="${testCycle.testIterations}">
+            <tr>
+                <td><g:link controller="testIteration" action="show" id="${iteration.id}">${iteration.id}</g:link></td>
+                <td>${iteration.name}</td>
+                <td>${iteration.result}</td>
+                <td><g:link controller="testIteration" action="execute" id="${iteration.id}">Execute</g:link></td>
+            </tr>
+        </g:each>
+        </tbody>
+    </table>
     <div class="pagination">
         <g:paginate total="${testCycle.testIterations.size() ?: 0}"/>
     </div>

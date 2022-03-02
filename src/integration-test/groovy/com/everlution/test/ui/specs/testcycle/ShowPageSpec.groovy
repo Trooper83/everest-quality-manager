@@ -302,7 +302,7 @@ class ShowPageSpec extends GebSpec {
         show.addTestsByGroup(group.name)
 
         then:
-        show.testsTable.getHeaders() == ["Id", "Name", "Result"]
+        show.testsTable.getHeaders() == ["Id", "Name", "Result", ""]
     }
 
     void "success message displays when tests added"() {

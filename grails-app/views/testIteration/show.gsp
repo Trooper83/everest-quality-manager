@@ -21,6 +21,5 @@
             <f:display bean="testIteration" except="steps, testCase" />
             <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>
         </div>
-        <asset:javascript src="step.js"/>
     </body>
 </html>

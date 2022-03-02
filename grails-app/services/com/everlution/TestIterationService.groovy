@@ -6,4 +6,8 @@ import grails.gorm.services.Service
 interface TestIterationService {
 
     TestIteration get(Serializable id)
+
+    TestIteration read(Serializable id)
+
+    TestIteration save(TestIteration testIteration)
 }
