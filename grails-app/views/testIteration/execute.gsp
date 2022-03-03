@@ -14,14 +14,18 @@
         <g:form resource="${this.testIteration}" method="PUT">
             <g:hiddenField name="version" value="${this.testIteration?.version}" />
             <fieldset class="form">
-                <div class="fieldcontain">
-                    <label for="result">Result</label>
-                    <g:select name="result" id="result" from="${['ToDo', 'Pass', 'Fail']}" value="${testIteration.result}"/>
-                </div>
+                <ol class="property-list testIteration">
+                    <li class="fieldcontain">
+                        <span id="result-label" class="property-label">Result</span>
+                        <g:select name="result" id="result" from="${['ToDo', 'Pass', 'Fail']}" value="${testIteration.result}"/>
+                    </li>
+                </ol>
             </fieldset>
-            <fieldset>
-                <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
-            </fieldset>
+            <sec:ifAnyGranted roles="ROLE_BASIC">
+                <fieldset>
+                    <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
+                </fieldset>
+            </sec:ifAnyGranted>
         </g:form>
         <ol class="property-list testIteration">
             <li class="fieldcontain">
