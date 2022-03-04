@@ -79,6 +79,7 @@ class ShowPageSpec extends GebSpec {
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
+        testCycleService.addTestIterations(testCycle, [testCase])
 
         and: "login as a basic user"
         to LoginPage
@@ -90,9 +91,6 @@ class ShowPageSpec extends GebSpec {
 
         and:
         def showCycle = at ShowTestCyclePage
-        showCycle.addTestsByGroup()
-
-        and:
         showCycle.testsTable.clickCell("Id", 0)
 
         when:

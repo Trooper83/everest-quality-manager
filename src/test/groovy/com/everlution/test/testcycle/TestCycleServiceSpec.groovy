@@ -173,7 +173,6 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.size() == 4
     }
 
-    //TODO: add to this test once platform is on iteration to verify the correct platforms
     void "add test iterations filters out test cases by platform"() {
         when:
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
@@ -203,7 +202,6 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.size() == 4
     }
 
-    //TODO: add to this test once environ is on iteration to verify the correct environs
     void "add test iterations filters out test cases by environ"() {
         when:
         def env1 = new Environment(name: "env1")
