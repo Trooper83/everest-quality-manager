@@ -7,7 +7,6 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
-import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -70,14 +69,35 @@ class ExecutePageSpec extends GebSpec {
 
         and:
         def showCycle = at ShowTestCyclePage
-        showCycle.testsTable.clickCell("Id", 0)
+        showCycle.testsTable.clickCell("", 0)
 
         when:
-        def show = at ShowTestIterationPage
-        show.goToTestCase()
+        def execute = at ExecuteTestIterationPage
+        execute.goToTestCase()
 
         then:
         at ShowTestCasePage
+    }
+
+    void "test cycle link directs to test cycle"() {
+        given: "setup data"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to cycle"
+        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+
+        and:
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
+
+        when:
+        def execute = at ExecuteTestIterationPage
+        execute.goToTestCycle()
+
+        then:
+        at ShowTestCyclePage
     }
 
     void "result has correct options"() {

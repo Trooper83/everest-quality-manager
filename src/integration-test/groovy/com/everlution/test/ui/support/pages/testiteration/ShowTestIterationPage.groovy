@@ -7,7 +7,7 @@ class ShowTestIterationPage extends ShowPage {
     static at = { title == "Show TestIteration" }
 
     static content = {
-        testCaseLink { $("#testCase")}
+        testCaseLink { $("#testCase") }
     }
 
     /**
