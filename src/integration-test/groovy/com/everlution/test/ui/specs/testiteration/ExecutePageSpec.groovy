@@ -1,26 +1,19 @@
 package com.everlution.test.ui.specs.testiteration
 
-import com.everlution.PersonService
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanService
-import com.everlution.TestCase
-import com.everlution.TestCaseService
-import com.everlution.TestCycle
-import com.everlution.TestCycleService
-import com.everlution.TestGroup
+import com.everlution.*
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
+import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
 import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
-class ShowPageSpec extends GebSpec {
+class ExecutePageSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
@@ -28,23 +21,28 @@ class ShowPageSpec extends GebSpec {
     TestCaseService testCaseService
     TestCycleService testCycleService
 
-    void "correct fields are displayed"() {
-        given: "setup data"
+    @Shared ReleasePlan plan
+    @Shared TestCycle testCycle
+
+    def setup() {
         def gd = DataFactory.testGroup()
         def group = new TestGroup(name: gd.name)
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project)
+        plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
-        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        def cycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        testCycle = testCycleService.save(cycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
+        testCycleService.addTestIterations(testCycle, [testCase])
+    }
 
-        and: "login as a basic user"
+    void "correct fields are displayed"() {
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
@@ -52,36 +50,17 @@ class ShowPageSpec extends GebSpec {
         and: "go to cycle"
         go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
 
-        and:
-        def showCycle = at ShowTestCyclePage
-        showCycle.addTestsByGroup()
-
         when:
-        showCycle.testsTable.clickCell("Id", 0)
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
 
         then: "correct fields are displayed"
-        def page = browser.page(ShowTestIterationPage)
-        page.getFields() == ["Test Case", "Name", "Result", "Test Cycle"]
+        def page = browser.page(ExecuteTestIterationPage)
+        page.getFields() == ["Result", "Test Case", "Name", "Test Cycle"]
     }
 
     void "test case link directs to test case"() {
         given: "setup data"
-        def gd = DataFactory.testGroup()
-        def group = new TestGroup(name: gd.name)
-        def pd = DataFactory.project()
-        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
-        projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project)
-        releasePlanService.save(plan)
-        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
-        def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
-        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
-        testCaseService.save(testCase)
-        testCycleService.addTestIterations(testCycle, [testCase])
-
-        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
@@ -99,5 +78,23 @@ class ShowPageSpec extends GebSpec {
 
         then:
         at ShowTestCasePage
+    }
+
+    void "result has correct options"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to cycle"
+        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+
+        when:
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
+
+        then:
+        def show = at ExecuteTestIterationPage
+        show.resultOptions*.text() == ["ToDo", "Pass", "Fail"]
     }
 }

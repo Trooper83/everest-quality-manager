@@ -1,5 +1,6 @@
 package com.everlution.test.service
 
+import com.everlution.Environment
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
@@ -7,6 +8,7 @@ import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestIteration
+import com.everlution.test.support.DataFactory
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import spock.lang.Specification
@@ -51,9 +53,11 @@ class TestCycleServiceSpec extends Specification {
         def person = new Person(email: "test@test.com", password: "test").save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
-        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan, testIterations: [iteration])
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan)
         testCycleService.save(cycle)
+        testCycleService.addTestIterations(cycle, [testCase])
+        sessionFactory.currentSession.flush()
+        def iteration = cycle.testIterations.first()
 
         expect:
         testCycleService.get(cycle.id) != null
@@ -83,5 +87,110 @@ class TestCycleServiceSpec extends Specification {
 
         then: "iteration saved"
         cycle.testIterations.size() == 1
+    }
+
+    void "add test iterations does not filter test cases when platform is null"() {
+        when:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "").save(flush: true)
+        testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 4
+    }
+
+    void "add test iterations filters out test cases by platform"() {
+        when:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web").save(flush: true)
+        testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 2
+    }
+
+    void "add test iterations does not filter test cases when environ is null"() {
+        when:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        def env1 = new Environment(name: "env1")
+        def env2 = new Environment(name: "env2")
+        project.addToEnvironments(env1).addToEnvironments(env2).save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1]).save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan).save(flush: true)
+        testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 4
+    }
+
+    void "add test iterations filters out test cases by environ"() {
+        when:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        def env1 = new Environment(name: "env1")
+        def env2 = new Environment(name: "env2")
+        project.addToEnvironments(env1).addToEnvironments(env2).save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1]).save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, environ: env1).save(flush: true)
+        testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
+
+        then:
+        tc.testIterations.size() == 3
+    }
+
+    void "add test iterations filters out test cases by already on test cycle"() {
+        given:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
+
+        when:
+        testCycleService.addTestIterations(testCycleService.get(tc.id), [testCase])
+
+        then:
+        !tc.testIterations
+    }
+
+    void "add test iterations adds test cases ids to test cycle"() {
+        given:
+        def project = DataFactory.getProject()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
+
+        expect:
+        def cycle = testCycleService.get(tc.id)
+        cycle.testCaseIds.size() == 1
+
+        when:
+        testCycleService.addTestIterations(cycle, [testCase, testCase1])
+
+        then:
+        testCycleService.get(tc.id).testCaseIds.size() == 2
     }
 }

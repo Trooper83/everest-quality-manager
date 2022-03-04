@@ -20,7 +20,7 @@
                                   noSelection="${['':'Select an Environment...']}"
                         />
                     </div>
-                    <f:all bean="testCycle" except="environ, releasePlan, testIterations"/>
+                    <f:all bean="testCycle" except="environ, releasePlan, testIterations, testCaseIds"/>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />

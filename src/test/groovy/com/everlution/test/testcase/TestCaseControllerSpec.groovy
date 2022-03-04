@@ -9,6 +9,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.*
 
 class TestCaseControllerSpec extends Specification implements ControllerUnitTest<TestCaseController>, DomainUnitTest<TestCase> {
@@ -366,6 +367,25 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         then:"the user is redirected to index"
         response.redirectedUrl == '/testCase/index'
         flash.message == "default.deleted.message"
+    }
+
+    void "delete action flash message correct when exception thrown"() {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * delete(2) >> {
+                throw new DataIntegrityViolationException("Exception")
+            }
+            1 * get(2) >> new TestCase()
+        }
+
+        when:"the domain instance is passed to the delete action"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2)
+
+        then:"the user is redirected to index"
+        model.testCase != null
+        flash.error == "Test Case has associated Test Iterations and cannot be deleted"
     }
 }
 

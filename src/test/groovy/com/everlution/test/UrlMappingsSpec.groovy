@@ -154,5 +154,8 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         verifyUrlMapping("/testIteration/show/123", controller: 'testIteration', action: 'show') {
             id = 123
         }
+        verifyUrlMapping("/testIteration/execute/123", controller: 'testIteration', action: 'execute') {
+            id = 123
+        }
     }
 }

@@ -5,6 +5,8 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.TestCycleService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
@@ -14,13 +16,16 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import org.hibernate.SessionFactory
 
 @Integration
 class ShowPageSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
+    SessionFactory sessionFactory
     TestCaseService testCaseService
+    TestCycleService testCycleService
 
     void "status message displayed after test case created"() {
         given: "login as a basic user"
@@ -218,7 +223,7 @@ class ShowPageSpec extends GebSpec {
 
     void "updated message displays after updating test case"() {
         given: "create test case"
-        Project project = projectService.list(max: 10).first()
+        Project project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project)
@@ -240,5 +245,31 @@ class ShowPageSpec extends GebSpec {
         at ShowTestCasePage
         ShowTestCasePage showPage = browser.page(ShowTestCasePage)
         showPage.statusMessage.text() == "TestCase ${id} updated"
+    }
+
+    void "delete test case with test iterations displays failure error"() {
+        given:
+        def cycle = DataFactory.getTestCycle()
+        Project project = projectService.list(max: 1).first()
+        def person = personService.list(max: 1).first()
+        TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project)
+        def id = testCaseService.save(testCase).id
+        testCycleService.addTestIterations(cycle, [testCase])
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and:
+        go "/testCase/show/${id}"
+
+        when:
+        def show = at ShowTestCasePage
+        show.delete()
+
+        then:
+        show.errorsMessage.text() == "Test Case has associated Test Iterations and cannot be deleted"
     }
 }

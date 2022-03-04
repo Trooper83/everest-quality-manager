@@ -2,8 +2,10 @@ package com.everlution.test.testcase
 
 import com.everlution.Person
 import com.everlution.Project
+import com.everlution.ReleasePlan
 import com.everlution.Step
 import com.everlution.TestCase
+import com.everlution.TestCycle
 import com.everlution.TestGroup
 import com.everlution.TestIteration
 import grails.test.hibernate.HibernateSpec
@@ -176,7 +178,9 @@ class TestCaseHibernateSpec extends HibernateSpec {
         given:
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
+        def plan = new ReleasePlan(name: "rp123", project: project).save()
+        def cycle = new TestCycle(name: "test cycle", releasePlan: plan).save()
+        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: cycle).save()
 
         expect:
         TestIteration.findById(iteration.id) != null

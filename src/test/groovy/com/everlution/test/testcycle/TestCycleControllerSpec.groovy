@@ -1,12 +1,15 @@
 package com.everlution.test.testcycle
 
-
+import com.everlution.Person
+import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
+import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestCycle
 import com.everlution.TestCycleController
 import com.everlution.TestCycleService
+import com.everlution.TestGroup
 import com.everlution.TestGroupService
 import com.everlution.command.IterationsCmd
 import grails.testing.gorm.DomainUnitTest
@@ -168,8 +171,9 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
     void "show action with a valid id"() {
         given:
+        def plan = new ReleasePlan(name: "name", project: new Project())
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(2) >> new TestCycle()
+            1 * get(2) >> new TestCycle(releasePlan: plan)
         }
 
         when:"A domain instance is passed to the show action"
@@ -177,18 +181,43 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
         then:"A model is populated containing the domain instance"
         model.testCycle instanceof TestCycle
+        model.testGroups != null
         view == 'show'
+    }
+
+    void "show action model populates only test groups with test cases"() {
+        given:
+        def group1 = new TestGroup(name: "group 1").save()
+        def group2 = new TestGroup(name: "group 2", testCases: []).save()
+        def person = new Person(email: "test@test.com", password: "password").save()
+        def project = new Project(name: "name of project testing", code: "999").save()
+        project.addToTestGroups(group1).addToTestGroups(group2)
+        def tc = new TestCase(name: "testcase", person: person, project: project).save()
+        group1.addToTestCases(tc)
+        def plan = new ReleasePlan(name: "release", project: project).save()
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * get(1) >> new TestCycle(releasePlan: plan)
+        }
+
+        when:
+        controller.show(1)
+
+        then:
+        model.testGroups == [group1]
     }
 
     void "add iterations renders success message"() {
         given:
+        def group = new TestGroup(name: "group name").save()
+        def tc = new TestCase()
+        group.addToTestCases(tc)
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
-        cmd.testGroups = [1]
+        cmd.testGroups = [group.id]
 
         when:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * getAll(_) >> []
+            1 * getAll(_) >> [group]
         }
         controller.testCycleService = Mock(TestCycleService) {
             1 * get(_) >> new TestCycle()
@@ -201,7 +230,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         response.redirectedUrl == "/testCycle/show"
     }
 
-    void "add iterations renders error message"() {
+    void "add iterations with groups that have no tests renders error message"() {
         given:
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
@@ -210,6 +239,30 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         when:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> []
+        }
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * get(_) >> new TestCycle()
+            0 * addTestIterations(_, _)
+        }
+        controller.addTests(cmd)
+
+        then:
+        controller.flash.message == "No tests added"
+        response.redirectedUrl == "/testCycle/show"
+    }
+
+    void "add iterations renders error message"() {
+        given:
+        def group = new TestGroup(name: "group name").save()
+        def tc = new TestCase()
+        group.addToTestCases(tc)
+        def cmd = new IterationsCmd()
+        cmd.testCycleId = 1
+        cmd.testGroups = [group.id]
+
+        when:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * getAll(_) >> [group]
         }
         controller.testCycleService = Mock(TestCycleService) {
             1 * get(_) >> new TestCycle()
@@ -239,7 +292,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
         controller.testCycleService = Mock(TestCycleService) {
             1 * get(_) >> new TestCycle()
-            1 * addTestIterations(_, _)
+            0 * addTestIterations(_, _)
         }
         controller.testCaseService = Mock(TestCaseService) {
             0 * getAll(_)
@@ -261,7 +314,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
         controller.testCycleService = Mock(TestCycleService) {
             1 * get(_) >> new TestCycle()
-            1 * addTestIterations(_, _)
+            0 * addTestIterations(_, _)
         }
         controller.testCaseService = Mock(TestCaseService) {
             1 * getAll(_)

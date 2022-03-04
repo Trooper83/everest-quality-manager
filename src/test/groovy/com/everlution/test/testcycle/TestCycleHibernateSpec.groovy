@@ -7,6 +7,7 @@ import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestIteration
 import grails.test.hibernate.HibernateSpec
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
 
@@ -61,10 +62,10 @@ class TestCycleHibernateSpec extends HibernateSpec {
         ReleasePlan.findById(releasePlan.id) != null
     }
 
-    void "delete cycle cascades to iteration"() {
+    void "delete cycle with iteration throws exception"() {
         given:
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
-        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan, testIterations: [iteration]).save()
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan).save()
+        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: cycle).save()
 
         expect:
         TestCycle.findById(cycle.id) != null
@@ -73,15 +74,14 @@ class TestCycleHibernateSpec extends HibernateSpec {
         when: "delete test cycle"
         cycle.delete(flush: true)
 
-        then: "cycle and iteration deleted"
-        TestCycle.findById(cycle.id) == null
-        TestIteration.findById(iteration.id) == null
+        then:
+        thrown(DataIntegrityViolationException)
     }
 
-    void "removeFrom cycle deletes iteration"() {
+    void "removeFrom cycle with iteration throws exception"() {
         given:
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: []).save()
-        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan, testIterations: [iteration]).save()
+        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan).save()
+        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: cycle).save()
 
         expect:
         TestCycle.findById(cycle.id) != null
@@ -90,7 +90,7 @@ class TestCycleHibernateSpec extends HibernateSpec {
         when: "delete test cycle"
         cycle.removeFromTestIterations(iteration).save(flush: true)
 
-        then: "iteration deleted"
-        TestIteration.findById(iteration.id) == null
+        then:
+        thrown(DataIntegrityViolationException)
     }
 }

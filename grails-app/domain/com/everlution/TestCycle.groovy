@@ -7,9 +7,10 @@ class TestCycle {
     String name
     String platform
     ReleasePlan releasePlan
+    Collection testCaseIds
     Collection testIterations
 
-    static hasMany = [ testIterations: TestIteration ]
+    static hasMany = [ testCaseIds: Long, testIterations: TestIteration ]
 
     static belongsTo = [ ReleasePlan ]
 
@@ -31,6 +32,7 @@ class TestCycle {
         name nullable: false, blank: false, maxSize: 500
         platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
         releasePlan nullable: false
+        testCaseIds nullable: true
         testIterations nullable: true
     }
 }

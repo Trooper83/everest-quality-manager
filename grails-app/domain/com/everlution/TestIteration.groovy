@@ -5,6 +5,7 @@ class TestIteration {
     String name
     String result
     TestCase testCase
+    TestCycle testCycle
     List steps
 
     static belongsTo = [ TestCycle ]
@@ -20,5 +21,6 @@ class TestIteration {
         result blank: false, nullable: false, inList: ["ToDo", "Pass", "Fail"]
         steps nullable: false
         testCase nullable: false
+        testCycle nullable: false
     }
 }

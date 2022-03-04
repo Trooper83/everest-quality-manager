@@ -191,4 +191,12 @@ class TestCycleSpec extends Specification implements DomainUnitTest<TestCycle> {
         then:
         domain.validate(["testIterations"])
     }
+
+    void "test case ids can be null"() {
+        when:
+        domain.testCaseIds = null
+
+        then:
+        domain.validate(["testCaseIds"])
+    }
 }
