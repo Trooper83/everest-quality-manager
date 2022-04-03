@@ -9,6 +9,7 @@ import com.everlution.TestCycleController
 import com.everlution.TestGroupController
 import com.everlution.TestIterationController
 import com.everlution.UrlMappings
+import grails.plugin.springsecurity.LoginController
 import grails.testing.web.UrlMappingsUnitTest
 import spock.lang.Specification
 
@@ -20,11 +21,17 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         verifyForwardUrlMapping(404, view: 'notFound')
     }
 
+    void "verify login forward and reverse mappings"() {
+        mockController(LoginController)
+
+        expect:
+        verifyUrlMapping("/login/auth", controller: 'login', action: 'auth')
+    }
+
     void "verify test case forward and reverse mappings"() {
         mockController(TestCaseController)
 
         expect:
-        verifyUrlMapping("/", view: 'index')
         verifyUrlMapping("/testCase/index", controller: 'testCase', action: 'index')
         verifyUrlMapping("/testCase/create", controller: 'testCase', action: 'create')
         verifyUrlMapping("/testCase/save", controller: 'testCase', action: 'save')
@@ -68,6 +75,9 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
 
         expect:
         verifyUrlMapping("/project/123/bug/create", controller: 'bug', action: 'create') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/bugs", controller: 'bug', action: 'bugs') {
             projectId = 123
         }
         verifyUrlMapping("/bug/save", controller: 'bug', action: 'save')
