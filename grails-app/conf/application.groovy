@@ -1,6 +1,7 @@
 
 
 // Added by the Spring Security Core plugin:
+grails.plugin.springsecurity.successHandler.defaultTargetUrl = '/projects'
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.everlution.Person'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.everlution.PersonRole'
 grails.plugin.springsecurity.authority.className = 'com.everlution.Role'
@@ -9,7 +10,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	[pattern: '/',               access: ['permitAll']],
 	[pattern: '/error',          access: ['permitAll']],
 	[pattern: '/index',          access: ['permitAll']],
-	[pattern: '/index.gsp',      access: ['permitAll']],
+	[pattern: '/bugs.gsp',      access: ['permitAll']],
 	[pattern: '/shutdown',       access: ['permitAll']],
 	[pattern: '/assets/**',      access: ['permitAll']],
 	[pattern: '/**/js/**',       access: ['permitAll']],

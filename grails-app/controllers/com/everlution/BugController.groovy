@@ -17,14 +17,18 @@ class BugController {
 
     /**
      * lists all bugs
-     * /bug/index
-     * @param max - maximum bugs to retrieve
+     * /bugs
      * @return - list of bugs
      */
     @Secured("ROLE_READ_ONLY")
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond bugService.list(params), model: [bugCount: bugService.count()]
+    def bugs(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        def bugs = bugService.findAllByProject(project)
+        respond bugs, model: [bugCount: bugs.size(), project: project], view: 'bugs'
     }
 
     /**
@@ -43,8 +47,13 @@ class BugController {
      * /bug/create
      */
     @Secured("ROLE_BASIC")
-    def create() {
-        respond new Bug(params), model: [projects: projectService.list()]
+    def create(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond new Bug(params), model: [project: project]
     }
 
     /**
@@ -64,14 +73,14 @@ class BugController {
         try {
             bugService.save(bug)
         } catch (ValidationException ignored) {
-            respond bug.errors, view:'create', model: [projects: projectService.list()]
+            respond bug.errors, view:'create'
             return
         }
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'bug.label', default: 'Bug'), bug.id])
-                redirect bug
+                redirect uri: "/project/${bug.project.id}/bug/show/${bug.id}"
             }
             '*' { respond bug, [status: CREATED] }
         }
@@ -110,7 +119,7 @@ class BugController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'bug.label', default: 'Bug'), bug.id])
-                redirect bug
+                redirect uri: "/project/${bug.project.id}/bug/show/${bug.id}"
             }
             '*'{ respond bug, [status: OK] }
         }
@@ -121,18 +130,17 @@ class BugController {
      * @param id - id of the bug to delete
      */
     @Secured("ROLE_BASIC")
-    def delete(Long id) {
-        if (id == null) {
+    def delete(Long id, Long projectId) {
+        if (id == null || projectId == null) {
             notFound()
             return
         }
-
         bugService.delete(id)
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'bug.label', default: 'Bug'), id])
-                redirect action:"index", method:"GET"
+                redirect uri: "/project/${projectId}/bugs"
             }
             '*'{ render status: NO_CONTENT }
         }
@@ -143,10 +151,6 @@ class BugController {
      */
     protected void notFound() {
         request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'bug.label', default: 'Bug'), params.id])
-                redirect action: "index", method: "GET"
-            }
             '*'{ render status: NOT_FOUND }
         }
     }

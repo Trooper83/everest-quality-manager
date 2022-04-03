@@ -11,13 +11,10 @@
         <div class="nav" role="navigation">
             <ul>
                 <li>
-                    <a class="home" data-test-id="create-home-link" href="${createLink(uri: '/')}">
-                        <g:message code="default.home.label"/>
-                    </a>
+                    <g:link class="home" data-test-id="create-project-home-link" uri="/project/${project.id}/home">Project Home</g:link>
                 </li>
                 <li>
-                    <g:link class="list" action="index" data-test-id="create-list-link">
-                    <g:message code="default.list.label" args="[entityName]" /></g:link>
+                    <g:link class="list" data-test-id="create-list-link" uri="/project/${project.id}/bugs">Bugs List</g:link>
                 </li>
             </ul>
         </div>
@@ -27,27 +24,25 @@
             <g:form resource="${this.bug}" method="POST">
                 <fieldset class="form">
                     <f:all bean="bug" except="area, person, environments, project, steps"/>
+                    <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain required">
-                        <label for="project">Project
-                            <span class="required-indicator">*</span>
-                        </label>
-                        <g:select name="project" from="${projects}"
-                              optionKey="id" optionValue="name"
-                              noSelection="${['':'Select a Project...']}"
-                              onchange="getProjectItems()"
-                        />
+                        <label for="project">Project</label>
+                        <span>${project.name}</span>
                     </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
-                        <select name="area" id="area" disabled>
-                            <option value=''>Select an Area...</option>
-                        </select>
+                        <g:select name="areas" from="${project.areas}"
+                              optionKey="id" optionValue="name"
+                              noSelection="${['':'Select an Area...']}"
+                        />
                     </div>
                     <div class="fieldcontain">
                         <label for="environments">Environments</label>
-                        <select name="environments" id="environments" disabled multiple>
-                            <option value=''>--No Environment--</option>
-                        </select>
+                        <g:select name="environments" from="${project.environments}"
+                                  optionKey="id" optionValue="name"
+                                  noSelection="${['':'Select Environments...']}"
+                                  multiple="true"
+                        />
                     </div>
                 </fieldset>
                 <g:render template="/shared/createStepsTableTemplate"/>

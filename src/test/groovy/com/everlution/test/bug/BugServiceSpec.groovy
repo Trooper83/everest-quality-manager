@@ -118,4 +118,37 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         then:
         saved instanceof Bug
     }
+
+    void "find all bugs by project returns bugs"() {
+        when:
+        def bugs = service.findAllByProject(project)
+
+        then:
+        bugs instanceof List<Bug>
+    }
+
+    void "find all bugs by project only returns bugs with project"() {
+        given:
+        def proj = new Project(name: "BugServiceSpec Project1223", code: "BP8").save()
+        def bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: proj).save(flush: true)
+
+        expect:
+        Bug.list().contains(bug)
+
+        when:
+        def bugs = service.findAllByProject(project)
+
+        then:
+        bugs.every { it.project.id == project.id }
+        !bugs.contains(bug)
+    }
+
+    void "find all bugs by project with null project id returns empty list"() {
+        when:
+        def bugs = service.findAllByProject(null)
+
+        then:
+        noExceptionThrown()
+        bugs.size() == 0
+    }
 }

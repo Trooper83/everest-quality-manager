@@ -12,18 +12,14 @@
 <div class="nav" role="navigation">
     <ul>
         <li>
-            <a class="home" href="${createLink(uri: '/')}" data-test-id="show-home-link">
-                <g:message code="default.home.label"/>
-            </a>
+            <g:link class="home" data-test-id="show-home-link" uri="/project/${bug.project.id}/home">Project Home</g:link>
         </li>
         <li>
-            <g:link class="list" action="index" data-test-id="show-list-link">
-                <g:message code="default.list.label" args="[entityName]"/>
-            </g:link>
+            <g:link class="list" data-test-id="show-list-link" uri="/project/${bug.project.id}/bugs">Bugs List</g:link>
         </li>
         <sec:ifAnyGranted roles="ROLE_BASIC">
             <li>
-                <g:link class="create" action="create" data-test-id="show-create-link">
+                <g:link class="create" action="create" uri="/project/${bug.project.id}/bug/create" data-test-id="show-create-link">
                     <g:message code="default.new.label" args="[entityName]"/>
                 </g:link>
             </li>
@@ -71,9 +67,9 @@
     </ol>
     <g:render template="/shared/showStepsTableTemplate" bean="${bug}" var="entity"/>
     <sec:ifAnyGranted roles="ROLE_BASIC">
-        <g:form resource="${this.bug}" method="DELETE">
+        <g:form resource="${this.bug}" method="DELETE" params="[projectId: bug.project.id]">
             <fieldset class="buttons">
-                <g:link class="edit" action="edit" resource="${this.bug}" data-test-id="show-edit-link">
+                <g:link class="edit" uri="/project/${bug.project.id}/bug/edit/${bug.id}" data-test-id="show-edit-link">
                     <g:message code="default.button.edit.label" default="Edit"/>
                 </g:link>
                 <input class="delete" type="submit" data-test-id="show-delete-link"

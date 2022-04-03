@@ -11,12 +11,12 @@
 </a>
 <div class="nav" role="navigation">
     <ul>
-        <li><a class="home" href="${createLink(uri: '/')}" data-test-id="index-home-link">
-            <g:message code="default.home.label"/>
-        </a></li>
+        <li>
+            <g:link class="home" data-test-id="bugs-home-link" uri="/project/${project.id}/home">Project Home</g:link>
+        </li>
         <sec:ifAnyGranted roles="ROLE_BASIC">
             <li>
-                <g:link class="create" action="create" data-test-id="index-create-link">
+                <g:link class="create" action="create" uri="/project/${project.id}/bug/create" data-test-id="bugs-create-link">
                     <g:message code="default.new.label" args="[entityName]"/>
                 </g:link>
             </li>
@@ -30,8 +30,28 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <f:table collection="${bugList}" order="['name', 'description', 'person', 'project', 'platform']"/>
-
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Person</th>
+                <th>Project</th>
+                <th>Platform</th>
+            </tr>
+        </thead>
+        <tbody>
+            <g:each var="bug" in="${bugList}">
+                <tr>
+                    <td><g:link uri="/project/${project.id}/bug/show/${bug.id}">${bug.name}</g:link></td>
+                    <td>${bug.description}</td>
+                    <td>${bug.person.email}</td>
+                    <td>${bug.project.name}</td>
+                    <td>${bug.platform}</td>
+                </tr>
+            </g:each>
+        </tbody>
+    </table>
     <div class="pagination">
         <g:paginate total="${bugCount ?: 0}"/>
     </div>

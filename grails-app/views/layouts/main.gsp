@@ -27,6 +27,11 @@
             <g:pageProperty name="page.nav"/>
         </ul>
     </div>
+    <div class="container">
+        <ul>
+            <g:link controller="project" action="projects">Projects</g:link>
+        </ul>
+    </div>
     <div>
         <sec:ifLoggedIn>
             <p data-test-id="main-welcome-username">Welcome Back <sec:username/>!</p>
