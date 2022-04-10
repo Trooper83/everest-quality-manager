@@ -7,25 +7,6 @@
 </head>
 <body>
 <div class="container">
-    <div class="row justify-content-end">
-        <div class="col-1">
-            <sec:ifAnyGranted roles="ROLE_BASIC">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Create
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <g:link class="dropdown-item" uri="/project/${project.id}/bug/create">Bug</g:link>
-                        <g:link class="dropdown-item" controller="releasePlan" action="create">Release Plan</g:link>
-                        <g:link class="dropdown-item" controller="scenario" action="create">Scenario</g:link>
-                        <g:link class="dropdown-item" controller="testCase" action="create">Test Case</g:link>
-                    </div>
-                </div>
-            </sec:ifAnyGranted>
-        </div>
-    </div>
-</div>
-<div class="container">
     <div id="show-project" class="content scaffold-show" role="main">
         <h1><g:message code="default.show.label" args="[entityName]" /></h1>
         <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
