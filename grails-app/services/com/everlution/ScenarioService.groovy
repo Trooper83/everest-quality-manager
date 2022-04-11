@@ -1,20 +1,18 @@
 package com.everlution
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 
 @Service(Scenario)
-interface ScenarioService {
+abstract class ScenarioService implements IScenarioService {
 
-    Scenario get(Serializable id)
-
-    List<Scenario> list(Map args)
-
-    Long count()
-
-    void delete(Serializable id)
-
-    Scenario read(Serializable id)
-
-    Scenario save(Scenario scenario)
-
+    /**
+     * gets all scenarios in the domain with the associated project
+     * @param projectId - id of the project
+     * @return - list of all scenarios with the project
+     */
+    @Transactional
+    List<Scenario> findAllByProject(Project project) {
+        return Scenario.findAllByProject(project)
+    }
 }

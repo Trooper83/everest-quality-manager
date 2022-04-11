@@ -15,14 +15,18 @@ class ScenarioController {
 
     /**
      * lists all scenarios
-     * /scenario/index
-     * @param max - maximum number of test cases to retrieve
+     * /scenarios
      * @return - list of scenarios
      */
     @Secured("ROLE_READ_ONLY")
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond scenarioService.list(params), model:[scenarioCount: scenarioService.count()]
+    def scenarios(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        def scenarios = scenarioService.findAllByProject(project)
+        respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
     }
 
     /**
@@ -42,8 +46,13 @@ class ScenarioController {
      * @return - create scenario view
      */
     @Secured("ROLE_BASIC")
-    def create() {
-        respond new Scenario(params), model: [projects: projectService.list()]
+    def create(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond new Scenario(params), model: [project: project]
     }
 
     /**
@@ -63,14 +72,14 @@ class ScenarioController {
         try {
             scenarioService.save(scenario)
         } catch (ValidationException e) {
-            respond scenario.errors, view:'create', model: [projects: projectService.list()]
+            respond scenario.errors, view:'create'
             return
         }
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'scenario.label', default: 'Scenario'), scenario.id])
-                redirect scenario
+                redirect uri: "/project/${scenario.project.id}/scenario/show/${scenario.id}"
             }
             '*' { respond scenario, [status: CREATED] }
         }
@@ -109,7 +118,7 @@ class ScenarioController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'scenario.label', default: 'Scenario'), scenario.id])
-                redirect scenario
+                redirect uri: "/project/${scenario.project.id}/scenario/show/${scenario.id}"
             }
             '*'{ respond scenario, [status: OK] }
         }
@@ -120,8 +129,8 @@ class ScenarioController {
      * @param id - id of the scenario to delete
      */
     @Secured("ROLE_BASIC")
-    def delete(Long id) {
-        if (id == null) {
+    def delete(Long id, Long projectId) {
+        if (id == null || projectId == null) {
             notFound()
             return
         }
@@ -131,7 +140,7 @@ class ScenarioController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'scenario.label', default: 'Scenario'), id])
-                redirect action:"index", method:"GET"
+                redirect uri: "/project/${projectId}/scenarios"
             }
             '*'{ render status: NO_CONTENT }
         }
@@ -142,10 +151,6 @@ class ScenarioController {
      */
     protected void notFound() {
         request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'scenario.label', default: 'Scenario'), params.id])
-                redirect action: "index", method: "GET"
-            }
             '*'{ render status: NOT_FOUND }
         }
     }

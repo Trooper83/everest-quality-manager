@@ -1,5 +1,6 @@
 package com.everlution.test.testcase
 
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseController
@@ -21,63 +22,64 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         params.description = "unit testing description"
     }
 
-    void "index action renders index view"() {
+    void "test cases action renders index view"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
         when:
-        controller.index()
+        controller.testCases(1)
 
         then:
-        view == 'index'
+        view == 'testCases'
     }
 
-    void "test the index action returns the correct model"() {
+    void "test cases action returns the correct model"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> [new TestCase()]
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
         when:"the index action is executed"
-        controller.index()
+        controller.testCases(1)
 
         then:"the model is correct"
-        !model.testCaseList
-        model.testCaseCount == 0
+        model.testCaseList
+        model.project
+        model.testCaseCount
     }
 
-    void "test the index action param max"(Integer max, int expected) {
+    void "test cases action returns not found with invalid project"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            1 * list(_) >> []
+            0 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
         }
 
-        when:"the index action is executed"
-        controller.index(max)
+        when:"The action is executed"
+        controller.testCases()
 
-        then:"the max is as expected"
-        controller.params.max == expected
-
-        where:
-        max  | expected
-        null | 10
-        1    | 1
-        99   | 99
-        101  | 100
+        then:
+        response.status == 404
     }
 
-    void "test the create action returns the correct view"() {
+    void "create action returns the correct view"() {
         given: "mock project service"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
 
         when:"the create action is executed"
-        controller.create()
+        controller.create(1)
 
         then:"the model is correctly created"
         view == "create"
@@ -86,14 +88,28 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     void "test the create action returns the correct model"() {
         given: "mock project service"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
 
         when:"the create action is executed"
         controller.create()
 
         then:"the model is correctly created"
-        model.testCase!= null
+        model.testCase instanceof TestCase
+        model.project instanceof Project
+    }
+
+    void "create action throws not found when project is null"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
+        }
+
+        when:"The create action is executed"
+        controller.create(1)
+
+        then:"not found"
+        response.status == 404
     }
 
     void "test the save action method"(String httpMethod) {
@@ -122,8 +138,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         controller.save(null)
 
         then:"a 404 error is returned"
-        response.redirectedUrl == '/testCase/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "test the save action correctly persists"() {
@@ -141,20 +156,20 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         request.method = 'POST'
         populateValidParams(params)
         def testCase = new TestCase(params)
+        def project = new Project()
+        project.id = 1
         testCase.id = 1
+        testCase.project = project
 
         controller.save(testCase)
 
         then:"a redirect is issued to the show action"
-        response.redirectedUrl == '/testCase/show/1'
+        response.redirectedUrl == '/project/1/testCase/show/1'
         controller.flash.message == "default.created.message"
     }
 
     void "test the save action with an invalid instance"() {
         given:
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
-        }
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase) >> { TestCase testCase ->
                 throw new ValidationException("Invalid instance", testCase.errors)
@@ -279,8 +294,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         controller.update(null, null)
 
         then:"a 404 error is returned"
-        response.redirectedUrl == '/testCase/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "test the update action correctly persists"() {
@@ -295,12 +309,15 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         request.method = 'PUT'
         populateValidParams(params)
         def testCase = new TestCase(params)
+        def project = new Project()
+        project.id = 1
         testCase.id = 1
+        testCase.project = project
 
         controller.update(testCase, new RemovedItems())
 
         then:"a redirect is issued to the show action"
-        response.redirectedUrl == '/testCase/show/1'
+        response.redirectedUrl == '/project/1/testCase/show/1'
         controller.flash.message == "default.updated.message"
     }
 
@@ -330,7 +347,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         request.method = httpMethod
 
         when:
-        controller.delete(1)
+        controller.delete(1, 1)
 
         then:
         response.status == 405
@@ -346,11 +363,10 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"the delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(null)
+        controller.delete(null, 1)
 
         then:"a 404 is returned"
-        response.redirectedUrl == '/testCase/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "test the delete action with an instance"() {
@@ -362,11 +378,21 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"the domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(2)
+        controller.delete(2, 1)
 
-        then:"the user is redirected to index"
-        response.redirectedUrl == '/testCase/index'
+        then:
+        response.redirectedUrl == '/project/1/testCases'
         flash.message == "default.deleted.message"
+    }
+
+    void "delete action with a null project"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(1, null)
+
+        then:"A 404 is returned"
+        response.status == 404
     }
 
     void "delete action flash message correct when exception thrown"() {
@@ -381,7 +407,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"the domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(2)
+        controller.delete(2, 1)
 
         then:"the user is redirected to index"
         model.testCase != null

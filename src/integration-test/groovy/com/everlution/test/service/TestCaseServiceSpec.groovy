@@ -209,4 +209,32 @@ class TestCaseServiceSpec extends Specification {
         testCaseService.get(testCase.id) == null
         testGroupService.get(group.id) != null
     }
+
+    void "find all by project returns only test cases with project"() {
+        given:
+        setupData()
+        def project = projectService.list(max: 1).first()
+        def person = new Person(email: "test1@test.com", password: "password").save()
+        new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: project).save()
+
+        when:
+        def tests = testCaseService.findAllByProject(project)
+
+        then:
+        tests.size() > 0
+        tests.every { it.project.id == project.id }
+    }
+
+    void "find all by project with null project returns empty list"() {
+        given:
+        setupData()
+
+        when:
+        def tests = testCaseService.findAllByProject(null)
+
+        then:
+        tests.size() == 0
+        noExceptionThrown()
+    }
 }

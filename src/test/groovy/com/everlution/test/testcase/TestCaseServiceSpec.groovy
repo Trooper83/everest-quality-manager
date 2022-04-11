@@ -159,4 +159,38 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         tests.get(2) == null
         tests.get(0) != null
     }
+
+    void "find all by project returns test cases"() {
+        when:
+        def tests = service.findAllByProject(project)
+
+        then:
+        tests instanceof List<TestCase>
+    }
+
+    void "find all by project only returns test cases with project"() {
+        given:
+        def proj = new Project(name: "BugServiceSpec Project1223", code: "BP8").save()
+        def tc = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: proj).save(flush: true)
+
+        expect:
+        TestCase.list().contains(tc)
+
+        when:
+        def tests = service.findAllByProject(project)
+
+        then:
+        tests.every { it.project.id == project.id }
+        !tests.contains(tc)
+    }
+
+    void "find all by project with null project id returns empty list"() {
+        when:
+        def tests = service.findAllByProject(null)
+
+        then:
+        noExceptionThrown()
+        tests.size() == 0
+    }
 }

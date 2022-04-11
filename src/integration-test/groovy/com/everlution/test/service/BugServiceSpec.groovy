@@ -163,14 +163,13 @@ class BugServiceSpec extends Specification {
     void "find all bugs by project returns only bugs with project"() {
         given:
         setupData()
-        def person = new Person(email: "test98899@test.com", password: "password").save()
         def project = projectService.list(max: 1).first()
-        new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: project).save()
 
         when:
         def bugs = bugService.findAllByProject(project)
 
         then:
+        bugs.size() > 0
         bugs.every { it.project.id == project.id }
     }
 

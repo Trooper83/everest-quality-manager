@@ -32,18 +32,24 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(TestCaseController)
 
         expect:
-        verifyUrlMapping("/testCase/index", controller: 'testCase', action: 'index')
-        verifyUrlMapping("/testCase/create", controller: 'testCase', action: 'create')
         verifyUrlMapping("/testCase/save", controller: 'testCase', action: 'save')
         verifyUrlMapping("/testCase/update", controller: 'testCase', action: 'update')
-        verifyUrlMapping("/testCase/show/123", controller: 'testCase', action: 'show') {
-            id = 123
-        }
-        verifyUrlMapping("/testCase/edit/123", controller: 'testCase', action: 'edit') {
-            id = 123
-        }
         verifyUrlMapping("/testCase/delete/123", controller: 'testCase', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/123/testCases", controller: 'testCase', action: 'testCases') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/testCase/create", controller: 'testCase', action: 'create') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/999/testCase/show/123", controller: 'testCase', action: 'show') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/123/testCase/edit/123", controller: 'testCase', action: 'edit') {
+            id = 123
+            projectId = 123
         }
     }
 
@@ -74,14 +80,17 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(BugController)
 
         expect:
+        verifyUrlMapping("/bug/save", controller: 'bug', action: 'save')
+        verifyUrlMapping("/bug/update", controller: 'bug', action: 'update')
         verifyUrlMapping("/project/123/bug/create", controller: 'bug', action: 'create') {
             projectId = 123
         }
         verifyUrlMapping("/project/123/bugs", controller: 'bug', action: 'bugs') {
             projectId = 123
         }
-        verifyUrlMapping("/bug/save", controller: 'bug', action: 'save')
-        verifyUrlMapping("/bug/update", controller: 'bug', action: 'update')
+        verifyUrlMapping("/bug/delete/123", controller: 'bug', action: 'delete') {
+            id = 123
+        }
         verifyUrlMapping("/project/123/bug/show/123", controller: 'bug', action: 'show') {
             id = 123
             projectId = 123
@@ -90,27 +99,30 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
             id = 123
             projectId = 123
         }
-        verifyUrlMapping("/bug/delete/123", controller: 'bug', action: 'delete') {
-            id = 123
-        }
     }
 
     void "verify scenario forward and reverse mappings"() {
         mockController(ScenarioController)
 
         expect:
-        verifyUrlMapping("/scenario/index", controller: 'scenario', action: 'index')
-        verifyUrlMapping("/scenario/create", controller: 'scenario', action: 'create')
         verifyUrlMapping("/scenario/save", controller: 'scenario', action: 'save')
         verifyUrlMapping("/scenario/update", controller: 'scenario', action: 'update')
-        verifyUrlMapping("/scenario/show/123", controller: 'scenario', action: 'show') {
-            id = 123
+        verifyUrlMapping("/project/123/scenarios", controller: 'scenario', action: 'scenarios') {
+            projectId = 123
         }
-        verifyUrlMapping("/scenario/edit/123", controller: 'scenario', action: 'edit') {
-            id = 123
+        verifyUrlMapping("/project/123/scenario/create", controller: 'scenario', action: 'create') {
+            projectId = 123
         }
         verifyUrlMapping("/scenario/delete/123", controller: 'scenario', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/123/scenario/show/123", controller: 'scenario', action: 'show') {
+            id = 123
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/scenario/edit/123", controller: 'scenario', action: 'edit') {
+            id = 123
+            projectId = 123
         }
     }
 

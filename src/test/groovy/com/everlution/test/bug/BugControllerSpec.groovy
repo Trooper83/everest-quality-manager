@@ -82,7 +82,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"the create action is executed"
-        controller.create()
+        controller.create(1)
 
         then:"the model is correctly created"
         view == "create"
@@ -284,7 +284,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         httpMethod << ["GET", "DELETE", "POST", "PATCH"]
     }
 
-    void "Test the update action with a null instance"() {
+    void "test the update action with a null instance"() {
         when:"update is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
@@ -294,7 +294,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         response.status == 404
     }
 
-    void "Test the update action correctly persists"() {
+    void "test the update action correctly persists"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * saveUpdate(_ as Bug, _ as RemovedItems)
@@ -329,7 +329,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
             }
         }
 
-        when:"The saveUpdate action is executed with an invalid instance"
+        when:"The update action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(new Bug(), new RemovedItems())

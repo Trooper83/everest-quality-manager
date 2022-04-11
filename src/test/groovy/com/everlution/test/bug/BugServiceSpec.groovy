@@ -140,6 +140,7 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
 
         then:
         bugs.every { it.project.id == project.id }
+        bugs.size() > 0
         !bugs.contains(bug)
     }
 
