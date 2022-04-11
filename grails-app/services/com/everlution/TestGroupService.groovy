@@ -27,6 +27,16 @@ abstract class TestGroupService implements ITestGroupService {
     }
 
     /**
+     * gets all groups in the domain with the associated project
+     * @param projectId - id of the project
+     * @return - list of all groups with the project
+     */
+    @Transactional
+    List<TestGroup> findAllByProject(Project project) {
+        return TestGroup.findAllByProject(project)
+    }
+
+    /**
      * gets all the test groups of the ids supplied
      */
     @Transactional

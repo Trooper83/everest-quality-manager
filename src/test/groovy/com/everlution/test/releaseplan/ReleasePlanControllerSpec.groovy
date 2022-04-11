@@ -1,5 +1,7 @@
 package com.everlution.test.releaseplan
 
+import com.everlution.BugService
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanController
@@ -17,59 +19,57 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         params.name = "test release plan"
     }
 
-    void "index action renders index view"() {
+    void "release plans action renders correct view"() {
         given:
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
         when:
-        controller.index()
+        controller.releasePlans(1)
 
         then:
-        view == 'index'
+        view == 'releasePlans'
     }
 
-    void "the index action returns the correct model"() {
+    void "release plans action returns the correct model"() {
         given:
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> [new ReleasePlan()]
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
         when:"The index action is executed"
-        controller.index()
+        controller.releasePlans(1)
 
         then:"The model is correct"
-        !model.releasePlanList
-        model.releasePlanCount == 0
+        model.releasePlanList
+        model.releasePlanCount
+        model.project
     }
 
-    void "index action param max"(Integer max, int expected) {
+    void "release plans action returns not found with invalid project"() {
         given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * list(_) >> []
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
         }
 
-        when:"the index action is executed"
-        controller.index(max)
+        when:"The action is executed"
+        controller.releasePlans(null)
 
-        then:"the max is as expected"
-        controller.params.max == expected
-
-        where:
-        max  | expected
-        null | 10
-        1    | 1
-        99   | 99
-        101  | 100
+        then:
+        response.status == 404
     }
 
     void "create action returns create view"() {
         given: "mock service"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
 
         when:
@@ -82,7 +82,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
     void "create action returns the correct model"() {
         given: "mock project service"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
 
         when:"The create action is executed"
@@ -90,7 +90,20 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         then:"The model is correctly created"
         model.releasePlan instanceof ReleasePlan
-        model.projects instanceof List
+        model.project instanceof Project
+    }
+
+    void "create action throws not found when project is null"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
+        }
+
+        when:"The create action is executed"
+        controller.create(null)
+
+        then:"not found"
+        response.status == 404
     }
 
     void "save action method type"(String httpMethod) {
@@ -119,8 +132,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         controller.save(null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/releasePlan/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "save action correctly persists"() {
@@ -136,11 +148,14 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         populateValidParams(params)
         def releasePlan = new ReleasePlan(params)
         releasePlan.id = 1
+        def project = new Project()
+        project.id = 1
+        releasePlan.project = project
 
         controller.save(releasePlan)
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/releasePlan/show/1'
+        response.redirectedUrl == '/project/1/releasePlan/show/1'
         controller.flash.message == "default.created.message"
     }
 
@@ -151,9 +166,6 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
                 throw new ValidationException("Invalid instance", releasePlan.errors)
             }
         }
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
-        }
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
@@ -163,7 +175,6 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         then:"The create view is rendered again with the correct model"
         model.releasePlan != null
-        model.projects != null
         view == 'create'
     }
 
@@ -271,8 +282,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         controller.update(null)
 
         then:"redirected to index"
-        response.redirectedUrl == '/releasePlan/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "update action correctly persists"() {
@@ -288,11 +298,14 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         populateValidParams(params)
         def releasePlan = new ReleasePlan(params)
         releasePlan.id = 1
+        def project = new Project()
+        project.id = 1
+        releasePlan.project = project
 
         controller.update(releasePlan)
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/releasePlan/show/1'
+        response.redirectedUrl == '/project/1/releasePlan/show/1'
         controller.flash.message == "default.updated.message"
     }
 
@@ -319,7 +332,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         request.method = httpMethod
 
         when:
-        controller.delete(1)
+        controller.delete(1, 1)
 
         then:
         response.status == 405
@@ -335,14 +348,23 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(null)
+        controller.delete(null, 1)
 
         then:"redirect to index"
-        response.redirectedUrl == '/releasePlan/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
-    void "delete action with an instance redirects to index"() {
+    void "delete action with a null project returns 404"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(1, null)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
+    void "delete action with an instance redirects to plans"() {
         given:
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * delete(2)
@@ -351,10 +373,10 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(2)
+        controller.delete(2, 1)
 
         then:"The user is redirected to index"
-        response.redirectedUrl == '/releasePlan/index'
+        response.redirectedUrl == '/project/1/releasePlans'
         flash.message == "default.deleted.message"
     }
 }

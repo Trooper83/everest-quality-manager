@@ -7,6 +7,16 @@ import grails.gorm.transactions.Transactional
 abstract class ReleasePlanService implements IReleasePlanService {
 
     /**
+     * gets all plans in the domain with the associated project
+     * @param projectId - id of the project
+     * @return - list of all plans with the project
+     */
+    @Transactional
+    List<ReleasePlan> findAllByProject(Project project) {
+        return ReleasePlan.findAllByProject(project)
+    }
+
+    /**
      * removes a test cycle from a release plan
      * @param releasePlan
      * @param testCycle

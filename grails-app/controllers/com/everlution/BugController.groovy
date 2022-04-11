@@ -53,7 +53,7 @@ class BugController {
             notFound()
             return
         }
-        respond new Bug(params), model: [project: project]
+        respond new Bug(params), model: [project: project], view: 'create'
     }
 
     /**

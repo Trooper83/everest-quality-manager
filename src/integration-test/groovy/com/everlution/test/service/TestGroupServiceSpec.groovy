@@ -10,6 +10,7 @@ import com.everlution.TestGroupService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import grails.validation.ValidationException
+import spock.lang.Shared
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -17,13 +18,14 @@ import org.hibernate.SessionFactory
 @Rollback
 class TestGroupServiceSpec extends Specification {
 
-    ProjectService projectService
+    @Shared Project project
+
     TestCaseService testCaseService
     TestGroupService testGroupService
     SessionFactory sessionFactory
 
     private Long setupData() {
-        def project = new Project(name: "group service project", code: "gsp").save()
+        project = new Project(name: "group service project", code: "gsp").save()
         new TestGroup(name: "name 1", project: project).save(flush: true, failOnError: true)
         new TestGroup(name: "name 12", project: project).save(flush: true, failOnError: true)
         TestGroup testGroup = new TestGroup(name: "name 123", project: project).save(flush: true, failOnError: true)
@@ -81,8 +83,10 @@ class TestGroupServiceSpec extends Specification {
     }
 
     void "test save"() {
+        given:
+        setupData()
+
         when:
-        def project = new Project(name: "group service project", code: "gsp").save()
         TestGroup testGroup = new TestGroup(name: "name 21", project: project)
         testGroupService.save(testGroup)
 
@@ -101,7 +105,7 @@ class TestGroupServiceSpec extends Specification {
 
     void "delete test group with case"() {
         given:
-        def project = projectService.list(max: 1).first()
+        setupData()
         def group = new TestGroup(name: "test group", project: project).save()
         def person = new Person(email: "test1@test.com", password: "password").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
@@ -118,5 +122,29 @@ class TestGroupServiceSpec extends Specification {
         then:
         testGroupService.get(group.id) == null
         testCaseService.get(testCase.id) != null
+    }
+
+    void "find all by project returns only groups with project"() {
+        given:
+        setupData()
+
+        when:
+        def groups = testGroupService.findAllByProject(project)
+
+        then:
+        groups.size() > 0
+        groups.every { it.project.id == project.id }
+    }
+
+    void "find all by project with null project returns empty list"() {
+        given:
+        setupData()
+
+        when:
+        def groups = testGroupService.findAllByProject(null)
+
+        then:
+        groups.size() == 0
+        noExceptionThrown()
     }
 }

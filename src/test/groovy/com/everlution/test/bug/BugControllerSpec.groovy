@@ -10,11 +10,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
-import org.hibernate.exception.ConstraintViolationException
-import org.springframework.validation.Errors
 import spock.lang.*
-
-import static org.springframework.http.HttpStatus.NOT_FOUND
 
 class BugControllerSpec extends Specification implements ControllerUnitTest<BugController>, DomainUnitTest<Bug> {
 
@@ -69,7 +65,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"The action is executed"
-        controller.bugs()
+        controller.bugs(null)
 
         then:
         response.status == 404
@@ -109,7 +105,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"The create action is executed"
-        controller.create()
+        controller.create(null)
 
         then:"not found"
         response.status == 404

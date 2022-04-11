@@ -130,18 +130,24 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(ReleasePlanController)
 
         expect:
-        verifyUrlMapping("/releasePlan/index", controller: 'releasePlan', action: 'index')
-        verifyUrlMapping("/releasePlan/create", controller: 'releasePlan', action: 'create')
         verifyUrlMapping("/releasePlan/save", controller: 'releasePlan', action: 'save')
         verifyUrlMapping("/releasePlan/update", controller: 'releasePlan', action: 'update')
-        verifyUrlMapping("/releasePlan/show/123", controller: 'releasePlan', action: 'show') {
-            id = 123
-        }
-        verifyUrlMapping("/releasePlan/edit/123", controller: 'releasePlan', action: 'edit') {
-            id = 123
-        }
         verifyUrlMapping("/releasePlan/delete/123", controller: 'releasePlan', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/999/releasePlans", controller: 'releasePlan', action: 'releasePlans') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/releasePlan/create", controller: 'releasePlan', action: 'create') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/releasePlan/show/123", controller: 'releasePlan', action: 'show') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/releasePlan/edit/123", controller: 'releasePlan', action: 'edit') {
+            id = 123
+            projectId = 999
         }
     }
 
@@ -149,18 +155,24 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(TestGroupController)
 
         expect:
-        verifyUrlMapping("/testGroup/index", controller: 'testGroup', action: 'index')
-        verifyUrlMapping("/testGroup/create", controller: 'testGroup', action: 'create')
-        verifyUrlMapping("/testGroup/save", controller: 'testGroup', action: 'save')
         verifyUrlMapping("/testGroup/update", controller: 'testGroup', action: 'update')
-        verifyUrlMapping("/testGroup/show/123", controller: 'testGroup', action: 'show') {
-            id = 123
-        }
-        verifyUrlMapping("/testGroup/edit/123", controller: 'testGroup', action: 'edit') {
-            id = 123
-        }
+        verifyUrlMapping("/testGroup/save", controller: 'testGroup', action: 'save')
         verifyUrlMapping("/testGroup/delete/123", controller: 'testGroup', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/999/testGroups", controller: 'testGroup', action: 'testGroups') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/testGroup/create", controller: 'testGroup', action: 'create') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/testGroup/show/123", controller: 'testGroup', action: 'show') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/testGroup/edit/123", controller: 'testGroup', action: 'edit') {
+            id = 123
+            projectId = 999
         }
     }
 

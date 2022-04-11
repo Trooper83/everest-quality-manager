@@ -14,13 +14,17 @@ class ReleasePlanController {
     /**
      * lists all plans
      * /releasePlan/index
-     * @param max - maximum plans to retrieve
      * @return - list of release plans
      */
     @Secured("ROLE_READ_ONLY")
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond releasePlanService.list(params), model:[releasePlanCount: releasePlanService.count()]
+    def releasePlans(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        def plans = releasePlanService.findAllByProject(project)
+        respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
     }
 
     /**
@@ -39,8 +43,13 @@ class ReleasePlanController {
      * /releasePlan/create
      */
     @Secured("ROLE_BASIC")
-    def create() {
-        respond new ReleasePlan(params), model: [projects: projectService.list()]
+    def create(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond new ReleasePlan(params), model: [project: project]
     }
 
     /**
@@ -57,14 +66,14 @@ class ReleasePlanController {
         try {
             releasePlanService.save(releasePlan)
         } catch (ValidationException e) {
-            respond releasePlan.errors, view:'create', model: [projects: projectService.list()]
+            respond releasePlan.errors, view:'create'
             return
         }
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), releasePlan.id])
-                redirect releasePlan
+                redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
             }
             '*' { respond releasePlan, [status: CREATED] }
         }
@@ -101,7 +110,7 @@ class ReleasePlanController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), releasePlan.id])
-                redirect releasePlan
+                redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
             }
             '*'{ respond releasePlan, [status: OK] }
         }
@@ -112,8 +121,8 @@ class ReleasePlanController {
      * @param id - id of the plan to delete
      */
     @Secured("ROLE_BASIC")
-    def delete(Long id) {
-        if (id == null) {
+    def delete(Long id, Long projectId) {
+        if (id == null || projectId == null) {
             notFound()
             return
         }
@@ -123,7 +132,7 @@ class ReleasePlanController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), id])
-                redirect action:"index", method:"GET"
+                redirect uri: "/project/${projectId}/releasePlans"
             }
             '*'{ render status: NO_CONTENT }
         }
@@ -134,10 +143,6 @@ class ReleasePlanController {
      */
     protected void notFound() {
         request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), params.id])
-                redirect action: "index", method: "GET"
-            }
             '*'{ render status: NOT_FOUND }
         }
     }
