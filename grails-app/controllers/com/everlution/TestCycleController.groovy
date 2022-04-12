@@ -44,13 +44,13 @@ class TestCycleController {
                 flash.message = "Tests successfully added"
             } catch(Exception ignored) {
                 flash.error = "Error occurred attempting to add tests"
-                redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
+                redirect uri: "/project/${cycle.releasePlan.project.id}/testCycle/show/${cycle.id}"
                 return
             }
         } else { // no tests to add
             flash.message = "No tests added"
         }
-        redirect controller: "testCycle", action: "show", id: cycle.id, method: "GET"
+        redirect uri: "/project/${cycle.releasePlan.project.id}/testCycle/show/${cycle.id}"
     }
 
     /**
@@ -58,8 +58,8 @@ class TestCycleController {
      * /testCycle/create
      */
     @Secured("ROLE_BASIC")
-    def create() {
-        def releasePlan = releasePlanService.get(params.releasePlan?.id)
+    def create(Long releasePlanId) {
+        def releasePlan = releasePlanService.get(releasePlanId)
         if(releasePlan == null) {
             notFound()
             return
@@ -76,7 +76,7 @@ class TestCycleController {
     def show(Long id) {
         def testCycle = testCycleService.get(id)
         if (testCycle == null) {
-            notFound(id)
+            notFound()
             return
         }
         def groups = testCycle.releasePlan.project.testGroups.findAll { TestGroup tg -> tg.testCases.size() > 0 }
@@ -89,9 +89,8 @@ class TestCycleController {
      */
     @Secured("ROLE_BASIC")
     def save(TestCycle testCycle) {
-        def id = params.releasePlan.id as Long
         if (testCycle == null) {
-            notFound(id)
+            notFound()
             return
         }
 
@@ -105,7 +104,7 @@ class TestCycleController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), testCycle.id])
-                redirect controller: "releasePlan", action: "show", id: id, method: "GET"
+                redirect uri: "/project/${testCycle.releasePlan.project.id}/releasePlan/show/${testCycle.releasePlan.id}"
             }
             '*' { respond testCycle, [status: CREATED] }
         }
@@ -116,19 +115,5 @@ class TestCycleController {
      */
     protected void notFound() {
         render status: NOT_FOUND
-    }
-
-    /**
-     * generic not found response
-     * @param id - id of the release plan to redirect to
-     */
-    protected  void notFound(Long id) {
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), params.id])
-                redirect controller: "releasePlan", action: "show", id: id, method: "GET"
-            }
-            '*'{ render status: NOT_FOUND }
-        }
     }
 }

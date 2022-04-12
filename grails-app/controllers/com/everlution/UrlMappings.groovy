@@ -31,6 +31,14 @@ class UrlMappings {
                 "/edit/$id"(controller: "testCase", action: "edit")
                 "/show/$id"(controller: "testCase", action: "show")
             }
+            group "/testCycle", {
+                "/create"(controller: "testCycle", action: "create")
+                "/show/$id"(controller: "testCycle", action: "show")
+            }
+            group "/testIteration", {
+                "/execute/$id"(controller: "testIteration", action: "execute")
+                "/show/$id"(controller: "testIteration", action: "show")
+            }
             group "/testGroup", {
                 "/create"(controller: "testGroup", action: "create")
                 "/edit/$id"(controller: "testGroup", action: "edit")

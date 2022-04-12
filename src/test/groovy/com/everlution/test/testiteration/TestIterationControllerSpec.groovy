@@ -1,8 +1,5 @@
 package com.everlution.test.testiteration
 
-import com.everlution.Bug
-import com.everlution.TestGroup
-import com.everlution.TestGroupService
 import com.everlution.TestIteration
 import com.everlution.TestIterationController
 import com.everlution.TestIterationService
@@ -95,7 +92,18 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, 1)
+
+        then:
+        response.status == 404
+    }
+
+    void "update returns 404 with null project id"() {
+        when:
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(new TestIteration(), null)
 
         then:
         response.status == 404
@@ -107,7 +115,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         def iteration = new TestIteration()
 
         when:
-        controller.update(iteration)
+        controller.update(iteration, 1)
 
         then:
         response.status == 405
@@ -132,7 +140,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         def iteration = new TestIteration()
         iteration.id = 1
 
-        controller.update(iteration)
+        controller.update(iteration, 1)
 
         then:"A redirect is issued to the show action"
         controller.flash.message == "default.updated.message"
@@ -153,7 +161,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(iteration)
+        controller.update(iteration, 1)
 
         then:"The edit view is rendered again with the correct model"
         model.testIteration != null

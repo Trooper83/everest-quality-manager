@@ -180,10 +180,14 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(TestCycleController)
 
         expect:
-        verifyUrlMapping("/testCycle/create", controller: 'testCycle', action: 'create')
+        verifyUrlMapping("/testCycle/addTests", controller: 'testCycle', action: 'addTests')
         verifyUrlMapping("/testCycle/save", controller: 'testCycle', action: 'save')
-        verifyUrlMapping("/testCycle/show/123", controller: 'testCycle', action: 'show') {
+        verifyUrlMapping("/project/999/testCycle/create", controller: 'testCycle', action: 'create') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/testCycle/show/123", controller: 'testCycle', action: 'show') {
             id = 123
+            projectId = 999
         }
     }
 
@@ -191,11 +195,14 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(TestIterationController)
 
         expect:
-        verifyUrlMapping("/testIteration/show/123", controller: 'testIteration', action: 'show') {
+        verifyUrlMapping("/testIteration/update", controller: 'testIteration', action: 'update')
+        verifyUrlMapping("/project/999/testIteration/show/123", controller: 'testIteration', action: 'show') {
             id = 123
+            projectId = 999
         }
-        verifyUrlMapping("/testIteration/execute/123", controller: 'testIteration', action: 'execute') {
+        verifyUrlMapping("/project/999/testIteration/execute/123", controller: 'testIteration', action: 'execute') {
             id = 123
+            projectId = 999
         }
     }
 }

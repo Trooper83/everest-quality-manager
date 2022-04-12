@@ -92,8 +92,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         controller.save(null)
 
         then:"404 error is returned"
-        response.redirectedUrl == '/releasePlan/show/1'
-        flash.message != null
+        response.status == 404
     }
 
     void "save action correctly persists"() {
@@ -109,11 +108,17 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         populateValidParams(params)
         def testCycle = new TestCycle(params)
         testCycle.id = 1
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        testCycle.releasePlan = plan
 
         controller.save(testCycle)
 
         then:"redirect is issued to the show action"
-        response.redirectedUrl == '/releasePlan/show/1'
+        response.redirectedUrl == '/project/1/releasePlan/show/1'
         controller.flash.message != null
     }
 
@@ -214,20 +219,28 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [group.id]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> [group]
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             1 * addTestIterations(_, _)
         }
         controller.addTests(cmd)
 
         then:
         controller.flash.message == "Tests successfully added"
-        response.redirectedUrl == "/testCycle/show"
+        response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
     void "add iterations with groups that have no tests renders error message"() {
@@ -235,20 +248,28 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [1]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> []
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             0 * addTestIterations(_, _)
         }
         controller.addTests(cmd)
 
         then:
         controller.flash.message == "No tests added"
-        response.redirectedUrl == "/testCycle/show"
+        response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
     void "add iterations renders error message"() {
@@ -259,13 +280,21 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [group.id]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> [group]
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             1 * addTestIterations(_, _) >> {
                 throw new Exception()
             }
@@ -274,7 +303,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
         then:
         controller.flash.error == "Error occurred attempting to add tests"
-        response.redirectedUrl == "/testCycle/show"
+        response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
     void "add iterations executes groups logic when group ids specified"() {
@@ -282,6 +311,14 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [1]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.addTests(cmd)
@@ -291,7 +328,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
             1 * getAll(_) >> []
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             0 * addTestIterations(_, _)
         }
         controller.testCaseService = Mock(TestCaseService) {
@@ -304,6 +341,14 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testCases = [1]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.addTests(cmd)
@@ -313,7 +358,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
             0 * getAll(_) >> []
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             0 * addTestIterations(_, _)
         }
         controller.testCaseService = Mock(TestCaseService) {

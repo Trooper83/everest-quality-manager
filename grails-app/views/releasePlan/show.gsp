@@ -29,7 +29,7 @@
                 <h1>Test Cycles</h1>
                 <sec:ifAnyGranted roles="ROLE_BASIC">
                 <g:link elementId="addTestCycleBtn" class="btn btn-primary" controller="testCycle" action="create"
-                        params="['releasePlan.id': releasePlan.id]">Add Test Cycle
+                        params="['releasePlanId': releasePlan.id]">Add Test Cycle
                 </g:link>
                 </sec:ifAnyGranted>
             <div class="accordion" id="testCycles">

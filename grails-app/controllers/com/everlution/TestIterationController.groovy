@@ -37,8 +37,8 @@ class TestIterationController {
      * @param testIteration - iteration to update
      */
     @Secured("ROLE_BASIC")
-    def update(TestIteration testIteration) {
-        if (testIteration == null) {
+    def update(TestIteration testIteration, Long projectId) {
+        if (testIteration == null || projectId == null) {
             notFound()
             return
         }
@@ -55,7 +55,7 @@ class TestIterationController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'testIteration.label', default: 'Test Iteration'), testIteration.id])
-                respond testIteration, view: 'execute'
+                respond uri: "/project/${projectId}/testIteration/show/${testIteration.id}"
             }
             '*'{ respond testIteration, [status: OK] }
         }
