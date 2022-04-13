@@ -21,7 +21,28 @@
                     <div class="property-value" id="name">${testGroup.name}</div>
                 </li>
             </ol>
-                <f:table collection="${testGroup.testCases}" order="id, name, area, platform, environments, type, executionMethod"/>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Area</th>
+                    <th>Platform</th>
+                    <th>Type</th>
+                    <th>Execution Method</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each var="test" in="${testGroup.testCases}">
+                    <tr>
+                        <td><g:link uri="/project/${test.project.id}/testCase/show/${test.id}">${test.name}</g:link></td>
+                        <td>${test.area.name}</td>
+                        <td>${test.platform}</td>
+                        <td>${test.type}</td>
+                        <td>${test.executionMethod}</td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
                 <div class="pagination">
                     <g:paginate total="${testGroup.testCases.size() ?: 0}"/>
                 </div>

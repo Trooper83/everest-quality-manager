@@ -28,9 +28,30 @@
             <g:if test="${flash.message}">
                 <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:table collection="${scenarioList}"
-                     order="['name', 'person', 'type', 'executionMethod', 'platform', 'project']"/>
-
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Person</th>
+                    <th>Project</th>
+                    <th>Platform</th>
+                    <th>Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each var="scenario" in="${scenarioList}">
+                    <tr>
+                        <td><g:link uri="/project/${project.id}/scenario/show/${scenario.id}">${scenario.name}</g:link></td>
+                        <td>${scenario.description}</td>
+                        <td>${scenario.person.email}</td>
+                        <td>${scenario.project.name}</td>
+                        <td>${scenario.platform}</td>
+                        <td>${scenario.type}</td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
             <div class="pagination">
                 <g:paginate total="${scenarioCount ?: 0}" />
             </div>

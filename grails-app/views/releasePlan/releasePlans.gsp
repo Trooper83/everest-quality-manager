@@ -28,8 +28,22 @@
             <g:if test="${flash.message}">
                 <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:table collection="${releasePlanList}" />
-
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Project</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each var="releasePlan" in="${releasePlanList}">
+                    <tr>
+                        <td><g:link uri="/project/${project.id}/releasePlan/show/${releasePlan.id}">${releasePlan.name}</g:link></td>
+                        <td>${releasePlan.project.name}</td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
             <div class="pagination">
                 <g:paginate total="${releasePlanCount ?: 0}" />
             </div>
