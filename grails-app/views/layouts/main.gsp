@@ -36,10 +36,11 @@
                             Create
                         </button>
                         <div class="dropdown-menu bg-secondary" aria-labelledby="dropdownMenuButton">
-                            <g:link class="dropdown-item" uri="/project/${project.id}/bug/create">Bug</g:link>
-                            <g:link class="dropdown-item" controller="releasePlan" action="create">Release Plan</g:link>
-                            <g:link class="dropdown-item" controller="scenario" action="create">Scenario</g:link>
-                            <g:link class="dropdown-item" controller="testCase" action="create">Test Case</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/bug/create">Bug</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/releasePlan/create">Release Plan</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/scenario/create">Scenario</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testCase/create">Test Case</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroup/create">Test Group</g:link>
                         </div>
                     </div>
                 </g:if>
@@ -58,6 +59,10 @@
                         <div class="dropdown-divider"></div>
                         <g:link class="dropdown-item" uri="/project/${params.projectId}/home">Home</g:link>
                         <g:link class="dropdown-item" uri="/project/${params.projectId}/bugs">Bugs</g:link>
+                        <g:link class="dropdown-item" uri="/project/${params.projectId}/releasePlans">Release Plans</g:link>
+                        <g:link class="dropdown-item" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
+                        <g:link class="dropdown-item" uri="/project/${params.projectId}/testCases"> Test Cases</g:link>
+                        <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
                     </div>
                 </g:if>
             </sec:ifAnyGranted>
@@ -110,6 +115,5 @@
 </div>
 
 <asset:javascript src="application.js"/>
-
 </body>
 </html>

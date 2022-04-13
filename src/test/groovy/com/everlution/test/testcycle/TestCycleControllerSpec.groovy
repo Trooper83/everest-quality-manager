@@ -84,83 +84,6 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         notThrown(NullPointerException)
     }
 
-    void "save action with a null instance"() {
-        when:"save is called for a domain instance that doesn't exist"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'POST'
-        populateValidParams(params)
-        controller.save(null)
-
-        then:"404 error is returned"
-        response.status == 404
-    }
-
-    void "save action correctly persists"() {
-        given:
-        controller.testCycleService = Mock(TestCycleService) {
-            1 * save(_ as TestCycle)
-        }
-
-        when:"save action is executed with a valid instance"
-        response.reset()
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'POST'
-        populateValidParams(params)
-        def testCycle = new TestCycle(params)
-        testCycle.id = 1
-        def plan = new ReleasePlan()
-        plan.id = 1
-        def project = new Project()
-        project.id = 1
-        plan.project = project
-        testCycle.releasePlan = plan
-
-        controller.save(testCycle)
-
-        then:"redirect is issued to the show action"
-        response.redirectedUrl == '/project/1/releasePlan/show/1'
-        controller.flash.message != null
-    }
-
-    void "save action with an invalid instance"() {
-        given:
-        controller.testCycleService = Mock(TestCycleService) {
-            1 * save(_ as TestCycle) >> { TestCycle testCycle ->
-                throw new ValidationException("Invalid instance", testCycle.errors)
-            }
-        }
-
-        when:"save action is executed with an invalid instance"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'POST'
-        populateValidParams(params)
-        def testCycle = new TestCycle()
-        controller.save(testCycle)
-
-        then:"create view is rendered again with the correct model"
-        model.testCycle != null
-        view == 'create'
-    }
-
-    void "save action method type"(String httpMethod) {
-        given:
-        request.method = httpMethod
-        populateValidParams(params)
-        def cycle = new TestCycle(params)
-
-        when:
-        controller.save(cycle)
-
-        then:
-        response.status == 405
-
-        where:
-        httpMethod   | _
-        'GET'        | _
-        'DELETE'     | _
-        'PUT'        | _
-    }
-
     void "show action with a null id"() {
         given:
         controller.testCycleService = Mock(TestCycleService) {
@@ -377,6 +300,26 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
         then:
         status == 404
+    }
+
+    void "add tests action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+        populateValidParams(params)
+        def cycle = new TestCycle(params)
+
+        when:
+        controller.addTests(cycle)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'GET'        | _
+        'DELETE'     | _
+        'PUT'        | _
+        'PATCH'      | _
     }
 }
 

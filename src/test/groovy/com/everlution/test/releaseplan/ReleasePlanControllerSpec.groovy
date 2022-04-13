@@ -1,11 +1,12 @@
 package com.everlution.test.releaseplan
 
-import com.everlution.BugService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanController
 import com.everlution.ReleasePlanService
+import com.everlution.TestCycle
+import com.everlution.TestCycleService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -378,6 +379,83 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         then:"The user is redirected to index"
         response.redirectedUrl == '/project/1/releasePlans'
         flash.message == "default.deleted.message"
+    }
+
+    void "add test cycle action with a null instance"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        controller.save(null)
+
+        then:"404 error is returned"
+        response.status == 404
+    }
+
+    void "add test cycle action correctly persists"() {
+        given:
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * save(_ as TestCycle)
+        }
+
+        when:"save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        def testCycle = new TestCycle(params)
+        testCycle.id = 1
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        testCycle.releasePlan = plan
+
+        controller.addTestCycle(testCycle)
+
+        then:"redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/releasePlan/show/1'
+        controller.flash.message != null
+    }
+
+    void "add test cycle action with an invalid instance"() {
+        given:
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * save(_ as TestCycle) >> { TestCycle testCycle ->
+                throw new ValidationException("Invalid instance", testCycle.errors)
+            }
+        }
+
+        when:"save action is executed with an invalid instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        def testCycle = new TestCycle()
+        controller.addTestCycle(testCycle)
+
+        then:"create view is rendered again with the correct model"
+        model.testCycle != null
+        view == 'create'
+    }
+
+    void "add test cycle action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+        populateValidParams(params)
+        def cycle = new TestCycle(params)
+
+        when:
+        controller.addTestCycle(cycle)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'GET'        | _
+        'DELETE'     | _
+        'PUT'        | _
     }
 }
 

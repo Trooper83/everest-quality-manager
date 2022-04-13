@@ -32,24 +32,24 @@
     </g:if>
     <table class="table">
         <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Person</th>
-                <th>Project</th>
-                <th>Platform</th>
-            </tr>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Person</th>
+            <th>Project</th>
+            <th>Platform</th>
+        </tr>
         </thead>
         <tbody>
-            <g:each var="bug" in="${bugList}">
-                <tr>
-                    <td><g:link uri="/project/${project.id}/bug/show/${bug.id}">${bug.name}</g:link></td>
-                    <td>${bug.description}</td>
-                    <td>${bug.person.email}</td>
-                    <td>${bug.project.name}</td>
-                    <td>${bug.platform}</td>
-                </tr>
-            </g:each>
+        <g:each var="bug" in="${bugList}">
+            <tr>
+                <td><g:link uri="/project/${project.id}/bug/show/${bug.id}">${bug.name}</g:link></td>
+                <td>${bug.description}</td>
+                <td>${bug.person.email}</td>
+                <td>${bug.project.name}</td>
+                <td>${bug.platform}</td>
+            </tr>
+        </g:each>
         </tbody>
     </table>
     <div class="pagination">

@@ -26,9 +26,9 @@
                     <g:paginate total="${testGroup.testCases.size() ?: 0}"/>
                 </div>
             <sec:ifAnyGranted roles="ROLE_BASIC">
-                <g:form resource="${this.testGroup}" method="DELETE">
+                <g:form resource="${this.testGroup}" method="DELETE" params="[projectId: this.testGroup.project.id]">
                     <fieldset class="buttons">
-                        <g:link class="edit" action="edit" resource="${this.testGroup}" data-test-id="show-edit-link">
+                        <g:link class="edit" uri="/project/${this.testGroup.project.id}/testGroup/edit/${this.testGroup.id}" data-test-id="show-edit-link">
                             <g:message code="default.button.edit.label" default="Edit"/>
                         </g:link>
                         <input class="delete" type="submit" data-test-id="show-delete-link"

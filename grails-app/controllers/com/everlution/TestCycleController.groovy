@@ -2,7 +2,6 @@ package com.everlution
 
 import com.everlution.command.IterationsCmd
 import grails.plugin.springsecurity.annotation.Secured
-import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
 class TestCycleController {
@@ -12,7 +11,7 @@ class TestCycleController {
     TestCycleService testCycleService
     TestGroupService testGroupService
 
-    static allowedMethods = [save: "POST"]
+    static allowedMethods = [addTests: "POST"]
 
     /**
      * adds iterations to test cycle
@@ -81,33 +80,6 @@ class TestCycleController {
         }
         def groups = testCycle.releasePlan.project.testGroups.findAll { TestGroup tg -> tg.testCases.size() > 0 }
         respond testCycle, view: 'show', model: [ testGroups: groups ]
-    }
-
-    /**
-     * saves a new testCycle
-     * @param testCycle
-     */
-    @Secured("ROLE_BASIC")
-    def save(TestCycle testCycle) {
-        if (testCycle == null) {
-            notFound()
-            return
-        }
-
-        try {
-            testCycleService.save(testCycle)
-        } catch (ValidationException ignored) {
-            respond testCycle.errors, view: 'create'
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), testCycle.id])
-                redirect uri: "/project/${testCycle.releasePlan.project.id}/releasePlan/show/${testCycle.releasePlan.id}"
-            }
-            '*' { respond testCycle, [status: CREATED] }
-        }
     }
 
     /**

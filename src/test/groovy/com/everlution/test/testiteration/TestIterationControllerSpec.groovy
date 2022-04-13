@@ -1,5 +1,8 @@
 package com.everlution.test.testiteration
 
+import com.everlution.Project
+import com.everlution.ReleasePlan
+import com.everlution.TestCycle
 import com.everlution.TestIteration
 import com.everlution.TestIterationController
 import com.everlution.TestIterationService
@@ -92,18 +95,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null, 1)
-
-        then:
-        response.status == 404
-    }
-
-    void "update returns 404 with null project id"() {
-        when:
-        response.reset()
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        controller.update(new TestIteration(), null)
+        controller.update(null)
 
         then:
         response.status == 404
@@ -115,7 +107,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         def iteration = new TestIteration()
 
         when:
-        controller.update(iteration, 1)
+        controller.update(iteration)
 
         then:
         response.status == 405
@@ -139,8 +131,15 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         request.method = 'PUT'
         def iteration = new TestIteration()
         iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
 
-        controller.update(iteration, 1)
+        controller.update(iteration)
 
         then:"A redirect is issued to the show action"
         controller.flash.message == "default.updated.message"
@@ -161,7 +160,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(iteration, 1)
+        controller.update(iteration)
 
         then:"The edit view is rendered again with the correct model"
         model.testIteration != null

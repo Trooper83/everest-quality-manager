@@ -37,15 +37,15 @@ class TestIterationController {
      * @param testIteration - iteration to update
      */
     @Secured("ROLE_BASIC")
-    def update(TestIteration testIteration, Long projectId) {
-        if (testIteration == null || projectId == null) {
+    def update(TestIteration testIteration) {
+        if (testIteration == null) {
             notFound()
             return
         }
 
         try {
             testIterationService.save(testIteration)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             def t = testIterationService.read(testIteration.id)
             t.errors = t.errors
             render view: 'execute', model: [testIteration: t]
@@ -55,7 +55,7 @@ class TestIterationController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'testIteration.label', default: 'Test Iteration'), testIteration.id])
-                respond uri: "/project/${projectId}/testIteration/show/${testIteration.id}"
+                redirect uri: "/project/${testIteration.testCycle.releasePlan.project.id}/testIteration/show/${testIteration.id}"
             }
             '*'{ respond testIteration, [status: OK] }
         }

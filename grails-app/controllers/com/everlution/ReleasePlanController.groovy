@@ -8,8 +8,36 @@ class ReleasePlanController {
 
     ProjectService projectService
     ReleasePlanService releasePlanService
+    TestCycleService testCycleService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [addTestCycle: "POST", save: "POST", update: "PUT", delete: "DELETE"]
+
+    /**
+     * adds a new testCycle
+     * @param testCycle
+     */
+    @Secured("ROLE_BASIC")
+    def addTestCycle(TestCycle testCycle) {
+        if (testCycle == null) {
+            notFound()
+            return
+        }
+
+        try {
+            testCycleService.save(testCycle) //TODO: add function to plan service
+        } catch (ValidationException ignored) {
+            respond testCycle.errors, view: 'create'
+            return
+        }
+
+        request.withFormat {
+            form multipartForm {
+                flash.message = message(code: 'default.created.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), testCycle.id])
+                redirect uri: "/project/${testCycle.releasePlan.project.id}/releasePlan/show/${testCycle.releasePlan.id}"
+            }
+            '*' { respond testCycle, [status: CREATED] }
+        }
+    }
 
     /**
      * lists all plans
