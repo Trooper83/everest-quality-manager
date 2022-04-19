@@ -73,7 +73,7 @@ class BugController {
         try {
             bugService.save(bug)
         } catch (ValidationException ignored) {
-            respond bug.errors, view:'create'
+            respond bug.errors, view:'create' //TODO: need to implement urls to include project
             return
         }
 

@@ -4,6 +4,7 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Person
 import com.everlution.PersonService
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
 import com.everlution.test.ui.support.data.Usernames
@@ -22,14 +23,15 @@ class EditBugStepsSpec extends GebSpec {
     ProjectService projectService
 
     @Shared Person person
+    @Shared Project project
 
     def setup() {
         person = personService.list(max: 1).first()
+        project = projectService.list(max: 1).first()
     }
 
     void "step can be added to existing bug"() {
         setup: "create bug"
-        def project = projectService.list(max: 1).first()
         def bug = new Bug(person: person, name: "name of bug", project: project,
                 steps: [new Step(action: "bug action", result: "bug result")])
         def id = bugService.save(bug).id
@@ -39,7 +41,7 @@ class EditBugStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/bug/edit/${id}"
+        go "/project/${project.id}/bug/edit/${id}"
 
         when: "edit the bug"
         EditBugPage page = browser.page(EditBugPage)
@@ -54,7 +56,6 @@ class EditBugStepsSpec extends GebSpec {
 
     void "step can be updated on existing bug"() {
         setup: "create bug"
-        def project = projectService.list(max: 1).first()
         def bug = new Bug(person: person, name: "name of bug", project: project,
                 steps: [new Step(action: "bug action", result: "bug result")])
         def id = bugService.save(bug).id
@@ -64,7 +65,7 @@ class EditBugStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/bug/edit/${id}"
+        go "/project/${project.id}/bug/edit/${id}"
 
         when: "edit the bug"
         def page = browser.page(EditBugPage)
@@ -78,7 +79,6 @@ class EditBugStepsSpec extends GebSpec {
 
     void "step can be deleted from existing bug"() {
         setup: "create bug"
-        def project = projectService.list(max: 1).first()
         def step = new Step(action: "bug action", result: "bug result")
         def bug = new Bug(person: person, name: "name of bug", project: project,
                 steps: [step])
@@ -89,7 +89,7 @@ class EditBugStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/bug/edit/${id}"
+        go "/project/${project.id}/bug/edit/${id}"
 
         when: "edit the bug"
         def page = browser.page(EditBugPage)

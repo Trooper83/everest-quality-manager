@@ -181,7 +181,6 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
 
         expect:
         verifyUrlMapping("/testCycle/addTests", controller: 'testCycle', action: 'addTests')
-        verifyUrlMapping("/testCycle/save", controller: 'testCycle', action: 'save')
         verifyUrlMapping("/project/999/testCycle/create", controller: 'testCycle', action: 'create') {
             projectId = 999
         }

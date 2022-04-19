@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testcase.create
 
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
@@ -10,6 +11,8 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreateTestCaseStepsSpec extends GebSpec {
 
+    ProjectService projectService
+
     void "removed test steps are not saved"() {
         given: "login as a basic user"
         to LoginPage
@@ -17,9 +20,11 @@ class CreateTestCaseStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create page"
-        def page = to CreateTestCasePage
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/testCase/create"
 
         when: "fill in create form"
+        def page = browser.page(CreateTestCasePage)
         page.completeCreateForm()
 
         and: "add a new test step"

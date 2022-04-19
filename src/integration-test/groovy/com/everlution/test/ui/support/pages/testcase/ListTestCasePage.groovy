@@ -4,7 +4,7 @@ import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.TableModule
 
 class ListTestCasePage extends BasePage {
-    static url = "/testCase/index"
+    static url = "/testCases"
     static at = { title == "TestCase List" }
 
     static content = {

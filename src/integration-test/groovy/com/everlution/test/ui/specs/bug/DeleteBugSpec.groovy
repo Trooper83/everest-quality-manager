@@ -18,22 +18,19 @@ class DeleteBugSpec extends GebSpec {
     PersonService personService
     ProjectService projectService
 
-    int id
-
-    def setup() {
+    void "authorized users can delete bug"(String username, String password) {
+        given: "log in as authorized user"
         def project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
         def bug = new Bug(name: "delete bug", person: person, project: project)
-        id = bugService.save(bug).id
-    }
+        def id = bugService.save(bug).id
 
-    void "authorized users can delete bug"(String username, String password) {
-        given: "log in as authorized user"
+        and:
         def loginPage = to LoginPage
         loginPage.login(username, password)
 
         and: "go to show page"
-        go "/bug/show/${id}"
+        go "/project/${project.id}/bug/show/${id}"
 
         when: "delete bug"
         def showPage = browser.at(ShowBugPage)

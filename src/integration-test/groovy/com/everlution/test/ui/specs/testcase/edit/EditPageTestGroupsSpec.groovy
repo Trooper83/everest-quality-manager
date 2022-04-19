@@ -22,32 +22,6 @@ class EditPageTestGroupsSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "test group select populates with only elements within the associated project"() {
-        setup: "project & testCase instances with test groups"
-        def gd = DataFactory.testGroup()
-        def pd = DataFactory.project()
-        def project = projectService.save(new Project(name: pd.name, code: pd.code))
-        def group = new TestGroup(name: gd.name)
-        project.addToTestGroups(group)
-        projectService.save(project)
-        def tcd = DataFactory.testCase()
-        def tc = new TestCase(person: person, name: tcd.name, executionMethod: tcd.executionMethod,
-                type: tcd.type, project: project, testGroups: [group])
-        def testCase = testCaseService.save(tc)
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
-
-        then: "field populates with project.testGroups"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.testGroupsOptions()*.text() == ["--No Test Group--", group.name]
-    }
-
     void "test group select defaults with multiple selected test group"() {
         setup: "project & testCase instances with test groups"
         def gd = DataFactory.testGroup()
@@ -68,7 +42,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         then: "groups are selected"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -90,7 +64,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         then: "field defaults with no selection"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -111,7 +85,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         and: "testCase.testGroups is set to null"
         def page = browser.page(EditTestCasePage)

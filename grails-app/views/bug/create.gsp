@@ -24,13 +24,13 @@
                 <fieldset class="form">
                     <f:all bean="bug" except="area, person, environments, project, steps"/>
                     <g:hiddenField name="project" value="${project.id}"/>
-                    <div class="fieldcontain required">
+                    <div class="fieldcontain">
                         <label for="project">Project</label>
                         <span>${project.name}</span>
                     </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
-                        <g:select name="areas" from="${project.areas}"
+                        <g:select name="area" from="${project.areas}"
                               optionKey="id" optionValue="name"
                               noSelection="${['':'Select an Area...']}"
                         />

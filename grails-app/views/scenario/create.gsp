@@ -35,7 +35,7 @@
                     </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
-                        <g:select name="areas" from="${project.areas}"
+                        <g:select name="area" from="${project.areas}"
                                   optionKey="id" optionValue="name"
                                   noSelection="${['':'Select an Area...']}"
                         />

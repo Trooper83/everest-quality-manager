@@ -1,11 +1,12 @@
 package com.everlution.test.ui.support.pages.scenario
 
 import com.everlution.test.ui.support.pages.common.BasePage
+import com.everlution.test.ui.support.pages.common.EditPage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import geb.module.MultipleSelect
 import geb.module.Select
 
-class EditScenarioPage extends BasePage {
+class EditScenarioPage extends EditPage {
     static url = "/scenario/edit"
     static at = { title == "Edit Scenario" }
 
@@ -16,8 +17,6 @@ class EditScenarioPage extends BasePage {
         executionMethodOptions { $("#executionMethod>option") }
         fieldLabels { $("fieldset label") }
         gherkinTextArea { $("#gherkin") }
-        homeLink { $("[data-test-id=edit-home-link]") }
-        listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
         platformOptions { $("#platform>option") }
         projectNameField { $("[data-test-id=edit-project-name]") }
@@ -51,22 +50,6 @@ class EditScenarioPage extends BasePage {
     }
 
     /**
-     * determines if the required field indication (asterisk) is
-     * displayed for the supplied fields
-     * @param fields - list of fields
-     * @return - true if all fields have the indicator, false if at least one does not
-     */
-    boolean areRequiredFieldIndicatorsDisplayed(List<String> fields) {
-        for(field in fields) {
-            def sel = $("label[for=${field}]>span.required-indicator")
-            if (!sel.displayed) {
-                return false
-            }
-        }
-        return true
-    }
-
-    /**
      * clicks the update button
      */
     void editScenario() {
@@ -87,27 +70,5 @@ class EditScenarioPage extends BasePage {
         platformSelect().selected = platform
         gherkinTextArea = gherkin
         updateButton.click()
-    }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
     }
 }

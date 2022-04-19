@@ -129,4 +129,39 @@ class ReleasePlanServiceSpec extends Specification {
         plans.size() == 0
         noExceptionThrown()
     }
+
+    void "add test cycle persists test cycle"() {
+        given:
+        def cycle = new TestCycle(name: "test cycle123")
+        def project = projectService.list(max: 1).first()
+        def releasePlan = new ReleasePlan(name: "test name123", project: project)
+        releasePlanService.save(releasePlan)
+
+        expect:
+        cycle.id == null
+        !releasePlan.testCycles
+
+        when:
+        releasePlanService.addTestCycle(releasePlan, cycle)
+        sessionFactory.currentSession.flush()
+
+        then:
+        cycle.id != null
+        releasePlan.testCycles.size() == 1
+    }
+
+    void "add test cycle with invalid test cycle throws error"() {
+        given:
+        def cycle = new TestCycle()
+        def project = projectService.list(max: 1).first()
+        def releasePlan = new ReleasePlan(name: "test name123", project: project)
+        releasePlanService.save(releasePlan)
+
+        when:
+        releasePlanService.addTestCycle(releasePlan, cycle)
+        sessionFactory.currentSession.flush()
+
+        then:
+        thrown(ValidationException)
+    }
 }

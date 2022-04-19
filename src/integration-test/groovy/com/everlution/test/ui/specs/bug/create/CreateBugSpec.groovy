@@ -5,10 +5,12 @@ import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.github.javafaker.Faker
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
@@ -24,10 +26,16 @@ class CreateBugSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
         and: "go to the create bug page"
-        def page = to CreateBugPage
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToCreatePage('Bug')
 
         when: "create a bug"
+        def page = at CreateBugPage
         page.createBug()
 
         then: "at show page"
@@ -57,15 +65,22 @@ class CreateBugSpec extends GebSpec {
         def action = faker.lorem().sentence(5)
         def result = faker.lorem().sentence(7)
 
-        when: "login as a basic user"
+        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "create bug"
-        CreateBugPage createPage = to CreateBugPage
-        createPage.createBug(name, description, area.name, [env.name, env1.name], project.name,
-                "Web", action, result)
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', project.name)
+
+        and: "go to the create bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToCreatePage('Bug')
+
+        when: "create bug"
+        CreateBugPage createPage = browser.page(CreateBugPage)
+        createPage.createBug(name, description, area.name, [env.name, env1.name], "Web", action, result)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage

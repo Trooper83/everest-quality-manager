@@ -4,40 +4,32 @@ import com.everlution.TestCaseService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
+import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
+import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
 class EditPageSpec extends GebSpec {
 
-    TestCaseService testCaseService
-
     def setup() {
-        def id = testCaseService.list(max: 1).first().id
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
-        go "/testCase/edit/${id}"
-    }
 
-    void "home link directs to home view"() {
-        when: "click the home button"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.goToHome()
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
 
-        then: "at the home page"
-        at HomePage
-    }
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
-    void "list link directs to list view"() {
-        when: "click the list link"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.goToList()
+        browser.page(ListTestCasePage).testCaseTable.clickCell("Name", 0)
 
-        then: "at the list page"
-        at ListTestCasePage
+        browser.page(ShowTestCasePage).goToEdit()
     }
 
     void "correct fields are displayed"() {

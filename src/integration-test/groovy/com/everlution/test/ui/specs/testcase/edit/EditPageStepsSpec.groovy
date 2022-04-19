@@ -41,7 +41,7 @@ class EditPageStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         expect: "row count is 1"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -68,7 +68,7 @@ class EditPageStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         and: "add a row"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -98,7 +98,7 @@ class EditPageStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         expect:
         testCase.steps.size() == 1

@@ -45,7 +45,7 @@ class EditTestCaseSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -75,7 +75,7 @@ class EditTestCaseSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -101,7 +101,7 @@ class EditTestCaseSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -128,7 +128,7 @@ class EditTestCaseSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         expect:
         step.id != null
@@ -165,7 +165,7 @@ class EditTestCaseSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         when: "edit test case"
         EditTestCasePage page = browser.page(EditTestCasePage)

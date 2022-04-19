@@ -31,7 +31,7 @@
         <div class="col">
             <sec:ifAnyGranted roles="ROLE_BASIC">
                 <g:if test="${params.projectId}">
-                    <div class="dropdown">
+                    <div class="dropdown" id="createMenu">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Create
                         </button>
@@ -48,8 +48,8 @@
         </div>
     </div>
     <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-            <sec:ifAnyGranted roles="ROLE_READ_ONLY">
+        <sec:ifAnyGranted roles="ROLE_READ_ONLY">
+            <li class="nav-item dropdown" id="listsMenu">
                 <g:if test="${params.projectId}">
                     <g:link class="nav-link dropdown-toggle" controller="project" action="projects" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Project
@@ -65,8 +65,8 @@
                         <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
                     </div>
                 </g:if>
-            </sec:ifAnyGranted>
-        </li>
+            </li>
+        </sec:ifAnyGranted>
     </ul>
     <div class="container">
         <sec:ifLoggedIn>

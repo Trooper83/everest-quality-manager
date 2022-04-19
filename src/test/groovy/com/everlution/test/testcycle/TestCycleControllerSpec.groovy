@@ -14,7 +14,6 @@ import com.everlution.TestGroupService
 import com.everlution.command.IterationsCmd
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
-import grails.validation.ValidationException
 import spock.lang.*
 
 class TestCycleControllerSpec extends Specification implements ControllerUnitTest<TestCycleController>, DomainUnitTest<TestCycle> {
@@ -134,12 +133,13 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         model.testGroups == [group1]
     }
 
-    void "add iterations renders success message"() {
+    void "add tests renders success message"() {
         given:
+        request.method = 'POST'
         def group = new TestGroup(name: "group name").save()
         def tc = new TestCase()
         group.addToTestCases(tc)
-        def cmd = new IterationsCmd()
+        IterationsCmd cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [group.id]
         def plan = new ReleasePlan()
@@ -151,7 +151,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         testCycle.id = 1
         testCycle.releasePlan = plan
 
-        when:
+        and:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> [group]
         }
@@ -159,6 +159,8 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
             1 * get(_) >> testCycle
             1 * addTestIterations(_, _)
         }
+
+        when:
         controller.addTests(cmd)
 
         then:
@@ -166,8 +168,9 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
-    void "add iterations with groups that have no tests renders error message"() {
+    void "add tests with groups that have no tests renders error message"() {
         given:
+        request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [1]
@@ -195,8 +198,9 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
-    void "add iterations renders error message"() {
+    void "add tests renders error message"() {
         given:
+        request.method = 'POST'
         def group = new TestGroup(name: "group name").save()
         def tc = new TestCase()
         group.addToTestCases(tc)
@@ -229,8 +233,9 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
-    void "add iterations executes groups logic when group ids specified"() {
+    void "add tests executes groups logic when group ids specified"() {
         given:
+        request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [1]
@@ -259,17 +264,18 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
     }
 
-    void "add iterations executes test case logic when test case ids specified"() {
+    void "add tests executes test case logic when test case ids specified"() {
         given:
+        request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testCases = [1]
+        def testCycle = new TestCycle()
         def plan = new ReleasePlan()
         plan.id = 1
         def project = new Project()
         project.id = 1
         plan.project = project
-        def testCycle = new TestCycle()
         testCycle.id = 1
         testCycle.releasePlan = plan
 
@@ -296,6 +302,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:
+        request.method = 'POST'
         controller.addTests(new IterationsCmd())
 
         then:
@@ -305,11 +312,9 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
     void "add tests action method type"(String httpMethod) {
         given:
         request.method = httpMethod
-        populateValidParams(params)
-        def cycle = new TestCycle(params)
 
         when:
-        controller.addTests(cycle)
+        controller.addTests(new IterationsCmd())
 
         then:
         response.status == 405

@@ -22,29 +22,6 @@ class EditPageEnvironmentsSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "environment select populates with only elements within the associated project"() {
-        setup: "project & testCase instances with environments"
-        def env = new Environment(DataFactory.environment())
-        def pd = DataFactory.project()
-        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
-        def tcd = DataFactory.testCase()
-        def tc = new TestCase(person: person, name: tcd.name, executionMethod: tcd.executionMethod,
-                type: tcd.type, project: project, environments: [env])
-        def testCase = testCaseService.save(tc)
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
-
-        then: "environment populates with project.environments"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.environmentsOptions*.text() == ["--No Environment--", env.name]
-    }
-
     void "environment select defaults with multiple selected environment"() {
         setup: "project & testCase instances with environments"
         def env = new Environment(DataFactory.environment())
@@ -63,7 +40,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         then: "bug.environment is selected"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -85,7 +62,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         then: "environment defaults with no selection"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -106,7 +83,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         and: "testCase.env is set to null"
         def page = browser.page(EditTestCasePage)

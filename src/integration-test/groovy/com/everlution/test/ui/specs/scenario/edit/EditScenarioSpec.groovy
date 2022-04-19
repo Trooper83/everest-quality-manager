@@ -33,7 +33,7 @@ class EditScenarioSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to edit page"
-        go "/scenario/edit/${id}"
+        go "/project/${project.id}/scenario/edit/${id}"
 
         when: "edit the test case"
         EditScenarioPage page = browser.page(EditScenarioPage)
@@ -69,7 +69,7 @@ class EditScenarioSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/scenario/edit/${id}"
+        go "/project/${project.id}/scenario/edit/${id}"
 
         when: "edit test case"
         EditScenarioPage page = browser.page(EditScenarioPage)

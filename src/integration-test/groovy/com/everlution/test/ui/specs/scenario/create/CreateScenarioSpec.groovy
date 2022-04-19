@@ -24,7 +24,8 @@ class CreateScenarioSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to the create page"
-        to CreateScenarioPage
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/scenario/create"
 
         when: "create a scenario"
         CreateScenarioPage page = browser.page(CreateScenarioPage)
@@ -59,9 +60,10 @@ class CreateScenarioSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "create test case"
-        def createPage = to CreateScenarioPage
+        go "/project/${project.id}/scenario/create"
+        def createPage = browser.page(CreateScenarioPage)
         def scn = DataFactory.scenario()
-        createPage.createScenario(scn.name, scn.description, scn.gherkin, project.name, area.name,
+        createPage.createScenario(scn.name, scn.description, scn.gherkin, area.name,
                 [env.name, env1.name],"Automated", "UI", "Web")
 
         then: "data is displayed on show page"

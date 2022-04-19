@@ -152,4 +152,19 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         noExceptionThrown()
         plans.size() == 0
     }
+
+    void "add test cycle saves test cycle"() {
+        given:
+        def plan = new ReleasePlan(name: "Name of the plan123", project: project).save(flush: true)
+        def cycle = new TestCycle()
+
+        expect:
+        cycle.id == null
+
+        when:
+        service.addTestCycle(plan, cycle)
+
+        then:
+        cycle.id != null
+    }
 }
