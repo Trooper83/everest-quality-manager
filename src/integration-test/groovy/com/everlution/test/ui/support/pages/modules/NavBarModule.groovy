@@ -5,11 +5,11 @@ import geb.Module
 class NavBarModule extends Module {
 
     static content = {
-        createMenuDropDown { $("#createMenu" ) }
-        listsMenuDropDown { $("#listsMenu" ) }
+        createMenuDropDown(required: false) { $("#createMenu" ) }
+        createMenuOptions { createMenuDropDown.find('a') }
+        listsMenuDropDown(required: false) { $("#listsMenu" ) }
         loginLink { $("[data-test-id=main-login-link]") }
         logoutButton { $("[data-test-id=main-logout-button]") }
-        usernameLabel { $("[data-test-id=main-welcome-username]") }
     }
 
     /**
@@ -28,6 +28,13 @@ class NavBarModule extends Module {
     void goToListsPage(String item) {
         listsMenuDropDown.click()
         listsMenuDropDown.find('a', text: item).click()
+    }
+
+    /**
+     * determines if a menu option is displayed
+     */
+    boolean isCreateMenuOptionDisplayed(String option) {
+        return createMenuOptions*.text().contains(option)
     }
 
     /**

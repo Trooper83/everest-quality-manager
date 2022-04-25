@@ -1,5 +1,9 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.PersonService
+import com.everlution.TestCase
+import com.everlution.TestCaseService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -11,6 +15,9 @@ import grails.testing.mixin.integration.Integration
 
 @Integration
 class ListSpec extends GebSpec {
+
+    PersonService personService
+    TestCaseService testCaseService
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -28,7 +35,7 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListTestCasePage page = browser.page(ListTestCasePage)
-        page.testCaseTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Type"]
+        page.listTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Type"]
     }
 
     void "delete message displays after test case deleted"() {
@@ -47,7 +54,7 @@ class ListSpec extends GebSpec {
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "delete test case"
         ShowTestCasePage showPage = browser.page(ShowTestCasePage)
@@ -65,16 +72,16 @@ class ListSpec extends GebSpec {
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
         and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
+        def project = DataFactory.createProject()
+        def person = personService.list(max: 1).first()
+        def test = new TestCase(person: person, name: "name of test", project: project)
+        testCaseService.save(test)
 
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        and: "go to project test cases"
+        to(ListTestCasePage, project.id)
 
-        when: "click first test in list"
-        def listPage = at ListTestCasePage
-        listPage.testCaseTable.clickCell("Name", 0)
+        when: "click test name"
+        browser.page(ListTestCasePage).listTable.clickCell("Name", 0)
 
         then: "at show page"
         at ShowTestCasePage

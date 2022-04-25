@@ -1,29 +1,19 @@
 package com.everlution.test.ui.specs.releaseplan
 
-import com.everlution.ReleasePlanService
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.releaseplan.CreateReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.EditReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
-import com.everlution.test.ui.support.pages.testcycle.CreateTestCyclePage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.Shared
 
 @Integration
 class ShowPageSpec extends GebSpec {
-
-    ReleasePlanService releasePlanService
-
-    @Shared int id
-
-    def setup() {
-        id = releasePlanService.list(max: 1).first().id
-    }
 
     void "status message displayed after plan created"() {
         given: "login as a basic user"
@@ -31,66 +21,20 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to the create page"
-        def page = to CreateReleasePlanPage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToCreatePage('Release Plan')
 
         when: "create a plan"
-        page.createReleasePlan()
+        browser.page(CreateReleasePlanPage).createReleasePlan()
 
         then: "at show page with message displayed"
         def showPage = at ShowReleasePlanPage
         showPage.statusMessage.text() ==~ /ReleasePlan \d+ created/
-    }
-
-    void "home link directs to home view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to bug"
-        go "/releasePlan/show/${id}"
-
-        when: "click the home button"
-        def page = browser.page(ShowReleasePlanPage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to bug"
-        go "/releasePlan/show/${id}"
-
-        when: "click the list link"
-        def page = browser.page(ShowReleasePlanPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListReleasePlanPage
-    }
-
-    void "create link directs to create view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to plan"
-        go "/releasePlan/show/${id}"
-
-        when: "click the new bug link"
-        def page = browser.page(ShowReleasePlanPage)
-        page.goToCreate()
-
-        then: "at the create page"
-        at CreateReleasePlanPage
     }
 
     void "edit link directs to home view"() {
@@ -99,8 +43,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to bug"
-        go "/releasePlan/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first test group in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click the edit button"
         def page = browser.page(ShowReleasePlanPage)
@@ -110,38 +63,54 @@ class ShowPageSpec extends GebSpec {
         at EditReleasePlanPage
     }
 
-    void "create delete edit add test cycle buttons not displayed for Read Only user"() {
+    void "delete edit add test cycle buttons not displayed for Read Only user"() {
         given: "login as a read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        when: "go to plan"
-        go "/releasePlan/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        when: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "create delete edit add test cycle buttons are not displayed"
         def page = browser.page(ShowReleasePlanPage)
         verifyAll {
-            !page.createLink.displayed
             !page.deleteLink.displayed
             !page.editLink.displayed
             !page.addTestCycleButton.displayed
         }
     }
 
-    void "create delete edit add test cycle buttons displayed for authorized users"(String username, String password) {
+    void "delete edit add test cycle buttons displayed for authorized users"(String username, String password) {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to plan"
-        go "/releasePlan/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        when: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "create delete edit buttons are not displayed"
         def page = browser.page(ShowReleasePlanPage)
         verifyAll {
-            page.createLink.displayed
             page.deleteLink.displayed
             page.editLink.displayed
             page.addTestCycleButton.displayed
@@ -161,8 +130,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to bug"
-        go "/releasePlan/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        when: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "correct fields are displayed"
         def page = browser.page(ShowReleasePlanPage)
@@ -175,8 +153,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to plan"
-        go "/releasePlan/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click delete and cancel | verify message"
         def showPage = browser.page(ShowReleasePlanPage)
@@ -192,34 +179,28 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to edit page"
-        go "/releasePlan/edit/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        and:
+        def showPage = at ShowReleasePlanPage
+        showPage.goToEdit()
 
         when: "edit a plan"
         def page = browser.page(EditReleasePlanPage)
-        page.editReleasePlan()
+        page.edit()
 
         then: "at show page with message displayed"
-        def showPage = at ShowReleasePlanPage
-        showPage.statusMessage.text() == "ReleasePlan ${id} updated"
-    }
-
-    void "add test cycle button adds release plan id url param"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to edit page"
-        go "/releasePlan/show/${id}"
-
-        when: "click add test cycle button"
-        ShowReleasePlanPage showPage = browser.page(ShowReleasePlanPage)
-        showPage.goToAddTestCycle()
-
-        then:
-        at CreateTestCyclePage
-        currentUrl.endsWith("?releasePlan.id=${id}")
+        showPage.statusMessage.text() ==~ /ReleasePlan \d+ updated/
     }
 
     void "create message displayed after test cycle created"() {
@@ -228,16 +209,25 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to create test cycle"
-        go "/testCycle/create?releasePlan.id=${id}"
-        def create = at CreateTestCyclePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "create test cycle"
-        create.createTestCycle()
+        browser.page(ShowReleasePlanPage).createTestCycle("test cycle 999", "1", "Web")
 
         then:
         def showPage = at ShowReleasePlanPage
         showPage.statusMessage.text() ==~ /TestCycle \d+ created/
+        showPage.isTestCyclePresent("test cycle 999")
     }
 
     void "test cycle content displays when button clicked"() {
@@ -246,12 +236,20 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to create test cycle"
-        go "/testCycle/create?releasePlan.id=${id}"
-        def create = at CreateTestCyclePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "create test cycle"
-        create.createTestCycle()
+        browser.page(ShowReleasePlanPage).createTestCycle()
 
         then: "content not displayed"
         def showPage = at ShowReleasePlanPage
@@ -268,18 +266,132 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to create test cycle"
-        go "/testCycle/create?releasePlan.id=${id}"
-        def create = at CreateTestCyclePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
 
         and: "create test cycle"
-        create.createTestCycle()
+        browser.page(ShowReleasePlanPage).createTestCycle()
 
-        when: "content not displayed"
+        when: "click first test cycle"
         def showPage = at ShowReleasePlanPage
         showPage.goToTestCycle(0)
 
         then: "at show test cycle view"
         at ShowTestCyclePage
+    }
+
+    void "verify platform options"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        when: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        then: "correct options are populated"
+        def page = browser.page(ShowReleasePlanPage)
+        page.displayAddTestCycleModal()
+        page.testCycleModalPlatformOptions*.text() == ["Select a Platform...", "Android", "iOS", "Web"]
+
+        and: "default value is blank"
+        page.testCycleModalPlatformSelect().selected == ""
+    }
+
+    void "environ defaults with select text"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        when: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        then:"default value is select text"
+        def page = browser.page(ShowReleasePlanPage)
+        page.displayAddTestCycleModal()
+        page.testCycleModalEnvironSelect().selectedText == "Select an Environment..."
+        page.testCycleModalEnvironSelect().selected == ""
+    }
+
+    void "add tests modal closes with cancel button"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        when:
+        def page = browser.page(ShowReleasePlanPage)
+        page.displayAddTestCycleModal()
+        page.cancelTestCycleModal()
+
+        then:
+        !page.testCycleModal.displayed
+    }
+
+    void "add tests modal closes with x button"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        when:
+        def page = browser.page(ShowReleasePlanPage)
+        page.displayAddTestCycleModal()
+        page.closeTestCycleModal()
+
+        then:
+        !page.testCycleModal.displayed
     }
 }

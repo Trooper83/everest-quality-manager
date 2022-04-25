@@ -7,6 +7,7 @@ import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
@@ -28,40 +29,6 @@ class ListSpec extends GebSpec {
         then: "correct headers are displayed"
         ListProjectPage page = browser.page(ListProjectPage)
         page.projectTable.getHeaders() == ["Name", "Code"]
-    }
-
-    void "home link directs to home view"() {
-        given: "login as project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
-
-        and: "go to list page"
-        to ListProjectPage
-
-        when: "click home button"
-        ListProjectPage page = browser.page(ListProjectPage)
-        page.goToHome()
-
-        then: "at home page"
-        at HomePage
-    }
-
-    void "new project link directs to create view"() {
-        given: "login as project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
-
-        and: "go to list page"
-        to ListProjectPage
-
-        when: "go to create page"
-        ListProjectPage page = browser.page(ListProjectPage)
-        page.goToCreateProject()
-
-        then: "at create page"
-        at CreateProjectPage
     }
 
     void "delete message displays after project deleted"() {
@@ -97,29 +64,10 @@ class ListSpec extends GebSpec {
         and: "go to list project page"
         def listPage = to ListProjectPage
 
-        when: "click first bug in list"
+        when: "click first in list"
         listPage.projectTable.clickCell("Name", 0)
 
         then: "at show page"
-        at ShowProjectPage
-    }
-
-    void "create button displayed on list for authorized users"(String username, String password) {
-        given: "login as authorized user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, password)
-
-        when: "go to list page"
-        def page = to ListProjectPage
-
-        then: "create button is displayed"
-        page.createProjectLink.displayed
-
-        where:
-        username                         | password
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        at ProjectHomePage
     }
 }

@@ -8,7 +8,10 @@ import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.releaseplan.EditReleasePlanPage
+import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
@@ -28,12 +31,24 @@ class EditReleasePlanSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
-        and: "go to edit page"
-        go "/releasePlan/edit/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        and: "go to edit"
+        browser.page(ShowReleasePlanPage).goToEdit()
 
         when: "edit the instance"
         def page = browser.page(EditReleasePlanPage)
-        page.editReleasePlan()
+        page.edit()
 
         then: "at show page with message displayed"
         at ShowReleasePlanPage
@@ -60,7 +75,7 @@ class EditReleasePlanSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/releasePlan/edit/${id}"
+        to(EditReleasePlanPage, project.id, id)
 
         when: "edit instance"
         def editPage = at EditReleasePlanPage

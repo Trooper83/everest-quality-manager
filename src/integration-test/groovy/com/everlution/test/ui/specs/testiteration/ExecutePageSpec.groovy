@@ -20,19 +20,19 @@ class ExecutePageSpec extends GebSpec {
     TestCaseService testCaseService
     TestCycleService testCycleService
 
-    @Shared ReleasePlan plan
+    @Shared Project project
     @Shared TestCycle testCycle
 
     def setup() {
         def gd = DataFactory.testGroup()
         def group = new TestGroup(name: gd.name)
         def pd = DataFactory.project()
-        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
-        projectService.save(project)
-        plan = new ReleasePlan(name: "release plan 1", project: project)
+        def proj = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        project = projectService.save(proj)
+        def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
-        def cycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycle = testCycleService.save(cycle)
+        testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -47,7 +47,7 @@ class ExecutePageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
 
         when:
         def showCycle = at ShowTestCyclePage
@@ -55,7 +55,7 @@ class ExecutePageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ExecuteTestIterationPage)
-        page.getFields() == ["Result", "Test Case", "Name", "Test Cycle"]
+        page.getFields() == ["Result", "Name", "Test Case", "Test Cycle"]
     }
 
     void "test case link directs to test case"() {
@@ -65,7 +65,7 @@ class ExecutePageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
 
         and:
         def showCycle = at ShowTestCyclePage
@@ -79,27 +79,6 @@ class ExecutePageSpec extends GebSpec {
         at ShowTestCasePage
     }
 
-    void "test cycle link directs to test cycle"() {
-        given: "setup data"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
-
-        and:
-        def showCycle = at ShowTestCyclePage
-        showCycle.testsTable.clickCell("", 0)
-
-        when:
-        def execute = at ExecuteTestIterationPage
-        execute.goToTestCycle()
-
-        then:
-        at ShowTestCyclePage
-    }
-
     void "result has correct options"() {
         given: "login as a basic user"
         to LoginPage
@@ -107,7 +86,7 @@ class ExecutePageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
 
         when:
         def showCycle = at ShowTestCyclePage

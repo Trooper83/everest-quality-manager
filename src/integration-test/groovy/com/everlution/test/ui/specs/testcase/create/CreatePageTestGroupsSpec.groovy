@@ -35,10 +35,8 @@ class CreatePageTestGroupsSpec extends GebSpec {
     }
 
     void "test groups field defaults with no group option"() {
-        when: "project is selected"
+        expect: "default text present"
         def page = browser.page(CreateTestCasePage)
-
-        then: "default text present"
-        page.testGroupsOptions[0].text() == "--Select Test Groups--"
+        page.testGroupsOptions[0].text() == "Select Test Groups..."
     }
 }

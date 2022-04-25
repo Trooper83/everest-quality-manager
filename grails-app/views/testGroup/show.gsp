@@ -35,7 +35,7 @@
                 <g:each var="test" in="${testGroup.testCases}">
                     <tr>
                         <td><g:link uri="/project/${test.project.id}/testCase/show/${test.id}">${test.name}</g:link></td>
-                        <td>${test.area.name}</td>
+                        <td>${test.area?.name}</td>
                         <td>${test.platform}</td>
                         <td>${test.type}</td>
                         <td>${test.executionMethod}</td>

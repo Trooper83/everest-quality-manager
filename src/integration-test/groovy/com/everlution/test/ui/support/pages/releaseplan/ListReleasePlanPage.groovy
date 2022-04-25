@@ -1,30 +1,11 @@
 package com.everlution.test.ui.support.pages.releaseplan
 
-import com.everlution.test.ui.support.pages.common.BasePage
-import com.everlution.test.ui.support.pages.modules.TableModule
+import com.everlution.test.ui.support.pages.common.ListPage
 
-class ListReleasePlanPage extends BasePage {
-    static url = "/releasePlan/index"
+class ListReleasePlanPage extends ListPage {
     static at = { title == "ReleasePlan List" }
 
-    static content = {
-        createLink(required: false) { $("[data-test-id=index-create-link]") }
-        homeLink { $("[data-test-id=index-home-link]") }
-        statusMessage { $("div.message") }
-        plansTable { module TableModule }
-    }
-
-    /**
-     * clicks the new project button
-     */
-    void goToCreatePlan() {
-        createLink.click()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
+    static String convertToPath(Long id) {
+        "/project/${id}/releasePlans"
     }
 }

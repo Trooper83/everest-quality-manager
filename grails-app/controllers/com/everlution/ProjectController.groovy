@@ -153,7 +153,7 @@ class ProjectController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'project.label', default: 'Project'), id])
-                redirect action:"index", method:"GET"
+                redirect action:"projects", method:"GET"
             }
             '*'{ render status: NO_CONTENT }
         }

@@ -6,17 +6,6 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
-        <a href="#create-bug" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <div class="nav" role="navigation">
-            <ul>
-                <li>
-                    <g:link class="home" data-test-id="create-project-home-link" uri="/project/${project.id}/home">Project Home</g:link>
-                </li>
-                <li>
-                    <g:link class="list" data-test-id="create-list-link" uri="/project/${project.id}/bugs">Bugs List</g:link>
-                </li>
-            </ul>
-        </div>
         <div id="create-bug" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>

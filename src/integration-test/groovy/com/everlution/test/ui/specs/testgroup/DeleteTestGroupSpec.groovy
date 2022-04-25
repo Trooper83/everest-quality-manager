@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testgroup
 
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
@@ -9,6 +10,7 @@ import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class DeleteTestGroupSpec extends GebSpec {
@@ -16,10 +18,11 @@ class DeleteTestGroupSpec extends GebSpec {
     ProjectService projectService
     TestGroupService testGroupService
 
-    int id
+    @Shared Long id
+    @Shared Project project
 
     def setup() {
-        def project = projectService.list(max: 1).first()
+        project = projectService.list(max: 1).first()
         def group = new TestGroup(name: "delete spec group", project: project)
         id = testGroupService.save(group).id
     }
@@ -30,7 +33,7 @@ class DeleteTestGroupSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to show page"
-        go "/testGroup/show/${id}"
+        go "/project/${project.id}/testGroup/show/${id}"
 
         when: "delete instance"
         def showPage = browser.at(ShowTestGroupPage)

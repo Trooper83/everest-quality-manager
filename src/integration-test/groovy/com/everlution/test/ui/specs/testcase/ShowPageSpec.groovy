@@ -12,7 +12,6 @@ import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
-import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -63,7 +62,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click the edit button"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
@@ -73,7 +72,7 @@ class ShowPageSpec extends GebSpec {
         at EditTestCasePage
     }
 
-    void "create delete edit buttons not displayed for Read Only user"() {
+    void "delete edit buttons not displayed for Read Only user"() {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -89,18 +88,17 @@ class ShowPageSpec extends GebSpec {
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
-        then: "create delete edit test case buttons are not displayed"
+        then: "delete edit test case buttons are not displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
         verifyAll {
-            !page.createLink.displayed
             !page.deleteLink.displayed
             !page.editLink.displayed
         }
     }
 
-    void "create delete edit buttons displayed for authorized users"(String username, String password) {
+    void "delete edit buttons displayed for authorized users"(String username, String password) {
         given: "login as basic and above user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -116,12 +114,11 @@ class ShowPageSpec extends GebSpec {
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
-        then: "create delete edit test case buttons are not displayed"
+        then: "delete edit test case buttons are not displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
         verifyAll {
-            page.createLink.displayed
             page.deleteLink.displayed
             page.editLink.displayed
         }
@@ -150,7 +147,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "correct fields are displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
@@ -174,7 +171,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click delete and cancel | verify message"
         ShowTestCasePage showPage = browser.page(ShowTestCasePage)
@@ -212,7 +209,7 @@ class ShowPageSpec extends GebSpec {
 
     void "delete test case with test iterations displays failure error"() {
         given:
-        def cycle = DataFactory.getTestCycle()
+        def cycle = DataFactory.createTestCycle()
         Project project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",

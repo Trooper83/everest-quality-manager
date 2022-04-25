@@ -1,25 +1,123 @@
 package com.everlution.test.ui.support.pages.releaseplan
 
-import com.everlution.test.ui.support.pages.common.BasePage
+import com.everlution.test.support.DataFactory
+import com.everlution.test.ui.support.pages.common.ShowPage
+import geb.module.Select
 
-class ShowReleasePlanPage extends BasePage {
-    static url = "/releasePlan/show"
+class ShowReleasePlanPage extends ShowPage {
     static at = { title == "Show ReleasePlan" }
+
+    static String convertToPath(Long projectId, Long id) {
+        "project/${projectId}/releasePlan/show/${id}"
+    }
 
     static content = {
         addTestCycleButton(required: false) { $("#addTestCycleBtn") }
-        createLink(required: false) { $("[data-test-id=show-create-link]") }
-        deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
-        editLink(required: false) { $("[data-test-id=show-edit-link]") }
-        fieldLabels { $("ol.property-list>li>span") }
-        homeLink { $("[data-test-id=show-home-link]") }
-        listLink { $("[data-test-id=show-list-link]") }
         nameValue { $("#name") }
         projectValue { $("#project") }
-        statusMessage { $("div.message") }
         testCycleButtons { $("#testCycles button") }
         testCyclesContent { $("#testCycles [data-test-id=testCycle-content]") }
+        testCycleModal { $("#testCycleModal") }
+        testCycleModalCancelButton { testCycleModal.find("[data-test-id=modal-cancel-button]") }
+        testCycleModalCloseButton { testCycleModal.find("[data-test-id=modal-close-button]") }
+        testCycleModalCreateButton { testCycleModal.find("[data-test-id=modal-submit-button]") }
+        testCycleModalEnvironOptions { testCycleModal.find("[id='testCycle.environ]' > option") }
+        testCycleModalNameInput { $(testCycleModal.find("[id='testCycle.name']")) }
+        testCycleModalPlatformOptions { testCycleModal.find("[id='testCycle.platform'] > option") }
+        testCycleModalSubmitButton { testCycleModal.find("[data-test-id=modal-submit-button]") }
         testCycleViewLink { $("#testCycles [data-test-id=view-test-cycle-link]") }
+    }
+
+    Select testCycleModalEnvironSelect() {
+        testCycleModal.find("[id='testCycle.environ']").module(Select)
+    }
+
+    Select testCycleModalPlatformSelect() {
+        testCycleModal.find("[id='testCycle.platform']").module(Select)
+    }
+
+    /**
+     * determines if the required field indication (asterisk) is
+     * displayed for the supplied fields
+     * @param fields - list of fields
+     * @return - true if all fields have the indicator, false if at least one does not
+     */
+    boolean areRequiredFieldsDisplayedForTestCycle(List<String> fields) {
+        for(field in fields) {
+            def sel = $("#testCycleModal label[for=${field}]>span.required-indicator")
+            if (!sel.displayed) {
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
+     * creates a generic test cycle
+     */
+    void createTestCycle() {
+        addTestCycleButton.click()
+        waitFor {
+            testCycleModal.displayed
+        }
+        testCycleModalNameInput << DataFactory.testCycle().name
+        testCycleModalPlatformSelect().selected = "Web"
+        testCycleModalCreateButton.click()
+        waitFor {
+            !testCycleModal.displayed
+        }
+    }
+
+    /**
+     * creates a test cycle
+     */
+    void createTestCycle(String name, String environ, String platform) {
+        addTestCycleButton.click()
+        waitFor {
+            testCycleModal.displayed
+        }
+        testCycleModalNameInput << name
+        testCycleModalEnvironSelect().selected = environ
+        testCycleModalPlatformSelect().selected = platform
+        testCycleModalCreateButton.click()
+    }
+
+    /**
+     * cancels the test cycle modal
+     */
+    void cancelTestCycleModal() {
+        waitFor {
+            testCycleModalSubmitButton.displayed
+            testCycleModalCancelButton.displayed
+        }
+        testCycleModalCancelButton.click()
+        waitFor {
+            !testCycleModal.displayed
+        }
+    }
+    /**
+     * closes the test cycle modal
+     */
+    void closeTestCycleModal() {
+        waitFor {
+            testCycleModalCloseButton.displayed
+        }
+        testCycleModalCloseButton.click()
+        waitFor {
+            !testCycleModal.displayed
+        }
+    }
+
+    /**
+     * completes the test cycle form without submitting
+     */
+    void completeTestCycleForm() {
+        waitFor {
+            testCycleModalCloseButton.displayed
+        }
+        testCycleModalNameInput << "name"
+        testCycleModalPlatformSelect().selected = "Web"
+        testCycleModalEnvironSelect().selected = "1"
     }
 
     /**
@@ -30,25 +128,13 @@ class ShowReleasePlanPage extends BasePage {
     }
 
     /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
+     * displays the add test cycle modal
      */
-    List<String> getFields() {
-        return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the add test cycle button
-     */
-    void goToAddTestCycle() {
+    void displayAddTestCycleModal() {
         addTestCycleButton.click()
-    }
-
-    /**
-     * clicks the new test case link
-     */
-    void goToCreate() {
-        createLink.click()
+        waitFor {
+            testCycleModal.displayed
+        }
     }
 
     /**
@@ -56,20 +142,6 @@ class ShowReleasePlanPage extends BasePage {
      */
     void goToEdit() {
         editLink.click()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
     }
 
     /**

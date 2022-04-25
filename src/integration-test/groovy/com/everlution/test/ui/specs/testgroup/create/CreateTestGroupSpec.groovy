@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testgroup.create
 
+import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -11,6 +12,8 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreateTestGroupSpec extends GebSpec {
 
+    ProjectService projectService
+
     void "authorized users can create test group"(String username, String password) {
         given: "login as an authorized user"
         to LoginPage
@@ -18,7 +21,8 @@ class CreateTestGroupSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to the create page"
-        def page = to CreateTestGroupPage
+        def id = projectService.list(max: 1).first().id
+        def page = to (CreateTestGroupPage, id)
 
         when: "create"
         page.createTestGroup()
@@ -41,9 +45,10 @@ class CreateTestGroupSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to the create page & create instance"
-        def page = to CreateTestGroupPage
+        def id = projectService.list(max: 1).first().id
+        def page = to (CreateTestGroupPage, id)
         def name = DataFactory.testGroup().name
-        page.createTestGroup(name, "1")
+        page.createTestGroup(name)
 
         then: "at show page"
         def show = at ShowTestGroupPage

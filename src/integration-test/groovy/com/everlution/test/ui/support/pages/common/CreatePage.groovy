@@ -5,8 +5,6 @@ class CreatePage extends BasePage {
         createButton { $("#create") }
         errorsMessage { $("ul.errors") }
         fieldLabels { $("fieldset label") }
-        homeLink { $("[data-test-id=create-home-link]") }
-        listLink { $("[data-test-id=create-list-link]") }
     }
 
     /**
@@ -31,19 +29,5 @@ class CreatePage extends BasePage {
      */
     List<String> getFields() {
         return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
     }
 }

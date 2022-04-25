@@ -38,7 +38,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -50,7 +50,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
 
         and:
         def showCycle = at ShowTestCyclePage
@@ -61,7 +61,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ShowTestIterationPage)
-        page.getFields() == ["Test Case", "Name", "Result", "Test Cycle"]
+        page.getFields() == ["Test Case", "Test Cycle", "Name", "Result"]
     }
 
     void "test case link directs to test case"() {
@@ -74,7 +74,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -87,7 +87,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
 
         and:
         def showCycle = at ShowTestCyclePage

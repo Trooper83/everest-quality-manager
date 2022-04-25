@@ -25,24 +25,6 @@ class EditPageSpec extends GebSpec {
         go "/project/edit/${id}"
     }
 
-    void "home link directs to home view"() {
-        when: "click the home button"
-        EditProjectPage page = at EditProjectPage
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        when: "click the list button"
-        EditProjectPage page = at EditProjectPage
-        page.goToList()
-
-        then: "at the list page"
-        at ListProjectPage
-    }
-
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         EditProjectPage page = at EditProjectPage

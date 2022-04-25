@@ -85,18 +85,18 @@
                                 <g:hiddenField name="releasePlan.id" value="${releasePlan.id}" />
                                 <div class="fieldcontain required">
                                     <label for="name">Name</label>
-                                    <g:field type="text" name="name" required="true"/>
+                                    <g:field type="text" name="testCycle.name" required="true"/>
                                 </div>
                                 <div class="fieldcontain">
                                     <label for="environ">Environment</label>
-                                    <g:select name="environ" from="${releasePlan.project.environments}"
+                                    <g:select name="testCycle.environ" from="${releasePlan.project.environments}"
                                               optionKey="id" optionValue="name"
                                               noSelection="${['':'Select an Environment...']}"
                                     />
                                 </div>
                                 <div class="fieldcontain">
                                     <label for="platform">Platform</label>
-                                    <g:select name="platform" from="${['Android', 'iOS', 'Web']}"
+                                    <g:select name="testCycle.platform" from="${['Android', 'iOS', 'Web']}"
                                               noSelection="${['':'Select a Platform...']}"
                                     />
                                 </div>
