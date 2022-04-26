@@ -7,17 +7,21 @@ import com.everlution.ScenarioService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException
+import spock.lang.Shared
 import spock.lang.Specification
 
 class ScenarioServiceSpec extends Specification implements ServiceUnitTest<ScenarioService>, DataTest {
+
+    @Shared Project project
+    @Shared Person person
 
     def setupSpec() {
         mockDomain(Scenario)
     }
 
-    private void setupData() {
-        def project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
-        def person = new Person(email: "email@test.com", password: "password").save()
+    def setup() {
+        project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
+        person = new Person(email: "email@test.com", password: "password").save()
         new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
         new Scenario(person: person, name: "test1", description: "desc",
@@ -27,15 +31,11 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
     }
 
     void "get with valid id returns instance"() {
-        setupData()
-
         expect: "valid instance"
         service.get(1) instanceof Scenario
     }
 
     void "read returns instance"() {
-        setupData()
-
         expect: "valid instance"
         service.read(1) instanceof Scenario
     }
@@ -46,8 +46,6 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
     }
 
     void "list max args param returns correct value"() {
-        setupData()
-
         expect:
         service.list(max: 1).size() == 1
         service.list(max: 2).size() == 2
@@ -56,8 +54,6 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
     }
 
     void "count returns number of scenarios"() {
-        setupData()
-
         expect:
         service.count() == 3
     }
@@ -104,5 +100,40 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
 
         then:
         thrown(ValidationException)
+    }
+
+    void "find all by project returns scenarios"() {
+        when:
+        def scenarios = service.findAllByProject(project)
+
+        then:
+        scenarios instanceof List<Scenario>
+    }
+
+    void "find all by project only returns scenarios with project"() {
+        given:
+        def proj = new Project(name: "BugServiceSpec Project1223", code: "BP8").save()
+        def scn = new Scenario(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: proj).save(flush: true)
+
+        expect:
+        Scenario.list().contains(scn)
+
+        when:
+        def scenarios = service.findAllByProject(project)
+
+        then:
+        scenarios.size() > 0
+        scenarios.every { it.project.id == project.id }
+        !scenarios.contains(scn)
+    }
+
+    void "find all by project with null project id returns empty list"() {
+        when:
+        def scenarios = service.findAllByProject(null)
+
+        then:
+        noExceptionThrown()
+        scenarios.size() == 0
     }
 }

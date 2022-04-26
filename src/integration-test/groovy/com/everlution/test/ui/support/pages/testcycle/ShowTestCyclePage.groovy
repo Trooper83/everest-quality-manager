@@ -5,8 +5,11 @@ import com.everlution.test.ui.support.pages.modules.TableModule
 import geb.module.MultipleSelect
 
 class ShowTestCyclePage extends ShowPage {
-    static url = "/testCycle/show"
     static at = { title == "Show TestCycle" }
+
+    static String convertToPath(Long projectId, Long id) {
+        "/project/${projectId}/testCycle/show/${id}"
+    }
 
     static content = {
         addTestsButton(required: false) { $("#addTestsBtn") }
@@ -14,7 +17,6 @@ class ShowTestCyclePage extends ShowPage {
         addTestsModalCancelButton { $("[data-test-id=modal-cancel-button]") }
         addTestsModalCloseButton { $("[data-test-id=modal-close-button]") }
         addTestsModalSubmitButton { $("[data-test-id=modal-submit-button]") }
-        backToPlanLink { $("#backToPlan") }
         testGroupsOptions { $("#testGroups>option") }
         testsTable { module TableModule }
     }
@@ -81,12 +83,5 @@ class ShowTestCyclePage extends ShowPage {
         waitFor {
             addTestsModal.displayed
         }
-    }
-
-    /**
-     * clicks the back to release plan link
-     */
-    void goBackToPlan() {
-        backToPlanLink.click()
     }
 }

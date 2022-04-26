@@ -21,14 +21,35 @@
                     <div class="property-value" id="name">${testGroup.name}</div>
                 </li>
             </ol>
-                <f:table collection="${testGroup.testCases}" order="id, name, area, platform, environments, type, executionMethod"/>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Area</th>
+                    <th>Platform</th>
+                    <th>Type</th>
+                    <th>Execution Method</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each var="test" in="${testGroup.testCases}">
+                    <tr>
+                        <td><g:link uri="/project/${test.project.id}/testCase/show/${test.id}">${test.name}</g:link></td>
+                        <td>${test.area?.name}</td>
+                        <td>${test.platform}</td>
+                        <td>${test.type}</td>
+                        <td>${test.executionMethod}</td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
                 <div class="pagination">
                     <g:paginate total="${testGroup.testCases.size() ?: 0}"/>
                 </div>
             <sec:ifAnyGranted roles="ROLE_BASIC">
-                <g:form resource="${this.testGroup}" method="DELETE">
+                <g:form resource="${this.testGroup}" method="DELETE" params="[projectId: this.testGroup.project.id]">
                     <fieldset class="buttons">
-                        <g:link class="edit" action="edit" resource="${this.testGroup}" data-test-id="show-edit-link">
+                        <g:link class="edit" uri="/project/${this.testGroup.project.id}/testGroup/edit/${this.testGroup.id}" data-test-id="show-edit-link">
                             <g:message code="default.button.edit.label" default="Edit"/>
                         </g:link>
                         <input class="delete" type="submit" data-test-id="show-delete-link"

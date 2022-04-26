@@ -9,8 +9,9 @@ import com.everlution.TestGroup
 import com.everlution.TestGroupService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import com.everlution.test.ui.support.pages.testgroup.CreateTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.EditTestGroupPage
@@ -41,7 +42,8 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to create"
-        go "/testGroup/create"
+        def projectId = projectService.list(max: 1).first().id
+        go "project/${projectId}/testGroup/create"
 
         when: "create instance"
         def createPage = browser.page(CreateTestGroupPage)
@@ -52,65 +54,23 @@ class ShowPageSpec extends GebSpec {
         showPage.statusMessage.text() ==~ /TestGroup \d+ created/
     }
 
-    void "home link directs to home view"() {
+    void "edit link directs to edit view"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to show page"
-        go "/testGroup/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
 
-        when: "click the home button"
-        ShowTestGroupPage page = browser.page(ShowTestGroupPage)
-        page.goToHome()
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
 
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to show page"
-        go "/testGroup/show/${id}"
-
-        when: "click the list link"
-        def page = browser.page(ShowTestGroupPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListTestGroupPage
-    }
-
-    void "create link directs to create view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to show page"
-        go "/testGroup/show/${id}"
-
-        when: "click the create link"
-        ShowTestGroupPage page = browser.page(ShowTestGroupPage)
-        page.goToCreate()
-
-        then: "at the create page"
-        at CreateTestGroupPage
-    }
-
-    void "edit link directs to home view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to show page"
-        go "/testGroup/show/${id}"
+        and: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click the edit button"
         ShowTestGroupPage page = browser.page(ShowTestGroupPage)
@@ -120,37 +80,53 @@ class ShowPageSpec extends GebSpec {
         at EditTestGroupPage
     }
 
-    void "create delete edit buttons not displayed for Read Only user"() {
+    void "delete edit buttons not displayed for Read Only user"() {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        when: "go to show page"
-        go "/testGroup/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
+
+        when: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "create delete edit buttons are not displayed"
         def page = browser.page(ShowTestGroupPage)
         verifyAll {
-            !page.createLink.displayed
             !page.deleteLink.displayed
             !page.editLink.displayed
         }
     }
 
-    void "create delete edit buttons displayed for authorized users"(String username, String password) {
+    void "delete edit buttons displayed for authorized users"(String username, String password) {
         given: "login as basic and above user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
-        when: "go to show page"
-        go "/testGroup/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
+
+        when: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "create delete edit buttons are not displayed"
         def page = browser.page(ShowTestGroupPage)
         verifyAll {
-            page.createLink.displayed
             page.deleteLink.displayed
             page.editLink.displayed
         }
@@ -169,8 +145,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        when: "go to show page"
-        go "/testGroup/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
+
+        when: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "correct fields are displayed"
         def page = browser.page(ShowTestGroupPage)
@@ -183,8 +168,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to show page"
-        go "/testGroup/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
+
+        and: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click delete and cancel | verify message"
         def showPage = browser.page(ShowTestGroupPage)
@@ -200,16 +194,28 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to edit page"
-        go "/testGroup/edit/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
+
+        and: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        and:
+        ShowTestGroupPage showPage = at ShowTestGroupPage
+        showPage.goToEdit()
 
         when: "edit instance"
         def page = browser.page(EditTestGroupPage)
         page.edit()
 
         then: "at show page with message displayed"
-        ShowTestGroupPage showPage = at ShowTestGroupPage
-        showPage.statusMessage.text() == "TestGroup ${id} updated"
+        showPage.statusMessage.text() ==~ /TestGroup \d+ updated/
     }
 
     void "verify table headers order"() {
@@ -230,11 +236,12 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to show page"
-        go "/testGroup/show/${group.id}"
+        to (ShowTestGroupPage, project.id, group.id)
 
         then: "at show page"
+
         ShowTestGroupPage showPage = at ShowTestGroupPage
-        showPage.testCaseTable.getHeaders() == ["Id", "Name", "Area", "Platform", "Environments", "Type", "Execution Method"]
+        showPage.testCaseTable.getHeaders() == ["Name", "Area", "Platform", "Type", "Execution Method"]
     }
 
     void "test case table id link opens show test case"() {
@@ -255,11 +262,11 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to show page"
-        go "/testGroup/show/${group.id}"
+        to (ShowTestGroupPage, project.id, group.id)
 
         when: "at show page"
         ShowTestGroupPage showPage = at ShowTestGroupPage
-        showPage.testCaseTable.clickCell("Id", 0)
+        showPage.testCaseTable.clickCell("Name", 0)
 
         then: "at show test case page"
         at ShowTestCasePage

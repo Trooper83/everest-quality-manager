@@ -1,27 +1,21 @@
 package com.everlution.test.ui.specs.scenario
 
-import com.everlution.ScenarioService
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.scenario.CreateScenarioPage
 import com.everlution.test.ui.support.pages.scenario.EditScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.Shared
 
 @Integration
 class ShowPageSpec extends GebSpec {
 
-    ScenarioService scenarioService
-
-    @Shared int id
-
-    def setup() {
-        id = scenarioService.list(max: 1).first().id
-    }
+    ProjectService projectService
 
     void "status message displayed after scenario created"() {
         given: "login as a basic user"
@@ -30,65 +24,16 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create page"
-        def page = to CreateScenarioPage
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/scenario/create"
 
         when: "create scenario"
+        def page = at CreateScenarioPage
         page.createScenario()
 
         then: "at show page with message displayed"
         def showPage = at ShowScenarioPage
         showPage.statusMessage.text() ==~ /Scenario \d+ created/
-    }
-
-    void "home link directs to home view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to scenario"
-        go "/scenario/show/${id}"
-
-        when: "click the home button"
-        def page = browser.page(ShowScenarioPage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to scenario"
-        go "/scenario/show/${id}"
-
-        when: "click the list link"
-        def page = browser.page(ShowScenarioPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListScenarioPage
-    }
-
-    void "create link directs to create view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to scenario"
-        go "/scenario/show/${id}"
-
-        when: "click the new bug link"
-        def page = browser.page(ShowScenarioPage)
-        page.goToCreate()
-
-        then: "at the create page"
-        at CreateScenarioPage
     }
 
     void "edit link directs to edit view"() {
@@ -97,8 +42,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to scenario"
-        go "/scenario/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Scenarios')
+
+        and: "click first in list"
+        def listPage = browser.page(ListScenarioPage)
+        listPage.scenarioTable.clickCell("Name", 0)
 
         when: "click the edit button"
         def page = browser.page(ShowScenarioPage)
@@ -114,13 +68,21 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        when: "go to scenario"
-        go "/scenario/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Scenarios')
+
+        when: "click first in list"
+        def listPage = browser.page(ListScenarioPage)
+        listPage.scenarioTable.clickCell("Name", 0)
 
         then: "create delete edit test case buttons are not displayed"
         def page = browser.page(ShowScenarioPage)
         verifyAll {
-            !page.createLink.displayed
             !page.deleteLink.displayed
             !page.editLink.displayed
         }
@@ -132,13 +94,21 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to scenario"
-        go "/scenario/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Scenarios')
+
+        when: "click first in list"
+        def listPage = browser.page(ListScenarioPage)
+        listPage.scenarioTable.clickCell("Name", 0)
 
         then: "create delete edit test case buttons are not displayed"
         def page = browser.page(ShowScenarioPage)
         verifyAll {
-            page.createLink.displayed
             page.deleteLink.displayed
             page.editLink.displayed
         }
@@ -157,8 +127,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to scenario"
-        go "/scenario/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Scenarios')
+
+        when: "click first in list"
+        def listPage = browser.page(ListScenarioPage)
+        listPage.scenarioTable.clickCell("Name", 0)
 
         then: "correct fields are displayed"
         def page = browser.page(ShowScenarioPage)
@@ -172,8 +151,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to scenario"
-        go "/scenario/show/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Scenarios')
+
+        and: "click first in list"
+        def listPage = browser.page(ListScenarioPage)
+        listPage.scenarioTable.clickCell("Name", 0)
 
         when: "click delete and cancel | verify message"
         def showPage = browser.page(ShowScenarioPage)
@@ -189,8 +177,20 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to edit scenario"
-        go "/scenario/edit/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Scenarios')
+
+        and: "click first in list"
+        def listPage = browser.page(ListScenarioPage)
+        listPage.scenarioTable.clickCell("Name", 0)
+
+        and:
+        browser.page(ShowScenarioPage).goToEdit()
 
         when: "edit a scenario"
         def page = browser.page(EditScenarioPage)
@@ -198,6 +198,6 @@ class ShowPageSpec extends GebSpec {
 
         then: "at show scenario page with message displayed"
         def showPage = at ShowScenarioPage
-        showPage.statusMessage.text() == "Scenario ${id} updated"
+        showPage.statusMessage.text() ==~ /Scenario \d+ updated/
     }
 }

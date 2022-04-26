@@ -28,30 +28,6 @@ class EditPageEnvironmentsSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "environment select populates with only elements within the associated project"() {
-        setup: "project & bug instances with environments"
-        def env = new Environment(DataFactory.environment())
-        def pd = DataFactory.project()
-        def project = projectService.save(
-                new Project(name: pd.name, code: pd.code, environments: [env])
-        )
-        def bug = bugService.save(
-                new Bug(name: "environment testing bug", project: project, person: person)
-        )
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/bug/edit/${bug.id}"
-
-        then: "environment populates with project.environments"
-        EditBugPage page = browser.page(EditBugPage)
-        page.environmentsOptions*.text() == ["--No Environment--", env.name]
-    }
-
     void "environment select defaults with multiple selected environment"() {
         setup: "project & bug instances with environments"
         def env = new Environment(DataFactory.environment())
@@ -72,7 +48,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/bug/edit/${bug.id}"
+        go "project/${project.id}/bug/edit/${bug.id}"
 
         then: "bug.environment is selected"
         EditBugPage page = browser.page(EditBugPage)
@@ -95,7 +71,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/bug/edit/${bug.id}"
+        go "project/${project.id}/bug/edit/${bug.id}"
 
         then: "environment defaults with no selection"
         EditBugPage page = browser.page(EditBugPage)
@@ -116,7 +92,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/bug/edit/${bug.id}"
+        go "project/${project.id}/bug/edit/${bug.id}"
 
         and: "bug.environment is set to null"
         EditBugPage page = browser.page(EditBugPage)

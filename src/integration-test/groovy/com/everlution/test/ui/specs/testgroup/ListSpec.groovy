@@ -1,10 +1,11 @@
 package com.everlution.test.ui.specs.testgroup
 
+import com.everlution.ProjectService
 import com.everlution.TestGroupService
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.testgroup.CreateTestGroupPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
@@ -13,96 +14,30 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ListSpec extends GebSpec {
 
-    TestGroupService testGroupService
-
-    void "verify list table headers order"() {
-        given: "login as read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
-
-        when: "go to list page"
-        def page = to ListTestGroupPage
-
-        then: "correct headers are displayed"
-        page.listTable.getHeaders() == ["Name", "Project"]
-    }
-
-    void "home link directs to home view"() {
-        given: "login as read_only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
-
-        and: "go to list bug page"
-        def page = to ListTestGroupPage
-
-        when: "click home button"
-        page.goToHome()
-
-        then: "at home page"
-        at HomePage
-    }
-
-    void "new link directs to create view"() {
-        given: "login as basic user"
+    def setup() {
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to list bug page"
-        def page = to ListTestGroupPage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
 
-        when: "go to create page"
-        page.goToCreate()
-
-        then: "at create page"
-        at CreateTestGroupPage
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
     }
 
-    void "create button not displayed on list for Read Only user"() {
-        given: "login as read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
-
-        when: "go to list page"
-        def page = to ListTestGroupPage
-
-        then: "create button is not displayed"
-        !page.createLink.displayed
-    }
-
-    void "create button displayed on list for users"(String username, String password) {
-        given: "login as basic and above user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, password)
-
-        when: "go to list page"
-        def page = to ListTestGroupPage
-
-        then: "create button is displayed"
-        page.createLink.displayed
-
-        where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+    void "verify list table headers order"() {
+        expect: "correct headers are displayed"
+        def page = browser.page(ListTestGroupPage)
+        page.listTable.getHeaders() == ["Name", "Project"]
     }
 
     void "clicking name column directs to show page"() {
-        given: "login as a read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
-
-        and: "go to list page"
-        def listPage = to ListTestGroupPage
-
-        when: "click first in list"
+        when: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
         listPage.listTable.clickCell("Name", 0)
 
         then: "at show page"
@@ -110,14 +45,9 @@ class ListSpec extends GebSpec {
     }
 
     void "delete message displays after group deleted"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to show page"
-        def id = testGroupService.list(max: 1).first().id
-        go "/testGroup/show/${id}"
+        given: "click first test group in list"
+        def page = browser.page(ListTestGroupPage)
+        page.listTable.clickCell("Name", 0)
 
         when: "delete"
         def showPage = browser.page(ShowTestGroupPage)

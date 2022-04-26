@@ -15,6 +15,7 @@ import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
+import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -28,34 +29,30 @@ class ExecuteIterationSpec extends GebSpec {
     TestCaseService testCaseService
     TestCycleService testCycleService
 
-    @Shared ReleasePlan plan
-    @Shared TestCycle testCycle
-
-    def setup() {
+    void "update result persists"() {
+        setup:
         def gd = DataFactory.testGroup()
         def group = new TestGroup(name: gd.name)
         def pd = DataFactory.project()
-        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
-        projectService.save(project)
-        plan = new ReleasePlan(name: "release plan 1", project: project)
+        def proj = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        def project = projectService.save(proj)
+        def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def cycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycle = testCycleService.save(cycle)
+        releasePlanService.addTestCycle(plan, cycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
-        testCycleService.addTestIterations(testCycle, [testCase])
-    }
+        testCycleService.addTestIterations(cycle, [testCase])
 
-    void "update result persists"() {
-        given: "login as a basic user"
+        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        go "/project/${project.id}/testCycle/show/${cycle.id}"
 
         and:
         def showCycle = at ShowTestCyclePage
@@ -69,8 +66,8 @@ class ExecuteIterationSpec extends GebSpec {
         page.setResult("Pass")
 
         then:
-        at ExecuteTestIterationPage
-        page.statusMessage.text() ==~ /Test Iteration \S+ updated/
-        page.resultSelect().selectedText == "Pass"
+        def show = at ShowTestIterationPage
+        show.statusMessage.text() ==~ /Test Iteration \S+ updated/
+        show.resultValue.text() == "Pass"
     }
 }

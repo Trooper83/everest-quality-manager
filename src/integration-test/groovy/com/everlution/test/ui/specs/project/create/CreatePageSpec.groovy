@@ -21,24 +21,6 @@ class CreatePageSpec extends GebSpec {
         to CreateProjectPage
     }
 
-    void "home link directs to home view"() {
-        when: "click the home button"
-        CreateProjectPage page = browser.page(CreateProjectPage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        when: "click the list link"
-        CreateProjectPage page = browser.page(CreateProjectPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListProjectPage
-    }
-
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         CreateProjectPage page = browser.page(CreateProjectPage)

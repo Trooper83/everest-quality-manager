@@ -8,12 +8,10 @@ import com.everlution.ReleasePlanService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestCycle
-import com.everlution.TestCycleService
 import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
 import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
@@ -30,27 +28,9 @@ class ShowPageSpec extends GebSpec {
     ProjectService projectService
     ReleasePlanService releasePlanService
     TestCaseService testCaseService
-    TestCycleService testCycleService
 
     def setup() {
-        cycle = DataFactory.getTestCycle()
-    }
-
-    void "back to release plan link goes to release plan"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to cycle"
-        go "/testCycle/show/${cycle.id}?releasePlan.id=${cycle.releasePlan.id}"
-
-        when: "go back to plan"
-        def show = at(ShowTestCyclePage)
-        show.goBackToPlan()
-
-        then: "at release plan view"
-        at ShowReleasePlanPage
+        cycle = DataFactory.createTestCycle()
     }
 
     void "correct fields are displayed"() {
@@ -60,7 +40,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${cycle.id}?releasePlan.id=${cycle.releasePlan.id}"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
 
         expect:
         def show = at ShowTestCyclePage
@@ -74,7 +54,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${cycle.id}?releasePlan.id=${cycle.releasePlan.id}"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
 
         expect:
         def show = at ShowTestCyclePage
@@ -88,7 +68,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${cycle.id}?releasePlan.id=${cycle.releasePlan.id}"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
 
         expect:
         def show = at ShowTestCyclePage
@@ -112,7 +92,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -124,7 +104,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        to (ShowTestCyclePage, project.id, testCycle.id)
 
         and:
         def show = at ShowTestCyclePage
@@ -147,7 +127,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -159,7 +139,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        to (ShowTestCyclePage, project.id, testCycle.id)
 
         and:
         def show = at ShowTestCyclePage
@@ -179,7 +159,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${cycle.id}?releasePlan.id=${cycle.releasePlan.id}"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
 
         and:
         def show = at ShowTestCyclePage
@@ -204,7 +184,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${cycle.id}?releasePlan.id=${cycle.releasePlan.id}"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
 
         and:
         def show = at ShowTestCyclePage
@@ -232,7 +212,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -244,7 +224,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        to (ShowTestCyclePage, project.id, testCycle.id)
 
         when:
         def show = at ShowTestCyclePage
@@ -261,7 +241,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${cycle.id}?releasePlan.id=${cycle.releasePlan.id}"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
 
         and:
         def show = at ShowTestCyclePage
@@ -287,7 +267,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -299,7 +279,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${cycle.releasePlan.id}"
+        to (ShowTestCyclePage, project.id, testCycle.id)
 
         when:
         def show = at ShowTestCyclePage
@@ -319,7 +299,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -331,7 +311,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        to (ShowTestCyclePage, project.id, testCycle.id)
 
         when:
         def show = at ShowTestCyclePage
@@ -351,7 +331,7 @@ class ShowPageSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -363,7 +343,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        to (ShowTestCyclePage, project.id, testCycle.id)
 
         when:
         def show = at ShowTestCyclePage

@@ -1,5 +1,6 @@
 package com.everlution.test.scenario
 
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioController
@@ -18,59 +19,60 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         params.name = "unit test scenario name"
     }
 
-    void "test index action renders index view"() {
+    void "scenarios action renders bugs view"() {
         given:
         controller.scenarioService = Mock(ScenarioService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
-        when: "call index action"
-        controller.index()
+        when: "call action"
+        controller.scenarios(1)
 
-        then: "index view is returned"
-        view == 'index'
+        then: "view is returned"
+        view == 'scenarios'
     }
 
-    void "index action returns the correct model"() {
+    void "scenarios action returns the correct model"() {
         given:
         controller.scenarioService = Mock(ScenarioService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> [new Scenario()]
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
-        when:"the index action is executed"
-        controller.index()
+        when:"action is executed"
+        controller.scenarios(1)
 
-        then:"the model is correct"
-        !model.scenarioList
-        model.scenarioCount == 0
+        then:"model is correct"
+        model.scenarioList
+        model.scenarioCount
+        model.project
     }
 
-    void "index action param max"(Integer max, int expected) {
+    void "scenarios action returns not found with invalid project"() {
         given:
         controller.scenarioService = Mock(ScenarioService) {
-            1 * list(_) >> []
+            0 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
         }
 
-        when:"the index action is executed"
-        controller.index(max)
+        when:"The action is executed"
+        controller.scenarios()
 
-        then:"the max is as expected"
-        controller.params.max == expected
-
-        where:
-        max  | expected
-        null | 10
-        1    | 1
-        99   | 99
-        101  | 100
+        then:
+        response.status == 404
     }
 
     void "test the create action returns the correct view"() {
         given: "mock service"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
 
         when:"the create action is executed"
@@ -83,14 +85,15 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
     void "create action returns the correct model"() {
         given: "mock project service"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
 
         when:"create action is executed"
         controller.create()
 
         then:"model is correctly created"
-        model.scenario!= null
+        model.scenario
+        model.project
     }
 
     void "save action returns 405 with not allowed method types"(String httpMethod) {
@@ -116,8 +119,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         controller.save(null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/scenario/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "save action correctly persists"() {
@@ -135,17 +137,26 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         request.method = 'POST'
         populateValidParams(params)
         def scenario = new Scenario(params)
+        def project = new Project()
         scenario.id = 1
+        project.id = 1
+        scenario.project = project
 
         controller.save(scenario)
 
         then:"redirect is issued to the show action"
-        response.redirectedUrl == '/scenario/show/1'
+        response.redirectedUrl == '/project/1/scenario/show/1'
         controller.flash.message == "default.created.message"
     }
 
     void "save action with an invalid instance"() {
         given:
+        def p = new Project()
+        p.id = 1
+
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
+        }
         controller.scenarioService = Mock(ScenarioService) {
             1 * save(_ as Scenario) >> { Scenario scenario ->
                 throw new ValidationException("Invalid instance", scenario.errors)
@@ -156,19 +167,16 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
             1 * getCurrentUser()
         }
 
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
-        }
-
         when:"the save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def scenario = new Scenario()
+        scenario.project = p
         controller.save(scenario)
 
         then:"create view is rendered again with the correct model"
         model.scenario instanceof Scenario
-        model.projects instanceof List
+        model.project == p
         view == 'create'
     }
 
@@ -273,8 +281,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         controller.update(null)
 
         then:"404 error is returned"
-        response.redirectedUrl == '/scenario/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "update action correctly persists"() {
@@ -289,12 +296,15 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         request.method = 'PUT'
         populateValidParams(params)
         def scenario = new Scenario(params)
+        def project = new Project()
         scenario.id = 1
+        project.id = 1
+        scenario.project = project
 
         controller.update(scenario)
 
         then:"redirect is issued to the show action"
-        response.redirectedUrl == '/scenario/show/1'
+        response.redirectedUrl == '/project/1/scenario/show/1'
         controller.flash.message == "default.updated.message"
     }
 
@@ -324,7 +334,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         request.method = httpMethod
 
         when:
-        controller.delete(1)
+        controller.delete(1, 1)
 
         then:
         response.status == 405
@@ -337,11 +347,20 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         when:"delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(null)
+        controller.delete(null, 1)
 
         then:"404 is returned"
-        response.redirectedUrl == '/scenario/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
+    }
+
+    void "delete action with a null project"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(1, null)
+
+        then:"A 404 is returned"
+        response.status == 404
     }
 
     void "delete action with an instance"() {
@@ -353,10 +372,10 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         when:"domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(2)
+        controller.delete(2, 1)
 
         then:"user is redirected to index"
-        response.redirectedUrl == '/scenario/index'
+        response.redirectedUrl == '/project/1/scenarios'
         flash.message == "default.deleted.message"
     }
 }

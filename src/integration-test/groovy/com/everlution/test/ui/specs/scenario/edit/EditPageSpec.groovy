@@ -4,8 +4,11 @@ import com.everlution.ScenarioService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.scenario.EditScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
+import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -22,25 +25,11 @@ class EditPageSpec extends GebSpec {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
-        go "/scenario/edit/${id}"
-    }
 
-    void "home link directs to home view"() {
-        when: "click the home button"
-        def page = browser.page(EditScenarioPage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        when: "click the list link"
-        def page = browser.page(EditScenarioPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListScenarioPage
+        browser.page(ListProjectPage).projectTable.clickCell("Name", 0)
+        browser.page(ProjectHomePage).navBar.goToListsPage("Scenarios")
+        browser.page(ListScenarioPage).scenarioTable.clickCell("Name", 0)
+        browser.page(ShowScenarioPage).goToEdit()
     }
 
     void "correct fields are displayed"() {

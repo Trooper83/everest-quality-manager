@@ -43,54 +43,6 @@ class ShowPageSpec extends GebSpec {
         showPage.statusMessage.text() ==~ /Project \S+ created/
     }
 
-    void "home link directs to home view"() {
-        when: "go to show project page"
-        go "/project/show/${id}"
-
-        and: "click the home button"
-        ShowProjectPage page = browser.page(ShowProjectPage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        when: "go to show project page"
-        go "/project/show/${id}"
-
-        and: "click the list button"
-        ShowProjectPage page = browser.page(ShowProjectPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListProjectPage
-    }
-
-    void "create link directs to create view"() {
-        when: "go to show project page"
-        go "/project/show/${id}"
-
-        and: "click the create button"
-        ShowProjectPage page = browser.page(ShowProjectPage)
-        page.goToCreate()
-
-        then: "at the create page"
-        at CreateProjectPage
-    }
-
-    void "edit link directs to edit view"() {
-        when: "go to show project page"
-        go "/project/show/${id}"
-
-        and: "click the edit button"
-        ShowProjectPage page = browser.page(ShowProjectPage)
-        page.goToEdit()
-
-        then: "at the edit page"
-        at EditProjectPage
-    }
-
     void "correct fields are displayed"() {
         when: "go to show project page"
         go "/project/show/${id}"

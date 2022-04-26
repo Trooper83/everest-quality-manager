@@ -18,23 +18,20 @@ class DeleteScenarioSpec extends GebSpec {
     ProjectService projectService
     ScenarioService scenarioService
 
-    int id
-
-    def setup() {
+    void "authorized users can delete scenario"(String username, String password) {
+        given:
         def project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
         def scn = new Scenario(name: "delete scenario", person: person, project: project,
                 executionMethod: "Manual", type: "UI")
-        id = scenarioService.save(scn).id
-    }
+        def id = scenarioService.save(scn).id
 
-    void "authorized users can delete scenario"(String username, String password) {
-        given: "log in as authorized user"
+        and: "log in as authorized user"
         def loginPage = to LoginPage
         loginPage.login(username, password)
 
         and: "go to show page"
-        go "/scenario/show/${id}"
+        go "/project/${project.id}/scenario/show/${id}"
 
         when: "delete scenario"
         def showPage = browser.at(ShowScenarioPage)

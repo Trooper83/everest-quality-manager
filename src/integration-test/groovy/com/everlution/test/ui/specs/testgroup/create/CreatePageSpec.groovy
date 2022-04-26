@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testgroup.create
 
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -11,6 +12,8 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreatePageSpec extends GebSpec {
 
+    ProjectService projectService
+
     def setup() {
         given: "login as a basic user"
         to LoginPage
@@ -18,36 +21,19 @@ class CreatePageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create page"
-        to CreateTestGroupPage
-    }
-
-    void "home link directs to home view"() {
-        when: "click the home button"
-        def page = browser.page(CreateTestGroupPage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        when: "click the list link"
-        def page = browser.page(CreateTestGroupPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListTestGroupPage
+        def id = projectService.list(max: 1).first().id
+        to (CreateTestGroupPage, id)
     }
 
     void "correct fields are displayed"() {
         expect: "correct fields are displayed"
         def page = browser.page(CreateTestGroupPage)
-        page.getFields() == ["Project *", "Name *"]
+        page.getFields() == ["Project", "Name *"]
     }
 
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         def page = browser.page(CreateTestGroupPage)
-        page.areRequiredFieldIndicatorsDisplayed(["project", "name"])
+        page.areRequiredFieldIndicatorsDisplayed(["name"])
     }
 }

@@ -3,8 +3,11 @@ package com.everlution.test.ui.support.pages.testgroup
 import com.everlution.test.ui.support.pages.common.EditPage
 
 class EditTestGroupPage extends EditPage {
-    static url = "/testGroup/edit"
     static at = { title == "Edit TestGroup" }
+
+    static String convertToPath(Long projectId, Long id) {
+        "/project/${projectId}/testGroup/edit/${id}"
+    }
 
     static content = {
         nameInput { $("#name") }

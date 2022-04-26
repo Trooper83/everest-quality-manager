@@ -21,7 +21,6 @@ class CreateBugPage extends BasePage {
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
         platformOptions { $("#platform>option") }
-        projectOptions { $("#project>option") }
         stepsTable { module StepTableModule }
     }
 
@@ -38,10 +37,6 @@ class CreateBugPage extends BasePage {
 
     Select platformSelect() {
         $("#platform").module(Select)
-    }
-
-    Select projectSelect() {
-        $("#project").module(Select)
     }
 
     /**
@@ -67,7 +62,6 @@ class CreateBugPage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
-        projectSelect().selected = "1"
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
@@ -76,13 +70,9 @@ class CreateBugPage extends BasePage {
      * creates a bug with the supplied data
      */
     void createBug(String name, String description, String area, List<String> environment,
-                   String project, String platform, String action, String result) {
+                   String platform, String action, String result) {
         nameInput = name
         descriptionInput = description
-        projectSelect().selected = project
-        waitFor() {
-            areaSelect().enabled
-        }
         areaSelect().selected = area
         platformSelect().selected = platform
         environmentsSelect().selected = environment
@@ -98,7 +88,6 @@ class CreateBugPage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
-        projectSelect().selected = "1"
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
     }
 

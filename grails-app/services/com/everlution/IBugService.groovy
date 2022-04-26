@@ -2,13 +2,13 @@ package com.everlution
 
 interface IBugService {
 
-    Bug get(Serializable id)
-
-    List<Bug> list(Map args)
-
     Long count()
 
     void delete(Serializable id)
+
+    Bug get(Serializable id)
+
+    List<Bug> list(Map args)
 
     Bug read(Serializable id)
 

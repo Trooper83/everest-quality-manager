@@ -15,14 +15,28 @@ class ProjectController {
 
     /**
      * lists all projects
-     * /project/index
-     * @param max - maximum projects to retrieve
-     * @return - list of projects
+     * /projects
      */
-    @Secured("ROLE_PROJECT_ADMIN")
-    def index(Integer max) {
+    @Secured("ROLE_READ_ONLY")
+    def projects(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond projectService.list(params), model:[projectCount: projectService.count()]
+    }
+
+    /**
+     * displays the home view with project data
+     * /project/${id}/home
+     * @param id - id of the project
+     * @return - the project to show
+     */
+    @Secured("ROLE_READ_ONLY")
+    def home(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond project, view: "home"
     }
 
     /**
@@ -139,7 +153,7 @@ class ProjectController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'project.label', default: 'Project'), id])
-                redirect action:"index", method:"GET"
+                redirect action:"projects", method:"GET"
             }
             '*'{ render status: NO_CONTENT }
         }

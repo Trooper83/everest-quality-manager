@@ -4,50 +4,33 @@
         <meta name="layout" content="main" />
         <g:set var="entityName" value="${message(code: 'bug.label', default: 'Bug')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
-        <asset:javascript src="application.js"/>
     </head>
     <body>
-        <a href="#create-bug" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <div class="nav" role="navigation">
-            <ul>
-                <li>
-                    <a class="home" data-test-id="create-home-link" href="${createLink(uri: '/')}">
-                        <g:message code="default.home.label"/>
-                    </a>
-                </li>
-                <li>
-                    <g:link class="list" action="index" data-test-id="create-list-link">
-                    <g:message code="default.list.label" args="[entityName]" /></g:link>
-                </li>
-            </ul>
-        </div>
         <div id="create-bug" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
             <g:form resource="${this.bug}" method="POST">
                 <fieldset class="form">
                     <f:all bean="bug" except="area, person, environments, project, steps"/>
-                    <div class="fieldcontain required">
-                        <label for="project">Project
-                            <span class="required-indicator">*</span>
-                        </label>
-                        <g:select name="project" from="${projects}"
-                              optionKey="id" optionValue="name"
-                              noSelection="${['':'Select a Project...']}"
-                              onchange="getProjectItems()"
-                        />
+                    <g:hiddenField name="project" value="${project.id}"/>
+                    <div class="fieldcontain">
+                        <label for="project">Project</label>
+                        <span>${project.name}</span>
                     </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
-                        <select name="area" id="area" disabled>
-                            <option value=''>Select an Area...</option>
-                        </select>
+                        <g:select name="area" from="${project.areas}"
+                              optionKey="id" optionValue="name"
+                              noSelection="${['':'Select an Area...']}"
+                        />
                     </div>
                     <div class="fieldcontain">
                         <label for="environments">Environments</label>
-                        <select name="environments" id="environments" disabled multiple>
-                            <option value=''>--No Environment--</option>
-                        </select>
+                        <g:select name="environments" from="${project.environments}"
+                                  optionKey="id" optionValue="name"
+                                  noSelection="${['':'Select Environments...']}"
+                                  multiple="true"
+                        />
                     </div>
                 </fieldset>
                 <g:render template="/shared/createStepsTableTemplate"/>

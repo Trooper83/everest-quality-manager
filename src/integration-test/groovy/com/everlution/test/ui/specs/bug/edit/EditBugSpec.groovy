@@ -42,7 +42,7 @@ class EditBugSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to edit page"
-        go "/bug/edit/${id}"
+        go "/project/${project.id}/bug/edit/${id}"
 
         when: "edit the bug"
         def page = browser.page(EditBugPage)
@@ -76,7 +76,7 @@ class EditBugSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/bug/edit/${bug.id}"
+        go "/project/${project.id}/bug/edit/${bug.id}"
 
         and: "edit all bug data"
         EditBugPage editPage = browser.page(EditBugPage)

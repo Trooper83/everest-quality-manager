@@ -11,6 +11,8 @@ class ExecuteTestIterationPage extends BasePage {
         fieldLabels { $("ol.property-list>li>span") }
         resultOptions { $("#result>option") }
         statusMessage { $("div.message") }
+        testCaseLink { $("#testCase") }
+        testCycleLink { $("div[aria-labelledby=testCycle-label]>a") }
         updateButton { $("[data-test-id=edit-update-button]") }
     }
 
@@ -24,6 +26,20 @@ class ExecuteTestIterationPage extends BasePage {
      */
     List<String> getFields() {
         return fieldLabels*.text()
+    }
+
+    /**
+     * clicks test case link
+     */
+    void goToTestCase() {
+        testCaseLink.click()
+    }
+
+    /**
+     * clicks test cycle link
+     */
+    void goToTestCycle() {
+        testCycleLink.click()
     }
 
     /**

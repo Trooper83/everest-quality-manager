@@ -14,7 +14,6 @@ import com.everlution.TestGroupService
 import com.everlution.command.IterationsCmd
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
-import grails.validation.ValidationException
 import spock.lang.*
 
 class TestCycleControllerSpec extends Specification implements ControllerUnitTest<TestCycleController>, DomainUnitTest<TestCycle> {
@@ -26,134 +25,6 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         params["name"] = 'someValidName'
         params["releasePlan.id"] = plan.id
         params["releasePlan"] = plan
-    }
-
-    void "test the create action returns the correct view"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> new ReleasePlan()
-        }
-
-        when:"the create action is executed"
-        populateValidParams(params)
-        controller.create()
-
-        then:"the model is correctly created"
-        view == "create"
-    }
-
-    void "test the create action returns the correct model"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> new ReleasePlan()
-        }
-
-        when:"the create action is executed"
-        populateValidParams(params)
-        controller.create()
-
-        then:"the model is correctly created"
-        def m = model
-        model.testCycle!= null
-        model.releasePlan != null
-    }
-
-    void "create action renders 404 not found view with null release plan"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> null
-        }
-
-        when:"the create action is executed"
-        controller.create()
-
-        then:"the model is correctly created"
-        status == 404
-    }
-
-    void "null pointer not thrown when release plan not found in params"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> null
-        }
-
-        when:
-        controller.create()
-
-        then:
-        notThrown(NullPointerException)
-    }
-
-    void "save action with a null instance"() {
-        when:"save is called for a domain instance that doesn't exist"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'POST'
-        populateValidParams(params)
-        controller.save(null)
-
-        then:"404 error is returned"
-        response.redirectedUrl == '/releasePlan/show/1'
-        flash.message != null
-    }
-
-    void "save action correctly persists"() {
-        given:
-        controller.testCycleService = Mock(TestCycleService) {
-            1 * save(_ as TestCycle)
-        }
-
-        when:"save action is executed with a valid instance"
-        response.reset()
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'POST'
-        populateValidParams(params)
-        def testCycle = new TestCycle(params)
-        testCycle.id = 1
-
-        controller.save(testCycle)
-
-        then:"redirect is issued to the show action"
-        response.redirectedUrl == '/releasePlan/show/1'
-        controller.flash.message != null
-    }
-
-    void "save action with an invalid instance"() {
-        given:
-        controller.testCycleService = Mock(TestCycleService) {
-            1 * save(_ as TestCycle) >> { TestCycle testCycle ->
-                throw new ValidationException("Invalid instance", testCycle.errors)
-            }
-        }
-
-        when:"save action is executed with an invalid instance"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'POST'
-        populateValidParams(params)
-        def testCycle = new TestCycle()
-        controller.save(testCycle)
-
-        then:"create view is rendered again with the correct model"
-        model.testCycle != null
-        view == 'create'
-    }
-
-    void "save action method type"(String httpMethod) {
-        given:
-        request.method = httpMethod
-        populateValidParams(params)
-        def cycle = new TestCycle(params)
-
-        when:
-        controller.save(cycle)
-
-        then:
-        response.status == 405
-
-        where:
-        httpMethod   | _
-        'GET'        | _
-        'DELETE'     | _
-        'PUT'        | _
     }
 
     void "show action with a null id"() {
@@ -206,66 +77,95 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         model.testGroups == [group1]
     }
 
-    void "add iterations renders success message"() {
+    void "add tests renders success message"() {
         given:
+        request.method = 'POST'
         def group = new TestGroup(name: "group name").save()
         def tc = new TestCase()
         group.addToTestCases(tc)
-        def cmd = new IterationsCmd()
+        IterationsCmd cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [group.id]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
-        when:
+        and:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> [group]
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             1 * addTestIterations(_, _)
         }
+
+        when:
         controller.addTests(cmd)
 
         then:
         controller.flash.message == "Tests successfully added"
-        response.redirectedUrl == "/testCycle/show"
+        response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
-    void "add iterations with groups that have no tests renders error message"() {
+    void "add tests with groups that have no tests renders error message"() {
         given:
+        request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [1]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> []
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             0 * addTestIterations(_, _)
         }
         controller.addTests(cmd)
 
         then:
         controller.flash.message == "No tests added"
-        response.redirectedUrl == "/testCycle/show"
+        response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
-    void "add iterations renders error message"() {
+    void "add tests renders error message"() {
         given:
+        request.method = 'POST'
         def group = new TestGroup(name: "group name").save()
         def tc = new TestCase()
         group.addToTestCases(tc)
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [group.id]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getAll(_) >> [group]
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             1 * addTestIterations(_, _) >> {
                 throw new Exception()
             }
@@ -274,14 +174,23 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
         then:
         controller.flash.error == "Error occurred attempting to add tests"
-        response.redirectedUrl == "/testCycle/show"
+        response.redirectedUrl == "/project/1/testCycle/show/1"
     }
 
-    void "add iterations executes groups logic when group ids specified"() {
+    void "add tests executes groups logic when group ids specified"() {
         given:
+        request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testGroups = [1]
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def testCycle = new TestCycle()
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.addTests(cmd)
@@ -291,7 +200,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
             1 * getAll(_) >> []
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             0 * addTestIterations(_, _)
         }
         controller.testCaseService = Mock(TestCaseService) {
@@ -299,11 +208,20 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
     }
 
-    void "add iterations executes test case logic when test case ids specified"() {
+    void "add tests executes test case logic when test case ids specified"() {
         given:
+        request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
         cmd.testCases = [1]
+        def testCycle = new TestCycle()
+        def plan = new ReleasePlan()
+        plan.id = 1
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        testCycle.id = 1
+        testCycle.releasePlan = plan
 
         when:
         controller.addTests(cmd)
@@ -313,7 +231,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
             0 * getAll(_) >> []
         }
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(_) >> new TestCycle()
+            1 * get(_) >> testCycle
             0 * addTestIterations(_, _)
         }
         controller.testCaseService = Mock(TestCaseService) {
@@ -328,10 +246,29 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:
+        request.method = 'POST'
         controller.addTests(new IterationsCmd())
 
         then:
         status == 404
+    }
+
+    void "add tests action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.addTests(new IterationsCmd())
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'GET'        | _
+        'DELETE'     | _
+        'PUT'        | _
+        'PATCH'      | _
     }
 }
 

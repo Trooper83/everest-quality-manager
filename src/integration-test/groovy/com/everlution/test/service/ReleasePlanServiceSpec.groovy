@@ -1,6 +1,7 @@
 package com.everlution.test.service
 
 import com.everlution.Project
+import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
 import com.everlution.TestCycle
@@ -15,6 +16,7 @@ import org.hibernate.SessionFactory
 @Rollback
 class ReleasePlanServiceSpec extends Specification {
 
+    ProjectService projectService
     ReleasePlanService releasePlanService
     TestCycleService testCycleService
     SessionFactory sessionFactory
@@ -68,7 +70,7 @@ class ReleasePlanServiceSpec extends Specification {
 
     void "save persists instance"() {
         when:
-        def project = new Project(name: "project name 123", code: "pn1").save()
+        def project = projectService.list(max: 1).first()
         ReleasePlan releasePlan = new ReleasePlan(name: "test name", project: project)
         releasePlanService.save(releasePlan)
 
@@ -87,8 +89,8 @@ class ReleasePlanServiceSpec extends Specification {
 
     void "removeTestCycle removes and deletes test cycle"() {
         given:
-        def project = new Project(name: "project name 123", code: "pn1").save()
         def cycle = new TestCycle(name: "test cycle")
+        def project = projectService.list(max: 1).first()
         ReleasePlan releasePlan = new ReleasePlan(name: "test name", project: project, testCycles: [cycle])
         releasePlanService.save(releasePlan)
 
@@ -101,5 +103,65 @@ class ReleasePlanServiceSpec extends Specification {
 
         then:
         testCycleService.get(cycle.id) == null
+    }
+
+    void "find all by project returns only plans with project"() {
+        given:
+        setupData()
+
+        when:
+        def project = projectService.list(max: 1).first()
+        def plans = releasePlanService.findAllByProject(project)
+
+        then:
+        plans.size() > 0
+        plans.every { it.project.id == project.id }
+    }
+
+    void "find all by project with null project returns empty list"() {
+        given:
+        setupData()
+
+        when:
+        def plans = releasePlanService.findAllByProject(null)
+
+        then:
+        plans.size() == 0
+        noExceptionThrown()
+    }
+
+    void "add test cycle persists test cycle"() {
+        given:
+        def cycle = new TestCycle(name: "test cycle123")
+        def project = projectService.list(max: 1).first()
+        def releasePlan = new ReleasePlan(name: "test name123", project: project)
+        releasePlanService.save(releasePlan)
+
+        expect:
+        cycle.id == null
+        !releasePlan.testCycles
+
+        when:
+        releasePlanService.addTestCycle(releasePlan, cycle)
+        sessionFactory.currentSession.flush()
+
+        then:
+        cycle.id != null
+        releasePlan.testCycles.size() == 1
+    }
+
+    void "add test cycle with invalid test cycle throws error"() {
+        given:
+        def cycle = new TestCycle()
+        def project = projectService.list(max: 1).first()
+        def releasePlan = new ReleasePlan(name: "test name123", project: project)
+        releasePlanService.save(releasePlan)
+
+        when:
+        releasePlanService.addTestCycle(releasePlan, cycle)
+        sessionFactory.currentSession.flush()
+
+        then:
+        thrown(ValidationException)
     }
 }

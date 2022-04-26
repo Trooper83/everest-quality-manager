@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testcase.create
 
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
@@ -9,6 +10,8 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreatePageStepsSpec extends GebSpec {
 
+    ProjectService projectService
+
     def setup() {
         given: "login as a basic user"
         to LoginPage
@@ -16,7 +19,8 @@ class CreatePageStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create page"
-        to CreateTestCasePage
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/testCase/create"
     }
 
     void "add test step row"() {
@@ -48,7 +52,7 @@ class CreatePageStepsSpec extends GebSpec {
 
     void "null action and result message"() {
         setup:
-        def createPage = to CreateTestCasePage
+        def createPage = browser.page(CreateTestCasePage)
         createPage.completeCreateForm()
         createPage.testStepTable.addStep("", "")
         createPage.createButton.click()

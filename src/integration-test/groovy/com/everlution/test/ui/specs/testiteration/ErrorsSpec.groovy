@@ -42,7 +42,7 @@ class ErrorsSpec extends GebSpec {
         notFoundPage.errors*.text().contains("Error: Page Not Found (404)")
 
         where:
-        url << ["/testIteration/show/9999999999999999", "/testIteration/execute/9999999999999999"]
+        url << ["/project/1/testIteration/show/9999999999999999", "/project/1/testIteration/execute/9999999999999999"]
     }
 
     void "denied page displayed for read_only user"() {
@@ -55,7 +55,7 @@ class ErrorsSpec extends GebSpec {
         def plan = new ReleasePlan(name: "release plan 1", project: project)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        testCycleService.save(testCycle)
+        releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
@@ -68,7 +68,7 @@ class ErrorsSpec extends GebSpec {
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
         and: "go to cycle"
-        go "/testCycle/show/${testCycle.id}?releasePlan.id=${plan.id}"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
 
         when:
         def show = at ShowTestCyclePage

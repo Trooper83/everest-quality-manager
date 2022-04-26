@@ -21,6 +21,17 @@ class TableModule extends Module {
     }
 
     /**
+     * clicks a link in a cell
+     * @param columnName - name of the column
+     * @param value - value to find
+     */
+    void clickCell(String columnName, String value) {
+        int columnIndex = getColumnIndex(columnName)
+        def cells = tableRows.collect( r -> r.find('td')[columnIndex])
+        cells.find { c -> c.has('a', text: value) }.find('a').click()
+    }
+
+    /**
      * finds the index of column with the supplied name
      * @param columnName - name of the column
      * @return - zero-based index

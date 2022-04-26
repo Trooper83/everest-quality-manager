@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.testcase.create
 
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
@@ -9,52 +10,23 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreatePageAreaSpec extends GebSpec {
 
-    def setup() {
+    ProjectService projectService
+
+    void "area field has no value set"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to the create page"
-        to CreateTestCasePage
-    }
+        and:
+        def project = projectService.list(max: 1).first()
 
-    void "area field has no value set"() {
-        when: "project is selected"
-        def page = browser.page(CreateTestCasePage)
-        page.projectSelect().selected = "1"
+        when: "go to the create page"
+        go "/project/${project.id}/testCase/create"
 
         then: "default text selected"
+        def page = browser.page(CreateTestCasePage)
         page.areaSelect().selectedText == "Select an Area..."
         page.areaSelect().selected == ""
-    }
-
-    void "area field defaults disabled"() {
-        expect: "area is disabled"
-        def page = browser.page(CreateTestCasePage)
-        page.areaSelect().disabled
-    }
-
-    void "area field disabled and depopulated when project is set to default"() {
-        given: "project is selected"
-        def page = browser.page(CreateTestCasePage)
-        page.projectSelect().selected = "bootstrap project"
-
-        expect: "area field enabled and populated"
-        waitFor(2) { //need to wait for transition
-            !page.areaSelect().disabled
-            page.areaOptions.size() > 1
-        }
-
-        when: "project set to default"
-        page.projectSelect().selected = ""
-
-        then: "area is disabled, depopulated and set to default"
-        waitFor(2) { //need to wait for transition
-            page.areaSelect().disabled
-            page.areaOptions.size() == 1
-            page.areaSelect().selectedText == "Select an Area..."
-            page.areaSelect().selected == ""
-        }
     }
 }

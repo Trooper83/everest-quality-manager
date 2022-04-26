@@ -1,46 +1,29 @@
 package com.everlution.test.ui.specs.testgroup.edit
 
-import com.everlution.ITestGroupService
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testgroup.EditTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
+import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.Shared
 
 @Integration
 class EditPageSpec extends GebSpec {
 
-    @Shared int id
-
-    ITestGroupService testGroupService
-
     def setup() {
-        id = testGroupService.list(max:1).first().id
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
-        go "/testGroup/edit/${id}"
-    }
-
-    void "home link directs to home view"() {
-        when: "click the home button"
-        def page = browser.page(EditTestGroupPage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        when: "click the list link"
-        def page = browser.page(EditTestGroupPage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListTestGroupPage
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
+        browser.page(ShowTestGroupPage).goToEdit()
     }
 
     void "correct fields are displayed"() {

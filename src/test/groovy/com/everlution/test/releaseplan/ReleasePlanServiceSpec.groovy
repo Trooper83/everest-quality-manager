@@ -117,4 +117,54 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         cycle.releasePlan == null
         plan.testCycles.empty
     }
+
+    void "find all by project returns plans"() {
+        when:
+        def plans = service.findAllByProject(project)
+
+        then:
+        plans instanceof List<ReleasePlan>
+    }
+
+    void "find all by project only returns plans with project"() {
+        given:
+        def proj = new Project(name: "Plan Project1223", code: "BP8").save()
+        def plan = new ReleasePlan(name: "Name of the plan", project: proj).save(flush: true)
+        new ReleasePlan(name: "Name of the plan123", project: project).save(flush: true)
+
+        expect:
+        ReleasePlan.list().contains(plan)
+
+        when:
+        def plans = service.findAllByProject(project)
+
+        then:
+        plans.every { it.project.id == project.id }
+        plans.size() > 0
+        !plans.contains(plan)
+    }
+
+    void "find all by project with null project id returns empty list"() {
+        when:
+        def plans = service.findAllByProject(null)
+
+        then:
+        noExceptionThrown()
+        plans.size() == 0
+    }
+
+    void "add test cycle saves test cycle"() {
+        given:
+        def plan = new ReleasePlan(name: "Name of the plan123", project: project).save(flush: true)
+        def cycle = new TestCycle()
+
+        expect:
+        cycle.id == null
+
+        when:
+        service.addTestCycle(plan, cycle)
+
+        then:
+        cycle.id != null
+    }
 }

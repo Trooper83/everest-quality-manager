@@ -45,17 +45,6 @@ class AuthSpec extends GebSpec {
         Usernames.DISABLED.username | "password" | "Sorry, your account is disabled."
     }
 
-    void "welcome message displays for logged in user"() {
-        given: "login as basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        expect: "welcome message is displayed"
-        HomePage homePage = browser.page(HomePage)
-        homePage.navBar.verifyWelcomeMessage(Usernames.BASIC.username)
-    }
-
     void "user can logout"() {
         given: "login as basic user"
         to LoginPage
@@ -67,13 +56,7 @@ class AuthSpec extends GebSpec {
         homePage.navBar.logout()
 
         then: "at home page"
-        at HomePage
-    }
-
-    void "welcome message not displayed for non-logged in user"() {
-        expect: "welcome message is not displayed"
-        HomePage homePage = browser.page(HomePage)
-        !homePage.navBar.isWelcomeMessageDisplayed()
+        at LoginPage
     }
 
     void "anonymous user redirected to login page"(String url) {

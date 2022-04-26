@@ -31,7 +31,7 @@ class DeleteTestCaseSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to show page"
-        go "/testCase/show/${id}"
+        go "/project/${project.id}/testCase/show/${id}"
 
         when: "delete test case"
         def showPage = browser.at(ShowTestCasePage)

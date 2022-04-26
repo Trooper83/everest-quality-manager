@@ -27,9 +27,53 @@
             <g:pageProperty name="page.nav"/>
         </ul>
     </div>
-    <div>
+    <div class="row justify-content-end">
+        <div class="col">
+            <sec:ifAnyGranted roles="ROLE_BASIC">
+                <g:if test="${params.projectId}">
+                    <div class="dropdown" id="createMenu">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Create
+                        </button>
+                        <div class="dropdown-menu bg-secondary" aria-labelledby="dropdownMenuButton">
+                            <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
+                                <g:link class="dropdown-item" controller="project" action="create">Project</g:link>
+                                <div class="dropdown-divider"></div>
+                            </sec:ifAnyGranted>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/bug/create">Bug</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/releasePlan/create">Release Plan</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/scenario/create">Scenario</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testCase/create">Test Case</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroup/create">Test Group</g:link>
+                        </div>
+                    </div>
+                </g:if>
+            </sec:ifAnyGranted>
+        </div>
+    </div>
+    <ul class="navbar-nav">
+        <sec:ifAnyGranted roles="ROLE_READ_ONLY">
+                <g:if test="${params.projectId}">
+                    <li class="nav-item dropdown" id="listsMenu">
+                        <g:link class="nav-link dropdown-toggle" controller="project" action="projects" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Project
+                        </g:link>
+                        <div class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdown">
+                            <g:link class="dropdown-item" uri="/projects">Projects</g:link>
+                            <div class="dropdown-divider"></div>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/home">Home</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/bugs">Bugs</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/releasePlans">Release Plans</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testCases"> Test Cases</g:link>
+                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
+                        </div>
+                    </li>
+                </g:if>
+        </sec:ifAnyGranted>
+    </ul>
+    <div class="container">
         <sec:ifLoggedIn>
-            <p data-test-id="main-welcome-username">Welcome Back <sec:username/>!</p>
             <g:form controller="logout">
                 <button data-test-id="main-logout-button">logout</button>
             </g:form>
@@ -38,7 +82,6 @@
             <g:link controller="login" action="auth" data-test-id="main-login-link">Login</g:link>
         </sec:ifNotLoggedIn>
     </div>
-
 </nav>
 
 <g:layoutBody/>
@@ -76,6 +119,5 @@
 </div>
 
 <asset:javascript src="application.js"/>
-
 </body>
 </html>

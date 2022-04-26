@@ -21,6 +21,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
 
     def setup() {
         project = new Project(name: "Test Group Project", code: "TGP").save()
+        new TestGroup(name: "name123", project: project).save()
     }
 
     void "get with valid id returns instance"() {
@@ -33,7 +34,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
 
     void "get with invalid id returns null"() {
         expect:
-        service.get(1) == null
+        service.get(11111111111) == null
     }
 
     void "list max args param returns correct value"() {
@@ -45,8 +46,8 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         service.list(max: 1).size() == 1
         service.list(max: 2).size() == 2
-        service.list().size() == 3
-        service.list(offset: 1).size() == 2
+        service.list().size() == 4
+        service.list(offset: 1).size() == 3
     }
 
     void "count returns number of groups"() {
@@ -56,7 +57,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         new TestGroup(name: "name2", project: project).save(flush: true)
 
         then:
-        service.count() == 3
+        service.count() == 4
     }
 
     void "delete with valid id deletes instance"() {
@@ -149,5 +150,39 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         groups.size() == 4
         groups.get(2) == null
         groups.get(0) != null
+    }
+
+    void "find all by project returns test groups"() {
+        when:
+        def groups = service.findAllByProject(project)
+
+        then:
+        groups instanceof List<TestGroup>
+    }
+
+    void "find all by project only returns groups with project"() {
+        given:
+        def proj = new Project(name: "BugServiceSpec Project1223", code: "BP8").save()
+        def tg = new TestGroup(name: "name2", project: proj).save(flush: true)
+
+        expect:
+        TestGroup.list().contains(tg)
+
+        when:
+        def groups = service.findAllByProject(project)
+
+        then:
+        groups.every { it.project.id == project.id }
+        groups.size() > 0
+        !groups.contains(tg)
+    }
+
+    void "find all by project with null project id returns empty list"() {
+        when:
+        def groups = service.findAllByProject(null)
+
+        then:
+        noExceptionThrown()
+        groups.size() == 0
     }
 }

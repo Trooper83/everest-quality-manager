@@ -45,7 +45,7 @@ class TestIterationController {
 
         try {
             testIterationService.save(testIteration)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             def t = testIterationService.read(testIteration.id)
             t.errors = t.errors
             render view: 'execute', model: [testIteration: t]
@@ -55,7 +55,7 @@ class TestIterationController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'testIteration.label', default: 'Test Iteration'), testIteration.id])
-                respond testIteration, view: 'execute'
+                redirect uri: "/project/${testIteration.testCycle.releasePlan.project.id}/testIteration/show/${testIteration.id}"
             }
             '*'{ respond testIteration, [status: OK] }
         }

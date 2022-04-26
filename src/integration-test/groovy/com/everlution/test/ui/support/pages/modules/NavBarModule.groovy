@@ -1,27 +1,40 @@
 package com.everlution.test.ui.support.pages.modules
 
 import geb.Module
-import geb.error.RequiredPageContentNotPresent
 
 class NavBarModule extends Module {
 
     static content = {
+        createMenuDropDown(required: false) { $("#createMenu" ) }
+        createMenuOptions { createMenuDropDown.find('a') }
+        listsMenuDropDown(required: false) { $("#listsMenu" ) }
         loginLink { $("[data-test-id=main-login-link]") }
         logoutButton { $("[data-test-id=main-logout-button]") }
-        usernameLabel { $("[data-test-id=main-welcome-username]") }
     }
 
     /**
-     * determines if the welcome message is displayed
-     * @return - true if displayed, false if not
+     * goes to an items create page
+     * @param item
      */
-    boolean isWelcomeMessageDisplayed() {
-        try {
-            usernameLabel.displayed
-        } catch(RequiredPageContentNotPresent ignored) {
-            return false
-        }
-        return true
+    void goToCreatePage(String item) {
+        createMenuDropDown.click()
+        createMenuDropDown.find('a', text: item).click()
+    }
+
+    /**
+     * goes to an items list page
+     * @param item
+     */
+    void goToListsPage(String item) {
+        listsMenuDropDown.click()
+        listsMenuDropDown.find('a', text: item).click()
+    }
+
+    /**
+     * determines if a menu option is displayed
+     */
+    boolean isCreateMenuOptionDisplayed(String option) {
+        return createMenuOptions*.text().contains(option)
     }
 
     /**
@@ -29,13 +42,5 @@ class NavBarModule extends Module {
      */
     void logout() {
         logoutButton.click()
-    }
-
-    /**
-     * verifies the welcome message text
-     * @param username - the logged in user
-     */
-    boolean verifyWelcomeMessage(String username) {
-        return usernameLabel.text() == "Welcome Back ${username}!"
     }
 }

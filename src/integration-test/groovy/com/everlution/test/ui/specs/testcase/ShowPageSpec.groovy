@@ -8,22 +8,21 @@ import com.everlution.TestCaseService
 import com.everlution.TestCycleService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
-import com.everlution.test.ui.support.pages.common.HomePage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import org.hibernate.SessionFactory
 
 @Integration
 class ShowPageSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
-    SessionFactory sessionFactory
     TestCaseService testCaseService
     TestCycleService testCycleService
 
@@ -34,7 +33,8 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to the create test case page"
-        to CreateTestCasePage
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/testCase/create"
 
         when: "create a test case"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
@@ -46,81 +46,23 @@ class ShowPageSpec extends GebSpec {
         showPage.statusMessage.text() ==~ /TestCase \d+ created/
     }
 
-    void "home link directs to home view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to list test case page"
-        to ListTestCasePage
-
-        and: "click first test case in list"
-        ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
-
-        when: "click the home button"
-        ShowTestCasePage page = browser.page(ShowTestCasePage)
-        page.goToHome()
-
-        then: "at the home page"
-        at HomePage
-    }
-
-    void "list link directs to list view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to list test case page"
-        to ListTestCasePage
-
-        and: "click first test case in list"
-        ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
-
-        when: "click the list link"
-        ShowTestCasePage page = browser.page(ShowTestCasePage)
-        page.goToList()
-
-        then: "at the list page"
-        at ListTestCasePage
-    }
-
-    void "create link directs to create view"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to list test case page"
-        to ListTestCasePage
-
-        and: "click first test case in list"
-        ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
-
-        when: "click the new test case link"
-        ShowTestCasePage page = browser.page(ShowTestCasePage)
-        page.goToCreate()
-
-        then: "at the create test case page"
-        at CreateTestCasePage
-    }
-
     void "edit link directs to home view"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to list test case page"
-        to ListTestCasePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click the edit button"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
@@ -130,45 +72,53 @@ class ShowPageSpec extends GebSpec {
         at EditTestCasePage
     }
 
-    void "create delete edit buttons not displayed for Read Only user"() {
+    void "delete edit buttons not displayed for Read Only user"() {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        and: "go to list test case page"
-        to ListTestCasePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
-        then: "create delete edit test case buttons are not displayed"
+        then: "delete edit test case buttons are not displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
         verifyAll {
-            !page.createLink.displayed
             !page.deleteLink.displayed
             !page.editLink.displayed
         }
     }
 
-    void "create delete edit buttons displayed for authorized users"(String username, String password) {
+    void "delete edit buttons displayed for authorized users"(String username, String password) {
         given: "login as basic and above user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
-        and: "go to list test case page"
-        to ListTestCasePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
-        then: "create delete edit test case buttons are not displayed"
+        then: "delete edit test case buttons are not displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
         verifyAll {
-            page.createLink.displayed
             page.deleteLink.displayed
             page.editLink.displayed
         }
@@ -187,12 +137,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        and: "go to list test case page"
-        to ListTestCasePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "correct fields are displayed"
         ShowTestCasePage page = browser.page(ShowTestCasePage)
@@ -206,12 +161,17 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to list test case page"
-        to ListTestCasePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click delete and cancel | verify message"
         ShowTestCasePage showPage = browser.page(ShowTestCasePage)
@@ -235,7 +195,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${id}"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         when: "edit a test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -249,7 +209,7 @@ class ShowPageSpec extends GebSpec {
 
     void "delete test case with test iterations displays failure error"() {
         given:
-        def cycle = DataFactory.getTestCycle()
+        def cycle = DataFactory.createTestCycle()
         Project project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
@@ -263,7 +223,7 @@ class ShowPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and:
-        go "/testCase/show/${id}"
+        go "/project/${project.id}/testCase/show/${id}"
 
         when:
         def show = at ShowTestCasePage

@@ -9,6 +9,7 @@ import com.everlution.TestCycleController
 import com.everlution.TestGroupController
 import com.everlution.TestIterationController
 import com.everlution.UrlMappings
+import grails.plugin.springsecurity.LoginController
 import grails.testing.web.UrlMappingsUnitTest
 import spock.lang.Specification
 
@@ -20,23 +21,35 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         verifyForwardUrlMapping(404, view: 'notFound')
     }
 
+    void "verify login forward and reverse mappings"() {
+        mockController(LoginController)
+
+        expect:
+        verifyUrlMapping("/login/auth", controller: 'login', action: 'auth')
+    }
+
     void "verify test case forward and reverse mappings"() {
         mockController(TestCaseController)
 
         expect:
-        verifyUrlMapping("/", view: 'index')
-        verifyUrlMapping("/testCase/index", controller: 'testCase', action: 'index')
-        verifyUrlMapping("/testCase/create", controller: 'testCase', action: 'create')
         verifyUrlMapping("/testCase/save", controller: 'testCase', action: 'save')
         verifyUrlMapping("/testCase/update", controller: 'testCase', action: 'update')
-        verifyUrlMapping("/testCase/show/123", controller: 'testCase', action: 'show') {
-            id = 123
-        }
-        verifyUrlMapping("/testCase/edit/123", controller: 'testCase', action: 'edit') {
-            id = 123
-        }
         verifyUrlMapping("/testCase/delete/123", controller: 'testCase', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/123/testCases", controller: 'testCase', action: 'testCases') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/testCase/create", controller: 'testCase', action: 'create') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/999/testCase/show/123", controller: 'testCase', action: 'show') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/123/testCase/edit/123", controller: 'testCase', action: 'edit') {
+            id = 123
+            projectId = 123
         }
     }
 
@@ -44,7 +57,10 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(ProjectController)
 
         expect:
-        verifyUrlMapping("/project/index", controller: 'project', action: 'index')
+        verifyUrlMapping("/projects", controller: 'project', action: 'projects')
+        verifyUrlMapping("/project/123/home", controller: 'project', action: 'home') {
+            projectId = 123
+        }
         verifyUrlMapping("/project/create", controller: 'project', action: 'create')
         verifyUrlMapping("/project/save", controller: 'project', action: 'save')
         verifyUrlMapping("/project/update", controller: 'project', action: 'update')
@@ -64,18 +80,24 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(BugController)
 
         expect:
-        verifyUrlMapping("/bug/index", controller: 'bug', action: 'index')
-        verifyUrlMapping("/bug/create", controller: 'bug', action: 'create')
         verifyUrlMapping("/bug/save", controller: 'bug', action: 'save')
         verifyUrlMapping("/bug/update", controller: 'bug', action: 'update')
-        verifyUrlMapping("/bug/show/123", controller: 'bug', action: 'show') {
-            id = 123
+        verifyUrlMapping("/project/123/bug/create", controller: 'bug', action: 'create') {
+            projectId = 123
         }
-        verifyUrlMapping("/bug/edit/123", controller: 'bug', action: 'edit') {
-            id = 123
+        verifyUrlMapping("/project/123/bugs", controller: 'bug', action: 'bugs') {
+            projectId = 123
         }
         verifyUrlMapping("/bug/delete/123", controller: 'bug', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/123/bug/show/123", controller: 'bug', action: 'show') {
+            id = 123
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/bug/edit/123", controller: 'bug', action: 'edit') {
+            id = 123
+            projectId = 123
         }
     }
 
@@ -83,18 +105,24 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(ScenarioController)
 
         expect:
-        verifyUrlMapping("/scenario/index", controller: 'scenario', action: 'index')
-        verifyUrlMapping("/scenario/create", controller: 'scenario', action: 'create')
         verifyUrlMapping("/scenario/save", controller: 'scenario', action: 'save')
         verifyUrlMapping("/scenario/update", controller: 'scenario', action: 'update')
-        verifyUrlMapping("/scenario/show/123", controller: 'scenario', action: 'show') {
-            id = 123
+        verifyUrlMapping("/project/123/scenarios", controller: 'scenario', action: 'scenarios') {
+            projectId = 123
         }
-        verifyUrlMapping("/scenario/edit/123", controller: 'scenario', action: 'edit') {
-            id = 123
+        verifyUrlMapping("/project/123/scenario/create", controller: 'scenario', action: 'create') {
+            projectId = 123
         }
         verifyUrlMapping("/scenario/delete/123", controller: 'scenario', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/123/scenario/show/123", controller: 'scenario', action: 'show') {
+            id = 123
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/scenario/edit/123", controller: 'scenario', action: 'edit') {
+            id = 123
+            projectId = 123
         }
     }
 
@@ -102,18 +130,24 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(ReleasePlanController)
 
         expect:
-        verifyUrlMapping("/releasePlan/index", controller: 'releasePlan', action: 'index')
-        verifyUrlMapping("/releasePlan/create", controller: 'releasePlan', action: 'create')
         verifyUrlMapping("/releasePlan/save", controller: 'releasePlan', action: 'save')
         verifyUrlMapping("/releasePlan/update", controller: 'releasePlan', action: 'update')
-        verifyUrlMapping("/releasePlan/show/123", controller: 'releasePlan', action: 'show') {
-            id = 123
-        }
-        verifyUrlMapping("/releasePlan/edit/123", controller: 'releasePlan', action: 'edit') {
-            id = 123
-        }
         verifyUrlMapping("/releasePlan/delete/123", controller: 'releasePlan', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/999/releasePlans", controller: 'releasePlan', action: 'releasePlans') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/releasePlan/create", controller: 'releasePlan', action: 'create') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/releasePlan/show/123", controller: 'releasePlan', action: 'show') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/releasePlan/edit/123", controller: 'releasePlan', action: 'edit') {
+            id = 123
+            projectId = 999
         }
     }
 
@@ -121,18 +155,24 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(TestGroupController)
 
         expect:
-        verifyUrlMapping("/testGroup/index", controller: 'testGroup', action: 'index')
-        verifyUrlMapping("/testGroup/create", controller: 'testGroup', action: 'create')
-        verifyUrlMapping("/testGroup/save", controller: 'testGroup', action: 'save')
         verifyUrlMapping("/testGroup/update", controller: 'testGroup', action: 'update')
-        verifyUrlMapping("/testGroup/show/123", controller: 'testGroup', action: 'show') {
-            id = 123
-        }
-        verifyUrlMapping("/testGroup/edit/123", controller: 'testGroup', action: 'edit') {
-            id = 123
-        }
+        verifyUrlMapping("/testGroup/save", controller: 'testGroup', action: 'save')
         verifyUrlMapping("/testGroup/delete/123", controller: 'testGroup', action: 'delete') {
             id = 123
+        }
+        verifyUrlMapping("/project/999/testGroups", controller: 'testGroup', action: 'testGroups') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/testGroup/create", controller: 'testGroup', action: 'create') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/testGroup/show/123", controller: 'testGroup', action: 'show') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/testGroup/edit/123", controller: 'testGroup', action: 'edit') {
+            id = 123
+            projectId = 999
         }
     }
 
@@ -140,10 +180,10 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(TestCycleController)
 
         expect:
-        verifyUrlMapping("/testCycle/create", controller: 'testCycle', action: 'create')
-        verifyUrlMapping("/testCycle/save", controller: 'testCycle', action: 'save')
-        verifyUrlMapping("/testCycle/show/123", controller: 'testCycle', action: 'show') {
+        verifyUrlMapping("/testCycle/addTests", controller: 'testCycle', action: 'addTests')
+        verifyUrlMapping("/project/999/testCycle/show/123", controller: 'testCycle', action: 'show') {
             id = 123
+            projectId = 999
         }
     }
 
@@ -151,11 +191,14 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         mockController(TestIterationController)
 
         expect:
-        verifyUrlMapping("/testIteration/show/123", controller: 'testIteration', action: 'show') {
+        verifyUrlMapping("/testIteration/update", controller: 'testIteration', action: 'update')
+        verifyUrlMapping("/project/999/testIteration/show/123", controller: 'testIteration', action: 'show') {
             id = 123
+            projectId = 999
         }
-        verifyUrlMapping("/testIteration/execute/123", controller: 'testIteration', action: 'execute') {
+        verifyUrlMapping("/project/999/testIteration/execute/123", controller: 'testIteration', action: 'execute') {
             id = 123
+            projectId = 999
         }
     }
 }

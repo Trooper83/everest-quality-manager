@@ -24,7 +24,7 @@ class ErrorsSpec extends GebSpec {
         notFoundPage.errors*.text().contains("Error: Page Not Found (404)")
 
         where:
-        url << ["/testGroup/show/9999999999999999", "/testGroup/edit/9999999999999999"]
+        url << ["/project/1/testGroup/show/9999999999999999", "/project/1/testGroup/edit/9999999999999999"]
     }
 
     void "denied page displayed for read_only user"(String url) {
@@ -41,6 +41,6 @@ class ErrorsSpec extends GebSpec {
         page.errors.text() == "Sorry, you're not authorized to view this page."
 
         where:
-        url << ["/testGroup/create", "/testGroup/edit"]
+        url << ["/project/1/testGroup/create", "/project/1/testGroup/edit"]
     }
 }

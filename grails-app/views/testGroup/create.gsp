@@ -13,14 +13,10 @@
             <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
             <g:form resource="${this.testGroup}" method="POST">
                 <fieldset class="form">
+                    <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain required">
-                        <label for="project">Project
-                            <span class="required-indicator">*</span>
-                        </label>
-                        <g:select name="project" from="${projects}"
-                                  optionKey="id" optionValue="name"
-                                  noSelection="${['':'Select a Project...']}"
-                        />
+                        <label for="project">Project</label>
+                        <span>${project.name}</span>
                     </div>
                     <f:all bean="testGroup" except="project, testCases"/>
                 </fieldset>

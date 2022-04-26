@@ -6,7 +6,10 @@ import com.everlution.TestGroupService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testgroup.EditTestGroupPage
+import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
@@ -18,16 +21,25 @@ class EditTestGroupSpec extends GebSpec {
     TestGroupService testGroupService
 
     void "authorized users can edit test group"(String username, String password) {
-        setup: "get instance"
-        def id = testGroupService.list(max: 1).first().id
-
-        and: "login as a basic user"
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
-        and: "go to edit page"
-        go "/testGroup/edit/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Groups')
+
+        and: "click first test group in list"
+        def listPage = browser.page(ListTestGroupPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        and: "go to edit"
+        browser.page(ShowTestGroupPage).goToEdit()
 
         when: "edit the instance"
         def page = browser.page(EditTestGroupPage)
@@ -57,7 +69,7 @@ class EditTestGroupSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testGroup/edit/${id}"
+        to(EditTestGroupPage, project.id, id)
 
         when: "edit instance"
         def editPage = at EditTestGroupPage

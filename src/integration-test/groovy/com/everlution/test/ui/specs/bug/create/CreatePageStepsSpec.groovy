@@ -1,9 +1,10 @@
 package com.everlution.test.ui.specs.bug.create
 
-import com.everlution.ProjectService
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.github.javafaker.Faker
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
@@ -11,16 +12,19 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreatePageStepsSpec extends GebSpec {
 
-    ProjectService projectService
-
     def setup() {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to the create page"
-        to CreateBugPage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the create bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToCreatePage('Bug')
     }
 
     void "add test step row"() {
@@ -53,13 +57,12 @@ class CreatePageStepsSpec extends GebSpec {
     void "null action and result message"() {
         given: "get fake data"
         Faker faker = new Faker()
-        def project = projectService.list(max: 1).first()
         def name = faker.zelda().game()
         def description = faker.zelda().character()
 
         when: "create bug"
-        CreateBugPage createPage = to CreateBugPage
-        createPage.createBug(name, description, "", [], project.name, "", "", "")
+        CreateBugPage createPage = at CreateBugPage
+        createPage.createBug(name, description, "", [], "", "", "")
 
         then:
         createPage.errorsMessage.text() ==

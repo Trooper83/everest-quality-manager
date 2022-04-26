@@ -14,7 +14,8 @@ class DataFactory {
         "ADA", "AEA", "AFA", "AGA", "AHA", "AIA", "AJA", "AKA", "ALA", "AMA", "ANA", "AOA", "APA", "AQA", "ARA",
         "ASA", "ATA", "AUA", "AVA", "AWA", "AXA", "AYA", "AZA", "BAA", "BAB", "BAC", "BAD", "BAE", "BAF", "BAG", "BAH",
         "BAI", "BAJ", "BAK", "BAL", "BAM", "BAN", "BAO", "BAP", "BAQ", "BAR", "BAS", "BAT", "BAU", "BAV", "BAW",
-        "BAX", "BAY", "BAZ"]
+        "BAX", "BAY", "BAZ", "BBB", "BBC", "BBD", "BBE", "BBF", "BBG", "BBH", "BBI", "BBJ", "BBK", "BBL", "BBM", "BBN",
+        "BBO", "BBP", "BBQ", "BBR", "BBS", "BBT", "BBU", "BBV", "BBW", "BBX", "BBY", "BBZ"]
 
     /**
      * creates fake data to populate an area
@@ -93,19 +94,19 @@ class DataFactory {
         return [name: faker.name().title()]
     }
 
-    static Project getProject() {
+    static Project createProject() {
         Project.withNewSession { session ->
             new Project(name: faker.lorem().sentence(2), code: projectCodes.removeAt(0)).save()
         }
     }
 
-    static ReleasePlan getReleasePlan() {
+    static ReleasePlan createReleasePlan() {
         ReleasePlan.withNewSession { session ->
-            new ReleasePlan(name: faker.ancient().god(), project: getProject()).save()
+            new ReleasePlan(name: faker.ancient().god(), project: createProject()).save()
         }
     }
 
-    static TestCycle getTestCycle() {
+    static TestCycle createTestCycle() {
         TestCycle.withNewSession { session ->
             def project = new Project(name: faker.lorem().sentence(2), code: projectCodes.removeAt(0)).save()
             def plan = new ReleasePlan(name: faker.ancient().god(), project: project).save()

@@ -18,14 +18,19 @@ class TestCaseController {
 
     /**
      * lists all test cases
-     * /testCase/index
-     * @param max - maximum number of test cases to retrieve
+     * /testCase
+     * @param projectId - number of the project
      * @return - list of test cases
      */
     @Secured("ROLE_READ_ONLY")
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond testCaseService.list(params), model:[testCaseCount: testCaseService.count()]
+    def testCases(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        def testCases = testCaseService.findAllByProject(project)
+        respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
     }
 
     /**
@@ -45,8 +50,13 @@ class TestCaseController {
      * @return - create test case view
      */
     @Secured("ROLE_BASIC")
-    def create() {
-        respond new TestCase(params), model: [projects: projectService.list()]
+    def create(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond new TestCase(params), model: [project: project], view: 'create'
     }
 
     /**
@@ -65,14 +75,16 @@ class TestCaseController {
         try {
             testCaseService.save(testCase)
         } catch (ValidationException ignored) {
-            respond testCase.errors, view:"create", model: [projects: projectService.list()]
+            def project = projectService.read(testCase.project.id)
+            params.projectId = project.id
+            respond testCase.errors, view:"create", model: [ project: project ]
             return
         }
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: "default.created.message", args: [message(code: "testCase.name", default: "TestCase"), testCase.id])
-                redirect testCase
+                redirect uri: "/project/${testCase.project.id}/testCase/show/${testCase.id}"
             }
             "*" { respond testCase, [status: CREATED] }
         }
@@ -111,7 +123,7 @@ class TestCaseController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: "default.updated.message", args: [message(code: "testCase.label", default: "TestCase"), testCase.id])
-                redirect testCase
+                redirect uri: "/project/${testCase.project.id}/testCase/show/${testCase.id}"
             }
             "*"{ respond testCase, [status: OK] }
         }
@@ -123,8 +135,8 @@ class TestCaseController {
      * @return
      */
     @Secured("ROLE_BASIC")
-    def delete(Long id) {
-        if (id == null) {
+    def delete(Long id, Long projectId) {
+        if (id == null || projectId == null) {
             notFound()
             return
         }
@@ -140,7 +152,7 @@ class TestCaseController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: "default.deleted.message", args: [message(code: "testCase.label", default: "TestCase"), id])
-                redirect action:"index", method:"GET"
+                redirect uri: "/project/${projectId}/testCases"
             }
             "*"{ render status: NO_CONTENT }
         }
@@ -151,10 +163,6 @@ class TestCaseController {
      */
     protected void notFound() {
         request.withFormat {
-            form multipartForm {
-                flash.message = message(code: "default.not.found.message", args: [message(code: "testCase.name", default: "TestCase"), params.id])
-                redirect action: "index", method: "GET"
-            }
             "*"{ render status: NOT_FOUND }
         }
     }

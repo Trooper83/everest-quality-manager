@@ -28,62 +28,6 @@ class EditPageAreaSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "area select populates with only elements within the associated project"() {
-        setup: "project & bug instances with areas"
-        def area = new Area(name: "area testing area")
-        def project = projectService.save(new Project(name: "area testing project", code: "ATP", areas: [area]))
-        def bug = bugService.save(new Bug(name: "area testing bug", project: project, person: person))
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/bug/edit/${bug.id}"
-
-        then: "area populates with project.areas"
-        EditBugPage page = browser.page(EditBugPage)
-        page.areaOptions*.text() == ["", area.name]
-    }
-
-    void "area select defaults with selected area"() {
-        setup: "project & bug instances with areas"
-        def area = new Area(name: "area testing area II")
-        def project = projectService.save(new Project(name: "area testing project II", code: "ATI", areas: [area]))
-        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person, area: area))
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/bug/edit/${bug.id}"
-
-        then: "bug.area is selected"
-        EditBugPage page = browser.page(EditBugPage)
-        page.areaSelect().selectedText == area.name
-    }
-
-    void "area select defaults empty text when no area set"() {
-        setup: "project & bug instances with areas"
-        def project = projectService.save(new Project(name: "area testing project III", code: "AT2"))
-        def bug = bugService.save(new Bug(name: "area testing bug III", project: project, person: person))
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/bug/edit/${bug.id}"
-
-        then: "area defaults with no selection"
-        EditBugPage page = browser.page(EditBugPage)
-        page.areaSelect().selectedText == ""
-    }
-
     void "exception handled when validation error present and area set to null"() {
         given: "project & bug instances with areas"
         def area = new Area(name: "area testing area II")
@@ -97,7 +41,7 @@ class EditPageAreaSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/bug/edit/${bug.id}"
+        go "project/${project.id}/bug/edit/${bug.id}"
 
         and: "bug.area is set to null"
         EditBugPage page = browser.page(EditBugPage)

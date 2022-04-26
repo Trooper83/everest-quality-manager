@@ -9,15 +9,12 @@ class ShowBugPage extends BasePage {
 
     static content = {
         areaValue { $("#area") }
-        createLink(required: false) { $("[data-test-id=show-create-link]") }
         creatorValue { $("#creator") }
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         descriptionValue { $("#description") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
         environmentsList { $("#environments") }
         fieldLabels { $("ol.property-list>li>span") }
-        homeLink { $("[data-test-id=show-home-link]") }
-        listLink { $("[data-test-id=show-list-link]") }
         nameValue { $("#name") }
         platformValue { $("#platform") }
         projectValue { $("#project") }
@@ -41,31 +38,10 @@ class ShowBugPage extends BasePage {
     }
 
     /**
-     * clicks the new test case link
-     */
-    void goToCreate() {
-        createLink.click()
-    }
-
-    /**
      * clicks the edit link
      */
     void goToEdit() {
         editLink.click()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
     }
 
     /**

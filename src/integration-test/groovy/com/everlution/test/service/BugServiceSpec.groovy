@@ -159,4 +159,29 @@ class BugServiceSpec extends Specification {
         expect:
         bugService.read(999999999) == null
     }
+
+    void "find all bugs by project returns only bugs with project"() {
+        given:
+        setupData()
+        def project = projectService.list(max: 1).first()
+
+        when:
+        def bugs = bugService.findAllByProject(project)
+
+        then:
+        bugs.size() > 0
+        bugs.every { it.project.id == project.id }
+    }
+
+    void "find all bugs by project with null project returns empty list"() {
+        given:
+        setupData()
+
+        when:
+        def bugs = bugService.findAllByProject(null)
+
+        then:
+        bugs.size() == 0
+        noExceptionThrown()
+    }
 }

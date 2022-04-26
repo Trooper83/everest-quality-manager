@@ -20,33 +20,33 @@
             <g:render template="/shared/messagesTemplate" bean="${testCase}" var="entity"/>
             <g:form controller="testCase" action="save" method="POST">
                 <fieldset class="form">
+                    <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain required">
-                        <label for="project">Project
-                            <span class="required-indicator">*</span>
-                        </label>
-                        <g:select name="project" from="${projects}"
-                                  optionKey="id" optionValue="name"
-                                  noSelection="${['':'Select a Project...']}"
-                                  onchange="getProjectItems()"
-                        />
+                        <label for="project">Project</label>
+                        <span>${project.name}</span>
                     </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
-                        <select name="area" id="area" disabled>
-                            <option value=''>Select an Area...</option>
-                        </select>
+                        <g:select name="area" from="${project.areas}"
+                                  optionKey="id" optionValue="name"
+                                  noSelection="${['':'Select an Area...']}"
+                        />
                     </div>
                     <div class="fieldcontain">
                         <label for="environments">Environments</label>
-                        <select name="environments" id="environments" disabled multiple>
-                            <option value=''>--No Environment--</option>
-                        </select>
+                        <g:select name="environments" from="${project.environments}"
+                                  optionKey="id" optionValue="name"
+                                  noSelection="${['':'Select Environments...']}"
+                                  multiple="true"
+                        />
                     </div>
                     <div class="fieldcontain">
                         <label for="testGroups">Test Groups</label>
-                        <select name="testGroups" id="testGroups" disabled multiple>
-                            <option value=''>--No Test Group--</option>
-                        </select>
+                        <g:select name="testGroups" from="${project.testGroups}"
+                                  optionKey="id" optionValue="name"
+                                  noSelection="${['':'Select Test Groups...']}"
+                                  multiple="true"
+                        />
                     </div>
                     <f:all bean="testCase" except="area, environments, project, steps, person, testGroups"/>
                 </fieldset>
@@ -56,7 +56,6 @@
                 </fieldset>
             </g:form>
         </div>
-        <asset:javascript src="getProjectItems.js"/>
         <asset:javascript src="step.js"/>
     </body>
 </html>

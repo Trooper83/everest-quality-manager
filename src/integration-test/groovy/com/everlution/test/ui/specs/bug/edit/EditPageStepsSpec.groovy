@@ -6,9 +6,13 @@ import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.EditBugPage
+import com.everlution.test.ui.support.pages.bug.ListBugPage
+import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -31,10 +35,21 @@ class EditPageStepsSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to edit page"
-        go "/bug/edit/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
 
-        then: "row count is 1"
+        and: "go to the create bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Bugs')
+
+        and: "edit bug"
+        def bugsPage = at ListBugPage
+        bugsPage.bugTable.clickCell("Name", 0)
+        def showPage = at ShowBugPage
+        showPage.goToEdit()
+
+        expect: "row count is 1"
         def page = browser.page(EditBugPage)
         page.stepsTable.getRowCount() == 1
 
@@ -51,8 +66,19 @@ class EditPageStepsSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        when: "go to edit page"
-        go "/bug/edit/${id}"
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the create bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Bugs')
+
+        when: "edit bug"
+        def bugsPage = at ListBugPage
+        bugsPage.bugTable.clickCell("Name", 0)
+        def showPage = at ShowBugPage
+        showPage.goToEdit()
 
         and: "add a row"
         def page = browser.page(EditBugPage)
@@ -83,7 +109,7 @@ class EditPageStepsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/bug/edit/${id}"
+        go "/project/${project.id}/bug/edit/${id}"
 
         expect:
         bug.steps.size() == 1

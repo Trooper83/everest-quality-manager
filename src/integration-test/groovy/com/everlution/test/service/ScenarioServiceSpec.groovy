@@ -3,6 +3,7 @@ package com.everlution.test.service
 import com.everlution.Person
 import com.everlution.PersonService
 import com.everlution.Project
+import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import grails.testing.mixin.integration.Integration
@@ -17,6 +18,7 @@ import org.hibernate.SessionFactory
 class ScenarioServiceSpec extends Specification {
 
     PersonService personService
+    ProjectService projectService
     ScenarioService scenarioService
     SessionFactory sessionFactory
 
@@ -134,5 +136,33 @@ class ScenarioServiceSpec extends Specification {
     void "read returns null for not found id"() {
         expect:
         scenarioService.read(999999999) == null
+    }
+
+    void "find all by project returns only scenarios with project"() {
+        given:
+        setupData()
+        def person = new Person(email: "test98899@test.com", password: "password").save()
+        def project = projectService.list(max: 1).first()
+        new Scenario(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+
+        when:
+        def scenarios = scenarioService.findAllByProject(project)
+
+        then:
+        scenarios.size() > 0
+        scenarios.every { it.project.id == project.id }
+    }
+
+    void "find all by project with null project returns empty list"() {
+        given:
+        setupData()
+
+        when:
+        def scenarios = scenarioService.findAllByProject(null)
+
+        then:
+        scenarios.size() == 0
+        noExceptionThrown()
     }
 }

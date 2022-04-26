@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.releaseplan
 
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
@@ -9,6 +10,7 @@ import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class DeleteReleasePlanSpec extends GebSpec {
@@ -16,10 +18,11 @@ class DeleteReleasePlanSpec extends GebSpec {
     ProjectService projectService
     ReleasePlanService releasePlanService
 
-    int id
+    @Shared Long id
+    @Shared Project project
 
     def setup() {
-        def project = projectService.list(max: 1).first()
+        project = projectService.list(max: 1).first()
         def plan = new ReleasePlan(name: "delete spec plan", project: project)
         id = releasePlanService.save(plan).id
     }
@@ -30,7 +33,7 @@ class DeleteReleasePlanSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to show page"
-        go "/releasePlan/show/${id}"
+        to(ShowReleasePlanPage, project.id, id)
 
         when: "delete instance"
         def showPage = browser.at(ShowReleasePlanPage)

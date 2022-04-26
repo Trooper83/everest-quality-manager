@@ -1,8 +1,8 @@
 package com.everlution.test.testiteration
 
-import com.everlution.Bug
-import com.everlution.TestGroup
-import com.everlution.TestGroupService
+import com.everlution.Project
+import com.everlution.ReleasePlan
+import com.everlution.TestCycle
 import com.everlution.TestIteration
 import com.everlution.TestIterationController
 import com.everlution.TestIterationService
@@ -131,6 +131,13 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         request.method = 'PUT'
         def iteration = new TestIteration()
         iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
 
         controller.update(iteration)
 

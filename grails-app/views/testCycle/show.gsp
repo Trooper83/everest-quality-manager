@@ -50,10 +50,10 @@
         <tbody>
         <g:each var="iteration" in="${testCycle.testIterations}">
             <tr>
-                <td><g:link controller="testIteration" action="show" id="${iteration.id}">${iteration.id}</g:link></td>
+                <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/show/${iteration.id}">${iteration.id}</g:link></td>
                 <td>${iteration.name}</td>
                 <td>${iteration.result}</td>
-                <td><g:link controller="testIteration" action="execute" id="${iteration.id}">Execute</g:link></td>
+                <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/execute/${iteration.id}">Execute</g:link></td>
             </tr>
         </g:each>
         </tbody>

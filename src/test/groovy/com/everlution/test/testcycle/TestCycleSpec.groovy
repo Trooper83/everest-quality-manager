@@ -98,47 +98,6 @@ class TestCycleSpec extends Specification implements DomainUnitTest<TestCycle> {
         domain.validate(["environ"])
     }
 
-    void "environ validates with environment in releasePlan.project"() {
-        when:
-        def e = new Environment(name: "test env")
-        def p = new Project(name: "testing project areas", code: "tpa", environments: [e]).save()
-        def plan = new ReleasePlan(name: "release plan", project: p).save()
-
-        domain.releasePlan = plan
-        domain.environ = e
-
-        then:
-        domain.validate(["environ"])
-    }
-
-    void "environ fails to validate for project with no environments"() {
-        when:
-        def e = new Environment(name: "test env").save()
-        def p = new Project(name: "testing project areas", code: "tpa").save()
-        def plan = new ReleasePlan(name: "release plan", project: p).save()
-
-        domain.releasePlan = plan
-        domain.environ = e
-
-        then:
-        !domain.validate(["environ"])
-        domain.errors["environ"].code == "validator.invalid"
-    }
-
-    void "environ not in project fails to validate for project with environments"() {
-        when:
-        def e = new Environment(name: "test env").save()
-        def p = new Project(name: "testing project areas", code: "tpa", environments: [new Environment(name: "failed")]).save()
-        def plan = new ReleasePlan(name: "release plan", project: p).save()
-
-        domain.releasePlan = plan
-        domain.environ = e
-
-        then:
-        !domain.validate(["environ"])
-        domain.errors["environ"].code == "validator.invalid"
-    }
-
     void "platform can be null"() {
         when: "property is null"
         domain.platform = null

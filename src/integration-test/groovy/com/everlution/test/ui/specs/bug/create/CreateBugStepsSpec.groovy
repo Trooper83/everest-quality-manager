@@ -1,9 +1,11 @@
 package com.everlution.test.ui.specs.bug.create
 
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -16,8 +18,16 @@ class CreateBugStepsSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the create bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToCreatePage('Bug')
+
         and: "go to the create page"
-        def page = to CreateBugPage
+        def page = at CreateBugPage
 
         when: "fill in create form"
         page.completeCreateForm()

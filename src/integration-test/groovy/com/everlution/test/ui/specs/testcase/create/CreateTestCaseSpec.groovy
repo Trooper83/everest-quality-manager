@@ -22,10 +22,11 @@ class CreateTestCaseSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, password)
+        loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to the create test case page"
-        to CreateTestCasePage
+        and: "go to the create page"
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/testCase/create"
 
         when: "create a test case"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
@@ -43,7 +44,7 @@ class CreateTestCaseSpec extends GebSpec {
     }
 
     void "all create form data saved"() {
-        setup: "get fake data"
+        given: "get fake data"
         def area = new Area(DataFactory.area())
         def ed = DataFactory.environment()
         def ed1 = DataFactory.environment()
@@ -59,16 +60,18 @@ class CreateTestCaseSpec extends GebSpec {
                 testGroups: [gd, gd1])
         )
 
-        when: "login as a basic user"
+        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "create test case"
-        CreateTestCasePage createPage = to CreateTestCasePage
+
+        when: "create test case"
+        go "/project/${project.id}/testCase/create"
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         def tcd = DataFactory.testCase()
         createPage.createTestCase(
-                tcd.name, tcd.description, project.name, area.name, [env.name, env1.name], [group.name, group1.name],
+                tcd.name, tcd.description, area.name, [env.name, env1.name], [group.name, group1.name],
                 "Automated", "UI", "Web")
 
         then: "data is displayed on show page"

@@ -1,8 +1,12 @@
 package com.everlution.test.ui.specs.testcase
 
+import com.everlution.PersonService
+import com.everlution.TestCase
+import com.everlution.TestCaseService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
-import com.everlution.test.ui.support.pages.common.HomePage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -12,87 +16,26 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ListSpec extends GebSpec {
 
+    PersonService personService
+    TestCaseService testCaseService
+
     void "verify list table headers order"() {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        when: "go to list test case page"
-        to ListTestCasePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        when: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
         then: "correct headers are displayed"
         ListTestCasePage page = browser.page(ListTestCasePage)
-        page.testCaseTable.getHeaders() == ["Name", "Person", "Type", "Execution Method", "Project", "Platform"]
-    }
-
-    void "home link directs to home view"() {
-        given: "login as read_only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
-
-        and: "go to list test case page"
-        to ListTestCasePage
-
-        when: "click home button"
-        ListTestCasePage page = browser.page(ListTestCasePage)
-        page.goToHome()
-
-        then: "at home page"
-        at HomePage
-    }
-
-    void "new test case link directs to create view"() {
-        given: "login as basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to list test case page"
-        to ListTestCasePage
-
-        when: "go to create test case page"
-        ListTestCasePage page = browser.page(ListTestCasePage)
-        page.goToCreateTestCase()
-
-        then: "at test case page"
-        at CreateTestCasePage
-    }
-
-    void "create button not displayed on list for Read Only user"() {
-        given: "login as read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
-
-        when: "go to list test case page"
-        to ListTestCasePage
-
-        then: "create test case button is not displayed"
-        ListTestCasePage page = browser.page(ListTestCasePage)
-        !page.createTestCaseLink.displayed
-    }
-
-    void "create button displayed on list for users"(String username, String password) {
-        given: "login as basic and above user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, password)
-
-        when: "go to list test case page"
-        to ListTestCasePage
-
-        then: "create test case button is displayed"
-        ListTestCasePage page = browser.page(ListTestCasePage)
-        page.createTestCaseLink.displayed
-
-        where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        page.listTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Type"]
     }
 
     void "delete message displays after test case deleted"() {
@@ -101,12 +44,17 @@ class ListSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
 
-        and: "go to list test case page"
-        to ListTestCasePage
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToListsPage('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.testCaseTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "delete test case"
         ShowTestCasePage showPage = browser.page(ShowTestCasePage)
@@ -123,11 +71,17 @@ class ListSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
 
-        and: "go to list page"
-        def listPage = to ListTestCasePage
+        and:
+        def project = DataFactory.createProject()
+        def person = personService.list(max: 1).first()
+        def test = new TestCase(person: person, name: "name of test", project: project)
+        testCaseService.save(test)
 
-        when: "click first bug in list"
-        listPage.testCaseTable.clickCell("Name", 0)
+        and: "go to project test cases"
+        to(ListTestCasePage, project.id)
+
+        when: "click test name"
+        browser.page(ListTestCasePage).listTable.clickCell("Name", 0)
 
         then: "at show page"
         at ShowTestCasePage

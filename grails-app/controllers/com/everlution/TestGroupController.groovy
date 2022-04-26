@@ -13,14 +13,18 @@ class TestGroupController {
 
     /**
      * lists all groups
-     * /testGroup/index
-     * @param max - maximum groups to retrieve
+     * /testGroups
      * @return - list of groups
      */
     @Secured("ROLE_READ_ONLY")
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond testGroupService.list(params), model:[testGroupCount: testGroupService.count()]
+    def testGroups(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        def testGroups = testGroupService.findAllByProject(project)
+        respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
     }
 
     /**
@@ -39,8 +43,13 @@ class TestGroupController {
      * /testGroup/create
      */
     @Secured("ROLE_BASIC")
-    def create() {
-        respond new TestGroup(params), model: [projects: projectService.list()]
+    def create(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond new TestGroup(params), model: [project: project], view: 'create'
     }
 
     /**
@@ -56,15 +65,16 @@ class TestGroupController {
 
         try {
             testGroupService.save(testGroup)
-        } catch (ValidationException e) {
-            respond testGroup.errors, view:'create', model: [projects: projectService.list()]
+        } catch (ValidationException ignored) {
+            def project = projectService.read(testGroup.project.id)
+            respond testGroup.errors, view:'create', model: [ project: project ]
             return
         }
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), testGroup.id])
-                redirect testGroup
+                redirect uri: "/project/${testGroup.project.id}/testGroup/show/${testGroup.id}"
             }
             '*' { respond testGroup, [status: CREATED] }
         }
@@ -93,7 +103,7 @@ class TestGroupController {
 
         try {
             testGroupService.save(testGroup)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             respond testGroup.errors, view:'edit'
             return
         }
@@ -101,7 +111,7 @@ class TestGroupController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), testGroup.id])
-                redirect testGroup
+                redirect uri: "/project/${testGroup.project.id}/testGroup/show/${testGroup.id}"
             }
             '*'{ respond testGroup, [status: OK] }
         }
@@ -112,8 +122,8 @@ class TestGroupController {
      * @param id - id of the group to delete
      */
     @Secured("ROLE_BASIC")
-    def delete(Long id) {
-        if (id == null) {
+    def delete(Long id, Long projectId) {
+        if (id == null || projectId == null) {
             notFound()
             return
         }
@@ -123,7 +133,7 @@ class TestGroupController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), id])
-                redirect action:"index", method:"GET"
+                redirect uri: "/project/${projectId}/testGroups"
             }
             '*'{ render status: NO_CONTENT }
         }
@@ -134,10 +144,6 @@ class TestGroupController {
      */
     protected void notFound() {
         request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), params.id])
-                redirect action: "index", method: "GET"
-            }
             '*'{ render status: NOT_FOUND }
         }
     }

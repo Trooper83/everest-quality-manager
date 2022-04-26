@@ -28,26 +28,6 @@ class EditPageAreaSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "area select populates with only elements within the associated project"() {
-        setup: "project & test case instances with areas"
-        def area = new Area(name: "area testing area")
-        def project = projectService.save(new Project(name: "area tc testing project", code: "ACP", areas: [area]))
-        def testCase = testCaseService.save(new TestCase(name: "area testing test case", project: project,
-                person: person, executionMethod: "Automated", type: "UI"))
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
-
-        then: "area populates with project.areas"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.areaOptions*.text() == ["", area.name]
-    }
-
     void "area select defaults with selected area"() {
         setup: "project & test case instances with areas"
         def area = new Area(name: "area testing area")
@@ -61,7 +41,7 @@ class EditPageAreaSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         then: "testCase.area is selected"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -80,7 +60,7 @@ class EditPageAreaSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         then: "testCase.area is selected"
         EditTestCasePage page = browser.page(EditTestCasePage)
@@ -101,7 +81,7 @@ class EditPageAreaSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         and: "go to edit page"
-        go "/testCase/edit/${testCase.id}"
+        go "/project/${project.id}/testCase/edit/${testCase.id}"
 
         and: "testCase.area is set to null"
         def page = browser.page(EditTestCasePage)

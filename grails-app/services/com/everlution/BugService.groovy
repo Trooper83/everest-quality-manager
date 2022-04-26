@@ -10,6 +10,16 @@ abstract class BugService implements IBugService {
     TestStepService testStepService
 
     /**
+     * gets all bugs in the domain with the associated project
+     * @param projectId - id of the project
+     * @return - list of all bugs with the project
+     */
+    @Transactional
+    List<Bug> findAllByProject(Project project) {
+        return Bug.findAllByProject(project)
+    }
+
+    /**
      * save an updated bug, deletes any removed steps
      * @param bug - the bug to update
      * @param removedItems - ids of the steps to remove

@@ -1,5 +1,6 @@
 package com.everlution.test.testgroup
 
+import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestGroup
 import com.everlution.TestGroupController
@@ -16,63 +17,64 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         params.name = "test group name"
     }
 
-    void "index action renders index view"() {
+    void "test groups action renders index view"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
         when:
-        controller.index()
+        controller.testGroups(1)
 
         then:
-        view == 'index'
+        view == 'testGroups'
     }
 
-    void "Test the index action returns the correct model"() {
+    void "test groups action returns the correct model"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * list(_) >> []
-            1 * count() >> 0
+            1 * findAllByProject(_) >> [new TestGroup()]
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
         }
 
         when:"The index action is executed"
-        controller.index()
+        controller.testGroups(1)
 
         then:"The model is correct"
-        !model.testGroupList
-        model.testGroupCount == 0
+        model.testGroupList
+        model.testGroupCount
+        model.project
     }
 
-    void "index action param max"(Integer max, int expected) {
+    void "test groups action returns not found with invalid project"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * list(_) >> []
+            0 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
         }
 
-        when:"the index action is executed"
-        controller.index(max)
+        when:"The action is executed"
+        controller.testGroups(null)
 
-        then:"the max is as expected"
-        controller.params.max == expected
-
-        where:
-        max  | expected
-        null | 10
-        1    | 1
-        99   | 99
-        101  | 100
+        then:
+        response.status == 404
     }
 
     void "create action returns create view"() {
         given: "mock service"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
 
         when:
-        controller.create()
+        controller.create(1)
 
         then:
         view == "create"
@@ -81,13 +83,26 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     void "create action returns the correct model"() {
         when:"The create action is executed"
         controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
+            1 * get(_) >> new Project()
         }
-        controller.create()
+        controller.create(1)
 
         then:"The model is correctly created"
         model.testGroup instanceof TestGroup
-        model.projects instanceof List
+        model.project instanceof Project
+    }
+
+    void "create action throws not found when project is null"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
+        }
+
+        when:"The create action is executed"
+        controller.create(null)
+
+        then:"not found"
+        response.status == 404
     }
 
     void "save action method type"(String httpMethod) {
@@ -103,10 +118,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         response.status == 405
 
         where:
-        httpMethod   | _
-        'GET'        | _
-        'DELETE'     | _
-        'PUT'        | _
+        httpMethod << ["GET", "DELETE", "PUT"]
     }
 
     void "Test the save action with a null instance"() {
@@ -116,8 +128,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         controller.save(null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/testGroup/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "Test the save action correctly persists"() {
@@ -133,34 +144,41 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         populateValidParams(params)
         def testGroup = new TestGroup(params)
         testGroup.id = 1
+        def project = new Project()
+        project.id = 1
+        testGroup.project = project
 
         controller.save(testGroup)
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/testGroup/show/1'
+        response.redirectedUrl == '/project/1/testGroup/show/1'
         controller.flash.message == "default.created.message"
     }
 
     void "save action with an invalid instance"() {
         given:
+        def p = new Project()
+        p.id = 1
+
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
+        }
         controller.testGroupService = Mock(TestGroupService) {
             1 * save(_ as TestGroup) >> { TestGroup testGroup ->
                 throw new ValidationException("Invalid instance", testGroup.errors)
             }
-        }
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
         }
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def testGroup = new TestGroup()
+        testGroup.project = p
         controller.save(testGroup)
 
         then:"The create view is rendered again with the correct model"
         model.testGroup != null
-        model.projects != null
+        model.project == p
         view == 'create'
     }
 
@@ -268,8 +286,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         controller.update(null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/testGroup/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
     }
 
     void "update action correctly persists"() {
@@ -285,11 +302,14 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         populateValidParams(params)
         def testGroup = new TestGroup(params)
         testGroup.id = 1
+        def project = new Project()
+        project.id = 1
+        testGroup.project = project
 
         controller.update(testGroup)
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/testGroup/show/1'
+        response.redirectedUrl == '/project/1/testGroup/show/1'
         controller.flash.message == "default.updated.message"
     }
 
@@ -316,7 +336,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         request.method = httpMethod
 
         when:
-        controller.delete(1)
+        controller.delete(1, 1)
 
         then:
         response.status == 405
@@ -332,11 +352,20 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(null)
+        controller.delete(null, 1)
 
         then:"A 404 is returned"
-        response.redirectedUrl == '/testGroup/index'
-        flash.message == "default.not.found.message"
+        response.status == 404
+    }
+
+    void "delete action with a null project returns 404"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(1, null)
+
+        then:"A 404 is returned"
+        response.status == 404
     }
 
     void "delete action with an instance"() {
@@ -348,10 +377,10 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
-        controller.delete(2)
+        controller.delete(2, 1)
 
         then:"The user is redirected to index"
-        response.redirectedUrl == '/testGroup/index'
+        response.redirectedUrl == '/project/1/testGroups'
         flash.message == "default.deleted.message"
     }
 }

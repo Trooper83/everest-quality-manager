@@ -28,27 +28,6 @@ class EditPageAreaSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "area select populates with only elements within the associated project"() {
-        setup: "project & scenario instances with areas"
-        def area = new Area(name: "area testing area")
-        def pd = DataFactory.project()
-        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
-        def scenario = scenarioService.save(new Scenario(name: "area testing scenario", project: project,
-                person: person, executionMethod: "Automated", type: "UI"))
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/scenario/edit/${scenario.id}"
-
-        then: "area populates with project.areas"
-        EditScenarioPage page = browser.page(EditScenarioPage)
-        page.areaOptions*.text() == ["", area.name]
-    }
-
     void "area select defaults with selected area"() {
         setup: "project & scenario instances with areas"
         def area = new Area(name: "area testing area")
@@ -63,7 +42,7 @@ class EditPageAreaSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/scenario/edit/${scenario.id}"
+        go "/project/${project.id}/scenario/edit/${scenario.id}"
 
         then: "scenario.area is selected"
         EditScenarioPage page = browser.page(EditScenarioPage)
@@ -83,7 +62,7 @@ class EditPageAreaSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/scenario/edit/${scenario.id}"
+        go "/project/${project.id}/scenario/edit/${scenario.id}"
 
         then: "scenario.area is selected"
         EditScenarioPage page = browser.page(EditScenarioPage)

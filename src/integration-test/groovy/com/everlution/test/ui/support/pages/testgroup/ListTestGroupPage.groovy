@@ -6,4 +6,7 @@ class ListTestGroupPage extends ListPage {
     static url = "/testGroup/index"
     static at = { title == "TestGroup List" }
 
+    String convertToPath(Long projectId) {
+        "project/${projectId}/testGroups"
+    }
 }

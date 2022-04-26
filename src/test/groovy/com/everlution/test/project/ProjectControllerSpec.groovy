@@ -22,55 +22,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         params.code = "SOX"
     }
 
-    void "test index action renders index view"() {
-        given:
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
-            1 * count() >> 0
-        }
-
-        when: "call index action"
-        controller.index()
-
-        then: "index view is returned"
-        view == 'index'
-    }
-
-    void "Test the index action returns the correct model"() {
-        given:
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
-            1 * count() >> 0
-        }
-
-        when:"The index action is executed"
-        controller.index()
-
-        then:"The model is correct"
-        !model.projectList
-        model.projectCount == 0
-    }
-
-    void "test the index action param max"(Integer max, int expected) {
-        given:
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
-        }
-
-        when:"the index action is executed"
-        controller.index(max)
-
-        then:"the max is as expected"
-        controller.params.max == expected
-
-        where:
-        max  | expected
-        null | 10
-        1    | 1
-        99   | 99
-        101  | 100
-    }
-
     void "test the create action returns the correct view"() {
         when:"the create action is executed"
         controller.create()
@@ -79,7 +30,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         view == "create"
     }
 
-    void "Test the create action returns the correct model"() {
+    void "test the create action returns the correct model"() {
         when:"The create action is executed"
         controller.create()
 
@@ -103,7 +54,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         httpMethod << ["GET", "DELETE", "PUT", "PATCH"]
     }
 
-    void "Test the save action with a null instance"() {
+    void "test the save action with a null instance"() {
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
@@ -114,7 +65,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         flash.message == "default.not.found.message"
     }
 
-    void "Test the save action correctly persists"() {
+    void "test the save action correctly persists"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * save(_ as Project)
@@ -135,7 +86,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.flash.message == "default.created.message"
     }
 
-    void "Test the save action with an invalid instance"() {
+    void "test the save action with an invalid instance"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * save(_ as Project) >> { Project project ->
@@ -364,7 +315,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.delete(2)
 
         then:"The user is redirected to index"
-        response.redirectedUrl == '/project/index'
+        response.redirectedUrl == '/projects'
         flash.message == "default.deleted.message"
     }
 
@@ -441,6 +392,94 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.areas == areaList
         model.environments == envList
         model.testGroups != null
+    }
+
+    void "projects action renders projects view"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 0
+        }
+
+        when: "call index action"
+        controller.projects()
+
+        then: "index view is returned"
+        view == 'projects'
+    }
+
+    void "projects action returns the correct model"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 0
+        }
+
+        when:"The index action is executed"
+        controller.projects()
+
+        then:"The model is correct"
+        !model.projectList
+        model.projectCount == 0
+    }
+
+    void "projects action param max"(Integer max, int expected) {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
+        when:"the index action is executed"
+        controller.projects(max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
+    }
+
+    void "home action renders home view"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(2) >> new Project()
+        }
+
+        when:"a domain instance is passed to the home action"
+        controller.home(2)
+
+        then:
+        view == "home"
+    }
+
+    void "home action with a null id"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(null) >> null
+        }
+
+        when:"The home action is executed with a null domain"
+        controller.home(null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "home action with a valid id"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(2) >> new Project()
+        }
+
+        when:"A domain instance is passed to the home action"
+        controller.home(2)
+
+        then:"A model is populated containing the domain instance"
+        model.project instanceof Project
     }
 }
 

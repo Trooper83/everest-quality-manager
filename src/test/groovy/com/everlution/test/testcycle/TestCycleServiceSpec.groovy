@@ -53,28 +53,6 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         service.get(null) == null
     }
 
-    void "save with valid object returns instance"() {
-        given:
-        def tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan)
-
-        when:
-        def saved = service.save(tc)
-
-        then:
-        saved instanceof TestCycle
-    }
-
-    void "save with invalid object throws validation exception"() {
-        given:
-        TestCycle tc = new TestCycle()
-
-        when:
-        service.save(tc)
-
-        then:
-        thrown(ValidationException)
-    }
-
     void "removeFrom removes iterations"() {
         given:
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",

@@ -4,6 +4,7 @@ import com.everlution.Environment
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
+import com.everlution.ReleasePlanService
 import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
@@ -18,6 +19,7 @@ import org.hibernate.SessionFactory
 @Rollback
 class TestCycleServiceSpec extends Specification {
 
+    ReleasePlanService releasePlanService
     TestCycleService testCycleService
     SessionFactory sessionFactory
 
@@ -35,17 +37,6 @@ class TestCycleServiceSpec extends Specification {
         testCycleService.get(id) != null
     }
 
-    void "test save"() {
-        when:
-        def project = new Project(name: "release project name", code: "rpn").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
-        def testCycle = new TestCycle(name: "Second Test Case", releasePlan: plan)
-        testCycleService.save(testCycle)
-
-        then:
-        testCycle.id != null
-    }
-
     void "removeFrom cycle deletes iteration"() {
         given:
         def project = new Project(name: "release project name", code: "rpn").save()
@@ -53,8 +44,8 @@ class TestCycleServiceSpec extends Specification {
         def person = new Person(email: "test@test.com", password: "test").save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan)
-        testCycleService.save(cycle)
+        TestCycle cycle = new TestCycle(name: "test cycle")
+        releasePlanService.addTestCycle(plan, cycle)
         testCycleService.addTestIterations(cycle, [testCase])
         sessionFactory.currentSession.flush()
         def iteration = cycle.testIterations.first()
@@ -78,8 +69,8 @@ class TestCycleServiceSpec extends Specification {
         def person = new Person(email: "test@test.com", password: "test").save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: plan)
-        testCycleService.save(cycle)
+        TestCycle cycle = new TestCycle(name: "test cycle")
+        releasePlanService.addTestCycle(plan, cycle)
 
         when: "add iteration"
         testCycleService.addTestIterations(cycle, [testCase])
@@ -91,7 +82,7 @@ class TestCycleServiceSpec extends Specification {
 
     void "add test iterations does not filter test cases when platform is null"() {
         when:
-        def project = DataFactory.getProject()
+        def project = DataFactory.createProject()
         def person = new Person(email: "test@test.com", password: "test").save()
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
@@ -107,7 +98,7 @@ class TestCycleServiceSpec extends Specification {
 
     void "add test iterations filters out test cases by platform"() {
         when:
-        def project = DataFactory.getProject()
+        def project = DataFactory.createProject()
         def person = new Person(email: "test@test.com", password: "test").save()
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
@@ -123,7 +114,7 @@ class TestCycleServiceSpec extends Specification {
 
     void "add test iterations does not filter test cases when environ is null"() {
         when:
-        def project = DataFactory.getProject()
+        def project = DataFactory.createProject()
         def person = new Person(email: "test@test.com", password: "test").save()
         def env1 = new Environment(name: "env1")
         def env2 = new Environment(name: "env2")
@@ -142,7 +133,7 @@ class TestCycleServiceSpec extends Specification {
 
     void "add test iterations filters out test cases by environ"() {
         when:
-        def project = DataFactory.getProject()
+        def project = DataFactory.createProject()
         def person = new Person(email: "test@test.com", password: "test").save()
         def env1 = new Environment(name: "env1")
         def env2 = new Environment(name: "env2")
@@ -161,7 +152,7 @@ class TestCycleServiceSpec extends Specification {
 
     void "add test iterations filters out test cases by already on test cycle"() {
         given:
-        def project = DataFactory.getProject()
+        def project = DataFactory.createProject()
         def person = new Person(email: "test@test.com", password: "test").save()
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
         def plan = new ReleasePlan(name: "release plan name", project: project).save()
@@ -176,7 +167,7 @@ class TestCycleServiceSpec extends Specification {
 
     void "add test iterations adds test cases ids to test cycle"() {
         given:
-        def project = DataFactory.getProject()
+        def project = DataFactory.createProject()
         def person = new Person(email: "test@test.com", password: "test").save()
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()

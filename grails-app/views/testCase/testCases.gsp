@@ -30,7 +30,30 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <f:table collection="${testCaseList}" order="['name', 'person', 'type', 'executionMethod', 'project', 'platform']"/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Person</th>
+            <th>Project</th>
+            <th>Platform</th>
+            <th>Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        <g:each var="test" in="${testCaseList}">
+            <tr>
+                <td><g:link uri="/project/${project.id}/testCase/show/${test.id}">${test.name}</g:link></td>
+                <td>${test.description}</td>
+                <td>${test.person.email}</td>
+                <td>${test.project.name}</td>
+                <td>${test.platform}</td>
+                <td>${test.type}</td>
+            </tr>
+        </g:each>
+        </tbody>
+    </table>
     <div class="pagination">
         <g:paginate total="${testCaseCount ?: 0}"/>
     </div>

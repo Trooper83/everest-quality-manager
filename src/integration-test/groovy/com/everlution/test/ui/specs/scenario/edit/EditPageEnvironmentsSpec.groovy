@@ -28,29 +28,6 @@ class EditPageEnvironmentsSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "environment select populates with only elements within the associated project"() {
-        setup: "project & scenario instances with environments"
-        def env = new Environment(DataFactory.environment())
-        def pd = DataFactory.project()
-        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
-        def sd = DataFactory.scenario()
-        def scn = new Scenario(person: person, name: sd.name, executionMethod: sd.executionMethod,
-                type: sd.type, project: project, environments: [env])
-        def scenario = scenarioService.save(scn)
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        when: "go to edit page"
-        go "/scenario/edit/${scenario.id}"
-
-        then: "environment populates with project.environments"
-        EditScenarioPage page = browser.page(EditScenarioPage)
-        page.environmentsOptions*.text() == ["--No Environment--", env.name]
-    }
-
     void "environment select defaults with multiple selected environment"() {
         setup: "project & scenario instances with environments"
         def env = new Environment(DataFactory.environment())
@@ -69,7 +46,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/scenario/edit/${scenario.id}"
+        go "/project/${project.id}/scenario/edit/${scenario.id}"
 
         then: "bug.environment is selected"
         EditScenarioPage page = browser.page(EditScenarioPage)
@@ -91,7 +68,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "go to edit page"
-        go "/scenario/edit/${scenario.id}"
+        go "/project/${project.id}/scenario/edit/${scenario.id}"
 
         then: "environment defaults with no selection"
         EditScenarioPage page = browser.page(EditScenarioPage)

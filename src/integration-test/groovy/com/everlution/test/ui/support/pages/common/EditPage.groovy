@@ -3,8 +3,6 @@ package com.everlution.test.ui.support.pages.common
 class EditPage extends BasePage {
     static content = {
         fieldLabels { $("fieldset label") }
-        homeLink { $("[data-test-id=edit-home-link]") }
-        listLink { $("[data-test-id=edit-list-link]") }
         updateButton { $("[data-test-id=edit-update-button]") }
     }
 
@@ -37,19 +35,5 @@ class EditPage extends BasePage {
      */
     List<String> getFields() {
         return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
     }
 }
