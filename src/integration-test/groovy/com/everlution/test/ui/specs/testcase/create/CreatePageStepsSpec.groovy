@@ -52,7 +52,7 @@ class CreatePageStepsSpec extends GebSpec {
 
     void "null action and result message"() {
         setup:
-        def createPage = to CreateTestCasePage
+        def createPage = browser.page(CreateTestCasePage)
         createPage.completeCreateForm()
         createPage.testStepTable.addStep("", "")
         createPage.createButton.click()

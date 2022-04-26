@@ -77,7 +77,7 @@ class TestCaseController {
         } catch (ValidationException ignored) {
             def project = projectService.read(testCase.project.id)
             params.projectId = project.id
-            respond testCase.errors, view:"create", model: [ project: project]
+            respond testCase.errors, view:"create", model: [ project: project ]
             return
         }
 
