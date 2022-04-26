@@ -65,8 +65,9 @@ class TestGroupController {
 
         try {
             testGroupService.save(testGroup)
-        } catch (ValidationException e) {
-            respond testGroup.errors, view:'create'
+        } catch (ValidationException ignored) {
+            def project = projectService.read(testGroup.project.id)
+            respond testGroup.errors, view:'create', model: [ project: project ]
             return
         }
 
@@ -102,7 +103,7 @@ class TestGroupController {
 
         try {
             testGroupService.save(testGroup)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             respond testGroup.errors, view:'edit'
             return
         }

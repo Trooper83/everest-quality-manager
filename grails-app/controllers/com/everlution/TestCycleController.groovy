@@ -53,20 +53,6 @@ class TestCycleController {
     }
 
     /**
-     * display the create view
-     * /testCycle/create
-     */
-    @Secured("ROLE_BASIC")
-    def create(Long releasePlanId) {
-        def releasePlan = releasePlanService.get(releasePlanId)
-        if(releasePlan == null) {
-            notFound()
-            return
-        }
-        respond new TestCycle(params), view: 'create', model: [releasePlan: releasePlan]
-    }
-
-    /**
      * displays the show view
      * /testCycle/show/${id}
      * @param id - id of the instance to display

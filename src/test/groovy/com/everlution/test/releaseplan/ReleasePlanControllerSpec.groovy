@@ -161,6 +161,11 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
     void "save action with an invalid instance"() {
         given:
+        def p = new Project()
+        p.id = 1
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
+        }
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * save(_ as ReleasePlan) >> { ReleasePlan releasePlan ->
                 throw new ValidationException("Invalid instance", releasePlan.errors)
@@ -171,10 +176,12 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def releasePlan = new ReleasePlan()
+        releasePlan.project = p
         controller.save(releasePlan)
 
         then:"The create view is rendered again with the correct model"
         model.releasePlan != null
+        model.project == p
         view == 'create'
     }
 

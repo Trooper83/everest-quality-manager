@@ -166,10 +166,15 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
 
     void "save action with an invalid instance"() {
         given: "mock services"
+        def p = new Project()
+        p.id = 1
         controller.bugService = Mock(BugService) {
             1 * save(_ as Bug) >> { Bug bug ->
                 throw new ValidationException("Invalid instance", bug.errors)
             }
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
         }
         controller.springSecurityService = Mock(SpringSecurityService) {
             1 * getCurrentUser()
@@ -179,10 +184,12 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def bug = new Bug()
+        bug.project = p
         controller.save(bug)
 
         then:"The create view is rendered again with the correct model"
         model.bug instanceof Bug
+        model.project == p
         view == 'create'
     }
 

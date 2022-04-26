@@ -71,8 +71,9 @@ class ScenarioController {
 
         try {
             scenarioService.save(scenario)
-        } catch (ValidationException e) {
-            respond scenario.errors, view:'create'
+        } catch (ValidationException ignored) {
+            def project = projectService.read(scenario.project.id)
+            respond scenario.errors, view:'create', model: [ project: project ]
             return
         }
 

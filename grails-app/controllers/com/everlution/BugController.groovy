@@ -73,7 +73,8 @@ class BugController {
         try {
             bugService.save(bug)
         } catch (ValidationException ignored) {
-            respond bug.errors, view:'create' //TODO: need to implement urls to include project
+            def project = projectService.read(bug.project.id)
+            respond bug.errors, view:'create', model: [ project: project ]
             return
         }
 

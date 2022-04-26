@@ -27,62 +27,6 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         params["releasePlan"] = plan
     }
 
-    void "test the create action returns the correct view"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> new ReleasePlan()
-        }
-
-        when:"the create action is executed"
-        populateValidParams(params)
-        controller.create()
-
-        then:"the model is correctly created"
-        view == "create"
-    }
-
-    void "test the create action returns the correct model"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> new ReleasePlan()
-        }
-
-        when:"the create action is executed"
-        populateValidParams(params)
-        controller.create()
-
-        then:"the model is correctly created"
-        def m = model
-        model.testCycle!= null
-        model.releasePlan != null
-    }
-
-    void "create action renders 404 not found view with null release plan"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> null
-        }
-
-        when:"the create action is executed"
-        controller.create()
-
-        then:"the model is correctly created"
-        status == 404
-    }
-
-    void "null pointer not thrown when release plan not found in params"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * get(_) >> null
-        }
-
-        when:
-        controller.create()
-
-        then:
-        notThrown(NullPointerException)
-    }
-
     void "show action with a null id"() {
         given:
         controller.testCycleService = Mock(TestCycleService) {

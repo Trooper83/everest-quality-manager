@@ -157,6 +157,12 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
 
     void "save action with an invalid instance"() {
         given:
+        def p = new Project()
+        p.id = 1
+
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
+        }
         controller.testGroupService = Mock(TestGroupService) {
             1 * save(_ as TestGroup) >> { TestGroup testGroup ->
                 throw new ValidationException("Invalid instance", testGroup.errors)
@@ -167,10 +173,12 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def testGroup = new TestGroup()
+        testGroup.project = p
         controller.save(testGroup)
 
         then:"The create view is rendered again with the correct model"
         model.testGroup != null
+        model.project == p
         view == 'create'
     }
 

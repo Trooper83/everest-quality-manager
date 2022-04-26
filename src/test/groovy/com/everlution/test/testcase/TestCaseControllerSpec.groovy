@@ -170,6 +170,12 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
     void "test the save action with an invalid instance"() {
         given:
+        def p = new Project()
+        p.id = 1
+
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
+        }
         controller.testCaseService = Mock(TestCaseService) {
             1 * save(_ as TestCase) >> { TestCase testCase ->
                 throw new ValidationException("Invalid instance", testCase.errors)
@@ -183,10 +189,12 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def testCase = new TestCase()
+        testCase.project = p
         controller.save(testCase)
 
         then:"the create view is rendered again with the correct model"
         model.testCase != null
+        model.project == p
         view == 'create'
     }
 

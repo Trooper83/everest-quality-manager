@@ -315,7 +315,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.delete(2)
 
         then:"The user is redirected to index"
-        response.redirectedUrl == '/project/index'
+        response.redirectedUrl == '/projects'
         flash.message == "default.deleted.message"
     }
 

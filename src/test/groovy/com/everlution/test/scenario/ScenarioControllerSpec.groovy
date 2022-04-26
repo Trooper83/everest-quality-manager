@@ -151,6 +151,12 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
     void "save action with an invalid instance"() {
         given:
+        def p = new Project()
+        p.id = 1
+
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
+        }
         controller.scenarioService = Mock(ScenarioService) {
             1 * save(_ as Scenario) >> { Scenario scenario ->
                 throw new ValidationException("Invalid instance", scenario.errors)
@@ -165,10 +171,12 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def scenario = new Scenario()
+        scenario.project = p
         controller.save(scenario)
 
         then:"create view is rendered again with the correct model"
         model.scenario instanceof Scenario
+        model.project == p
         view == 'create'
     }
 

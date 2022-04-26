@@ -93,7 +93,8 @@ class ReleasePlanController {
         try {
             releasePlanService.save(releasePlan)
         } catch (ValidationException e) {
-            respond releasePlan.errors, view:'create'
+            def project = projectService.read(releasePlan.project.id)
+            respond releasePlan.errors, view:'create', model: [ project: project ]
             return
         }
 
