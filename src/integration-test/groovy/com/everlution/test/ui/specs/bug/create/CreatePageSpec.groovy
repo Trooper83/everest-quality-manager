@@ -23,7 +23,7 @@ class CreatePageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToCreatePage('Bug')
+        projectHomePage.projectNavButtons.goToCreatePage('Bug')
     }
 
     void "correct fields are displayed"() {

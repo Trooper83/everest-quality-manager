@@ -6,8 +6,8 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
+    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#create-releasePlan" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <g:render template="/shared/createPageNavigationTemplate"/>
         <div id="create-releasePlan" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${releasePlan}" var="entity"/>
@@ -25,5 +25,6 @@
                 </fieldset>
             </g:form>
         </div>
+    <asset:javascript src="popper.min.js"/>
     </body>
 </html>

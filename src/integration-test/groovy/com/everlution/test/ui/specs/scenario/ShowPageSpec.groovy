@@ -48,7 +48,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Scenarios')
+        projectHomePage.projectNavButtons.goToListsPage('Scenarios')
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -74,7 +74,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Scenarios')
+        projectHomePage.projectNavButtons.goToListsPage('Scenarios')
 
         when: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -100,7 +100,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Scenarios')
+        projectHomePage.projectNavButtons.goToListsPage('Scenarios')
 
         when: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -133,7 +133,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Scenarios')
+        projectHomePage.projectNavButtons.goToListsPage('Scenarios')
 
         when: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -157,7 +157,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Scenarios')
+        projectHomePage.projectNavButtons.goToListsPage('Scenarios')
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -183,7 +183,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Scenarios')
+        projectHomePage.projectNavButtons.goToListsPage('Scenarios')
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)

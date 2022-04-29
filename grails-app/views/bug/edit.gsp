@@ -7,16 +7,7 @@
     </head>
     <body>
         <a href="#edit-bug" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <div class="nav" role="navigation">
-            <ul>
-                <li>
-                    <g:link class="home" data-test-id="edit-home-link" uri="/project/${bug.project.id}/home">Project Home</g:link>
-                </li>
-                <li>
-                    <g:link class="list" data-test-id="edit-list-link" uri="/project/${bug.project.id}/bugs">Bugs List</g:link>
-                </li>
-            </ul>
-        </div>
+        <g:render template="/shared/projectButtonsTemplate"/>
         <div id="edit-bug" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
@@ -50,5 +41,6 @@
             </g:form>
         </div>
         <asset:javascript src="step.js"/>
+        <asset:javascript src="popper.min.js"/>
     </body>
 </html>

@@ -4,9 +4,10 @@ class UrlMappings {
 
     static mappings = {
         "/projects"(controller: "project", action: "projects")
+        "/project/home/$projectId"(controller: "project", action: "home")
+        "/project/edit/$projectId"(controller: "project", action: "edit")
         group "/project/$projectId", {
             "/bugs"(controller: "bug", action: "bugs")
-            "/home"(controller: "project", action: "home")
             "/releasePlans"(controller: "releasePlan", action: "releasePlans")
             "/scenarios"(controller: "scenario", action: "scenarios")
             "/testCases"(controller: "testCase", action: "testCases")

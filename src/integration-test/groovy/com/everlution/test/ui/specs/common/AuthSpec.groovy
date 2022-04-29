@@ -1,8 +1,9 @@
 package com.everlution.test.ui.specs.common
 
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
+
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -52,8 +53,8 @@ class AuthSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         when: "logout of app"
-        HomePage homePage = browser.page(HomePage)
-        homePage.navBar.logout()
+        def page = browser.page(ListProjectPage)
+        page.navBar.logout()
 
         then: "at home page"
         at LoginPage

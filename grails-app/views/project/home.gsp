@@ -6,6 +6,7 @@
     <title>Project Home</title>
 </head>
 <body>
+<g:render template="/shared/projectButtonsTemplate"/>
 <div class="container">
     <div id="show-project" class="content scaffold-show" role="main">
         <h1><g:message code="default.show.label" args="[entityName]" /></h1>
@@ -32,7 +33,18 @@
                 </g:each>
             </li>
         </ol>
+        <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
+            <g:form resource="${this.project}" method="DELETE">
+                <fieldset class="buttons">
+                    <g:link class="edit" action="edit" resource="${this.project}" data-test-id="home-edit-link">
+                        <g:message code="default.button.edit.label" default="Edit" />
+                    </g:link>
+                    <input class="delete" type="submit" data-test-id="home-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                </fieldset>
+        </g:form>
+        </sec:ifAnyGranted>
     </div>
 </div>
+<asset:javascript src="popper.min.js"/>
 </body>
 </html>

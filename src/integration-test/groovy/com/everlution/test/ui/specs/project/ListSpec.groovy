@@ -3,12 +3,11 @@ package com.everlution.test.ui.specs.project
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
+
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.pages.project.ShowProjectPage
+
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -44,11 +43,11 @@ class ListSpec extends GebSpec {
         loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         and: "go to project"
-        go "/project/show/${id}"
+        go "/project/home/${id}"
 
         and: "delete project"
-        ShowProjectPage showPage = browser.page(ShowProjectPage)
-        showPage.deleteProject()
+        ProjectHomePage homePage = browser.page(ProjectHomePage)
+        homePage.deleteProject()
 
         then: "at list page and message displayed"
         ListProjectPage listPage = at ListProjectPage

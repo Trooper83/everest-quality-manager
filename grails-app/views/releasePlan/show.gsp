@@ -6,10 +6,10 @@
         <title><g:message code="default.show.label" args="[entityName]" /></title>
     </head>
     <body>
+    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#show-releasePlan" class="skip" tabindex="-1">
             <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
         </a>
-        <g:render template="/shared/showPageNavigationTemplate"/>
         <div id="show-releasePlan" class="content scaffold-show" role="main">
             <h1><g:message code="default.show.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
@@ -114,5 +114,6 @@
                 </div>
             </div>
         </div>
+    <asset:javascript src="popper.min.js"/>
     </body>
 </html>

@@ -40,17 +40,6 @@ class ProjectController {
     }
 
     /**
-     * displays the show view with project data
-     * /project/show/${id}
-     * @param id - id of the project
-     * @return - the project to show
-     */
-    @Secured("ROLE_PROJECT_ADMIN")
-    def show(Long id) {
-        respond projectService.get(id), view: "show"
-    }
-
-    /**
      * displays the create project view
      * /project/create
      */
@@ -72,7 +61,7 @@ class ProjectController {
 
         try {
             projectService.save(project)
-        } catch (ValidationException e) {
+        } catch (ValidationException ignored) {
             respond project.errors, view:'create'
             return
         }
@@ -80,7 +69,7 @@ class ProjectController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'project.label', default: 'Project'), project.id])
-                redirect project
+                redirect controller: "project", action: "home", id: project.id
             }
             '*' { respond project, [status: CREATED] }
         }
@@ -92,8 +81,8 @@ class ProjectController {
      * @param id - id of the project
      */
     @Secured("ROLE_PROJECT_ADMIN")
-    def edit(Long id) {
-        respond projectService.get(id), view: "edit"
+    def edit(Long projectId) {
+        respond projectService.get(projectId), view: "edit"
     }
 
     /**
@@ -124,7 +113,7 @@ class ProjectController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'project.label', default: 'Project'), project.id])
-                redirect project
+                redirect controller: "project", action: "home", id: project.id
             }
             '*'{ respond project, [status: OK] }
         }
@@ -146,31 +135,17 @@ class ProjectController {
         } catch (DataIntegrityViolationException ignored) {
             def project = projectService.read(id)
             flash.error = 'Project has associated items and cannot be deleted'
-            respond project, view:'show'
+            respond project, view:'home'
             return
         }
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'project.label', default: 'Project'), id])
-                redirect action:"projects", method:"GET"
+                redirect controller: "project", action:"projects", method:"GET"
             }
             '*'{ render status: NO_CONTENT }
         }
-    }
-
-    /**
-     * gets the areas of a project
-     * @param project - the project
-     * @return - a list of the areas
-     */
-    @Secured("ROLE_BASIC")
-    def getProjectItems(Project project) {
-        if (project == null) {
-            notFound()
-            return
-        }
-        respond (["areas": project.areas, "environments": project.environments, "testGroups": project.testGroups])
     }
 
     /**

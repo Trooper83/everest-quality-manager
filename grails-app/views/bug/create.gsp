@@ -6,6 +6,7 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
+    <g:render template="/shared/projectButtonsTemplate"/>
         <div id="create-bug" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
@@ -40,6 +41,6 @@
             </g:form>
         </div>
         <asset:javascript src="step.js"/>
-        <asset:javascript src="getProjectItems.js"/>
+        <asset:javascript src="popper.min.js"/>
     </body>
 </html>

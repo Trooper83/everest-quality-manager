@@ -1,9 +1,9 @@
 package com.everlution.test.ui.support.pages.project
 
-import com.everlution.test.ui.support.pages.common.BasePage
+import com.everlution.test.ui.support.pages.common.ListPage
 import com.everlution.test.ui.support.pages.modules.TableModule
 
-class ListProjectPage extends BasePage {
+class ListProjectPage extends ListPage {
     static url = "/projects"
     static at = { title == "Project List" }
 

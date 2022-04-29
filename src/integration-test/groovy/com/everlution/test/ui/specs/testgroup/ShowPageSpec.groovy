@@ -66,7 +66,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
 
         and: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -92,7 +92,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
 
         when: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -118,7 +118,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
 
         when: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -151,7 +151,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
 
         when: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -174,7 +174,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
 
         and: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -200,7 +200,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
 
         and: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)

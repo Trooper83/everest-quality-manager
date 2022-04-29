@@ -21,7 +21,7 @@
         <tbody>
         <g:each var="project" in="${projectList}">
             <tr>
-                <td><g:link uri="/project/${project.id}/home">${project.name}</g:link></td>
+                <td><g:link uri="/project/home/${project.id}">${project.name}</g:link></td>
                 <td>${project.code}</td>
             </tr>
         </g:each>

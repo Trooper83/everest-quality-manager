@@ -24,7 +24,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         when: "go to list page"
         def page = at ListBugPage
@@ -45,7 +45,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         and: "go to list page"
         def page = at ListBugPage

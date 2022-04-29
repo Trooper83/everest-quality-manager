@@ -9,20 +9,7 @@
 <a href="#list-testCase" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<div class="nav" role="navigation">
-    <ul>
-        <li><a class="home" href="${createLink(uri: '/')}" data-test-id="index-home-link">
-            <g:message code="default.home.label"/>
-        </a></li>
-        <sec:ifAnyGranted roles="ROLE_BASIC">
-            <li>
-                <g:link class="create" action="create" data-test-id="index-create-button">
-                    <g:message code="default.new.label" args="[entityName]"/>
-                </g:link>
-            </li>
-        </sec:ifAnyGranted>
-    </ul>
-</div>
+<g:render template="/shared/projectButtonsTemplate"/>
 <div id="list-testCase" class="content scaffold-list" role="main">
     <h1>
         <g:message code="default.list.label" args="[entityName]"/>
@@ -58,5 +45,6 @@
         <g:paginate total="${testCaseCount ?: 0}"/>
     </div>
 </div>
+<asset:javascript src="popper.min.js"/>
 </body>
 </html>

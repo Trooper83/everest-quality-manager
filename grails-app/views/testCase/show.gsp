@@ -9,27 +9,7 @@
 <a href="#show-testCase" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<div class="nav" role="navigation">
-    <ul>
-        <li>
-            <a class="home" href="${createLink(uri: '/')}" data-test-id="show-home-link">
-                <g:message code="default.home.label"/>
-            </a>
-        </li>
-        <li>
-            <g:link class="list" action="index" data-test-id="show-list-link">
-                <g:message code="default.list.label" args="[entityName]"/>
-            </g:link>
-        </li>
-        <sec:ifAnyGranted roles="ROLE_BASIC">
-            <li>
-                <g:link class="create" action="create" data-test-id="show-create-link">
-                    <g:message code="default.new.label" args="[entityName]"/>
-                </g:link>
-            </li>
-        </sec:ifAnyGranted>
-    </ul>
-</div>
+<g:render template="/shared/projectButtonsTemplate"/>
 <div id="show-testCase" class="content scaffold-show" role="main">
     <h1>
         <g:message code="default.show.label" args="[entityName]"/>
@@ -95,5 +75,6 @@
         </g:form>
     </sec:ifAnyGranted>
 </div>
+<asset:javascript src="popper.min.js"/>
 </body>
 </html>

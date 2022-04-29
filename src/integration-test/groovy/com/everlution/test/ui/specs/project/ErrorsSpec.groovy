@@ -24,7 +24,7 @@ class ErrorsSpec extends GebSpec {
         notFoundPage.errors*.text().contains("Error: Page Not Found (404)")
 
         where:
-        url << ["/project/show/", "/project/edit/"]
+        url << ["/project/home/99999999999", "/project/edit/999999999999"]
     }
 
     void "denied page displayed for read_only and basic user"(String url, String username) {
@@ -44,11 +44,7 @@ class ErrorsSpec extends GebSpec {
         url               | username
         "/project/create" | Usernames.BASIC.username
         "/project/create" | Usernames.READ_ONLY.username
-        "/project/edit"   | Usernames.BASIC.username
-        "/project/edit"   | Usernames.READ_ONLY.username
-        "/project/show"   | Usernames.BASIC.username
-        "/project/show"   | Usernames.READ_ONLY.username
-        "/project/index"  | Usernames.BASIC.username
-        "/project/index"  | Usernames.READ_ONLY.username
+        "/project/edit/1"   | Usernames.BASIC.username
+        "/project/edit/1"   | Usernames.READ_ONLY.username
     }
 }

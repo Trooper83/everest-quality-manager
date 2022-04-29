@@ -4,18 +4,17 @@ import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
+
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
-import com.everlution.test.ui.support.pages.project.ListProjectPage
-import com.everlution.test.ui.support.pages.project.ShowProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
 @Integration
-class ShowPageSpec extends GebSpec {
+class HomePageSpec extends GebSpec {
 
     @Shared int id
 
@@ -39,29 +38,20 @@ class ShowPageSpec extends GebSpec {
         page.createProject("status message project", "SMP")
 
         then: "at show page with message displayed"
-        ShowProjectPage showPage = at ShowProjectPage
-        showPage.statusMessage.text() ==~ /Project \S+ created/
-    }
-
-    void "correct fields are displayed"() {
-        when: "go to show project page"
-        go "/project/show/${id}"
-
-        then: "correct fields are displayed"
-        ShowProjectPage page = browser.page(ShowProjectPage)
-        page.getFields() == ["Name", "Code", "Areas", "Environments"]
+        def homePage = at ProjectHomePage
+        homePage.statusMessage.text() ==~ /Project \S+ created/
     }
 
     void "project not deleted if alert is canceled"() {
         when: "go to show project page"
-        go "/project/show/${id}"
+        go "/project/home/${id}"
 
         and: "click delete and cancel | verify message"
-        ShowProjectPage showPage = browser.page(ShowProjectPage)
-        assert withConfirm(false) { showPage.deleteLink.click() } == "Are you sure?"
+        def page = browser.page(ProjectHomePage)
+        assert withConfirm(false) { page.deleteLink.click() } == "Are you sure?"
 
-        then: "at show page"
-        at ShowProjectPage
+        then: "at home page"
+        at ProjectHomePage
     }
 
     void "updated message displays after updating project"() {
@@ -73,8 +63,8 @@ class ShowPageSpec extends GebSpec {
         page.editProject()
 
         then: "at show page with message displayed"
-        ShowProjectPage showPage = at ShowProjectPage
-        showPage.statusMessage.text() == "Project ${id} updated"
+        def homePage = at ProjectHomePage
+        homePage.statusMessage.text() == "Project ${id} updated"
     }
 
     void "error message displayed when project cannot be deleted with associated items"() {
@@ -84,14 +74,14 @@ class ShowPageSpec extends GebSpec {
         releasePlanService.save(plan)
 
         and: "go to show project page"
-        go "/project/show/${id}"
+        go "/project/home/${id}"
 
         when: "delete project"
-        ShowProjectPage page = at ShowProjectPage
+        def page = at ProjectHomePage
         page.deleteProject()
 
         then: "message displayed"
-        at ShowProjectPage
+        at ProjectHomePage
         page.errorsMessage.text() == "Project has associated items and cannot be deleted"
     }
 }

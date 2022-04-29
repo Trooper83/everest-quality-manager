@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="main"/>
     <g:set var="entityName" value="${message(code: 'bug.label', default: 'Bug')}"/>
@@ -9,20 +9,7 @@
 <a href="#list-bug" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<div class="nav" role="navigation">
-    <ul>
-        <li>
-            <g:link class="home" data-test-id="bugs-home-link" uri="/project/${project.id}/home">Project Home</g:link>
-        </li>
-        <sec:ifAnyGranted roles="ROLE_BASIC">
-            <li>
-                <g:link class="create" action="create" uri="/project/${project.id}/bug/create" data-test-id="bugs-create-link">
-                    <g:message code="default.new.label" args="[entityName]"/>
-                </g:link>
-            </li>
-        </sec:ifAnyGranted>
-    </ul>
-</div>
+<g:render template="/shared/projectButtonsTemplate"/>
 <div id="list-bug" class="content scaffold-list" role="main">
     <h1>
         <g:message code="default.list.label" args="[entityName]"/>
@@ -56,5 +43,6 @@
         <g:paginate total="${bugCount ?: 0}"/>
     </div>
 </div>
+<asset:javascript src="popper.min.js"/>
 </body>
 </html>
