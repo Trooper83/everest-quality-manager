@@ -58,22 +58,18 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
 
         expect:
         verifyUrlMapping("/projects", controller: 'project', action: 'projects')
-        verifyUrlMapping("/project/123/home", controller: 'project', action: 'home') {
+        verifyUrlMapping("/project/home/123", controller: 'project', action: 'home') {
             projectId = 123
         }
         verifyUrlMapping("/project/create", controller: 'project', action: 'create')
         verifyUrlMapping("/project/save", controller: 'project', action: 'save')
         verifyUrlMapping("/project/update", controller: 'project', action: 'update')
-        verifyUrlMapping("/project/show/123", controller: 'project', action: 'show') {
-            id = 123
-        }
         verifyUrlMapping("/project/edit/123", controller: 'project', action: 'edit') {
-            id = 123
+            projectId = 123
         }
         verifyUrlMapping("/project/delete/123", controller: 'project', action: 'delete') {
             id = 123
         }
-        verifyUrlMapping("/project/getProjectItems", controller: 'project', action: 'getProjectItems')
     }
 
     void "verify bug forward and reverse mappings"() {
