@@ -20,7 +20,7 @@ class EditPageSpec extends GebSpec {
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 0)
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
         def listPage = browser.page(ListTestGroupPage)
         listPage.listTable.clickCell("Name", 0)
         browser.page(ShowTestGroupPage).goToEdit()

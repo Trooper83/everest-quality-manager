@@ -1,10 +1,13 @@
 package com.everlution.test.ui.support.pages.common
 
+import com.everlution.test.ui.support.pages.modules.ProjectNavModule
+
 class CreatePage extends BasePage {
     static content = {
         createButton { $("#create") }
         errorsMessage { $("ul.errors") }
         fieldLabels { $("fieldset label") }
+        projectNavButtons { module ProjectNavModule }
     }
 
     /**

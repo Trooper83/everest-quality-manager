@@ -31,7 +31,7 @@ class ListSpec extends GebSpec {
 
         when: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
 
         then: "correct headers are displayed"
         ListTestCasePage page = browser.page(ListTestCasePage)
@@ -50,7 +50,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)

@@ -58,7 +58,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -84,7 +84,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -110,7 +110,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -143,7 +143,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -167,7 +167,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Cases')
+        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)

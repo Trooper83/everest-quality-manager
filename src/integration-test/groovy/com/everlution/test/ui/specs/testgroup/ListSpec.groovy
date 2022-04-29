@@ -1,7 +1,5 @@
 package com.everlution.test.ui.specs.testgroup
 
-import com.everlution.ProjectService
-import com.everlution.TestGroupService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -26,7 +24,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Test Groups')
+        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
     }
 
     void "verify list table headers order"() {

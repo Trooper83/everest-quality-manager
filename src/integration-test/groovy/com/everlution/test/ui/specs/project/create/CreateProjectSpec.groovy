@@ -4,7 +4,7 @@ import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
-import com.everlution.test.ui.support.pages.project.ShowProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -25,7 +25,7 @@ class CreateProjectSpec extends GebSpec {
         page.createProject(name, code)
 
         then: "at show page with message displayed"
-        at ShowProjectPage
+        at ProjectHomePage
 
         where:
         username                         | password   | name                | code
@@ -55,12 +55,12 @@ class CreateProjectSpec extends GebSpec {
         page.createButton.click()
 
         then: "all data is displayed on show page"
-        def show = at ShowProjectPage
+        def home = at ProjectHomePage
         verifyAll {
-            show.isAreaDisplayed(ad.name)
-            show.isAreaDisplayed(ad1.name)
-            show.nameValue.text() == pd.name
-            show.codeValue.text() == pd.code
+            home.isAreaDisplayed(ad.name)
+            home.isAreaDisplayed(ad1.name)
+            home.nameValue.text() == pd.name
+            home.codeValue.text() == pd.code
         }
     }
 }

@@ -2,7 +2,7 @@ package com.everlution.test.ui.specs.scenario.edit
 
 import com.everlution.ScenarioService
 import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.HomePage
+
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -27,7 +27,7 @@ class EditPageSpec extends GebSpec {
         loginPage.login(Usernames.BASIC.username, "password")
 
         browser.page(ListProjectPage).projectTable.clickCell("Name", 0)
-        browser.page(ProjectHomePage).navBar.goToListsPage("Scenarios")
+        browser.page(ProjectHomePage).projectNavButtons.goToListsPage("Scenarios")
         browser.page(ListScenarioPage).scenarioTable.clickCell("Name", 0)
         browser.page(ShowScenarioPage).goToEdit()
     }

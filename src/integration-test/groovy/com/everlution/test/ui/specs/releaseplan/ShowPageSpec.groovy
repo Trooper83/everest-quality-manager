@@ -27,7 +27,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToCreatePage('Release Plan')
+        projectHomePage.projectNavButtons.goToCreatePage('Release Plan')
 
         when: "create a plan"
         browser.page(CreateReleasePlanPage).createReleasePlan()
@@ -49,7 +49,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first test group in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -75,7 +75,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -102,7 +102,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -136,7 +136,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -159,7 +159,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -185,7 +185,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -215,7 +215,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -242,7 +242,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -272,7 +272,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -301,7 +301,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -328,7 +328,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -353,7 +353,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -380,7 +380,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Release Plans')
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)

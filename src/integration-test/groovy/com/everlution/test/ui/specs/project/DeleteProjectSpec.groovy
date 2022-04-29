@@ -5,7 +5,8 @@ import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
-import com.everlution.test.ui.support.pages.project.ShowProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
+
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -27,11 +28,11 @@ class DeleteProjectSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to show page"
-        go "/project/show/${id}"
+        go "/project/home/${id}"
 
         when: "delete project"
-        def showPage = browser.at(ShowProjectPage)
-        showPage.deleteProject()
+        def page = browser.at(ProjectHomePage)
+        page.deleteProject()
 
         then: "at list page"
         at ListProjectPage

@@ -29,7 +29,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToCreatePage('Bug')
+        projectHomePage.projectNavButtons.goToCreatePage('Bug')
 
         when: "create a bug"
         def page = at CreateBugPage
@@ -55,7 +55,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -70,10 +70,7 @@ class ShowPageSpec extends GebSpec {
     }
 
     void "delete edit buttons not displayed for Read Only user"() {
-        setup: "get a bug id"
-        def bug = bugService.list(max: 1).first()
-
-        and: "login as a read only user"
+        given: "login as a read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.READ_ONLY.username, "password")
@@ -84,7 +81,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         when: "go to list page"
         def bugsPage = at ListBugPage
@@ -99,10 +96,7 @@ class ShowPageSpec extends GebSpec {
     }
 
     void "delete edit buttons displayed for authorized users"(String username, String password) {
-        setup: "get a bug id"
-        def bug = bugService.list(max: 1).first()
-
-        and: "login as a basic user"
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
@@ -113,7 +107,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         when: "go to list page"
         def bugsPage = at ListBugPage
@@ -135,10 +129,7 @@ class ShowPageSpec extends GebSpec {
     }
 
     void "correct fields are displayed"() {
-        setup: "get a bug id"
-        def bug = bugService.list(max: 1).first()
-
-        and: "login as a basic user"
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Usernames.BASIC.username, "password")
@@ -149,7 +140,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         when: "go to show page"
         def bugsPage = at ListBugPage
@@ -172,7 +163,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -198,7 +189,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToListsPage('Bugs')
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage

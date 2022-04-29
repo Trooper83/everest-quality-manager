@@ -10,14 +10,11 @@
     <asset:link rel="icon" href="favicon.ico" type="image/x-ico"/>
 
     <asset:stylesheet src="application.css"/>
-
     <g:layoutHead/>
 </head>
-
 <body>
-
 <nav class="navbar navbar-expand-lg navbar-dark navbar-static-top" role="navigation">
-    <a class="navbar-brand" href="/#"><asset:image src="grails.svg" alt="Grails Logo"/></a>
+    <a class="navbar-brand" href="/projects"><asset:image src="grails.svg" alt="Grails Logo"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -29,49 +26,17 @@
     </div>
     <div class="row justify-content-end">
         <div class="col">
-            <sec:ifAnyGranted roles="ROLE_BASIC">
-                <g:if test="${params.projectId}">
-                    <div class="dropdown" id="createMenu">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Create
-                        </button>
-                        <div class="dropdown-menu bg-secondary" aria-labelledby="dropdownMenuButton">
-                            <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
-                                <g:link class="dropdown-item" controller="project" action="create">Project</g:link>
-                                <div class="dropdown-divider"></div>
-                            </sec:ifAnyGranted>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/bug/create">Bug</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/releasePlan/create">Release Plan</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/scenario/create">Scenario</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testCase/create">Test Case</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroup/create">Test Group</g:link>
-                        </div>
+            <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
+                <div class="dropdown" id="createProject">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="adminDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Admin
+                    </button>
+                    <div class="dropdown-menu bg-secondary" aria-labelledby="adminDropDown">
+                        <g:link class="dropdown-item" controller="project" action="create">Create Project</g:link>
                     </div>
-                </g:if>
+                </div>
             </sec:ifAnyGranted>
         </div>
-    </div>
-    <ul class="navbar-nav">
-        <sec:ifAnyGranted roles="ROLE_READ_ONLY">
-                <g:if test="${params.projectId}">
-                    <li class="nav-item dropdown" id="listsMenu">
-                        <g:link class="nav-link dropdown-toggle" controller="project" action="projects" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Project
-                        </g:link>
-                        <div class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdown">
-                            <g:link class="dropdown-item" uri="/projects">Projects</g:link>
-                            <div class="dropdown-divider"></div>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/home">Home</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/bugs">Bugs</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/releasePlans">Release Plans</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testCases"> Test Cases</g:link>
-                            <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
-                        </div>
-                    </li>
-                </g:if>
-        </sec:ifAnyGranted>
-    </ul>
     <div class="container">
         <sec:ifLoggedIn>
             <g:form controller="logout">
@@ -117,7 +82,7 @@
 <div id="spinner" class="spinner" style="display:none;">
     <g:message code="spinner.alt" default="Loading&hellip;"/>
 </div>
-
 <asset:javascript src="application.js"/>
+<asset:javascript src="popper.min.js"/>
 </body>
 </html>

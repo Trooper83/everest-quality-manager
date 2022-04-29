@@ -9,23 +9,7 @@
 <a href="#show-bug" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<div class="nav" role="navigation">
-    <ul>
-        <li>
-            <g:link class="home" data-test-id="show-home-link" uri="/project/${bug.project.id}/home">Project Home</g:link>
-        </li>
-        <li>
-            <g:link class="list" data-test-id="show-list-link" uri="/project/${bug.project.id}/bugs">Bugs List</g:link>
-        </li>
-        <sec:ifAnyGranted roles="ROLE_BASIC">
-            <li>
-                <g:link class="create" action="create" uri="/project/${bug.project.id}/bug/create" data-test-id="show-create-link">
-                    <g:message code="default.new.label" args="[entityName]"/>
-                </g:link>
-            </li>
-        </sec:ifAnyGranted>
-    </ul>
-</div>
+<g:render template="/shared/projectButtonsTemplate"/>
 <div id="show-bug" class="content scaffold-show" role="main">
     <h1>
         <g:message code="default.show.label" args="[entityName]"/>
@@ -79,5 +63,6 @@
         </g:form>
     </sec:ifAnyGranted>
 </div>
+<asset:javascript src="popper.min.js"/>
 </body>
 </html>

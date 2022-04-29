@@ -5,7 +5,8 @@ import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
-import com.everlution.test.ui.support.pages.project.ShowProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
+
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -44,8 +45,8 @@ class EditProjectEnvironmentSpec extends GebSpec {
         page.editProject()
 
         then: "environment tag is displayed"
-        def showPage = at ShowProjectPage
-        showPage.isEnvironmentDisplayed("Added environment tag")
+        def homePage = at ProjectHomePage
+        homePage.isEnvironmentDisplayed("Added environment tag")
     }
 
     void "environment tag can be edited on existing project"() {
@@ -62,21 +63,21 @@ class EditProjectEnvironmentSpec extends GebSpec {
         loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         and: "go to show page"
-        go "/project/show/${id}"
+        go "/project/home/${id}"
 
         expect: "environment tag is displayed"
-        def showPage = at ShowProjectPage
-        showPage.isEnvironmentDisplayed(ed.name)
+        def homePage = at ProjectHomePage
+        homePage.isEnvironmentDisplayed(ed.name)
 
         when: "edit the project"
-        showPage.goToEdit()
+        homePage.goToEdit()
         EditProjectPage page = browser.page(EditProjectPage)
         page.editEnvironmentTag(ed.name, "edited environment tag")
         page.editProject()
 
         then: "environment tag is displayed"
-        showPage.isEnvironmentDisplayed("edited environment tag")
-        !showPage.isEnvironmentDisplayed(ed.name)
+        homePage.isEnvironmentDisplayed("edited environment tag")
+        !homePage.isEnvironmentDisplayed(ed.name)
     }
 
     void "tooltip displays for editing existing environment with blank name"() {
@@ -231,23 +232,23 @@ class EditProjectEnvironmentSpec extends GebSpec {
         loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
 
         and: "go to show page"
-        go "/project/show/${id}"
+        go "/project/home/${id}"
 
         expect: "environment to be found"
         environmentService.get(environment.id) != null
 
         and: "environment tag is displayed"
-        def showPage = at ShowProjectPage
-        showPage.isEnvironmentDisplayed(environment.name)
+        def homePage = at ProjectHomePage
+        homePage.isEnvironmentDisplayed(environment.name)
 
         when: "remove the environment tag"
-        showPage.goToEdit()
+        homePage.goToEdit()
         EditProjectPage page = browser.page(EditProjectPage)
         page.removeEnvironmentTag(environment.name)
         page.editProject()
 
         then: "environment tag is displayed and was deleted"
-        !showPage.isEnvironmentDisplayed(environment.name)
+        !homePage.isEnvironmentDisplayed(environment.name)
         environmentService.get(environment.id) == null
     }
 

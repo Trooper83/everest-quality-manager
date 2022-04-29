@@ -82,7 +82,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.save(project)
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/project/show/1'
+        response.redirectedUrl == '/project/home/1'
         controller.flash.message == "default.created.message"
     }
 
@@ -103,45 +103,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         then:"The create view is rendered again with the correct model"
         model.project != null
         view == 'create'
-    }
-
-    void "test the show action renders show view"() {
-        given:
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
-        }
-
-        when:"a domain instance is passed to the show action"
-        controller.show(2)
-
-        then:
-        view == "show"
-    }
-
-    void "Test the show action with a null id"() {
-        given:
-        controller.projectService = Mock(ProjectService) {
-            1 * get(null) >> null
-        }
-
-        when:"The show action is executed with a null domain"
-        controller.show(null)
-
-        then:"A 404 error is returned"
-        response.status == 404
-    }
-
-    void "Test the show action with a valid id"() {
-        given:
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
-        }
-
-        when:"A domain instance is passed to the show action"
-        controller.show(2)
-
-        then:"A model is populated containing the domain instance"
-        model.project instanceof Project
     }
 
     void "Test the edit action with a null id"() {
@@ -227,7 +188,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.update(project, new RemovedItems())
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/project/show/1'
+        response.redirectedUrl == '/project/home/1'
         controller.flash.message == "default.updated.message"
     }
 
@@ -338,60 +299,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         then:"The edit view is rendered again with the correct model"
         model.project instanceof Project
         flash.error == "Project has associated items and cannot be deleted"
-        view == 'show'
-    }
-
-    void "Test the getProjectItems action with a null instance"() {
-        when:"The delete action is called for a null instance"
-        request.method = 'GET'
-        controller.getProjectItems(null)
-
-        then:"A 404 is returned"
-        response.status == 404
-    }
-
-    void "Test the getProjectItems action with an instance"() {
-        given: "a valid project"
-        params.name = "unit test project"
-        params.code = "SOX"
-        params.areas = [new Area(name:"testing")]
-        def project = new Project(params)
-
-        when:"The domain instance is passed to the getAreas action"
-        request.method = 'GET'
-        controller.getProjectItems(project)
-
-        then:"areas are returned"
-        response.status == 200
-    }
-
-    void "test the getProjectItems action method"(String httpMethod) {
-        when:"The domain instance is passed to the getProjectItems action"
-        request.method = httpMethod
-        controller.getProjectItems(null)
-
-        then:
-        response.status == 405
-
-        where:
-        httpMethod << ["DELETE", "PUT", "POST", "PATCH"]
-    }
-
-    void "getProjectItems returns areas and environments from project"() {
-        given: "project with area and environments"
-        def areaList = [new Area(name: "area 51")]
-        def envList = [new Environment(name: "environment 51")]
-        def project = new Project(name: "testing project", code: "tpc", areas: areaList,
-                environments: envList).save()
-        new TestGroup(name: "group name", project: project).save()
-
-        when: "call action"
-        controller.getProjectItems(project)
-
-        then: "items returned"
-        model.areas == areaList
-        model.environments == envList
-        model.testGroups != null
+        view == 'home'
     }
 
     void "projects action renders projects view"() {
