@@ -11,6 +11,7 @@ class EditProjectPage extends BasePage {
         areaInput { $("#area") }
         areaRemovedInput { $("input[data-test-id='removed-tag-input']") }
         areaTag(required: false) { text -> $("#areas li", name: text) }
+        areaTagCancelButton { text -> areaTag(text).find("input[data-test-id='cancel-tag-button']") }
         areaTagEditButton { text -> areaTag(text).find("input[data-test-id='edit-tag-button']") }
         areaTagInput { text -> areaTag(text).find("input[data-test-id='tag-input']") }
         areaTagRemoveButton { text -> areaTag(text).find("input[data-test-id='remove-tag-button']") }
@@ -21,6 +22,7 @@ class EditProjectPage extends BasePage {
         environmentInput { $("#environment") }
         environmentRemovedInput { $("input[data-test-id='removed-tag-input']") }
         environmentTag(required: false) { text -> $("#environments li", name: text) }
+        environmentTagCancelButton { text -> environmentTag(text).find("input[data-test-id='cancel-tag-button']") }
         environmentTagEditButton { text -> environmentTag(text).find("input[data-test-id='edit-tag-button']") }
         environmentTagInput { text -> environmentTag(text).find("input[data-test-id='tag-input']") }
         environmentTagRemoveButton { text -> environmentTag(text).find("input[data-test-id='remove-tag-button']") }
@@ -67,6 +69,38 @@ class EditProjectPage extends BasePage {
             }
         }
         return true
+    }
+
+    /**
+     * cancels area tag editing
+     * @param name
+     */
+    void cancelAreaTagEdit(String name) {
+        areaTagCancelButton(name).click()
+    }
+
+    /**
+     * cancels env tag editing
+     * @param name
+     */
+    void cancelEnvironmentTagEdit(String name) {
+        environmentTagCancelButton(name).click()
+    }
+
+    /**
+     * displays the area tag edit fields
+     * @param name
+     */
+    void displayAreaTagEditFields(String name) {
+        areaTagEditButton(name).click()
+    }
+
+    /**
+     * displays the env tag edit fields
+     * @param name
+     */
+    void displayEnvironmentTagEditFields(String name) {
+        environmentTagEditButton(name).click()
     }
 
     /**

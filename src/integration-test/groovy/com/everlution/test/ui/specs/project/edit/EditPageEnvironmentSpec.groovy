@@ -142,4 +142,99 @@ class EditPageEnvironmentSpec extends GebSpec {
         page.errorMessages.text() ==
                 "Property [name] of class [class com.everlution.Environment] cannot be null"
     }
+
+    void "environment tag edit fields removed or hidden when cancelled"() {
+        given: "add a tag"
+        def tag = "Test Env Edit"
+        def page = browser.page(EditProjectPage)
+        page.addEnvironmentTag(tag)
+
+        and: "edit tag"
+        page.displayEnvironmentTagEditFields(tag)
+
+        when: "cancel edit"
+        page.cancelEnvironmentTagEdit(tag)
+
+        then: "save button removed"
+        page.environmentTagSaveButton(tag).size() == 0
+
+        and: "input is hidden"
+        !page.isEnvironmentTagHiddenInputDisplayed(tag)
+
+        and: "edit button is displayed"
+        page.environmentTagEditButton(tag).size() == 1
+
+        and: "delete button is displayed"
+        page.environmentTagEditButton(tag).size() == 1
+    }
+
+    void "environment tag edit fields removed or hidden when click outside of input field"() {
+        given: "add a tag"
+        def tag = "Test Env Edit"
+        def page = browser.page(EditProjectPage)
+        page.addEnvironmentTag(tag)
+
+        and: "edit tag"
+        page.displayEnvironmentTagEditFields(tag)
+
+        when: "click outside input"
+        page.environmentInput.click()
+
+        then: "save button removed"
+        page.environmentTagSaveButton(tag).size() == 0
+
+        and: "input is hidden"
+        !page.isEnvironmentTagHiddenInputDisplayed(tag)
+
+        and: "edit button is displayed"
+        page.environmentTagEditButton(tag).size() == 1
+
+        and: "delete button is displayed"
+        page.environmentTagRemoveButton(tag).size() == 1
+    }
+
+    void "environment tag edit fields removed or hidden when second tag is edited"() {
+        given: "add a tag"
+        def tag = "Test Env Edit"
+        def tag1 = "Second Test Env Edit"
+        def page = browser.page(EditProjectPage)
+        page.addEnvironmentTag(tag)
+        page.addEnvironmentTag(tag1)
+
+        when: "edit tag"
+        page.displayEnvironmentTagEditFields(tag)
+        page.displayEnvironmentTagEditFields(tag1)
+
+        then: "save button removed"
+        page.environmentTagSaveButton(tag).size() == 0
+
+        and: "input is hidden"
+        !page.isEnvironmentTagHiddenInputDisplayed(tag)
+
+        and: "edit button is displayed"
+        page.environmentTagEditButton(tag).size() == 1
+
+        and: "delete button is displayed"
+        page.environmentTagRemoveButton(tag).size() == 1
+    }
+
+    void "environment tag edits not persisted when cancelled"() {
+        given: "add a tag"
+        def tag = "Test Env Edit"
+        def page = browser.page(EditProjectPage)
+        page.addEnvironmentTag(tag)
+
+        and: "edit tag"
+        page.displayEnvironmentTagEditFields(tag)
+
+        and: "edit tag value"
+        page.environmentTagInput(tag).value("should not persist")
+
+        when: "cancel edit"
+        page.cancelEnvironmentTagEdit(tag)
+
+        then: "save button removed"
+        page.displayEnvironmentTagEditFields(tag)
+        page.environmentTagInput(tag).value() == tag
+    }
 }

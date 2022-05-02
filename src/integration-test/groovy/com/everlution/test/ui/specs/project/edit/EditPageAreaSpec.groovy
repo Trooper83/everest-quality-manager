@@ -142,4 +142,99 @@ class EditPageAreaSpec extends GebSpec {
         page.errorMessages.text() ==
                 "Property [name] of class [class com.everlution.Area] cannot be null"
     }
+
+    void "area tag edit fields removed or hidden when cancelled"() {
+        given: "add a tag"
+        def tag = "Test Area Edit"
+        def page = browser.page(EditProjectPage)
+        page.addAreaTag(tag)
+
+        and: "edit tag"
+        page.displayAreaTagEditFields(tag)
+
+        when: "cancel edit"
+        page.cancelAreaTagEdit(tag)
+
+        then: "save button removed"
+        page.areaTagSaveButton(tag).size() == 0
+
+        and: "input is hidden"
+        !page.isAreaTagHiddenInputDisplayed(tag)
+
+        and: "edit button is displayed"
+        page.areaTagEditButton(tag).size() == 1
+
+        and: "delete button is displayed"
+        page.areaTagRemoveButton(tag).size() == 1
+    }
+
+    void "area tag edit fields removed or hidden when click outside of input field"() {
+        given: "add a tag"
+        def tag = "Test Area Edit"
+        def page = browser.page(EditProjectPage)
+        page.addAreaTag(tag)
+
+        and: "edit tag"
+        page.displayAreaTagEditFields(tag)
+
+        when: "click outside input"
+        page.environmentInput.click()
+
+        then: "save button removed"
+        page.areaTagSaveButton(tag).size() == 0
+
+        and: "input is hidden"
+        !page.isAreaTagHiddenInputDisplayed(tag)
+
+        and: "edit button is displayed"
+        page.areaTagEditButton(tag).size() == 1
+
+        and: "delete button is displayed"
+        page.areaTagRemoveButton(tag).size() == 1
+    }
+
+    void "area tag edit fields removed or hidden when second tag is edited"() {
+        given: "add a tag"
+        def tag = "Test Area Edit"
+        def tag1 = "Second Test Area Edit"
+        def page = browser.page(EditProjectPage)
+        page.addAreaTag(tag)
+        page.addAreaTag(tag1)
+
+        when: "edit tag"
+        page.displayAreaTagEditFields(tag)
+        page.displayAreaTagEditFields(tag1)
+
+        then: "save button removed"
+        page.areaTagSaveButton(tag).size() == 0
+
+        and: "input is hidden"
+        !page.isAreaTagHiddenInputDisplayed(tag)
+
+        and: "edit button is displayed"
+        page.areaTagEditButton(tag).size() == 1
+
+        and: "delete button is displayed"
+        page.areaTagRemoveButton(tag).size() == 1
+    }
+
+    void "area tag edits not persisted when cancelled"() {
+        given: "add a tag"
+        def tag = "Test Area Edit"
+        def page = browser.page(EditProjectPage)
+        page.addAreaTag(tag)
+
+        and: "edit tag"
+        page.displayAreaTagEditFields(tag)
+
+        and: "edit tag value"
+        page.areaTagInput(tag).value("should not persist")
+
+        when: "cancel edit"
+        page.cancelAreaTagEdit(tag)
+
+        then: "save button removed"
+        page.displayAreaTagEditFields(tag)
+        page.areaTagInput(tag).value() == tag
+    }
 }
