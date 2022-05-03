@@ -394,4 +394,38 @@ class ShowPageSpec extends GebSpec {
         then:
         !page.testCycleModal.displayed
     }
+
+    void "add tests modal resets data when cancelled"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+
+        and: "click first row in list"
+        def listPage = browser.page(ListReleasePlanPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        and:
+        def page = browser.page(ShowReleasePlanPage)
+        page.displayAddTestCycleModal()
+        page.testCycleModalNameInput << 'testing'
+
+        expect:
+        page.testCycleModalNameInput.value() == 'testing'
+
+        when:
+        page.closeTestCycleModal()
+        page.displayAddTestCycleModal()
+
+        then:
+        page.testCycleModalNameInput.text() == ''
+    }
 }

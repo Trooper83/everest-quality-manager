@@ -14,7 +14,6 @@
         <g:message code="default.show.label" args="[entityName]"/>
     </h1>
     <g:render template="/shared/messagesTemplate" bean="${testCycle}" var="entity"/>
-    <g:link elementId="backToPlan" controller="releasePlan" action="show" id="${testCycle.releasePlan.id}">Back to Release Plan</g:link>
     <ol class="property-list testCycle">
         <li class="fieldcontain">
             <span id="releasePlan-label" class="property-label">Release Plan</span>
@@ -93,5 +92,13 @@
         </div>
     </div>
 </div>
+<asset:javascript src="jquery-3.3.1.min.js"/>
+<script>
+        $(document).ready(function() {
+            $('#testsModal').on('hidden.bs.modal', function () {
+                $('#testsModal form')[0].reset();
+            });
+        });
+    </script>
 </body>
 </html>

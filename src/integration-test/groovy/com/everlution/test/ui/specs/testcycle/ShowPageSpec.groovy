@@ -202,6 +202,52 @@ class ShowPageSpec extends GebSpec {
         }
     }
 
+    void "add tests modal resets fields when cancelled"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+        def tc = DataFactory.testCase()
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, testCycle.releasePlan.project.id, testCycle.id)
+
+        and:
+        def show = at ShowTestCyclePage
+        show.addTestsButton.click()
+        waitFor {
+            show.addTestsModal.displayed
+        }
+        show.testGroupsSelect().selected = [show.testGroupsOptions*.text().first()]
+
+        expect:
+        !show.testGroupsSelect().selected.empty
+
+        when:
+        show.cancelAddTestsModal()
+
+        and:
+        show.displayAddTestsModal()
+
+        then:
+        show.testGroupsSelect().selected.empty
+    }
+
+
     void "correct test groups populate modal form"() {
         given: "setup data"
         def gd = DataFactory.testGroup()

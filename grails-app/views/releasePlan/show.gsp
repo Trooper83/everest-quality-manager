@@ -115,5 +115,13 @@
             </div>
         </div>
     <asset:javascript src="popper.min.js"/>
+    <asset:javascript src="jquery-3.3.1.min.js"/>
+    <script>
+        $(document).ready(function() {
+            $('#testCycleModal').on('hidden.bs.modal', function () {
+                $('#testCycleModal form')[0].reset();
+            });
+        });
+    </script>
     </body>
 </html>
