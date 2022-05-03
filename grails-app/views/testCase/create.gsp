@@ -22,7 +22,7 @@
                         <label for="area">Area</label>
                         <g:select name="area" from="${project.areas}"
                                   optionKey="id" optionValue="name"
-                                  noSelection="${['':'Select an Area...']}"
+                                  noSelection="${['':'']}"
                         />
                     </div>
                     <div class="fieldcontain">

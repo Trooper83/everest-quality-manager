@@ -29,7 +29,7 @@
                         <label for="environments">Environments</label>
                         <g:select name="environments" id="environments" from="${bug.project.environments}"
                                   optionKey="id" optionValue="name" value="${bug.environments?.id}"
-                                  noSelection="${['':'--No Environment--']}" multiple="true"
+                                  noSelection="${['':'No Environment...']}" multiple="true"
                         />
                     </div>
                     <f:all bean="bug" except="area, environments, project, steps, person"/>

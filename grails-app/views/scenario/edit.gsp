@@ -29,7 +29,7 @@
                         <label for="environments">Environments</label>
                         <g:select name="environments" id="environments" from="${scenario.project.environments}"
                                   optionKey="id" optionValue="name" value="${scenario.environments?.id}"
-                                  noSelection="${['':'--No Environment--']}" multiple="true"
+                                  noSelection="${['':'No Environment...']}" multiple="true"
                         />
                     </div>
                     <f:all bean="scenario" except="area, environments, project, person, gherkin"/>

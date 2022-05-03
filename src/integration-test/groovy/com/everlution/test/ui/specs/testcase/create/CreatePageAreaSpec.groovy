@@ -26,7 +26,7 @@ class CreatePageAreaSpec extends GebSpec {
 
         then: "default text selected"
         def page = browser.page(CreateTestCasePage)
-        page.areaSelect().selectedText == "Select an Area..."
+        page.areaSelect().selectedText == ""
         page.areaSelect().selected == ""
     }
 }
