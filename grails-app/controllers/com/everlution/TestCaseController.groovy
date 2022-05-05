@@ -105,8 +105,14 @@ class TestCaseController {
      * @param testCase - test case values to update
      */
     @Secured("ROLE_BASIC")
-    def update(TestCase testCase, RemovedItems removedItems) {
-        if (testCase == null) {
+    def update(TestCase testCase, RemovedItems removedItems, Long projectId) {
+        if (testCase == null || projectId == null) {
+            notFound()
+            return
+        }
+
+        def testProjectId = testCase.project.id
+        if (projectId != testProjectId) {
             notFound()
             return
         }
@@ -137,6 +143,11 @@ class TestCaseController {
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
         if (id == null || projectId == null) {
+            notFound()
+            return
+        }
+        def testCase = testCaseService.read(id)
+        if (testCase.project.id != projectId) {
             notFound()
             return
         }

@@ -267,7 +267,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         def group = new TestGroup(params)
 
         when:
-        controller.update(group)
+        controller.update(group, null)
 
         then:
         response.status == 405
@@ -283,7 +283,32 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, 1)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a valid test case instance and null projectId param returns 404"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(new TestGroup(), null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a projectId param not matching test case projectId returns 404"() {
+        when:
+        def testGroup = new TestGroup(params)
+        testGroup.id = 1
+        def project = new Project()
+        project.id = 1
+        testGroup.project = project
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(testGroup, 999)
 
         then:"A 404 error is returned"
         response.status == 404
@@ -306,7 +331,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         project.id = 1
         testGroup.project = project
 
-        controller.update(testGroup)
+        controller.update(testGroup, 1)
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/testGroup/show/1'
@@ -322,9 +347,14 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:"The save action is executed with an invalid instance"
+        def testGroup = new TestGroup(params)
+        testGroup.id = 1
+        def project = new Project()
+        project.id = 1
+        testGroup.project = project
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new TestGroup())
+        controller.update(testGroup, 1)
 
         then:"The edit view is rendered again with the correct model"
         model.testGroup != null
@@ -369,9 +399,15 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     }
 
     void "delete action with an instance"() {
+        def testGroup = new TestGroup(params)
+        testGroup.id = 2
+        def project = new Project()
+        project.id = 1
+        testGroup.project = project
         given:
         controller.testGroupService = Mock(TestGroupService) {
             1 * delete(2)
+            1 * read(2) >> testGroup
         }
 
         when:"The domain instance is passed to the delete action"
@@ -382,6 +418,27 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         then:"The user is redirected to index"
         response.redirectedUrl == '/project/1/testGroups'
         flash.message == "default.deleted.message"
+    }
+
+    void "delete action returns 404 with test case project not matching params project"() {
+        given:
+        def testGroup = new TestGroup(params)
+        testGroup.id = 2
+        def project = new Project()
+        project.id = 1
+        testGroup.project = project
+
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * read(2) >> testGroup
+        }
+
+        when:"The domain instance is passed to the delete action"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 999)
+
+        then:"A 404 is returned"
+        response.status == 404
     }
 }
 

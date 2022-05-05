@@ -3,6 +3,7 @@ package com.everlution.test.releaseplan
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
+import com.everlution.TestCase
 import com.everlution.TestCycle
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -34,6 +35,20 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
     void "get with invalid id returns null"() {
         expect:
         service.get(1) == null
+    }
+
+    void "read with invalid id returns null"() {
+        expect:
+        service.read(1) == null
+    }
+
+    void "read returns instance"() {
+        when:
+        def pr = new Project(name: "name", code: "cod").save()
+        new ReleasePlan(name: "name", project: pr).save()
+
+        then:
+        service.read(1) instanceof ReleasePlan
     }
 
     void "list max args param returns correct value"() {

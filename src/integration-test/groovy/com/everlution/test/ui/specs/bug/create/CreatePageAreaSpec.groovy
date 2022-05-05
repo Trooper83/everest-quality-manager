@@ -29,7 +29,7 @@ class CreatePageAreaSpec extends GebSpec {
     void "area field has no value set"() {
         expect: "default text selected"
         def page = browser.page(CreateBugPage)
-        page.areaSelect().selectedText == "Select an Area..."
+        page.areaSelect().selectedText == ""
         page.areaSelect().selected == ""
     }
 }

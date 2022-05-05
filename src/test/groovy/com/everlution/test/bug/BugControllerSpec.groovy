@@ -193,7 +193,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         view == 'create'
     }
 
-    void "test the show action renders show view"() {
+    void "show action renders show view"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * get(2) >> new Bug()
@@ -206,7 +206,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         view == "show"
     }
 
-    void "Test the show action with a null id"() {
+    void "show action with a null id"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * get(null) >> null
@@ -219,7 +219,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         response.status == 404
     }
 
-    void "Test the show action with a valid id"() {
+    void "show action with a valid id"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * get(2) >> new Bug()
@@ -232,7 +232,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         model.bug instanceof Bug
     }
 
-    void "Test the edit action with a null id"() {
+    void "edit action with a null id"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * get(null) >> null
@@ -245,7 +245,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         response.status == 404
     }
 
-    void "Test the edit action with a valid id"() {
+    void "edit action with a valid id"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * get(2) >> new Bug()
@@ -258,7 +258,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         model.bug instanceof Bug
     }
 
-    void "test the edit action renders edit view"() {
+    void "edit action renders edit view"() {
         given:
         controller.bugService = Mock(BugService) {
             1 * get(2) >> new Bug()
@@ -271,14 +271,14 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         view == "edit"
     }
 
-    void "test the update action method"(String httpMethod) {
+    void "update action method"(String httpMethod) {
         given:
         request.method = httpMethod
         populateValidParams(params)
         def bug = new Bug(params)
 
         when:
-        controller.update(bug, new RemovedItems())
+        controller.update(bug, new RemovedItems(), null)
 
         then:
         response.status == 405
@@ -287,11 +287,35 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         httpMethod << ["GET", "DELETE", "POST", "PATCH"]
     }
 
-    void "test the update action with a null instance"() {
+    void "update action with a null bug instance returns 404"() {
         when:"update is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null, null)
+        controller.update(null, null, 1)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a valid bug instance and null projectId param returns 404"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(new Bug(), null, null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a projectId param not matching bug projectId returns 404"() {
+        when:
+        def bug = new Bug()
+        def project = new Project()
+        project.id = 999
+        bug.project = project
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(bug, null, 1)
 
         then:"A 404 error is returned"
         response.status == 404
@@ -314,7 +338,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         project.id = 1
         bug.project = project
 
-        controller.update(bug, new RemovedItems())
+        controller.update(bug, new RemovedItems(), 1)
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/bug/show/1'
@@ -332,10 +356,16 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
             }
         }
 
-        when:"The update action is executed with an invalid instance"
+        when:"update action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new Bug(), new RemovedItems())
+        populateValidParams(params)
+        def bug = new Bug(params)
+        def project = new Project()
+        bug.id = 1
+        project.id = 1
+        bug.project = project
+        controller.update(bug, new RemovedItems(), 1)
 
         then:"The edit view is rendered again with the correct model"
         model.bug instanceof Bug
@@ -356,7 +386,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         httpMethod << ["GET", "PUT", "POST", "PATCH"]
     }
 
-    void "Test the delete action with a null instance"() {
+    void "delete action with a null instance"() {
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
@@ -366,7 +396,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         response.status == 404
     }
 
-    void "Test the delete action with a null project"() {
+    void "delete action with a null project"() {
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
@@ -376,10 +406,42 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         response.status == 404
     }
 
+    void "delete action returns 404 with bug project not matching params project"() {
+        given:
+        params.projectId = 999
+        populateValidParams(params)
+        def bug = new Bug(params)
+        def project = new Project()
+        bug.id = 2
+        project.id = 1
+        bug.project = project
+
+        controller.bugService = Mock(BugService) {
+            1 * read(2) >> bug
+        }
+
+        when:"The domain instance is passed to the delete action"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 999)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
     void "delete action with an instance"() {
         given:
+        params.projectId = 1
+        populateValidParams(params)
+        def bug = new Bug(params)
+        def project = new Project()
+        bug.id = 2
+        project.id = 1
+        bug.project = project
+
         controller.bugService = Mock(BugService) {
             1 * delete(2)
+            1 * read(2) >> bug
         }
 
         when:"The domain instance is passed to the delete action"

@@ -265,7 +265,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         def scn = new Scenario(params)
 
         when:
-        controller.update(scn)
+        controller.update(scn, null)
 
         then:
         response.status == 405
@@ -278,9 +278,34 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, 1)
 
         then:"404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a valid scenario instance and null projectId param returns 404"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(new Scenario(), null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a projectId param not matching scenario projectId returns 404"() {
+        when:
+        def scenario = new Scenario(params)
+        def project = new Project()
+        scenario.id = 1
+        project.id = 1
+        scenario.project = project
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(scenario, 999)
+
+        then:"A 404 error is returned"
         response.status == 404
     }
 
@@ -301,7 +326,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         project.id = 1
         scenario.project = project
 
-        controller.update(scenario)
+        controller.update(scenario, 1)
 
         then:"redirect is issued to the show action"
         response.redirectedUrl == '/project/1/scenario/show/1'
@@ -310,19 +335,23 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
     void "update action with an invalid instance"() {
         given:
+        def scenario = new Scenario(params)
+        def project = new Project()
+        scenario.id = 1
+        project.id = 1
+        scenario.project = project
+
         controller.scenarioService = Mock(ScenarioService) {
-            1 * save(_ as Scenario) >> { Scenario scenario ->
-                throw new ValidationException("Invalid instance", scenario.errors)
+            1 * save(_ as Scenario) >> { Scenario scn ->
+                throw new ValidationException("Invalid instance", scn.errors)
             }
-            1 * read(_) >> {
-                Mock(Scenario)
-            }
+            1 * read(_) >> scenario
         }
 
         when:"save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new Scenario())
+        controller.update(scenario, 1)
 
         then:"edit view is rendered again with the correct model"
         model.scenario instanceof Scenario
@@ -365,8 +394,15 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
     void "delete action with an instance"() {
         given:
+        def scenario = new Scenario(params)
+        def project = new Project()
+        scenario.id = 1
+        project.id = 1
+        scenario.project = project
+
         controller.scenarioService = Mock(ScenarioService) {
             1 * delete(2)
+            1 * read(2) >> scenario
         }
 
         when:"domain instance is passed to the delete action"
@@ -377,6 +413,28 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         then:"user is redirected to index"
         response.redirectedUrl == '/project/1/scenarios'
         flash.message == "default.deleted.message"
+    }
+
+    void "delete action returns 404 with scenario project not matching params project"() {
+        given:
+        populateValidParams(params)
+        def scenario = new Scenario(params)
+        def project = new Project()
+        scenario.id = 2
+        project.id = 2
+        scenario.project = project
+
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * read(2) >> scenario
+        }
+
+        when:"The domain instance is passed to the delete action"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 999)
+
+        then:"A 404 is returned"
+        response.status == 404
     }
 }
 

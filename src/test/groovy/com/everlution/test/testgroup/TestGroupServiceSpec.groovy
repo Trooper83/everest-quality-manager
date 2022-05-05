@@ -37,6 +37,19 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         service.get(11111111111) == null
     }
 
+    void "read with valid id returns instance"() {
+        when:
+        new TestGroup(name: "name", project: project).save()
+
+        then:
+        service.read(1) instanceof TestGroup
+    }
+
+    void "read with invalid id returns null"() {
+        expect:
+        service.read(11111111111) == null
+    }
+
     void "list max args param returns correct value"() {
         when:
         new TestGroup(name: "name", project: project).save()

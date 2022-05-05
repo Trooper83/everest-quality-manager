@@ -11,7 +11,7 @@
         <div id="edit-bug" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
-            <g:form resource="${this.bug}" method="PUT">
+            <g:form resource="${this.bug}" method="PUT" uri="/project/${bug.project.id}/bug/update/${bug.id}">
                 <g:hiddenField name="version" value="${this.bug?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">
@@ -29,7 +29,7 @@
                         <label for="environments">Environments</label>
                         <g:select name="environments" id="environments" from="${bug.project.environments}"
                                   optionKey="id" optionValue="name" value="${bug.environments?.id}"
-                                  noSelection="${['':'--No Environment--']}" multiple="true"
+                                  noSelection="${['':'No Environment...']}" multiple="true"
                         />
                     </div>
                     <f:all bean="bug" except="area, environments, project, steps, person"/>

@@ -11,7 +11,7 @@
         <div id="create-testGroup" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
-            <g:form resource="${this.testGroup}" method="POST">
+            <g:form resource="${this.testGroup}" method="POST" uri="/project/${project.id}/testGroup/save">
                 <fieldset class="form">
                     <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain required">

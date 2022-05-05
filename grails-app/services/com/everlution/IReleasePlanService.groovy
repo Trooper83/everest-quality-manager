@@ -10,6 +10,8 @@ interface IReleasePlanService {
 
     void delete(Serializable id)
 
+    ReleasePlan read(Serializable id)
+
     ReleasePlan save(ReleasePlan releasePlan)
 
 }

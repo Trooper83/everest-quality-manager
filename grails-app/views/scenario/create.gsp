@@ -11,7 +11,7 @@
         <div id="create-scenario" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${scenario}" var="entity"/>
-            <g:form resource="${this.scenario}" method="POST">
+            <g:form resource="${this.scenario}" method="POST" uri="/project/${project.id}/scenario/save">
                 <fieldset class="form">
                     <div class="fieldcontain required">
                         <g:hiddenField name="project" value="${project.id}"/>
@@ -24,7 +24,7 @@
                         <label for="area">Area</label>
                         <g:select name="area" from="${project.areas}"
                                   optionKey="id" optionValue="name"
-                                  noSelection="${['':'Select an Area...']}"
+                                  noSelection="${['':'']}"
                         />
                     </div>
                     <div class="fieldcontain">

@@ -37,8 +37,14 @@ class TestIterationController {
      * @param testIteration - iteration to update
      */
     @Secured("ROLE_BASIC")
-    def update(TestIteration testIteration) {
-        if (testIteration == null) {
+    def update(TestIteration testIteration, Long projectId) {
+        if (testIteration == null || projectId == null) {
+            notFound()
+            return
+        }
+
+        def testProjectId = testIteration.testCycle.releasePlan.project.id
+        if (projectId != testProjectId) {
             notFound()
             return
         }

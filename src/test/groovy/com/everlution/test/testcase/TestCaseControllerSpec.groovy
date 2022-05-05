@@ -283,7 +283,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         def testCase = new TestCase(params)
 
         when:
-        controller.update(testCase, new RemovedItems())
+        controller.update(testCase, new RemovedItems(), null)
 
         then:
         response.status == 405
@@ -295,13 +295,37 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         'POST'       | _
     }
 
-    void "test the update action with a null instance"() {
+    void "update action with a null instance returns 404"() {
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null, null)
+        controller.update(null, null, 999)
 
         then:"a 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a valid test case instance and null projectId param returns 404"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(new TestCase(), null, null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a projectId param not matching test case projectId returns 404"() {
+        when:
+        def testCase = new TestCase()
+        def project = new Project()
+        project.id = 999
+        testCase.project = project
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(testCase, null, 1)
+
+        then:"A 404 error is returned"
         response.status == 404
     }
 
@@ -322,7 +346,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         testCase.id = 1
         testCase.project = project
 
-        controller.update(testCase, new RemovedItems())
+        controller.update(testCase, new RemovedItems(), 1)
 
         then:"a redirect is issued to the show action"
         response.redirectedUrl == '/project/1/testCase/show/1'
@@ -341,9 +365,14 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         }
 
         when:"the action is executed with an invalid instance"
+        def testCase = new TestCase(params)
+        def project = new Project()
+        project.id = 1
+        testCase.id = 1
+        testCase.project = project
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new TestCase(), new RemovedItems())
+        controller.update(testCase, new RemovedItems(), 1)
 
         then:"the edit view is rendered again with the correct model"
         model.testCase != null
@@ -379,8 +408,16 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
     void "test the delete action with an instance"() {
         given:
+        params.projectId = '1'
+        def testCase = new TestCase(params)
+        def project = new Project()
+        project.id = 1
+        testCase.id = 1
+        testCase.project = project
+
         controller.testCaseService = Mock(TestCaseService) {
             1 * delete(2)
+            1 * read(2) >> testCase
         }
 
         when:"the domain instance is passed to the delete action"
@@ -403,13 +440,44 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         response.status == 404
     }
 
+    void "delete action returns 404 with test case project not matching params project"() {
+        given:
+        params.projectId = 999
+        populateValidParams(params)
+        def testCase = new TestCase(params)
+        def project = new Project()
+        testCase.id = 2
+        project.id = 1
+        testCase.project = project
+
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * read(2) >> testCase
+        }
+
+        when:"The domain instance is passed to the delete action"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 999)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
     void "delete action flash message correct when exception thrown"() {
         given:
+        params.projectId = '1'
+        def testCase = new TestCase(params)
+        def project = new Project()
+        project.id = 1
+        testCase.id = 2
+        testCase.project = project
+
         controller.testCaseService = Mock(TestCaseService) {
             1 * delete(2) >> {
                 throw new DataIntegrityViolationException("Exception")
             }
-            1 * get(2) >> new TestCase()
+            1 * get(2) >> testCase
+            1 * read(2) >> testCase
         }
 
         when:"the domain instance is passed to the delete action"

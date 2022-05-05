@@ -92,7 +92,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         page.testGroupsSelect().selected = [""]
 
         expect: "set to null"
-        page.testGroupsSelect().selectedText == ["--No Test Group--"]
+        page.testGroupsSelect().selectedText == ["No Test Group..."]
 
         when: "add empty steps"
         page.stepsTable.addStep("", "")

@@ -11,7 +11,7 @@
         <div id="edit-scenario" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${scenario}" var="entity"/>
-            <g:form resource="${this.scenario}" method="PUT">
+            <g:form resource="${this.scenario}" method="PUT" uri="/project/${scenario.project.id}/scenario/update/${scenario.id}">
                 <g:hiddenField name="version" value="${this.scenario?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">
@@ -29,7 +29,7 @@
                         <label for="environments">Environments</label>
                         <g:select name="environments" id="environments" from="${scenario.project.environments}"
                                   optionKey="id" optionValue="name" value="${scenario.environments?.id}"
-                                  noSelection="${['':'--No Environment--']}" multiple="true"
+                                  noSelection="${['':'No Environment...']}" multiple="true"
                         />
                     </div>
                     <f:all bean="scenario" except="area, environments, project, person, gherkin"/>

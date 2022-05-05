@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="layout" content="main" />
-        <g:set var="entityName" value="${message(code: "testCase.label", default: "TestCase")}" />
+        <g:set var="entityName" value='${message(code: "testCase.label", default: "TestCase")}' />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
@@ -11,7 +11,7 @@
         <div id="create-testCase" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testCase}" var="entity"/>
-            <g:form controller="testCase" action="save" method="POST">
+            <g:form method="POST" uri="/project/${project.id}/testCase/save">
                 <fieldset class="form">
                     <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain required">
@@ -22,7 +22,7 @@
                         <label for="area">Area</label>
                         <g:select name="area" from="${project.areas}"
                                   optionKey="id" optionValue="name"
-                                  noSelection="${['':'Select an Area...']}"
+                                  noSelection="${['':'']}"
                         />
                     </div>
                     <div class="fieldcontain">
@@ -45,7 +45,7 @@
                 </fieldset>
                 <g:render template="/shared/createStepsTableTemplate"/>
                 <fieldset class="buttons">
-                    <g:submitButton name="create" class="save" value="${message(code: "default.button.create.label", default: "Create")}" />
+                    <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                 </fieldset>
             </g:form>
         </div>

@@ -51,7 +51,7 @@
     </ol>
     <g:render template="/shared/showStepsTableTemplate" bean="${bug}" var="entity"/>
     <sec:ifAnyGranted roles="ROLE_BASIC">
-        <g:form resource="${this.bug}" method="DELETE" params="[projectId: bug.project.id]">
+        <g:form resource="${this.bug}" method="DELETE" uri="/project/${bug.project.id}/bug/delete/${bug.id}">
             <fieldset class="buttons">
                 <g:link class="edit" uri="/project/${bug.project.id}/bug/edit/${bug.id}" data-test-id="show-edit-link">
                     <g:message code="default.button.edit.label" default="Edit"/>

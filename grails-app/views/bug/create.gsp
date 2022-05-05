@@ -10,7 +10,7 @@
         <div id="create-bug" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
-            <g:form resource="${this.bug}" method="POST">
+            <g:form resource="${this.bug}" method="POST" uri="/project/${project.id}/bug/save">
                 <fieldset class="form">
                     <f:all bean="bug" except="area, person, environments, project, steps"/>
                     <g:hiddenField name="project" value="${project.id}"/>
@@ -22,7 +22,7 @@
                         <label for="area">Area</label>
                         <g:select name="area" from="${project.areas}"
                               optionKey="id" optionValue="name"
-                              noSelection="${['':'Select an Area...']}"
+                              noSelection="${['':'']}"
                         />
                     </div>
                     <div class="fieldcontain">

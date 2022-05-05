@@ -10,6 +10,8 @@ interface ITestGroupService {
 
     void delete(Serializable id)
 
+    TestGroup read(Serializable id)
+
     TestGroup save(TestGroup testGroup)
 
 }

@@ -99,7 +99,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         page.environmentsSelect().selected = [""]
 
         expect: "env set to null"
-        page.environmentsSelect().selectedText == ["--No Environment--"]
+        page.environmentsSelect().selectedText == ["No Environment..."]
 
         when: "add empty steps"
         page.stepsTable.addStep("", "")
