@@ -95,8 +95,13 @@ class TestGroupController {
      * @param testGroup - group to update
      */
     @Secured("ROLE_BASIC")
-    def update(TestGroup testGroup) {
-        if (testGroup == null) {
+    def update(TestGroup testGroup, Long projectId) {
+        if (testGroup == null || projectId == null) {
+            notFound()
+            return
+        }
+        def groupId = testGroup.project.id
+        if (projectId != groupId) {
             notFound()
             return
         }
@@ -124,6 +129,11 @@ class TestGroupController {
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
         if (id == null || projectId == null) {
+            notFound()
+            return
+        }
+        def group = testGroupService.read(id)
+        if (group.project.id != projectId) {
             notFound()
             return
         }

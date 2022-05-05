@@ -122,8 +122,13 @@ class ReleasePlanController {
      * @param releasePlan - plan to update
      */
     @Secured("ROLE_BASIC")
-    def update(ReleasePlan releasePlan) {
-        if (releasePlan == null) {
+    def update(ReleasePlan releasePlan, Long projectId) {
+        if (releasePlan == null || projectId == null) {
+            notFound()
+            return
+        }
+        def planProjectId = releasePlan.project.id
+        if (projectId != planProjectId) {
             notFound()
             return
         }
@@ -151,6 +156,12 @@ class ReleasePlanController {
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
         if (id == null || projectId == null) {
+            notFound()
+            return
+        }
+
+        def plan = releasePlanService.read(id)
+        if (plan.project.id != projectId) {
             notFound()
             return
         }

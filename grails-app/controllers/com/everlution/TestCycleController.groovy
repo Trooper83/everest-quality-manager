@@ -6,7 +6,6 @@ import static org.springframework.http.HttpStatus.*
 
 class TestCycleController {
 
-    ReleasePlanService releasePlanService
     TestCaseService testCaseService
     TestCycleService testCycleService
     TestGroupService testGroupService

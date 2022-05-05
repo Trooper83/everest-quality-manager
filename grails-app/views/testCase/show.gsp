@@ -63,7 +63,7 @@
     </ol>
     <g:render template="/shared/showStepsTableTemplate" bean="${testCase}" var="entity"/>
     <sec:ifAnyGranted roles="ROLE_BASIC">
-        <g:form resource="${this.testCase}" method="DELETE" params="[projectId: this.testCase.project.id]">
+        <g:form resource="${this.testCase}" method="DELETE" uri="/project/${testCase.project.id}/testCase/delete/${testCase.id}">
             <fieldset class="buttons">
                 <g:link class="edit" uri="/project/${testCase.project.id}/testCase/edit/${testCase.id}" data-test-id="show-edit-link">
                     <g:message code="default.button.edit.label" default="Edit"/>

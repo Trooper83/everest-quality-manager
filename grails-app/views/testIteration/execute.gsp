@@ -11,7 +11,7 @@
     <div id="execute-testIteration" class="content" role="main">
         <h1><g:message code="default.show.label" args="[entityName]" /></h1>
         <g:render template="/shared/messagesTemplate" bean="${testIteration}" var="entity"/>
-        <g:form resource="${this.testIteration}" method="PUT">
+        <g:form resource="${this.testIteration}" method="PUT" uri="/project/${testIteration.testCycle.project.id}/testIteration/update/${testIteration.id}">
             <g:hiddenField name="version" value="${this.testIteration?.version}" />
             <fieldset class="form">
                 <ol class="property-list testIteration">

@@ -37,6 +37,13 @@ class ReleasePlanServiceSpec extends Specification {
         releasePlanService.get(1) instanceof ReleasePlan
     }
 
+    void "read returns instance"() {
+        setupData()
+
+        expect:
+        releasePlanService.read(1) instanceof ReleasePlan
+    }
+
     void "list with args"() {
         setupData()
 

@@ -102,8 +102,13 @@ class BugController {
      * @param bug - bug to update
      */
     @Secured("ROLE_BASIC")
-    def update(Bug bug, RemovedItems removedItems) {
-        if (bug == null) {
+    def update(Bug bug, RemovedItems removedItems, Long projectId) {
+        if (bug == null || projectId == null) {
+            notFound()
+            return
+        }
+        def bugProjectId = bug.project.id
+        if (projectId != bugProjectId) {
             notFound()
             return
         }
@@ -133,6 +138,11 @@ class BugController {
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
         if (id == null || projectId == null) {
+            notFound()
+            return
+        }
+        def bug = bugService.read(id)
+        if (bug.project.id != projectId) {
             notFound()
             return
         }

@@ -101,8 +101,14 @@ class ScenarioController {
      * @param scenario - scenario values to update
      */
     @Secured("ROLE_BASIC")
-    def update(Scenario scenario) {
-        if (scenario == null) {
+    def update(Scenario scenario, Long projectId) {
+        if (scenario == null|| projectId == null) {
+            notFound()
+            return
+        }
+
+        def scnProjectId = scenario.project.id
+        if (projectId != scnProjectId) {
             notFound()
             return
         }
@@ -132,6 +138,11 @@ class ScenarioController {
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
         if (id == null || projectId == null) {
+            notFound()
+            return
+        }
+        def scenario = scenarioService.read(id)
+        if (scenario.project.id != projectId) {
             notFound()
             return
         }

@@ -41,6 +41,23 @@ class TestGroupServiceSpec extends Specification {
         testGroupService.get(1) instanceof TestGroup
     }
 
+    void "read returns instance"() {
+        setupData()
+
+        expect:
+        testGroupService.read(1) instanceof TestGroup
+    }
+
+    void "get with invalid id returns null"() {
+        expect:
+        testGroupService.get(999999) == null
+    }
+
+    void "read with invalid id returns null"() {
+        expect:
+        testGroupService.read(999999) == null
+    }
+
     void "get all returns instances"() {
         setupData()
 

@@ -6,11 +6,12 @@ import com.everlution.TestCycle
 import com.everlution.TestIteration
 import com.everlution.TestIterationController
 import com.everlution.TestIterationService
+import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
 import spock.lang.Specification
 
-class TestIterationControllerSpec extends Specification implements ControllerUnitTest<TestIterationController> {
+class TestIterationControllerSpec extends Specification implements ControllerUnitTest<TestIterationController>, DataTest {
 
     void "show action renders show view"() {
         given:
@@ -95,9 +96,39 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, 1)
 
         then:
+        response.status == 404
+    }
+
+    void "update action with a valid iteration instance and null projectId param returns 404"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(new TestIteration(), null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a projectId param not matching iteration projectId returns 404"() {
+        when:
+        mockDomain(TestCycle)
+        def iteration = new TestIteration()
+        iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(iteration, 9999)
+
+        then:"A 404 error is returned"
         response.status == 404
     }
 
@@ -107,7 +138,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         def iteration = new TestIteration()
 
         when:
-        controller.update(iteration)
+        controller.update(iteration, null)
 
         then:
         response.status == 405
@@ -121,6 +152,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
 
     void "update action correctly persists"() {
         given:
+        mockDomain(TestCycle)
         controller.testIterationService = Mock(TestIterationService) {
             1 * save(_ as TestIteration)
         }
@@ -139,7 +171,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         cycle.releasePlan = plan
         iteration.testCycle = cycle
 
-        controller.update(iteration)
+        controller.update(iteration, 1)
 
         then:"A redirect is issued to the show action"
         controller.flash.message == "default.updated.message"
@@ -148,19 +180,26 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
     void "update action with an invalid instance"() {
         given:
         def iteration = new TestIteration()
+        iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
+
         controller.testIterationService = Mock(TestIterationService) {
             1 * save(_ as TestIteration) >> { TestIteration testIteration ->
                 throw new ValidationException("Invalid instance", testIteration.errors)
             }
-            1 * read(_) >> {
-                Mock(TestIteration)
-            }
+            1 * read(_) >> iteration
         }
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(iteration)
+        controller.update(iteration, 1)
 
         then:"The edit view is rendered again with the correct model"
         model.testIteration != null

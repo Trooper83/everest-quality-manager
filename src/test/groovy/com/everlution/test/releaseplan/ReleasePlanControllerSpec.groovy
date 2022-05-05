@@ -270,7 +270,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         def plan = new ReleasePlan(params)
 
         when:
-        controller.update(plan)
+        controller.update(plan, null)
 
         then:
         response.status == 405
@@ -286,9 +286,34 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null)
+        controller.update(null, 1)
 
         then:"redirected to index"
+        response.status == 404
+    }
+
+    void "update action with a valid plan instance and null projectId param returns 404"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(new ReleasePlan(), null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a projectId param not matching plan projectId returns 404"() {
+        when:
+        def releasePlan = new ReleasePlan(params)
+        releasePlan.id = 1
+        def project = new Project()
+        project.id = 1
+        releasePlan.project = project
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(releasePlan, 99)
+
+        then:"A 404 error is returned"
         response.status == 404
     }
 
@@ -309,7 +334,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         project.id = 1
         releasePlan.project = project
 
-        controller.update(releasePlan)
+        controller.update(releasePlan, 1)
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/releasePlan/show/1'
@@ -318,16 +343,22 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
     void "update action with an invalid instance"() {
         given:
+        def releasePlan = new ReleasePlan(params)
+        releasePlan.id = 1
+        def project = new Project()
+        project.id = 1
+        releasePlan.project = project
+
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * save(_ as ReleasePlan) >> { ReleasePlan releasePlan ->
-                throw new ValidationException("Invalid instance", releasePlan.errors)
+            1 * save(_ as ReleasePlan) >> { ReleasePlan plan ->
+                throw new ValidationException("Invalid instance", plan.errors)
             }
         }
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new ReleasePlan())
+        controller.update(releasePlan, 1)
 
         then:"The edit view is rendered again with the correct model"
         model.releasePlan != null
@@ -371,10 +402,38 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         response.status == 404
     }
 
+    void "delete action returns 404 with plan project not matching params project"() {
+        given:
+        def releasePlan = new ReleasePlan(params)
+        releasePlan.id = 2
+        def project = new Project()
+        project.id = 1
+        releasePlan.project = project
+
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * read(2) >> releasePlan
+        }
+
+        when:"The domain instance is passed to the delete action"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 999)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
     void "delete action with an instance redirects to plans"() {
         given:
+        def releasePlan = new ReleasePlan(params)
+        releasePlan.id = 2
+        def project = new Project()
+        project.id = 1
+        releasePlan.project = project
+
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * delete(2)
+            1 * read(2) >> releasePlan
         }
 
         when:"The domain instance is passed to the delete action"
