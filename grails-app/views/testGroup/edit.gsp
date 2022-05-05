@@ -11,7 +11,7 @@
         <div id="edit-testGroup" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
-            <g:form resource="${this.testGroup}" method="PUT" uri="/project/${testGroup.project.id}/testGroup/edit/${testGroup.id}">
+            <g:form resource="${this.testGroup}" method="PUT" uri="/project/${testGroup.project.id}/testGroup/update/${testGroup.id}">
                 <g:hiddenField name="version" value="${this.testGroup?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">

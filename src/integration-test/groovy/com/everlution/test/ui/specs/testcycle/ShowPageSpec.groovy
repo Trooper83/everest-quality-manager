@@ -164,9 +164,6 @@ class ShowPageSpec extends GebSpec {
         and:
         def show = at ShowTestCyclePage
         show.addTestsButton.click()
-        waitFor {
-            show.addTestsModal.displayed
-        }
 
         when:
         show.closeAddTestsModal()

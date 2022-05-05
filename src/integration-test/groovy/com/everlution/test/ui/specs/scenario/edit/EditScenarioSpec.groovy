@@ -22,7 +22,7 @@ class EditScenarioSpec extends GebSpec {
     ProjectService projectService
     ScenarioService scenarioService
 
-    void "authorized users can edit test case"(String username, String password) {
+    void "authorized users can edit scenario"(String username, String password) {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
         def id = scenarioService.list(max: 1).first().id

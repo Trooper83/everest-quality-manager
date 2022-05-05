@@ -59,6 +59,7 @@ class ShowReleasePlanPage extends ShowPage {
         addTestCycleButton.click()
         waitFor {
             testCycleModal.displayed
+            testCycleModalNameInput.displayed
         }
         testCycleModalNameInput << DataFactory.testCycle().name
         testCycleModalPlatformSelect().selected = "Web"
