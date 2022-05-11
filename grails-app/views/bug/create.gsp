@@ -12,7 +12,7 @@
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
             <g:form resource="${this.bug}" method="POST" uri="/project/${project.id}/bug/save">
                 <fieldset class="form">
-                    <f:all bean="bug" except="area, person, environments, project, steps"/>
+                    <f:all bean="${this.bug}" except="area, person, environments, project, steps"/>
                     <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain">
                         <label for="project">Project</label>

@@ -16,8 +16,8 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	[pattern: '/**/css/**',      access: ['permitAll']],
 	[pattern: '/**/images/**',   access: ['permitAll']],
 	[pattern: '/**/favicon.ico', access: ['permitAll']],
-	//TODO: Set h2-console to env specific for development
-	[pattern: '/h2-console/**',  access: ['permitAll']]
+	//Set h2-console to env specific for development
+	//[pattern: '/h2-console/**',  access: ['permitAll']]
 ]
 
 grails.plugin.springsecurity.filterChain.chainMap = [
@@ -29,11 +29,11 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 	[pattern: '/**',             filters: 'JOINED_FILTERS']
 ]
 
-//TODO: These should only be set for development environment
+/*These should only be set for development environment h2-console
 grails.plugin.springsecurity.http.authorizeRequests = [pattern: "/h2-console/**", access: ["permitAll"]]
 grails.plugin.springsecurity.http.csrf = false
 grails.plugin.springsecurity.http.headers.frameOptions = false
-//end block
+end block*/
 
 grails.plugin.springsecurity.roleHierarchy = '''
    ROLE_APP_ADMIN > ROLE_ORG_ADMIN
