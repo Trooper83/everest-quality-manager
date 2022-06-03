@@ -148,7 +148,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ShowBugPage)
-        page.getFields() == ["Created By", "Project", "Area", "Environments", "Name", "Description", "Platform"]
+        page.getFields() == ["Status", "Created By", "Project", "Area", "Environments", "Name", "Description", "Platform"]
     }
 
     void "bug not deleted if alert is canceled"() {
@@ -201,7 +201,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "edit a bug"
         def page = browser.page(EditBugPage)
-        page.editBug()
+        page.edit()
 
         then: "at show bug page with message displayed"
         showPage.statusMessage.text() ==~ /Bug \d+ updated/

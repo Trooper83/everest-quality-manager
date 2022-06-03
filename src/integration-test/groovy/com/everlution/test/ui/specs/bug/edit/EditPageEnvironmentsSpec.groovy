@@ -38,7 +38,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         )
         def bug = bugService.save(
                 new Bug(name: "environment testing bug II", project: project, person: person,
-                        environments: [env, env1]
+                        environments: [env, env1], status: "Open"
                 )
         )
 
@@ -62,7 +62,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
                 new Project(name: pd.name, code: pd.code)
         )
         def bug = bugService.save(
-                new Bug(name: "environment testing bug", project: project, person: person)
+                new Bug(name: "environment testing bug", project: project, person: person, status: "Open")
         )
 
         and: "login as a basic user"
@@ -84,7 +84,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
         def bug = bugService.save(new Bug(name: "env testing bug II", project: project, person: person,
-                environments: [env]))
+                environments: [env], status: "Open"))
 
         and: "login as a basic user"
         to LoginPage
@@ -105,7 +105,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         page.stepsTable.addStep("", "")
 
         and: "submit"
-        page.editBug()
+        page.edit()
 
         then: "at the edit page"
         at EditBugPage

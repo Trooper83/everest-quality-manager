@@ -25,6 +25,7 @@
             <th>Person</th>
             <th>Project</th>
             <th>Platform</th>
+            <th>Status</th>
         </tr>
         </thead>
         <tbody>
@@ -35,6 +36,7 @@
                 <td>${bug.person.email}</td>
                 <td>${bug.project.name}</td>
                 <td>${bug.platform}</td>
+                <td>${bug.status}</td>
             </tr>
         </g:each>
         </tbody>

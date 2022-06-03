@@ -35,7 +35,7 @@ class EditPageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(EditBugPage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Name *", "Platform"]
+        page.getFields() == ["Project", "Area", "Environments", "Description", "Name *", "Platform", "Status *"]
     }
 
     void "required fields indicator displayed for required fields"() {
@@ -87,6 +87,33 @@ class EditPageSpec extends GebSpec {
         EditBugPage page = browser.page(EditBugPage)
         verifyAll {
             page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+        }
+    }
+
+    void "verify status options"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the create bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+
+        when: "edit bug"
+        def bugsPage = at ListBugPage
+        bugsPage.bugTable.clickCell("Name", 0)
+        def showPage = at ShowBugPage
+        showPage.goToEdit()
+
+        then: "correct options are populated"
+        EditBugPage page = browser.page(EditBugPage)
+        verifyAll {
+            page.statusOptions*.text() == ["Open", "Closed"]
         }
     }
 }

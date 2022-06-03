@@ -139,7 +139,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment])
+        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment], status: "Open")
         def id = projectService.save(project).id
         bugService.save(bug)
 
@@ -196,7 +196,7 @@ class EditProjectEnvironmentSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, environments: [environment])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment])
+        def bug = new Bug(name: bd.name, person: person, project: project, environments: [environment], status: "Open")
         def id = projectService.save(project).id
         bugService.save(bug)
 

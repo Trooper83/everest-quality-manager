@@ -1,11 +1,11 @@
 package com.everlution.test.ui.support.pages.bug
 
-import com.everlution.test.ui.support.pages.common.BasePage
+import com.everlution.test.ui.support.pages.common.EditPage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import geb.module.MultipleSelect
 import geb.module.Select
 
-class EditBugPage extends BasePage {
+class EditBugPage extends EditPage {
     static url = "/bug/edit"
     static at = { title == "Edit Bug" }
 
@@ -13,15 +13,14 @@ class EditBugPage extends BasePage {
         areaOptions { $("#area>option") }
         descriptionInput { $("#description") }
         environmentsOptions { $("#environments>option") }
-        fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
         platformOptions { $("#platform>option") }
         projectNameField { $("[data-test-id=edit-project-name]") }
+        statusOptions { $("#status>option") }
         stepRemovedInput { $("input[data-test-id='step-removed-input']") }
         stepsTable { module StepTableModule }
-        updateButton { $("[data-test-id=edit-update-button]") }
     }
 
     /**
@@ -39,27 +38,8 @@ class EditBugPage extends BasePage {
         $("#platform").module(Select)
     }
 
-    /**
-     * determines if the required field indication (asterisk) is
-     * displayed for the supplied fields
-     * @param fields - list of fields
-     * @return - true if all fields have the indicator, false if at least one does not
-     */
-    boolean areRequiredFieldIndicatorsDisplayed(List<String> fields) {
-        for(field in fields) {
-            def sel = $("label[for=${field}]>span.required-indicator")
-            if (!sel.displayed) {
-                return false
-            }
-        }
-        return true
-    }
-
-    /**
-     * clicks the update button
-     */
-    void editBug() {
-        updateButton.click()
+    Select statusSelect() {
+        $("#status").module(Select)
     }
 
     /**
@@ -71,28 +51,7 @@ class EditBugPage extends BasePage {
         areaSelect().selected = area
         platformSelect().selected = platform
         environmentsSelect().selected = environments
+        statusSelect().selected = "Closed"
         updateButton.click()
-    }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
     }
 }

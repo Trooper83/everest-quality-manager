@@ -33,7 +33,7 @@ class EditPageAreaSpec extends GebSpec {
         def area = new Area(name: "area testing area II")
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
-        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person, area: area))
+        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person, area: area, status: "Open"))
 
         and: "login as a basic user"
         to LoginPage
@@ -54,7 +54,7 @@ class EditPageAreaSpec extends GebSpec {
         page.stepsTable.addStep("", "")
 
         and: "submit"
-        page.editBug()
+        page.edit()
 
         then: "at the edit page"
         at EditBugPage
