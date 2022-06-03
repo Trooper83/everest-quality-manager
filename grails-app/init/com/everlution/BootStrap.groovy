@@ -82,11 +82,11 @@ class BootStrap {
         def bugStep2 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep3 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 1", description: "description of the bug",
-                project: project1, steps: [bugStep], area: area1).save(failOnError: true)
+                project: project1, steps: [bugStep], area: area1, status: "Open").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 2", description: "description of the bug 1",
-                project: project, steps: [bugStep1], area: area).save(failOnError: true)
+                project: project, steps: [bugStep1], area: area, status: "Open").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 3", description: "description of the bug 2",
-                project: project1, steps: [bugStep2, bugStep3], area: area1).save(failOnError: true)
+                project: project1, steps: [bugStep2, bugStep3], area: area1, status: "Open").save(failOnError: true)
         new Scenario(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project1).save(failOnError: true)

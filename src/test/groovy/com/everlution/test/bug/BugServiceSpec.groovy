@@ -23,8 +23,8 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
     def setup() {
         project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
         person = new Person(email: "test123@test.com", password: "password").save()
-        new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project).save()
-        new Bug(person: person, description: "Found a bug again!", name: "Name of the bug again", project: project).save(flush: true)
+        new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project, status: "Open").save()
+        new Bug(person: person, description: "Found a bug again!", name: "Name of the bug again", project: project, status: "Open").save(flush: true)
     }
 
     void "get with valid id returns instance"() {
@@ -60,7 +60,7 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         def proj = new Project(name: "BugServ", code: "BPZ").save()
         def per = new Person(email: "test321@test.com", password: "password").save()
         def bug = new Bug(person: per, description: "Found a bug again!",
-                name: "Name of the bug again", project: proj).save(flush: true)
+                name: "Name of the bug again", project: proj, status: "Open").save(flush: true)
 
         expect:
         service.get(bug.id) != null
@@ -76,7 +76,7 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
     void "save with valid bug returns instance"() {
         given:
         def bug = new Bug(person: person, description: "Found a bug again!",
-                name: "Name of the bug", project: project).save()
+                name: "Name of the bug", project: project, status: "Open").save()
 
         when:
         def saved = service.save(bug)
@@ -110,7 +110,7 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
     void "saveUpdate returns valid instance"() {
         given:
         def bug = new Bug(person: person, description: "Found a bug again!",
-                name: "Name of the bug", project: project).save()
+                name: "Name of the bug", project: project, status: "Open").save()
 
         when:
         def saved = service.saveUpdate(bug, new RemovedItems())
@@ -130,7 +130,8 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
     void "find all bugs by project only returns bugs with project"() {
         given:
         def proj = new Project(name: "BugServiceSpec Project1223", code: "BP8").save()
-        def bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: proj).save(flush: true)
+        def bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: proj,
+                status: "Open").save(flush: true)
 
         expect:
         Bug.list().contains(bug)

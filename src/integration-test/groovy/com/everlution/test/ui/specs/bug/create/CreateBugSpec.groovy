@@ -90,6 +90,7 @@ class CreateBugSpec extends GebSpec {
             showPage.nameValue.text() == name
             showPage.descriptionValue.text() == description
             showPage.platformValue.text() == "Web"
+            showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.stepsTable.isRowDisplayed(action, result)
         }

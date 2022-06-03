@@ -20,7 +20,7 @@ class BugHibernateSpec extends HibernateSpec {
 
     void "date created populates on save"() {
         given: "a bug instance"
-        def bug = new Bug(person: person, name: "First Bug", description: "test", project: project).save()
+        def bug = new Bug(person: person, name: "First Bug", description: "test", project: project, status: "Open").save()
 
         expect: "bug has date created"
         bug.dateCreated != null
@@ -29,7 +29,7 @@ class BugHibernateSpec extends HibernateSpec {
     void "test save does not cascade to project"() {
         when: "unsaved project is added to bug"
         Project proj = new Project(name: "BugServiceSpec Project2", code: "BMP")
-        new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: proj).save()
+        new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: proj, status: "Open").save()
 
         then: "exception is thrown"
         thrown(InvalidDataAccessApiUsageException)
@@ -38,7 +38,7 @@ class BugHibernateSpec extends HibernateSpec {
     void "save does not cascade to person"() {
         when: "unsaved person"
         def p = new Person(email: "test@test.com", password: "password")
-        new Bug(person: p, description: "Found a bug123", name: "Name of the bug123", project: project).save()
+        new Bug(person: p, description: "Found a bug123", name: "Name of the bug123", project: project, status: "Open").save()
 
         then: "exception is thrown"
         thrown(InvalidDataAccessApiUsageException)
@@ -47,7 +47,7 @@ class BugHibernateSpec extends HibernateSpec {
     void "delete bug does not cascade to project"() {
         given: "valid project and bug"
         Bug bug = new Bug(name: "cascade project", description: "this should delete", person: person,
-                project: project).save()
+                project: project, status: "Open").save()
 
         expect:
         project.id != null
@@ -66,7 +66,7 @@ class BugHibernateSpec extends HibernateSpec {
         Step testStep = new Step(action: "do something", result: "something happened")
         Step testStep1 = new Step(action: "do something", result: "something happened")
         Bug bug = new Bug(person: person, name: "test", description: "desc",
-               steps: [testStep, testStep1], project: project)
+               steps: [testStep, testStep1], project: project, status: "Open")
 
         expect:
         testStep.id == null
@@ -84,7 +84,7 @@ class BugHibernateSpec extends HibernateSpec {
         given: "valid bug instance"
         Step testStep = new Step(action: "do something", result: "something happened")
         Bug bug = new Bug(person: person, name: "test", description: "desc",
-                steps: [testStep], project: project).save()
+                steps: [testStep], project: project, status: "Open").save()
 
         when: "update steps"
         bug.steps[0].action = "edited action"
@@ -100,7 +100,7 @@ class BugHibernateSpec extends HibernateSpec {
         given: "valid domain instances"
         Step testStep = new Step(action: "do something", result: "something happened")
         Bug bug = new Bug(person: person, name: "test", description: "desc",
-                project: project).addToSteps(testStep)
+                project: project, status: "Open").addToSteps(testStep)
         bug.save()
 
         expect:
@@ -121,7 +121,7 @@ class BugHibernateSpec extends HibernateSpec {
         Step testStep1 = new Step(action: "I did something", result: "something happened231")
         Step testStep2 = new Step(action: "something happened", result: "something happened321")
         Bug bug = new Bug(person: person, name: "test", description: "desc",
-                project: project, steps: [testStep, testStep1, testStep2])
+                project: project, steps: [testStep, testStep1, testStep2], status: "Open")
         bug.save()
 
         when: "get the bug"

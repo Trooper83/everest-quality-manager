@@ -19,6 +19,10 @@
     </g:if>
     <ol class="property-list bug">
         <li class="fieldcontain">
+            <span id="status-label" class="property-label">Status</span>
+            <div class="property-value" id="status">${bug.status}</div>
+        </li>
+        <li class="fieldcontain">
             <span id="person-label" class="property-label">Created By</span>
             <div class="property-value" id="person">${bug.person}</div>
         </li>

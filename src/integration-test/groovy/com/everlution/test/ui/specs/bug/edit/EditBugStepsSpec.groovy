@@ -32,7 +32,7 @@ class EditBugStepsSpec extends GebSpec {
 
     void "step can be added to existing bug"() {
         setup: "create bug"
-        def bug = new Bug(person: person, name: "name of bug", project: project,
+        def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open",
                 steps: [new Step(action: "bug action", result: "bug result")])
         def id = bugService.save(bug).id
 
@@ -46,7 +46,7 @@ class EditBugStepsSpec extends GebSpec {
         when: "edit the bug"
         EditBugPage page = browser.page(EditBugPage)
         page.stepsTable.addStep("added step", "added result")
-        page.editBug()
+        page.edit()
 
         then: "at show page"
         def show = at ShowBugPage
@@ -56,7 +56,7 @@ class EditBugStepsSpec extends GebSpec {
 
     void "step can be updated on existing bug"() {
         setup: "create bug"
-        def bug = new Bug(person: person, name: "name of bug", project: project,
+        def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open",
                 steps: [new Step(action: "bug action", result: "bug result")])
         def id = bugService.save(bug).id
 
@@ -70,7 +70,7 @@ class EditBugStepsSpec extends GebSpec {
         when: "edit the bug"
         def page = browser.page(EditBugPage)
         page.stepsTable.editTestStep(0, "edited action", "edited result")
-        page.editBug()
+        page.edit()
 
         then: "at show page with edited step"
         def showPage = at ShowBugPage
@@ -80,7 +80,7 @@ class EditBugStepsSpec extends GebSpec {
     void "step can be deleted from existing bug"() {
         setup: "create bug"
         def step = new Step(action: "bug action", result: "bug result")
-        def bug = new Bug(person: person, name: "name of bug", project: project,
+        def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open",
                 steps: [step])
         def id = bugService.save(bug).id
 
@@ -94,7 +94,7 @@ class EditBugStepsSpec extends GebSpec {
         when: "edit the bug"
         def page = browser.page(EditBugPage)
         page.stepsTable.removeRow(0)
-        page.editBug()
+        page.edit()
 
         then: "at show page with edited step"
         def showPage = at ShowBugPage

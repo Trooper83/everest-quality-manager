@@ -17,8 +17,8 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         setup:
         def project = new Project(name: "tc domain project321", code: "td5").save()
         def person = new Person(email: "test@test.com", password: "test")
-        new Bug(person: person, name: "First Bug", description: "test", project: project).save()
-        new Bug(person: person, name: "Second Bug", description: "test", project: project).save()
+        new Bug(person: person, name: "First Bug", description: "test", project: project, status: "Open").save()
+        new Bug(person: person, name: "Second Bug", description: "test", project: project, status: "Open").save()
 
         expect:
         Bug.count() == 2
@@ -309,5 +309,43 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         then:
         !domain.validate(["platform"])
         domain.errors["platform"].code == "not.inList"
+    }
+
+    void "status cannot be null"() {
+        when:
+        domain.status = null
+
+        then:
+        !domain.validate(["status"])
+        domain.errors["status"].code == "nullable"
+    }
+
+    void "status cannot be blank"() {
+        when:
+        domain.status = ""
+
+        then:
+        !domain.validate(["status"])
+        domain.errors["status"].code == "blank"
+    }
+
+    void "status value in list"(String value) {
+        when:
+        domain.status = value
+
+        then:
+        domain.validate(["status"])
+
+        where:
+        value << ["Open", "Closed"]
+    }
+
+    void "status value not in list"() {
+        when:
+        domain.status = "test"
+
+        then:
+        !domain.validate(["status"])
+        domain.errors["status"].code == "not.inList"
     }
 }

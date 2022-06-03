@@ -22,7 +22,7 @@ class DeleteBugSpec extends GebSpec {
         given: "log in as authorized user"
         def project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
-        def bug = new Bug(name: "delete bug", person: person, project: project)
+        def bug = new Bug(name: "delete bug", person: person, project: project, status: "Open")
         def id = bugService.save(bug).id
 
         and:
@@ -34,7 +34,7 @@ class DeleteBugSpec extends GebSpec {
 
         when: "delete bug"
         def showPage = browser.at(ShowBugPage)
-        showPage.deleteBug()
+        showPage.delete()
 
         then: "at list page"
         at ListBugPage

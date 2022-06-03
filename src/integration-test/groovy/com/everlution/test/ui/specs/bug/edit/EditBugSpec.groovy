@@ -33,7 +33,7 @@ class EditBugSpec extends GebSpec {
     void "authorized users can edit bug"(String username, String password) {
         setup: "create bug"
         def project = projectService.list(max: 10).first()
-        def bug = new Bug(person: person, name: "name of bug", project: project)
+        def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open")
         def id = bugService.save(bug).id
 
         and: "login as a basic user"
@@ -46,7 +46,7 @@ class EditBugSpec extends GebSpec {
 
         when: "edit the bug"
         def page = browser.page(EditBugPage)
-        page.editBug()
+        page.edit()
 
         then: "at show page with message displayed"
         at ShowBugPage
@@ -68,7 +68,7 @@ class EditBugSpec extends GebSpec {
                 areas: [area], environments: [env]))
         def bugData = DataFactory.bug()
         def bug = bugService.save(new Bug(person: person, name: bugData.name,
-                description: bugData.description, project: project, area: area, platform: "Web"))
+                description: bugData.description, project: project, area: area, platform: "Web", status: "Open"))
 
         when: "login as a basic user"
         to LoginPage
@@ -90,6 +90,7 @@ class EditBugSpec extends GebSpec {
             showPage.projectValue.text() == project.name
             showPage.nameValue.text() == data.name
             showPage.platformValue.text() == ""
+            showPage.statusValue.text() == "Closed"
             showPage.descriptionValue.text() == data.description
             !showPage.areEnvironmentsDisplayed([env.name])
         }

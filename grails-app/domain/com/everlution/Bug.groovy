@@ -10,6 +10,7 @@ class Bug {
     Person person
     String platform
     Project project
+    String status
     List steps
 
     static hasMany = [environments: Environment, steps: Step]
@@ -48,5 +49,6 @@ class Bug {
             def envIds = val.collect { it.id }
             ids.containsAll(envIds)
         }
+        status blank: false, nullable: false, inList: ["Open", "Closed"]
     }
 }

@@ -100,7 +100,7 @@ class EditPageStepsSpec extends GebSpec {
         Step step = new Step(action: "step123", result: "result123")
         def person = personService.list(max: 1).first()
         Bug bug = new Bug(person: person,name: "first", description: "desc1",
-                project: project, steps: [step])
+                project: project, steps: [step], status: "Open")
         def id = bugService.save(bug).id
 
         and: "login as a basic user"

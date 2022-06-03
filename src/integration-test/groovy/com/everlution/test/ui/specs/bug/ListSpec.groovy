@@ -30,7 +30,7 @@ class ListSpec extends GebSpec {
         def page = at ListBugPage
 
         then: "correct headers are displayed"
-        page.bugTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform"]
+        page.bugTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Status"]
     }
 
     void "delete message displays after bug deleted"() {
@@ -53,7 +53,7 @@ class ListSpec extends GebSpec {
 
         when: "delete bug"
         def showPage = browser.page(ShowBugPage)
-        showPage.deleteBug()
+        showPage.delete()
 
         then: "at list page and message displayed"
         def listPage = at ListBugPage
