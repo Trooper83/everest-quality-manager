@@ -168,4 +168,39 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         !domain.validate(["testCycle"])
         domain.errors["testCycle"].code == "nullable"
     }
+
+    void "notes can be null"() {
+        when:
+        domain.notes = null
+
+        then:
+        domain.validate(["notes"])
+    }
+
+    void "notes can be blank"() {
+        when:
+        domain.notes = ""
+
+        then:
+        domain.validate(["notes"])
+    }
+
+    void "notes cannot exceed 1000 characters"() {
+        when: "for a string of 1001 characters"
+        String str = "a" * 1001
+        domain.notes = str
+
+        then: "validation fails"
+        !domain.validate(["notes"])
+        domain.errors["notes"].code == "maxSize.exceeded"
+    }
+
+    void "notes validates with 1000 characters"() {
+        when: "for a string of 1000 characters"
+        String str = "a" * 1000
+        domain.notes = str
+
+        then: "validation passes"
+        domain.validate(["notes"])
+    }
 }

@@ -7,6 +7,7 @@ class ShowTestIterationPage extends ShowPage {
     static at = { title == "Show TestIteration" }
 
     static content = {
+        notesValue { $("div[aria-labelledBy=notes-label]") }
         resultValue { $("div[aria-labelledBy=result-label]") }
         testCaseLink { $("#testCase") }
         testCycleLink { $("#testCycle") }

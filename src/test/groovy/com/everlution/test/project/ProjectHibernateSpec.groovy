@@ -28,7 +28,7 @@ class ProjectHibernateSpec extends HibernateSpec {
         given: "valid bug with a project"
         Project project = new Project(name: "Delete Bug Cascade Project777", code: "ZZ7").save()
         new Bug(name: "cascade project", description: "this should delete", person: person,
-                project: project).save()
+                project: project, status: "Open").save()
 
         when: "delete project"
         project.delete()

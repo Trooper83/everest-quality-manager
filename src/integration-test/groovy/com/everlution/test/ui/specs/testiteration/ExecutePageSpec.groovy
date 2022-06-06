@@ -55,28 +55,7 @@ class ExecutePageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ExecuteTestIterationPage)
-        page.getFields() == ["Result", "Name", "Test Case", "Test Cycle"]
-    }
-
-    void "test case link directs to test case"() {
-        given: "setup data"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
-
-        and: "go to cycle"
-        go "/project/${project.id}/testCycle/show/${testCycle.id}"
-
-        and:
-        def showCycle = at ShowTestCyclePage
-        showCycle.testsTable.clickCell("", 0)
-
-        when:
-        def execute = at ExecuteTestIterationPage
-        execute.goToTestCase()
-
-        then:
-        at ShowTestCasePage
+        page.getFields() == ["Result", "Notes", "Name", "Test Cycle"]
     }
 
     void "test cycle link directs to test cycle"() {

@@ -63,11 +63,12 @@ class ExecuteIterationSpec extends GebSpec {
         page.resultSelect().selectedText == "ToDo"
 
         when:
-        page.setResult("Pass")
+        page.setResult("Pass", "Some notes")
 
         then:
         def show = at ShowTestIterationPage
         show.statusMessage.text() ==~ /Test Iteration \S+ updated/
         show.resultValue.text() == "Pass"
+        show.notesValue.text() == "Some notes"
     }
 }
