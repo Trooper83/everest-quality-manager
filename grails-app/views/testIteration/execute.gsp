@@ -9,7 +9,7 @@
     <a href="#execute-testIteration" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
 
     <div id="execute-testIteration" class="content" role="main">
-        <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+        <h1><g:message code="default.execute.label" args="[entityName]" /></h1>
         <g:render template="/shared/messagesTemplate" bean="${testIteration}" var="entity"/>
         <g:form resource="${this.testIteration}" method="PUT" uri="/project/${testIteration.testCycle.releasePlan.project.id}/testIteration/update/${testIteration.id}">
             <g:hiddenField name="version" value="${this.testIteration?.version}" />
@@ -30,13 +30,10 @@
         <f:display bean="testIteration" except="steps, testCase, result, testCycle" />
         <ol class="property-list testIteration">
         <li class="fieldcontain">
-            <span id="testCase-label" class="property-label">Test Case</span>
-            <g:link class="property-value" elementId="testCase"
-                    uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCase/show/${testIteration.testCase.id}">${testIteration.testCase.name}</g:link>
-        </li>
-        <li class="fieldcontain">
             <span id="testCycle-label" class="property-label">Test Cycle</span>
-            <div class="property-value" id="testCycle">${testIteration.testCycle.name}</div>
+            <g:link class="property-value" elementId="testCycle"
+                uri="/project/${testIteration.testCycle.releasePlan.project.id}/testCycle/show/${testIteration.testCycle.id}">
+                ${testIteration.testCycle.name}</g:link>
         </li>
         </ol>
         <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>

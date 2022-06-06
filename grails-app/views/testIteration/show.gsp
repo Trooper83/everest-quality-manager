@@ -16,11 +16,14 @@
                 <li class="fieldcontain">
                     <span id="testCase-label" class="property-label">Test Case</span>
                     <g:link class="property-value" elementId="testCase"
-                            uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCase/show/${testIteration.testCase.id}">${testIteration.testCase.name}</g:link>
+                            uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCase/show/${testIteration.testCase.id}">
+                        ${testIteration.testCase.name}</g:link>
                 </li>
                 <li class="fieldcontain">
                     <span id="testCycle-label" class="property-label">Test Cycle</span>
-                    <div class="property-value" id="testCycle">${testIteration.testCycle.name}</div>
+                    <g:link class="property-value" elementId="testCycle"
+                            uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCycle/show/${testIteration.testCycle.id}">
+                        ${testIteration.testCycle.name}</g:link>
                 </li>
             </ol>
             <f:display bean="testIteration" except="steps, testCase, testCycle" />

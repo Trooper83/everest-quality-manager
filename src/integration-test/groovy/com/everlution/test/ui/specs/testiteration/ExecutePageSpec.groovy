@@ -79,6 +79,27 @@ class ExecutePageSpec extends GebSpec {
         at ShowTestCasePage
     }
 
+    void "test cycle link directs to test cycle"() {
+        given: "setup data"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to cycle"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
+
+        and:
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
+
+        when:
+        def execute = at ExecuteTestIterationPage
+        execute.goToTestCycle()
+
+        then:
+        at ShowTestCyclePage
+    }
+
     void "result has correct options"() {
         given: "login as a basic user"
         to LoginPage

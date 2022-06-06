@@ -9,6 +9,7 @@ class ShowTestIterationPage extends ShowPage {
     static content = {
         resultValue { $("div[aria-labelledBy=result-label]") }
         testCaseLink { $("#testCase") }
+        testCycleLink { $("#testCycle") }
     }
 
     /**
@@ -16,5 +17,12 @@ class ShowTestIterationPage extends ShowPage {
      */
     void goToTestCase() {
         testCaseLink.click()
+    }
+
+    /**
+     * clicks test cycle link
+     */
+    void goToTestCycle() {
+        testCycleLink.click()
     }
 }

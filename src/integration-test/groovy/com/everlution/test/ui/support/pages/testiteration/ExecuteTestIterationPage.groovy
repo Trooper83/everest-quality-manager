@@ -12,7 +12,7 @@ class ExecuteTestIterationPage extends BasePage {
         resultOptions { $("#result>option") }
         statusMessage { $("div.message") }
         testCaseLink { $("#testCase") }
-        testCycleLink { $("div[aria-labelledby=testCycle-label]>a") }
+        testCycleLink { $("#testCycle") }
         updateButton { $("[data-test-id=edit-update-button]") }
     }
 
