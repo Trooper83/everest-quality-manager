@@ -12,6 +12,7 @@ import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
 import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
@@ -80,6 +81,23 @@ class ShowPageSpec extends GebSpec {
         Usernames.PROJECT_ADMIN.username | "password"
         Usernames.ORG_ADMIN.username     | "password"
         Usernames.APP_ADMIN.username     | "password"
+    }
+
+    void "release plan link redirects to show release plan"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.BASIC.username, "password")
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
+
+        when:
+        def show = at ShowTestCyclePage
+        show.goToReleasePlan()
+
+        then:
+        at ShowReleasePlanPage
     }
 
     void "test iteration table id link opens show test iteration"() {

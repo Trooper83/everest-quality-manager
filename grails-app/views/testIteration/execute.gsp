@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:g="http://www.w3.org/1999/html">
     <head>
         <meta name="layout" content="main"/>
         <g:set var="entityName" value="${message(code: 'testIteration.label', default: 'TestIteration')}"/>
@@ -9,7 +9,7 @@
     <a href="#execute-testIteration" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
 
     <div id="execute-testIteration" class="content" role="main">
-        <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+        <h1><g:message code="default.execute.label" args="[entityName]" /></h1>
         <g:render template="/shared/messagesTemplate" bean="${testIteration}" var="entity"/>
         <g:form resource="${this.testIteration}" method="PUT" uri="/project/${testIteration.testCycle.releasePlan.project.id}/testIteration/update/${testIteration.id}">
             <g:hiddenField name="version" value="${this.testIteration?.version}" />
@@ -19,6 +19,10 @@
                         <span id="result-label" class="property-label">Result</span>
                         <g:select name="result" id="result" from="${['ToDo', 'Pass', 'Fail']}" value="${testIteration.result}"/>
                     </li>
+                    <li class="fieldcontain">
+                        <span id="span-label" class="property-label">Notes</span>
+                        <g:textArea name="notes" value="${this.testIteration.notes}"></g:textArea>
+                    </li>
                 </ol>
             </fieldset>
             <sec:ifAnyGranted roles="ROLE_BASIC">
@@ -27,16 +31,13 @@
                 </fieldset>
             </sec:ifAnyGranted>
         </g:form>
-        <f:display bean="testIteration" except="steps, testCase, result, testCycle" />
+        <f:display bean="testIteration" except="steps, testCase, result, testCycle, notes" />
         <ol class="property-list testIteration">
         <li class="fieldcontain">
-            <span id="testCase-label" class="property-label">Test Case</span>
-            <g:link class="property-value" elementId="testCase"
-                    uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCase/show/${testIteration.testCase.id}">${testIteration.testCase.name}</g:link>
-        </li>
-        <li class="fieldcontain">
             <span id="testCycle-label" class="property-label">Test Cycle</span>
-            <div class="property-value" id="testCycle">${testIteration.testCycle.name}</div>
+            <g:link class="property-value" elementId="testCycle"
+                uri="/project/${testIteration.testCycle.releasePlan.project.id}/testCycle/show/${testIteration.testCycle.id}">
+                ${testIteration.testCycle.name}</g:link>
         </li>
         </ol>
         <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>

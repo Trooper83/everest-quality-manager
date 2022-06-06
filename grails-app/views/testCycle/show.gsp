@@ -17,7 +17,9 @@
     <ol class="property-list testCycle">
         <li class="fieldcontain">
             <span id="releasePlan-label" class="property-label">Release Plan</span>
-            <div class="property-value" id="releasePlan">${testCycle.releasePlan.name}</div>
+            <g:link class="property-value" elementId="releasePlan"
+                    uri="/project/${this.testCycle.releasePlan.project.id}/releasePlan/show/${testCycle.releasePlan.id}">
+                ${testCycle.releasePlan.name}</g:link>
         </li>
         <li class="fieldcontain">
             <span id="name-label" class="property-label">Name</span>

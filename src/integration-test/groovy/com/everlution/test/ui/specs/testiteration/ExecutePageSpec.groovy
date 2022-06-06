@@ -55,10 +55,10 @@ class ExecutePageSpec extends GebSpec {
 
         then: "correct fields are displayed"
         def page = browser.page(ExecuteTestIterationPage)
-        page.getFields() == ["Result", "Name", "Test Case", "Test Cycle"]
+        page.getFields() == ["Result", "Notes", "Name", "Test Cycle"]
     }
 
-    void "test case link directs to test case"() {
+    void "test cycle link directs to test cycle"() {
         given: "setup data"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -73,10 +73,10 @@ class ExecutePageSpec extends GebSpec {
 
         when:
         def execute = at ExecuteTestIterationPage
-        execute.goToTestCase()
+        execute.goToTestCycle()
 
         then:
-        at ShowTestCasePage
+        at ShowTestCyclePage
     }
 
     void "result has correct options"() {

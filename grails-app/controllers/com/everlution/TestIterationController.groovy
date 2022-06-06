@@ -53,7 +53,7 @@ class TestIterationController {
             testIterationService.save(testIteration)
         } catch (ValidationException ignored) {
             def t = testIterationService.read(testIteration.id)
-            t.errors = t.errors
+            t.errors = testIteration.errors
             render view: 'execute', model: [testIteration: t]
             return
         }

@@ -197,7 +197,7 @@ class ProjectServiceSpec extends Specification {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         Bug bug = new Bug(name: "cascade project", description: "this should delete", person: person,
-                project: project).save()
+                project: project, status: "Open").save()
 
         expect:
         project.id != null
