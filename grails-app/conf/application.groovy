@@ -16,6 +16,8 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	[pattern: '/**/css/**',      access: ['permitAll']],
 	[pattern: '/**/images/**',   access: ['permitAll']],
 	[pattern: '/**/favicon.ico', access: ['permitAll']],
+	[pattern: '/user/**', 		 access: ['ROLE_APP_ADMIN']],
+	[pattern: '/role/**', 		 access: ['ROLE_APP_ADMIN']],
 	//Set h2-console to env specific for development
 	//[pattern: '/h2-console/**',  access: ['permitAll']]
 ]

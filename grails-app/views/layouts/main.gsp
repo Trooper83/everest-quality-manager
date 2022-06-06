@@ -33,6 +33,9 @@
                     </button>
                     <div class="dropdown-menu bg-secondary" aria-labelledby="adminDropDown">
                         <g:link class="dropdown-item" controller="project" action="create">Create Project</g:link>
+                        <sec:ifAnyGranted roles="ROLE_APP_ADMIN">
+                            <g:link class="dropdown-item" controller="user" action="create">Users</g:link>
+                        </sec:ifAnyGranted>
                     </div>
                 </div>
             </sec:ifAnyGranted>
