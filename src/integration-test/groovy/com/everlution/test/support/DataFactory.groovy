@@ -42,6 +42,16 @@ class DataFactory {
     }
 
     /**
+     * creates fake data to populate a person
+     * @return
+     */
+    static Map<String, String> person() {
+        def email = faker.internet().emailAddress()
+        def password = faker.internet().password()
+        return [email: email, password: password]
+    }
+
+    /**
      * creates fake data to populate a project instance
      */
     static Map<String, String> project() {

@@ -30,29 +30,14 @@
 			<g:set var='roleName' value='${uiPropertiesStrategy.getProperty(entry.key, "authority")}'/>
 			<div>
 				<g:checkBox name='${roleName}' value='${entry.value}'/>
-				<g:link controller='role' action='edit' id='${entry.key.id}'>${roleName}</g:link>
+				<label>${roleName}</label>
 			</div>
 		</g:each>
 		</s2ui:tab>
 	</s2ui:tabs>
 	<div style="float:left; margin-top: 10px;">
 		<s2ui:submitButton/>
-		<g:if test='${user}'><s2ui:deleteButton/></g:if>
-		<g:if test='${canRunAs}'><a id="runAsButton">${message(code:'spring.security.ui.runas.submit')}</a></g:if>
 	</div>
 </s2ui:form>
-<g:if test='${user}'><s2ui:deleteButtonForm instanceId='${user.id}' useToken="true"/></g:if>
-<g:if test='${canRunAs}'>
-<form name="runAsForm" action="${request.contextPath}${securityConfig.switchUser.switchUserUrl}" method='post'>
-	<g:hiddenField name='${securityConfig.switchUser.usernameParameter}' value='${username}'/>
-	<input type="submit" class="s2ui_hidden_button"/>
-</form>
-</g:if>
-<s2ui:documentReady>
-	$("#runAsButton").button();
-	$('#runAsButton').bind('click', function() {
-		document.forms.runAsForm.submit();
-	});
-</s2ui:documentReady>
 </body>
 </html>

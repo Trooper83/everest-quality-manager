@@ -24,7 +24,7 @@
 			<div>
 				<g:set var='authority' value='${uiPropertiesStrategy.getProperty(role, "authority")}'/>
 				<g:checkBox name='${authority}'/>
-				<g:link controller='role' action='edit' id='${role.id}'>${authority}</g:link>
+				<label>${authority}</label>
 			</div>
 		</g:each>
 		</s2ui:tab>

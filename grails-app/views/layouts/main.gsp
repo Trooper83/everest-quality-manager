@@ -31,7 +31,7 @@
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="adminButton" data-toggle="dropdown" aria-expanded="false">
                         Admin
                     </button>
-                    <div class="dropdown-menu bg-secondary" aria-labelledby="adminDropDownMenu">
+                    <div class="dropdown-menu bg-secondary" id="adminDropDownMenu" aria-labelledby="adminDropDownMenu">
                         <h6 class="dropdown-header text-white">Project</h6>
                         <g:link class="dropdown-item" controller="project" action="create">Create Project</g:link>
                         <div class="dropdown-divider"></div>

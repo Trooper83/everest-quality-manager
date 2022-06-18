@@ -45,7 +45,7 @@
 	</s2ui:formContainer>
 	<g:if test='${searched}'>
 	<div class="list">
-		<table>
+		<table id="results">
 			<thead>
 			<tr>
 				<s2ui:sortableColumn property='email' titleDefault='Email'/>

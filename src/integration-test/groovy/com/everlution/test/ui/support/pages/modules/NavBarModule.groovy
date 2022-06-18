@@ -5,7 +5,7 @@ import geb.Module
 class NavBarModule extends Module {
 
     static content = {
-        adminButton { $("#adminButton") }
+        adminButton(required: false) { $("#adminButton") }
         adminDropDownMenu { $("#adminDropDownMenu") }
         loginLink { $("[data-test-id=main-login-link]") }
         logoutButton { $("[data-test-id=main-logout-button]") }
@@ -23,8 +23,9 @@ class NavBarModule extends Module {
      * determines if an option is displayed
      */
     boolean isOptionDisplayed(String option) {
-        adminButton.click()
-        return adminDropDownMenu.find('a', text: option)
+        if(!adminDropDownMenu.displayed) { adminButton.click() }
+        def count = adminDropDownMenu.find('a', text: option).size()
+        return count == 1
     }
 
     /**
