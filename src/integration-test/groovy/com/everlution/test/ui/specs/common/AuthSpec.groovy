@@ -42,7 +42,7 @@ class AuthSpec extends GebSpec {
         username | password | message
         Usernames.ACCOUNT_EXPIRED.username | "password" | "Sorry, your account has expired."
         Usernames.ACCOUNT_LOCKED.username | "password" | "Sorry, your account is locked."
-        Usernames.PASSWORD_LOCKED.username | "password" | "Sorry, your password has expired."
+        Usernames.PASSWORD_EXPIRED.username | "password" | "Sorry, your password has expired."
         Usernames.DISABLED.username | "password" | "Sorry, your account is disabled."
     }
 

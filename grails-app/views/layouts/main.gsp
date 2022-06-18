@@ -27,12 +27,19 @@
     <div class="row justify-content-end">
         <div class="col">
             <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
-                <div class="dropdown" id="createProject">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="adminDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="adminButton" data-toggle="dropdown" aria-expanded="false">
                         Admin
                     </button>
-                    <div class="dropdown-menu bg-secondary" aria-labelledby="adminDropDown">
+                    <div class="dropdown-menu bg-secondary" id="adminDropDownMenu" aria-labelledby="adminDropDownMenu">
+                        <h6 class="dropdown-header text-white">Project</h6>
                         <g:link class="dropdown-item" controller="project" action="create">Create Project</g:link>
+                        <div class="dropdown-divider"></div>
+                        <sec:ifAnyGranted roles="ROLE_APP_ADMIN">
+                            <h6 class="dropdown-header text-white">User</h6>
+                            <g:link class="dropdown-item" controller="user" action="create">Create User</g:link>
+                            <g:link class="dropdown-item" controller="user" action="search">Search Users</g:link>
+                        </sec:ifAnyGranted>
                     </div>
                 </div>
             </sec:ifAnyGranted>

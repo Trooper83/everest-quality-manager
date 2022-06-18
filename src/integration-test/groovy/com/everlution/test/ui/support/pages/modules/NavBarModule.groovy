@@ -5,8 +5,27 @@ import geb.Module
 class NavBarModule extends Module {
 
     static content = {
+        adminButton(required: false) { $("#adminButton") }
+        adminDropDownMenu { $("#adminDropDownMenu") }
         loginLink { $("[data-test-id=main-login-link]") }
         logoutButton { $("[data-test-id=main-logout-button]") }
+    }
+
+    /**
+     * clicks and admin option
+     */
+    void goToAdminPage(String page) {
+        adminButton.click()
+        adminDropDownMenu.find('a', text: page).click()
+    }
+
+    /**
+     * determines if an option is displayed
+     */
+    boolean isOptionDisplayed(String option) {
+        if(!adminDropDownMenu.displayed) { adminButton.click() }
+        def count = adminDropDownMenu.find('a', text: option).size()
+        return count == 1
     }
 
     /**

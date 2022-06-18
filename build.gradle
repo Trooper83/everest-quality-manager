@@ -53,6 +53,7 @@ dependencies {
     implementation "org.grails.plugins:async"
     implementation "org.grails.plugins:scaffolding"
     implementation 'org.grails.plugins:spring-security-core:4.0.3'
+    implementation 'org.grails.plugins:spring-security-ui:4.0.0.M1'
     implementation "org.grails.plugins:events"
     implementation 'org.grails.plugins:hibernate5:7.1.0'
     implementation 'org.hibernate:hibernate-core:5.6.1.Final'
