@@ -62,7 +62,6 @@ class SearchUserSpec extends GebSpec {
 
         then:
         page.isValueInColumn("Email", "locked@accountlocked.com")
-        page.getRowCount() == 1
     }
 
     void "searching for user by password expired returns users"() {
@@ -98,7 +97,6 @@ class SearchUserSpec extends GebSpec {
 
         then:
         page.isValueInColumn("Email", "disabled@disabled.com")
-        page.getRowCount() == 1
     }
 
     void "email link redirects to edit view"() {
