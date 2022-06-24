@@ -44,6 +44,12 @@
                 </div>
             </sec:ifAnyGranted>
         </div>
+    </div>
+    <div class="container">
+        <sec:ifLoggedIn>
+            <g:link elementId="profileLink" controller="user" action="profile">Profile</g:link>
+        </sec:ifLoggedIn>
+    </div>
     <div class="container">
         <sec:ifLoggedIn>
             <g:form controller="logout">
