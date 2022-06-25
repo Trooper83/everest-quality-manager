@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta name="layout" content="main"/>
-	<s2ui:title messageCode='default.edit.label' entityNameMessageCode='user.label' entityNameDefault='User'/>
+	<title>Profile</title>
 </head>
 <body>
 <h3><g:message code='default.edit.label' args='[entityName]'/></h3>
@@ -20,7 +20,7 @@
 		</div>
 	</fieldset>
 	<fieldset class="buttons">
-		<input class="save" type="submit" value="${message(code: 'default.button.update.label', default: 'Update')}" />
+		<input class="save" type="submit" id="updateButton" value="${message(code: 'default.button.update.label', default: 'Update')}" />
 	</fieldset>
 	<g:checkBox name="enabled" value="${user.enabled}" hidden="hidden"/>
 	<g:checkBox name="accountExpired" value="${user.accountExpired}" hidden="hidden"/>

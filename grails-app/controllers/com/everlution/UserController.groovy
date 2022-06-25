@@ -9,7 +9,6 @@ class UserController extends grails.plugin.springsecurity.ui.UserController {
 
     /**
      * renders the user's profile
-     * @return
      */
     @Secured('IS_AUTHENTICATED_FULLY')
     def profile() {

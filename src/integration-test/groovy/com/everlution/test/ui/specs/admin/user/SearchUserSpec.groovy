@@ -3,8 +3,8 @@ package com.everlution.test.ui.specs.admin.user
 import com.everlution.test.ui.support.data.UserStatuses
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.user.EditUserPage
-import com.everlution.test.ui.support.pages.user.SearchUserPage
+import com.everlution.test.ui.support.pages.admin.user.EditUserPage
+import com.everlution.test.ui.support.pages.admin.user.SearchUserPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
