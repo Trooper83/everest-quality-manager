@@ -1,4 +1,4 @@
-package com.everlution.test.ui.support.pages.user
+package com.everlution.test.ui.support.pages.admin.user
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import geb.module.Checkbox

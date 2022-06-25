@@ -9,6 +9,7 @@ class NavBarModule extends Module {
         adminDropDownMenu { $("#adminDropDownMenu") }
         loginLink { $("[data-test-id=main-login-link]") }
         logoutButton { $("[data-test-id=main-logout-button]") }
+        profileLink { $("#profileLink") }
     }
 
     /**
@@ -17,6 +18,13 @@ class NavBarModule extends Module {
     void goToAdminPage(String page) {
         adminButton.click()
         adminDropDownMenu.find('a', text: page).click()
+    }
+
+    /**
+     * clicks the profile link
+     */
+    void goToProfile() {
+        profileLink.click()
     }
 
     /**

@@ -9,7 +9,7 @@ import com.everlution.test.ui.support.data.UserStatuses
 import com.everlution.test.ui.support.data.Usernames
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
-import com.everlution.test.ui.support.pages.user.EditUserPage
+import com.everlution.test.ui.support.pages.admin.user.EditUserPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
