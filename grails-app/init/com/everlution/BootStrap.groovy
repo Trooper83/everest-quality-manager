@@ -32,15 +32,15 @@ class BootStrap {
         def orgAdminRole = new Role(authority: "ROLE_ORG_ADMIN").save(failOnError: true)
         def appAdminRole = new Role(authority: "ROLE_APP_ADMIN").save(failOnError: true)
 
-        def readOnlyUser = new Person(email: "read_only@readonly.com", password: "password").save(failOnError: true)
-        def basicUser = new Person(email: "basic@basic.com", password: "password").save(failOnError: true)
-        def projectAdminUser = new Person(email: "project_admin@projectadmin.com", password: "password").save(failOnError: true)
-        def orgAdminUser = new Person(email: "org_admin@orgadmin.com", password: "password").save(failOnError: true)
-        def appAdminUser = new Person(email: "app_admin@appadmin.com", password: "password").save(failOnError: true)
-        new Person(email: "expired@accountexpired.com", password: "password", accountExpired: true).save(failOnError: true)
-        new Person(email: "locked@accountlocked.com", password: "password", accountLocked: true).save(failOnError: true)
-        new Person(email: "expired@passwordexpired.com", password: "password", passwordExpired: true).save(failOnError: true)
-        new Person(email: "disabled@disabled.com", password: "password", enabled: false).save(failOnError: true)
+        def readOnlyUser = new Person(email: "read_only@readonly.com", password: "!Password#2022").save(failOnError: true)
+        def basicUser = new Person(email: "basic@basic.com", password: "!Password#2022").save(failOnError: true)
+        def projectAdminUser = new Person(email: "project_admin@projectadmin.com", password: "!Password#2022").save(failOnError: true)
+        def orgAdminUser = new Person(email: "org_admin@orgadmin.com", password: "!Password#2022").save(failOnError: true)
+        def appAdminUser = new Person(email: "app_admin@appadmin.com", password: "!Password#2022").save(failOnError: true)
+        new Person(email: "expired@accountexpired.com", password: "!Password#2022", accountExpired: true).save(failOnError: true)
+        new Person(email: "locked@accountlocked.com", password: "!Password#2022", accountLocked: true).save(failOnError: true)
+        new Person(email: "expired@passwordexpired.com", password: "!Password#2022", passwordExpired: true).save(failOnError: true)
+        new Person(email: "disabled@disabled.com", password: "!Password#2022", enabled: false).save(failOnError: true)
 
         PersonRole.create(readOnlyUser, readOnlyRole)
         PersonRole.create(basicUser, basicRole)
@@ -57,7 +57,7 @@ class BootStrap {
 
     @Transactional
     void seedTestData() {
-        def person = new Person(email: "test@bootstrapped.com", password: "password").save()
+        def person = new Person(email: "test@bootstrapped.com", password: "!Password#2022").save()
         def area = new Area(name: "bootstrap area")
         def area1 = new Area(name: "bootstrap area 12")
         def env = new Environment(name: "bootstrap environment")

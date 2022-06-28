@@ -13,9 +13,9 @@ class PersonServiceSpec extends Specification implements ServiceUnitTest<PersonS
     }
 
     def setup() {
-        new Person(email: "test@test.com", password: "password").save()
-        new Person(email: "test1@test.com", password: "password").save()
-        new Person(email: "test2@test.com", password: "password").save(flush: true)
+        new Person(email: "test@test.com", password: "!Password2022").save()
+        new Person(email: "test1@test.com", password: "!Password2022").save()
+        new Person(email: "test2@test.com", password: "!Password2022").save(flush: true)
     }
 
     void "find by email with valid email returns instance"() {

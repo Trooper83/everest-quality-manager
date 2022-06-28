@@ -27,7 +27,7 @@ class TestCaseServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     private Long setupData() {
-        def person = new Person(email: "test1@test.com", password: "password").save()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         Project project = new Project(name: "TestCaseServiceSpec Project", code: "TTT").save()
         TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project).save()
@@ -123,7 +123,7 @@ class TestCaseServiceSpec extends Specification {
 
     void "test save"() {
         when:
-        def person = new Person(email: "test1@test.com", password: "password").save()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         Project project = new Project(name: "Test Case Save Project", code: "TCS").save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project)
@@ -159,7 +159,7 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def project = projectService.list(max: 1).first()
         def step = new Step(action: "action", result: "result")
-        def person = new Person(email: "test1@test.com", password: "password").save()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: project, steps: [step]).save()
 
@@ -193,7 +193,7 @@ class TestCaseServiceSpec extends Specification {
         given:
         def project = projectService.list(max: 1).first()
         def group = new TestGroup(name: "test group", project: project).save()
-        def person = new Person(email: "test1@test.com", password: "password").save()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: project).save()
         testCase.addToTestGroups(group)

@@ -65,6 +65,43 @@ class EditUserSpec extends GebSpec {
         errors.contains("Property [password] of class [class com.everlution.Person] cannot be null")
     }
 
+    void "error message displayed with invalid password"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.APP_ADMIN.username, "!Password#2022")
+
+        and:
+        go "user/edit/${person.id}"
+
+        when:
+        EditUserPage page = browser.page(EditUserPage)
+        page.editPerson("user@usingthis.com", "password", [], [])
+
+        then:
+        page.errorMessage.text() ==
+                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
+    }
+
+    void "error message displayed with too short password"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.APP_ADMIN.username, "!Password#2022")
+
+        and:
+        go "user/edit/${person.id}"
+
+        when:
+        EditUserPage page = browser.page(EditUserPage)
+        page.editPerson("user@usingthis.com", "passwor", [], [])
+
+        then:
+        def messages = page.errorMessage*.text()
+        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]")
+        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not fall within the valid size range from [8] to [256]")
+    }
+
     void "user attributes are persisted and displayed on edit view"() {
         given:
         to LoginPage

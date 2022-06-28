@@ -112,4 +112,37 @@ class CreateUserSpec extends GebSpec {
         def p = personService.findByEmail(person.email)
         p.password.startsWith("{bcrypt}")
     }
+
+    void "error message displayed with invalid password"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.APP_ADMIN.username, "!Password#2022")
+
+        when:
+        def page = to CreateUserPage
+        def person = DataFactory.person()
+        page.createPerson(person.email, "password", [], [])
+
+        then:
+        page.errorMessage.text() ==
+                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
+    }
+
+    void "error message displayed with too small password"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Usernames.APP_ADMIN.username, "!Password#2022")
+
+        when:
+        def page = to CreateUserPage
+        def person = DataFactory.person()
+        page.createPerson(person.email, "passwor", [], [])
+
+        then:
+        def messages = page.errorMessage*.text()
+        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]")
+        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not fall within the valid size range from [8] to [256]")
+    }
 }

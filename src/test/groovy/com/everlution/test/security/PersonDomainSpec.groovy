@@ -8,8 +8,8 @@ class PersonDomainSpec extends Specification implements DomainUnitTest<Person> {
 
     void "test instances are persisted"() {
         setup: "save two instances"
-        new Person(email: "email1@email.com", password: "CHI").save()
-        new Person(email: "email1@email.com", password: "SAN").save()
+        new Person(email: "email1@email.com", password: "!Testing25").save()
+        new Person(email: "email12@email.com", password: "!Testing25").save()
 
         expect: "count is 2"
         Person.count() == 2
@@ -79,12 +79,74 @@ class PersonDomainSpec extends Specification implements DomainUnitTest<Person> {
         domain.errors["password"].code == "blank"
     }
 
+    void "password validation fails"(String password) {
+        when:
+        domain.password = password
+
+        then: "validation fails"
+        !domain.validate(["password"])
+        domain.errors["password"].code == "matches.invalid"
+
+        where:
+        password << ["IFailWithoutNumber!", "IFailWithoutSpecChar111", "ifailwithoutuppercase#2022", "IFAILWITHOUTLOWER#200"]
+    }
+
+    void "password validates with uppercase lowercase spec char and number"() {
+        when:
+        domain.password = "!Ishouldvalidate#2000"
+
+        then:
+        domain.validate(["password"])
+    }
+
+    void "password validates with 8 characters"() {
+        when:
+        String str = "aA#2022!"
+        domain.password = str
+
+        then: "validation passes"
+        str.length() == 8
+        domain.validate(["password"])
+    }
+
+    void "password validates with 256 characters"() {
+        when:
+        String str = "aA#2022!" * 32
+        domain.password = str
+
+        then: "validation passes"
+        str.length() == 256
+        domain.validate(["password"])
+    }
+
+    void "password fails validation with 7 characters"() {
+        when:
+        String str = "aA#2022"
+        domain.password = str
+
+        then: "validation fails"
+        str.length() == 7
+        !domain.validate(["password"])
+        domain.errors["password"].code == "size.toosmall"
+    }
+
+    void "password fails validation with 257 characters"() {
+        when:
+        String str = "aA#2022!" * 32
+        domain.password = str.concat("a")
+
+        then: "validation fails"
+        domain.password.length() == 257
+        !domain.validate(["password"])
+        domain.errors["password"].code == "size.toobig"
+    }
+
     void "email must be unique"() {
         given: "create person instance"
-        new Person(email: "test@test.com", password: "CHI").save()
+        new Person(email: "test@test.com", password: "!Testing25").save()
 
         when: "create a person with same email"
-        def failed = new Person(email: "test@test.com", password: "CHI")
+        def failed = new Person(email: "test@test.com", password: "!Testing25")
 
         then: "email fails validation"
         !failed.validate(["email"])

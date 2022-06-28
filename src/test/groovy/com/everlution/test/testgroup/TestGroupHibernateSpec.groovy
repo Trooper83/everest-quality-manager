@@ -26,7 +26,7 @@ class TestGroupHibernateSpec extends HibernateSpec {
 
     void "delete group with test cases throws exception"() {
         given: "test group with case"
-        def person = new Person(email: "test@test.com", password: "password").save()
+        def person = new Person(email: "test@test.com", password: "!Password2022").save()
         Project project = new Project(name: "Test Case Project for groups", code: "TCF").save()
         TestGroup group = new TestGroup(name: "group", project: project).save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
@@ -46,7 +46,7 @@ class TestGroupHibernateSpec extends HibernateSpec {
 
     void "removeFrom does not cascade to test case"() {
         given: "test group with case"
-        def person = new Person(email: "test@test.com", password: "password").save()
+        def person = new Person(email: "test@test.com", password: "!Password2022").save()
         Project project = new Project(name: "Test Case Project for groups", code: "TCF").save()
         TestGroup group = new TestGroup(name: "group", project: project).save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",

@@ -4,7 +4,7 @@
 	<title>Profile</title>
 </head>
 <body>
-<h3><g:message code='default.edit.label' args='[entityName]'/></h3>
+<h3>Edit Profile</h3>
 <g:render template="/shared/messagesTemplate" bean="${user}" var="entity"/>
 <g:form action="updatePassword" method="POST" useToken="true">
 	<g:hiddenField name="version" value="${this.user?.version}" />
@@ -16,7 +16,11 @@
 		</div>
 		<div class="fieldcontain">
 			<label for="password">Password</label>
-			<g:passwordField name="password" value="${user.password}"/>
+			<g:passwordField name="password"/>
+		</div>
+		<div class="fieldcontain">
+			<label for="confirmPassword">Confirm Password</label>
+			<g:passwordField name="confirmPassword"/>
 		</div>
 	</fieldset>
 	<fieldset class="buttons">

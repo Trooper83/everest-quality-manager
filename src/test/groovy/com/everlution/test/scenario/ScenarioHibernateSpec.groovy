@@ -14,7 +14,7 @@ class ScenarioHibernateSpec extends HibernateSpec {
 
     def setup() {
         project = new Project(name: "scn domain project", code: "sdp").save()
-        person = new Person(email: "scnPerson@scn.com", password: "password").save()
+        person = new Person(email: "scnPerson@scn.com", password: "!Password2022").save()
     }
 
     void "date created auto generated"() {

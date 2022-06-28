@@ -56,7 +56,7 @@ class ProfileSpec extends GebSpec {
         page.updatePassword("thisismynewpassword")
 
         then:
-        page.statusMessage.text() == "Password updated"
+        page.statusMessage.text() == "Password updated."
         personService.findByEmail(person.email).password.startsWith("{bcrypt}")
     }
 
@@ -131,5 +131,65 @@ class ProfileSpec extends GebSpec {
 
         then:
         page.errorMessage.text() == 'An error has occurred, please try again.'
+    }
+
+    void "user error message displayed when passwords do not match"() {
+        given:
+        def p = DataFactory.person()
+        springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(p.email, p.password)
+
+        and:
+        go "user/profile"
+
+        when:
+        ProfilePage page = browser.page(ProfilePage)
+        page.passwordInput.text = "thisismynewpassword"
+        page.confirmPasswordInput.text = "failed"
+        page.updateButton.click()
+
+        then:
+        page.errorMessage.text() == "Passwords must match."
+    }
+
+    void "user error message displayed for invalid password"() {
+        given:
+        def p = DataFactory.person()
+        springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(p.email, p.password)
+
+        and:
+        go "user/profile"
+
+        when:
+        ProfilePage page = browser.page(ProfilePage)
+        page.updatePassword("password")
+
+        then:
+        page.errorMessage.text() ==
+                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
+    }
+
+    void "user error message displayed for too short password"() {
+        given:
+        def p = DataFactory.person()
+        springSecurityUiService.saveUser([email: p.email], [], p.password) as Person
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(p.email, p.password)
+
+        and:
+        go "user/profile"
+
+        when:
+        ProfilePage page = browser.page(ProfilePage)
+        page.updatePassword("passwor")
+
+        then:
+        page.errorMessage.displayed
     }
 }

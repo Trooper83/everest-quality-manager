@@ -21,7 +21,7 @@ class StepHibernateSpec extends HibernateSpec {
         given: "valid domain instances"
         Project project = new Project(name: "TestStep Cascade Project", code: "TCP").save()
         Step testStep = new Step(action: "do something", result: "something happened")
-        def person = new Person(email: "test@test.com", password: "password").save()
+        def person = new Person(email: "test@test.com", password: "!Password2022").save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
         testCase.save()
@@ -46,7 +46,7 @@ class StepHibernateSpec extends HibernateSpec {
         given: "valid domain instances"
         Project project = new Project(name: "TestStep Cascade Project", code: "TCC").save()
         Step testStep = new Step(action: "do something", result: "something happened")
-        def person = new Person(email: "test@test.com", password: "pass").save()
+        def person = new Person(email: "test@test.com", password: "!Password2022").save()
         Bug bug = new Bug(person: person, name: "test", description: "desc",
                project: project, status: "Open").addToSteps(testStep)
         bug.save()
