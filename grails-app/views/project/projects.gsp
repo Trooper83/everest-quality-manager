@@ -11,6 +11,10 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
+    <g:if test="${projectCount == 0}">
+        <div class="message" role="status">There are no projects in your organization.</div>
+    </g:if>
+    <g:else>
     <table class="table">
         <thead>
         <tr>
@@ -30,6 +34,7 @@
     <div class="pagination">
         <g:paginate total="${projectCount ?: 0}" />
     </div>
+    </g:else>
 </div>
 </body>
 </html>
