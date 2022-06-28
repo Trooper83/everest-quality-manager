@@ -124,7 +124,7 @@ class TestGroupServiceSpec extends Specification {
         given:
         setupData()
         def group = new TestGroup(name: "test group", project: project).save()
-        def person = new Person(email: "test1@test.com", password: "password").save()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: project).save()
         group.addToTestCases(testCase)

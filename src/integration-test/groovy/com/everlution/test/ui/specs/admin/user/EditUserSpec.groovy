@@ -6,7 +6,7 @@ import com.everlution.SpringSecurityUiService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.SecurityRoles
 import com.everlution.test.ui.support.data.UserStatuses
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.admin.user.EditUserPage
@@ -26,21 +26,21 @@ class EditUserSpec extends GebSpec {
         person = springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
 
         expect:
-        person != null
+        person.id != null
     }
 
     void "error message displayed with non-unique email"() {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         go "user/edit/${person.id}"
 
         when:
         EditUserPage page = browser.page(EditUserPage)
-        page.editPerson(Usernames.BASIC.username, null, [], [])
+        page.editPerson(Credentials.BASIC.email, null, [], [])
 
         then:
         page.errorMessage.text() == "Property [email] of class [class com.everlution.Person] with value [basic@basic.com] must be unique"
@@ -50,12 +50,15 @@ class EditUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
-        and:
-        go "user/edit/${person.id}"
+        expect:
+        at ListProjectPage
 
         when:
+        go "/user/edit/${person.id}"
+
+        and:
         EditUserPage page = browser.page(EditUserPage)
         page.editPerson(" ", " ", [], [])
 
@@ -65,18 +68,55 @@ class EditUserSpec extends GebSpec {
         errors.contains("Property [password] of class [class com.everlution.Person] cannot be null")
     }
 
-    void "user attributes are persisted and displayed on edit view"() {
+    void "error message displayed with invalid password"() {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, "!Password#2022")
 
         and:
         go "user/edit/${person.id}"
 
         when:
         EditUserPage page = browser.page(EditUserPage)
-        page.editPerson("user999@email.com", "password",
+        page.editPerson("user@usingthis.com", "password", [], [])
+
+        then:
+        page.errorMessage.text() ==
+                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
+    }
+
+    void "error message displayed with too short password"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.APP_ADMIN.email, "!Password#2022")
+
+        and:
+        go "user/edit/${person.id}"
+
+        when:
+        EditUserPage page = browser.page(EditUserPage)
+        page.editPerson("user@usingthis.com", "passwor", [], [])
+
+        then:
+        def messages = page.errorMessage*.text()
+        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]")
+        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not fall within the valid size range from [8] to [256]")
+    }
+
+    void "user attributes are persisted and displayed on edit view"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
+
+        and:
+        go "/user/edit/${person.id}"
+
+        when:
+        EditUserPage page = browser.page(EditUserPage)
+        page.editPerson("user999@email.com", "!2022Password",
                 [UserStatuses.ACCOUNT_LOCKED.status, UserStatuses.ENABLED.status],
                 [SecurityRoles.ROLE_BASIC.role, SecurityRoles.ROLE_APP_ADMIN.role])
 
@@ -92,7 +132,7 @@ class EditUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         go "user/edit/${person.id}"
@@ -110,7 +150,7 @@ class EditUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         go "user/edit/${person.id}"
@@ -136,7 +176,7 @@ class EditUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         go "user/edit/${person.id}"

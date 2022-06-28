@@ -23,7 +23,8 @@ class Person implements Serializable {
     }
 
     static constraints = {
-        password nullable: false, blank: false, password: true
+        password nullable: false, blank: false, password: true,
+                matches: "^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$", size: 8..256
         email nullable: false, blank: false, unique: true, email: true
     }
 

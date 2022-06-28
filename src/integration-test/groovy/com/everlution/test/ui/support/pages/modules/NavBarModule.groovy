@@ -10,6 +10,7 @@ class NavBarModule extends Module {
         loginLink { $("[data-test-id=main-login-link]") }
         logoutButton { $("[data-test-id=main-logout-button]") }
         profileLink { $("#profileLink") }
+        projectsLink { $("#projectsLink") }
     }
 
     /**
@@ -25,6 +26,13 @@ class NavBarModule extends Module {
      */
     void goToProfile() {
         profileLink.click()
+    }
+
+    /**
+     * clicks the projects link
+     */
+    void goToProjects() {
+        projectsLink.click()
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.everlution.test.ui.specs.project
 
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.DeniedPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.common.NotFoundPage
@@ -14,7 +14,7 @@ class ErrorsSpec extends GebSpec {
         given: "login as project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         when: "go to show page for not found project"
         go url
@@ -27,11 +27,11 @@ class ErrorsSpec extends GebSpec {
         url << ["/project/home/99999999999", "/project/edit/999999999999"]
     }
 
-    void "denied page displayed for read_only and basic user"(String url, String username) {
+    void "denied page displayed for read_only and basic user"(String url, String username, String password) {
         given: "login as user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, "password")
+        loginPage.login(username, password)
 
         when: "go to page"
         go url
@@ -41,10 +41,10 @@ class ErrorsSpec extends GebSpec {
         page.errors.text() == "Sorry, you're not authorized to view this page."
 
         where:
-        url               | username
-        "/project/create" | Usernames.BASIC.username
-        "/project/create" | Usernames.READ_ONLY.username
-        "/project/edit/1"   | Usernames.BASIC.username
-        "/project/edit/1"   | Usernames.READ_ONLY.username
+        url               | username                    | password
+        "/project/create" | Credentials.BASIC.email     | Credentials.BASIC.password
+        "/project/create" | Credentials.READ_ONLY.email | Credentials.READ_ONLY.password
+        "/project/edit/1" | Credentials.BASIC.email     | Credentials.BASIC.password
+        "/project/edit/1" | Credentials.READ_ONLY.email | Credentials.READ_ONLY.password
     }
 }

@@ -1,6 +1,6 @@
 package com.everlution.test.ui.specs.admin.security
 
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.DeniedPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec
@@ -13,7 +13,7 @@ class ErrorsSpec extends GebSpec {
         given: "login as user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, "password")
+        loginPage.login(username, "!Password#2022")
 
         when: "go to page"
         go url
@@ -24,25 +24,25 @@ class ErrorsSpec extends GebSpec {
 
         where:
         url            | username
-        "/user/create" | Usernames.BASIC.username
-        "/user/create" | Usernames.READ_ONLY.username
-        "/user/create" | Usernames.PROJECT_ADMIN.username
-        "/user/create" | Usernames.ORG_ADMIN.username
-        "/user/edit/1" | Usernames.BASIC.username
-        "/user/edit/1" | Usernames.READ_ONLY.username
-        "/user/edit/1" | Usernames.PROJECT_ADMIN.username
-        "/user/edit/1" | Usernames.ORG_ADMIN.username
-        "/user/search" | Usernames.BASIC.username
-        "/user/search" | Usernames.READ_ONLY.username
-        "/user/search" | Usernames.PROJECT_ADMIN.username
-        "/user/search" | Usernames.ORG_ADMIN.username
+        "/user/create" | Credentials.BASIC.email
+        "/user/create" | Credentials.READ_ONLY.email
+        "/user/create" | Credentials.PROJECT_ADMIN.email
+        "/user/create" | Credentials.ORG_ADMIN.email
+        "/user/edit/1" | Credentials.BASIC.email
+        "/user/edit/1" | Credentials.READ_ONLY.email
+        "/user/edit/1" | Credentials.PROJECT_ADMIN.email
+        "/user/edit/1" | Credentials.ORG_ADMIN.email
+        "/user/search" | Credentials.BASIC.email
+        "/user/search" | Credentials.READ_ONLY.email
+        "/user/search" | Credentials.PROJECT_ADMIN.email
+        "/user/search" | Credentials.ORG_ADMIN.email
     }
 
     void "denied page displayed for non-used security views"(String url, String username) {
         given: "login as user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(username, "password")
+        loginPage.login(username, "!Password#2022")
 
         when: "go to page"
         go url
@@ -53,21 +53,21 @@ class ErrorsSpec extends GebSpec {
 
         where:
         url            | username
-        "/aclClass/create" | Usernames.APP_ADMIN.username
-        "/aclClass/search" | Usernames.APP_ADMIN.username
-        "/aclEntry/create" | Usernames.APP_ADMIN.username
-        "/aclEntry/create" | Usernames.APP_ADMIN.username
-        "/persistentLogin/search" | Usernames.APP_ADMIN.username
-        "/persistentLogin/edit" | Usernames.APP_ADMIN.username
-        "/register/forgotPassword" | Usernames.APP_ADMIN.username
-        "/register/register" | Usernames.APP_ADMIN.username
-        "/register/resetPassword" | Usernames.APP_ADMIN.username
-        "/registrationCode/search" | Usernames.APP_ADMIN.username
-        "/registrationCode/edit" | Usernames.APP_ADMIN.username
-        "/requestmap/create" | Usernames.APP_ADMIN.username
-        "/requestmap/edit" | Usernames.APP_ADMIN.username
-        "/requestmap/search" | Usernames.APP_ADMIN.username
-        "/securityInfo/config" | Usernames.APP_ADMIN.username
-        "/securityInfo/usercache" | Usernames.APP_ADMIN.username
+        "/aclClass/create" | Credentials.APP_ADMIN.email
+        "/aclClass/search" | Credentials.APP_ADMIN.email
+        "/aclEntry/create" | Credentials.APP_ADMIN.email
+        "/aclEntry/create" | Credentials.APP_ADMIN.email
+        "/persistentLogin/search" | Credentials.APP_ADMIN.email
+        "/persistentLogin/edit" | Credentials.APP_ADMIN.email
+        "/register/forgotPassword" | Credentials.APP_ADMIN.email
+        "/register/register" | Credentials.APP_ADMIN.email
+        "/register/resetPassword" | Credentials.APP_ADMIN.email
+        "/registrationCode/search" | Credentials.APP_ADMIN.email
+        "/registrationCode/edit" | Credentials.APP_ADMIN.email
+        "/requestmap/create" | Credentials.APP_ADMIN.email
+        "/requestmap/edit" | Credentials.APP_ADMIN.email
+        "/requestmap/search" | Credentials.APP_ADMIN.email
+        "/securityInfo/config" | Credentials.APP_ADMIN.email
+        "/securityInfo/usercache" | Credentials.APP_ADMIN.email
     }
 }

@@ -14,7 +14,7 @@ class PersonIntSpec extends Specification implements DataTest {
 
     void "getAuthorities returns no roles for person with no roles"() {
         given:
-        Person p = new Person(email: "test@test.com", password: "pass").save()
+        Person p = new Person(email: "test@test.com", password: "!Password2022").save()
 
         expect:
         p.getAuthorities().empty
@@ -22,7 +22,7 @@ class PersonIntSpec extends Specification implements DataTest {
 
     void "getAuthorities returns all roles for person"() {
         given:
-        Person person = new Person(email: "test@test.com", password: "pass").save()
+        Person person = new Person(email: "test@test.com", password: "!Password2022").save()
         def role = new Role(authority: "TEST_ROLE").save()
         new PersonRole(person: person, role: role).save()
 

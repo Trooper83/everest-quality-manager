@@ -21,7 +21,7 @@ class TestCycleHibernateSpec extends HibernateSpec {
     def setup() {
         project = new Project(name: "Test Case Date Project For Cycle", code: "TCC").save()
         releasePlan = new ReleasePlan(name: "this is the name", project: project).save()
-        person = new Person(email: "test@test.com", password: "test").save()
+        person = new Person(email: "test@test.com", password: "!Password2022").save()
         testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
     }

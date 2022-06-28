@@ -21,7 +21,7 @@ class ProjectHibernateSpec extends HibernateSpec {
     @Shared Person person
 
     def setup() {
-        person = new Person(email: "test@test.com", password: "pass").save()
+        person = new Person(email: "test@test.com", password: "!Password2022").save()
     }
 
     void "delete project with bug throws persistence exception"() {

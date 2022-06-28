@@ -9,6 +9,7 @@ class ProfilePage extends BasePage {
     static at = { title == "Profile" }
 
     static content = {
+        confirmPasswordInput { $("#confirmPassword").module(PasswordInput) }
         emailInput { $("#email").module(TextInput) }
         errorMessage { $("ul.errors") }
         passwordInput { $("#password").module(PasswordInput) }
@@ -18,6 +19,7 @@ class ProfilePage extends BasePage {
 
     void updatePassword(String password) {
         passwordInput.text = password
+        confirmPasswordInput.text = password
         updateButton.click()
     }
 }

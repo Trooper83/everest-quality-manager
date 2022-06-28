@@ -11,7 +11,7 @@ import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -42,7 +42,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to edit page"
         go "/project/edit/${id}"
@@ -65,7 +65,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to show page"
         go "/project/home/${id}"
@@ -93,7 +93,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to edit page"
         go "/project/edit/${id}"
@@ -120,7 +120,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to edit page"
         go "/project/edit/${id}"
@@ -148,7 +148,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to edit page"
         go "/project/edit/${id}"
@@ -176,7 +176,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to edit page"
         go "/project/edit/${id}"
@@ -202,7 +202,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to show page"
         go "/project/home/${id}"
@@ -234,7 +234,7 @@ class EditProjectAreaSpec extends GebSpec {
         and: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to edit page"
         go "/project/edit/${id}"

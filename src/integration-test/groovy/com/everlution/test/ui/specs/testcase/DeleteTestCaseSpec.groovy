@@ -4,7 +4,7 @@ import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -42,9 +42,9 @@ class DeleteTestCaseSpec extends GebSpec {
 
         where:
         username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        Credentials.BASIC.email          | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email  | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email      | Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email      | Credentials.APP_ADMIN.password
     }
 }

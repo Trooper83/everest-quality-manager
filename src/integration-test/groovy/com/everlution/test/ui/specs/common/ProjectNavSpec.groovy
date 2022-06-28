@@ -1,6 +1,6 @@
 package com.everlution.test.ui.specs.common
 
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -19,7 +19,7 @@ class ProjectNavSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -36,7 +36,7 @@ class ProjectNavSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -53,7 +53,7 @@ class ProjectNavSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -70,7 +70,7 @@ class ProjectNavSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -87,7 +87,7 @@ class ProjectNavSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -104,7 +104,7 @@ class ProjectNavSpec extends GebSpec {
         when: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         then:
         def projectsPage = at(ListProjectPage)
@@ -116,7 +116,7 @@ class ProjectNavSpec extends GebSpec {
         given: "login as a read only user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         when:
         def projectsPage = at(ListProjectPage)

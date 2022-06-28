@@ -5,7 +5,7 @@ import com.everlution.PersonService
 import com.everlution.SpringSecurityUiService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.SecurityRoles
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.person.ProfilePage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -22,14 +22,14 @@ class ProfileSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         when:
         browser.at(ListProjectPage).navBar.goToProfile()
 
         then:
         def page = at ProfilePage
-        page.emailInput.text == Usernames.READ_ONLY.username
+        page.emailInput.text == Credentials.READ_ONLY.email
     }
 
     void "anonymous user cannot view profile"() {
@@ -49,14 +49,14 @@ class ProfileSpec extends GebSpec {
         loginPage.login(p.email, p.password)
 
         and:
-        go "user/profile"
+        go "/user/profile"
 
         when:
         ProfilePage page = browser.page(ProfilePage)
-        page.updatePassword("thisismynewpassword")
+        page.updatePassword("This!smynewpassword2022")
 
         then:
-        page.statusMessage.text() == "Password updated"
+        page.statusMessage.text() == "Password updated."
         personService.findByEmail(person.email).password.startsWith("{bcrypt}")
     }
 
@@ -73,14 +73,14 @@ class ProfileSpec extends GebSpec {
 
         when:
         ProfilePage page = browser.page(ProfilePage)
-        page.updatePassword("thisismynewpassword")
+        page.updatePassword("This!smynewpassword2022")
 
         and:
         page.navBar.logout()
 
         and:
         def logPage = at LoginPage
-        logPage.login(p.email, "thisismynewpassword")
+        logPage.login(p.email, "This!smynewpassword2022")
 
         then:
         at ListProjectPage
@@ -99,7 +99,7 @@ class ProfileSpec extends GebSpec {
 
         when:
         ProfilePage page = browser.page(ProfilePage)
-        page.updatePassword("thisismynewpassword")
+        page.updatePassword("This!smynewpassword2022")
 
         and:
         page.navBar.logout()
@@ -118,7 +118,7 @@ class ProfileSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         and:
         go "/user/profile"
@@ -131,5 +131,65 @@ class ProfileSpec extends GebSpec {
 
         then:
         page.errorMessage.text() == 'An error has occurred, please try again.'
+    }
+
+    void "user error message displayed when passwords do not match"() {
+        given:
+        def p = DataFactory.person()
+        springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(p.email, p.password)
+
+        and:
+        go "user/profile"
+
+        when:
+        ProfilePage page = browser.page(ProfilePage)
+        page.passwordInput.text = "thisismynewpassword"
+        page.confirmPasswordInput.text = "failed"
+        page.updateButton.click()
+
+        then:
+        page.errorMessage.text() == "Passwords must match."
+    }
+
+    void "user error message displayed for invalid password"() {
+        given:
+        def p = DataFactory.person()
+        springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(p.email, p.password)
+
+        and:
+        go "/user/profile"
+
+        when:
+        ProfilePage page = browser.page(ProfilePage)
+        page.updatePassword("password")
+
+        then:
+        page.errorMessage.text() ==
+                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
+    }
+
+    void "user error message displayed for too short password"() {
+        given:
+        def p = DataFactory.person()
+        springSecurityUiService.saveUser([email: p.email], [], p.password) as Person
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(p.email, p.password)
+
+        and:
+        go "user/profile"
+
+        when:
+        ProfilePage page = browser.page(ProfilePage)
+        page.updatePassword("passwor")
+
+        then:
+        page.errorMessage.displayed
     }
 }

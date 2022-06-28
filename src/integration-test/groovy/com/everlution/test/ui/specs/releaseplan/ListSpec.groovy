@@ -1,7 +1,7 @@
 package com.everlution.test.ui.specs.releaseplan
 
 import com.everlution.ProjectService
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
@@ -17,7 +17,7 @@ class ListSpec extends GebSpec {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         when: "go to list page"
         def id = projectService.list(max: 1).first().id
@@ -31,7 +31,7 @@ class ListSpec extends GebSpec {
         given: "login as a read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         and: "go to list page"
         def id = projectService.list(max: 1).first().id
@@ -48,7 +48,7 @@ class ListSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to show page"
         def id = projectService.list(max: 1).first().id

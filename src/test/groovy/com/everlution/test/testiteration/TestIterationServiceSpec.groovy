@@ -24,7 +24,7 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
     }
 
     def setup() {
-        person = new Person(email: "test@test.com", password: "test").save()
+        person = new Person(email: "test@test.com", password: "!Password2022").save()
         project = new Project(name: "tc domain project", code: "tdp").save()
         testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
@@ -62,7 +62,7 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
 
     void "save with valid iteration returns instance"() {
         given:
-        def person = new Person(email: "test@test.com", password: "test").save()
+        def person = new Person(email: "test@test.com", password: "!Password2022").save()
         def project = new Project(name: "tc domain project", code: "tdp").save()
         def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()

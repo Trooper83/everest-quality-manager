@@ -1,7 +1,7 @@
 package com.everlution.test.ui.specs.testcase.edit
 
 
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -18,7 +18,7 @@ class EditPageSpec extends GebSpec {
     def setup() {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 0)

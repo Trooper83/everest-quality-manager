@@ -24,6 +24,12 @@ class UserController extends grails.plugin.springsecurity.ui.UserController {
     @Secured('IS_AUTHENTICATED_FULLY')
     def updatePassword() {
         withForm {
+            if (params.password != params.confirmPassword) {
+                flash.error = "Passwords must match."
+                def instance = springSecurityService.getCurrentUser()
+                render view:'profile', model: model(instance, 'update')
+                return
+            }
             doUpdatePassword { user ->
                 uiUserStrategy.updateUser params, user, roleNamesFromParams()
             }
@@ -49,7 +55,7 @@ class UserController extends grails.plugin.springsecurity.ui.UserController {
             render view:'profile', model: model(instance, 'update')
         }
         else {
-            flash.message = 'Password updated'
+            flash.message = 'Password updated.'
             render view: 'profile', model: model(instance, 'update')
         }
     }

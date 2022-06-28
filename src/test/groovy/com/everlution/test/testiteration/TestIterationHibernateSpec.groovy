@@ -21,7 +21,7 @@ class TestIterationHibernateSpec extends HibernateSpec {
     @Shared TestCycle testCycle
 
     def setup() {
-        person = new Person(email: "test@test.com", password: "test").save()
+        person = new Person(email: "test@test.com", password: "!Password2022").save()
         project = new Project(name: "tc domain project", code: "tdp").save()
         releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
         testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()

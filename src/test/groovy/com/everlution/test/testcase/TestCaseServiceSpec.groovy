@@ -22,7 +22,7 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
 
     def setup() {
         project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
-        person = new Person(email: "email@test.com", password: "password").save()
+        person = new Person(email: "email@test.com", password: "!Password2022").save()
     }
 
     private void setupData() {

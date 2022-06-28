@@ -20,7 +20,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
     @Shared Project project
 
     def setup() {
-        person = new Person(email: "test@test.com", password: "password").save()
+        person = new Person(email: "test@test.com", password: "!Password2022").save()
         project = new Project(name: "Test Case Date Project", code: "TCD").save()
     }
 

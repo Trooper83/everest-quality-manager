@@ -2,7 +2,7 @@ package com.everlution.test.ui.specs.testcase.edit
 
 import com.everlution.*
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import geb.spock.GebSpec
@@ -39,7 +39,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "go to edit page"
         go "/project/${project.id}/testCase/edit/${testCase.id}"
@@ -61,7 +61,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "go to edit page"
         go "/project/${project.id}/testCase/edit/${testCase.id}"
@@ -82,7 +82,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to edit page"
         go "/project/${project.id}/testCase/edit/${testCase.id}"

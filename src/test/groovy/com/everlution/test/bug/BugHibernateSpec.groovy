@@ -15,7 +15,7 @@ class BugHibernateSpec extends HibernateSpec {
 
     def setup() {
         project = new Project(name: "bug domain project", code: "bdp").save()
-        person = new Person(email: "test@test.com", password: "password").save()
+        person = new Person(email: "test@test.com", password: "!Password2022").save()
     }
 
     void "date created populates on save"() {

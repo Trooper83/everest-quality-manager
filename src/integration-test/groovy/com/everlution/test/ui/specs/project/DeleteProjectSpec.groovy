@@ -2,7 +2,7 @@ package com.everlution.test.ui.specs.project
 
 import com.everlution.Project
 import com.everlution.ProjectService
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -39,8 +39,8 @@ class DeleteProjectSpec extends GebSpec {
 
         where:
         username                         | password
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email     |Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email     |Credentials.APP_ADMIN.password
     }
 }
