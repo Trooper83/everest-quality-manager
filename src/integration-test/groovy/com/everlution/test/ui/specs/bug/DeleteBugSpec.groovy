@@ -4,7 +4,7 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.PersonService
 import com.everlution.ProjectService
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -40,10 +40,10 @@ class DeleteBugSpec extends GebSpec {
         at ListBugPage
 
         where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        username                        | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 }

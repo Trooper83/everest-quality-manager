@@ -3,7 +3,7 @@ package com.everlution.test.ui.specs.project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
@@ -26,7 +26,7 @@ class HomePageSpec extends GebSpec {
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
     }
 
     void "status message displayed after project created"() {

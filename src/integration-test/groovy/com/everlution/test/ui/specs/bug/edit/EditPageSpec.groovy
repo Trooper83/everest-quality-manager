@@ -1,7 +1,7 @@
 package com.everlution.test.ui.specs.bug.edit
 
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
@@ -17,7 +17,7 @@ class EditPageSpec extends GebSpec {
         given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -42,7 +42,7 @@ class EditPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -67,7 +67,7 @@ class EditPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -94,7 +94,7 @@ class EditPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)

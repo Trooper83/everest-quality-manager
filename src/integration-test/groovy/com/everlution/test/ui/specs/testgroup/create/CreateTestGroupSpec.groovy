@@ -2,7 +2,7 @@ package com.everlution.test.ui.specs.testgroup.create
 
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testgroup.CreateTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
@@ -31,18 +31,18 @@ class CreateTestGroupSpec extends GebSpec {
         at ShowTestGroupPage
 
         where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        username                        | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
     void "all create form data persists"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "go to the create page & create instance"
         def id = projectService.list(max: 1).first().id

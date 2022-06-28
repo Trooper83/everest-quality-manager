@@ -1,7 +1,7 @@
 package com.everlution.test.ui.specs.bug
 
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -16,7 +16,7 @@ class ListSpec extends GebSpec {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -37,7 +37,7 @@ class ListSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)

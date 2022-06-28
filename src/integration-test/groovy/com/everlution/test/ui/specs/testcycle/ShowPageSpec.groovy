@@ -10,7 +10,7 @@ import com.everlution.TestCaseService
 import com.everlution.TestCycle
 import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
@@ -38,7 +38,7 @@ class ShowPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
@@ -52,7 +52,7 @@ class ShowPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
@@ -66,7 +66,7 @@ class ShowPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
@@ -76,18 +76,18 @@ class ShowPageSpec extends GebSpec {
         show.addTestsButton.displayed
 
         where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        username                        | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
     void "release plan link redirects to show release plan"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
@@ -119,7 +119,7 @@ class ShowPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, project.id, testCycle.id)
@@ -154,7 +154,7 @@ class ShowPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, project.id, testCycle.id)
@@ -174,7 +174,7 @@ class ShowPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
@@ -196,7 +196,7 @@ class ShowPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
@@ -236,7 +236,7 @@ class ShowPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, testCycle.releasePlan.project.id, testCycle.id)
@@ -282,7 +282,7 @@ class ShowPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, project.id, testCycle.id)
@@ -299,7 +299,7 @@ class ShowPageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
@@ -337,7 +337,7 @@ class ShowPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, project.id, testCycle.id)
@@ -369,7 +369,7 @@ class ShowPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, project.id, testCycle.id)
@@ -401,7 +401,7 @@ class ShowPageSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         to (ShowTestCyclePage, project.id, testCycle.id)

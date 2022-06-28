@@ -1,7 +1,6 @@
 package com.everlution.test.ui.specs.testcycle
 
-import com.everlution.test.ui.support.data.Usernames
-import com.everlution.test.ui.support.pages.common.DeniedPage
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.common.NotFoundPage
 import geb.spock.GebSpec
@@ -14,7 +13,7 @@ class ErrorsSpec extends GebSpec {
         given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "go to show page for not found"
         go url

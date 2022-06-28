@@ -11,7 +11,7 @@ import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.DeniedPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.common.NotFoundPage
@@ -32,7 +32,7 @@ class ErrorsSpec extends GebSpec {
         given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "go to show page for not found"
         go url
@@ -65,7 +65,7 @@ class ErrorsSpec extends GebSpec {
         and: "login as read_only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         and: "go to cycle"
         go "/project/${project.id}/testCycle/show/${testCycle.id}"

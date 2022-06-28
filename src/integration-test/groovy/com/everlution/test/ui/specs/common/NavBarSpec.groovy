@@ -1,6 +1,6 @@
 package com.everlution.test.ui.specs.common
 
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.person.ProfilePage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -14,7 +14,7 @@ class NavBarSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.READ_ONLY.username, "password")
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         and:
         browser.at(ListProjectPage).navBar.goToProfile()

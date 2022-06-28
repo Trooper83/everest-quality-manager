@@ -8,7 +8,7 @@ import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec
@@ -38,7 +38,7 @@ class EditPageAreaSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to edit page"
         go "project/${project.id}/bug/edit/${bug.id}"

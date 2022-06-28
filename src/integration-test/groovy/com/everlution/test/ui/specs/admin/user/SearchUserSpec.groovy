@@ -1,7 +1,7 @@
 package com.everlution.test.ui.specs.admin.user
 
 import com.everlution.test.ui.support.data.UserStatuses
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.admin.user.EditUserPage
 import com.everlution.test.ui.support.pages.admin.user.SearchUserPage
@@ -15,7 +15,7 @@ class SearchUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to SearchUserPage
@@ -33,7 +33,7 @@ class SearchUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to SearchUserPage
@@ -51,7 +51,7 @@ class SearchUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to SearchUserPage
@@ -68,7 +68,7 @@ class SearchUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to SearchUserPage
@@ -86,7 +86,7 @@ class SearchUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to SearchUserPage
@@ -103,7 +103,7 @@ class SearchUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to SearchUserPage

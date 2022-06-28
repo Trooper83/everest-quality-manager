@@ -4,7 +4,7 @@ import com.everlution.PersonService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.SecurityRoles
 import com.everlution.test.ui.support.data.UserStatuses
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.admin.user.CreateUserPage
@@ -21,7 +21,7 @@ class CreateUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to CreateUserPage
@@ -46,13 +46,13 @@ class CreateUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to CreateUserPage
 
         when:
-        page.createPerson(Usernames.BASIC.username, "password", [], [])
+        page.createPerson(Credentials.BASIC.email, Credentials.BASIC.password, [], [])
 
         then:
         page.errorMessage.text() == "Property [email] of class [class com.everlution.Person] with value [basic@basic.com] must be unique"
@@ -62,7 +62,7 @@ class CreateUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to CreateUserPage
@@ -80,13 +80,13 @@ class CreateUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
         def page = to CreateUserPage
 
         when:
-        page.createPerson("user@email.com", "password",
+        page.createPerson("user@email.com", "!2022Password",
                 [UserStatuses.ACCOUNT_LOCKED.status], //ENABLED selected by default
                 [SecurityRoles.ROLE_BASIC.role, SecurityRoles.ROLE_APP_ADMIN.role])
 
@@ -101,7 +101,7 @@ class CreateUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "password")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         when:
         def page = to CreateUserPage
@@ -117,7 +117,7 @@ class CreateUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "!Password#2022")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         when:
         def page = to CreateUserPage
@@ -133,7 +133,7 @@ class CreateUserSpec extends GebSpec {
         given:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.APP_ADMIN.username, "!Password#2022")
+        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         when:
         def page = to CreateUserPage

@@ -11,14 +11,13 @@ import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
 import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.Shared
 
 @Integration
 class ExecuteIterationSpec extends GebSpec {
@@ -49,7 +48,7 @@ class ExecuteIterationSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         go "/project/${project.id}/testCycle/show/${cycle.id}"

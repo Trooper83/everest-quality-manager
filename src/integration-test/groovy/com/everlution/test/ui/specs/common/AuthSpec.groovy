@@ -1,6 +1,6 @@
 package com.everlution.test.ui.specs.common
 
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -23,7 +23,7 @@ class AuthSpec extends GebSpec {
 
         where: "invalid credentials"
         username | password
-        "fail@failing.com"| "password"
+        "fail@failing.com"| "!2022Password"
         "basic@basic.com" | "pass"
     }
 
@@ -40,17 +40,17 @@ class AuthSpec extends GebSpec {
 
         where: "valid credentials"
         username | password | message
-        Usernames.ACCOUNT_EXPIRED.username | "password" | "Sorry, your account has expired."
-        Usernames.ACCOUNT_LOCKED.username | "password" | "Sorry, your account is locked."
-        Usernames.PASSWORD_EXPIRED.username | "password" | "Sorry, your password has expired."
-        Usernames.DISABLED.username | "password" | "Sorry, your account is disabled."
+        Credentials.ACCOUNT_EXPIRED.email  | Credentials.ACCOUNT_EXPIRED.password | "Sorry, your account has expired."
+        Credentials.ACCOUNT_LOCKED.email   | Credentials.ACCOUNT_LOCKED.password | "Sorry, your account is locked."
+        Credentials.PASSWORD_EXPIRED.email |Credentials.PASSWORD_EXPIRED.password | "Sorry, your password has expired."
+        Credentials.DISABLED.email         | Credentials.DISABLED.password | "Sorry, your account is disabled."
     }
 
     void "user can logout"() {
         given: "login as basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "logout of app"
         def page = browser.page(ListProjectPage)

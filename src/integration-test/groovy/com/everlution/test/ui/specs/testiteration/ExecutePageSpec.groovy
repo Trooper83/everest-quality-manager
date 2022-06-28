@@ -2,9 +2,8 @@ package com.everlution.test.ui.specs.testiteration
 
 import com.everlution.*
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
 import geb.spock.GebSpec
@@ -44,7 +43,7 @@ class ExecutePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         go "/project/${project.id}/testCycle/show/${testCycle.id}"
@@ -62,7 +61,7 @@ class ExecutePageSpec extends GebSpec {
         given: "setup data"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         go "/project/${project.id}/testCycle/show/${testCycle.id}"
@@ -83,7 +82,7 @@ class ExecutePageSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to cycle"
         go "/project/${project.id}/testCycle/show/${testCycle.id}"

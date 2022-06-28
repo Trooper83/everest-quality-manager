@@ -4,7 +4,7 @@ import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
@@ -41,10 +41,10 @@ class DeleteScenarioSpec extends GebSpec {
         at ListScenarioPage
 
         where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        username                        | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 }

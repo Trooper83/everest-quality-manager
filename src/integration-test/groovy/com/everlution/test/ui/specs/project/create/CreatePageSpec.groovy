@@ -1,6 +1,6 @@
 package com.everlution.test.ui.specs.project.create
 
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
@@ -14,7 +14,7 @@ class CreatePageSpec extends GebSpec {
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to the create page"
         to CreateProjectPage

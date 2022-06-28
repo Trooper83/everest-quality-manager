@@ -47,7 +47,7 @@ class DataFactory {
      */
     static Map<String, String> person() {
         def email = faker.internet().emailAddress()
-        def password = faker.internet().password(8, 256, true, true, true)
+        def password = faker.internet().password(8, 16, true, true, true)
         return [email: email, password: password]
     }
 

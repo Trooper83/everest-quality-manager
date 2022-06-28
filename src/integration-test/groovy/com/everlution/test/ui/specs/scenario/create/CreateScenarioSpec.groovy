@@ -5,7 +5,7 @@ import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.CreateScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
@@ -35,11 +35,11 @@ class CreateScenarioSpec extends GebSpec {
         at ShowScenarioPage
 
         where:
-        username                         | password
-        Usernames.BASIC.username         | "password"
-        Usernames.PROJECT_ADMIN.username | "password"
-        Usernames.ORG_ADMIN.username     | "password"
-        Usernames.APP_ADMIN.username     | "password"
+        username                        | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
     void "all create form data saved"() {
@@ -57,7 +57,7 @@ class CreateScenarioSpec extends GebSpec {
         when: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "create test case"
         go "/project/${project.id}/scenario/create"

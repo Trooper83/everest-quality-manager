@@ -1,7 +1,7 @@
 package com.everlution.test.ui.specs.project.create
 
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -28,10 +28,10 @@ class CreateProjectSpec extends GebSpec {
         at ProjectHomePage
 
         where:
-        username                         | password   | name                | code
-        Usernames.PROJECT_ADMIN.username | "password" | "created project 1" | "CP1"
-        Usernames.ORG_ADMIN.username     | "password" | "created project 2" | "CP2"
-        Usernames.APP_ADMIN.username     | "password" | "created project 3" | "CP3"
+        username                         | password                          | name                | code
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password | "created project 1" | "CP1"
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password     | "created project 2" | "CP2"
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password     | "created project 3" | "CP3"
     }
 
     void "all create from data saved"() {
@@ -43,7 +43,7 @@ class CreateProjectSpec extends GebSpec {
         and: "login as a user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.PROJECT_ADMIN.username, "password")
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to the create page"
         def page = to CreateProjectPage

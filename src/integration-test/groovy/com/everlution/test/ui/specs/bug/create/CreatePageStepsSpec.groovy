@@ -1,7 +1,7 @@
 package com.everlution.test.ui.specs.bug.create
 
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -16,7 +16,7 @@ class CreatePageStepsSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)

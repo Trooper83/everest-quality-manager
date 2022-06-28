@@ -7,7 +7,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
@@ -33,7 +33,7 @@ class EditPageStepsSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -64,7 +64,7 @@ class EditPageStepsSpec extends GebSpec {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
         def projectsPage = at(ListProjectPage)
@@ -106,7 +106,7 @@ class EditPageStepsSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to edit page"
         go "/project/${project.id}/bug/edit/${id}"

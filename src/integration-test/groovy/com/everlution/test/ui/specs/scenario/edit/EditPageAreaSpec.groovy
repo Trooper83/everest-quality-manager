@@ -8,7 +8,7 @@ import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Usernames
+import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.EditScenarioPage
 import geb.spock.GebSpec
@@ -39,7 +39,7 @@ class EditPageAreaSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "go to edit page"
         go "/project/${project.id}/scenario/edit/${scenario.id}"
@@ -59,7 +59,7 @@ class EditPageAreaSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Usernames.BASIC.username, "password")
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "go to edit page"
         go "/project/${project.id}/scenario/edit/${scenario.id}"
