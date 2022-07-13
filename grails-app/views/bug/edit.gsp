@@ -14,10 +14,6 @@
                 <g:hiddenField name="version" value="${this.bug?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span data-test-id="edit-project-name">${bug.project.name}</span>
-                    </div>
-                    <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" id="area" from="${bug.project.areas}"
                                   optionKey="id" optionValue="name" value="${bug.area?.id}"

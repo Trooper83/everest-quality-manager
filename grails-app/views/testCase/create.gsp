@@ -13,10 +13,6 @@
             <g:form method="POST" uri="/project/${project.id}/testCase/save">
                 <fieldset class="form">
                     <g:hiddenField name="project" value="${project.id}"/>
-                    <div class="fieldcontain required">
-                        <label for="project">Project</label>
-                        <span>${project.name}</span>
-                    </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" from="${project.areas}"

@@ -15,10 +15,6 @@
                     <g:hiddenField name="project" value="${project.id}"/>
                     <g:hiddenField name="status" value="Open"/>
                     <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span>${project.name}</span>
-                    </div>
-                    <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" from="${project.areas}"
                               optionKey="id" optionValue="name"

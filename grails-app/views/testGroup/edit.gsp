@@ -13,10 +13,6 @@
             <g:form resource="${this.testGroup}" method="PUT" uri="/project/${testGroup.project.id}/testGroup/update/${testGroup.id}">
                 <g:hiddenField name="version" value="${this.testGroup?.version}" />
                 <fieldset class="form">
-                    <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span data-test-id="edit-project-name">${testGroup.project.name}</span>
-                    </div>
                     <f:all bean="testGroup" except="project, testCases"/>
                 </fieldset>
                 <fieldset class="buttons">

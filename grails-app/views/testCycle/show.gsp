@@ -39,7 +39,7 @@
         Add Tests
     </button>
     </sec:ifAnyGranted>
-    <table class="table">
+    <table>
         <thead>
         <tr>
             <th>Id</th>

@@ -14,10 +14,6 @@
                 <g:hiddenField name="version" value="${this.testCase?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span data-test-id="edit-project-name">${testCase.project.name}</span>
-                    </div>
-                    <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" id="area" from="${testCase.project.areas}"
                                   optionKey="id" optionValue="name" value="${fieldValue(bean: testCase, field: 'area.id')}"

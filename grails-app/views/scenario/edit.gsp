@@ -14,10 +14,6 @@
                 <g:hiddenField name="version" value="${this.scenario?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span data-test-id="edit-project-name">${scenario.project.name}</span>
-                    </div>
-                    <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" id="area" from="${scenario.project.areas}"
                                   optionKey="id" optionValue="name" value="${scenario.area?.id}"

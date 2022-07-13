@@ -13,7 +13,7 @@
         <div id="list-testGroup" class="content scaffold-list" role="main">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
-            <table class="table">
+            <table>
                 <thead>
                 <tr>
                     <th>Name</th>

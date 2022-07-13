@@ -20,10 +20,6 @@
                     <span id="name-label" class="property-label">Name</span>
                     <div class="property-value" id="name">${releasePlan.name}</div>
                 </li>
-                <li class="fieldcontain">
-                    <span id="project-label" class="property-label">Project</span>
-                    <div class="property-value" id="project">${releasePlan.project.name}</div>
-                </li>
             </ol>
             <div class="container">
                 <h1>Test Cycles</h1>
