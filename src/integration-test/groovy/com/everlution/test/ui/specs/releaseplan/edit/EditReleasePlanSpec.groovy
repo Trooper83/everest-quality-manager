@@ -36,7 +36,7 @@ class EditReleasePlanSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)

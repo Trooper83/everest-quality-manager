@@ -25,7 +25,7 @@ class EditPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "edit bug"
         def bugsPage = at ListBugPage
@@ -50,7 +50,7 @@ class EditPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "edit bug"
         def bugsPage = at ListBugPage
@@ -75,7 +75,7 @@ class EditPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "edit bug"
         def bugsPage = at ListBugPage
@@ -102,7 +102,7 @@ class EditPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "edit bug"
         def bugsPage = at ListBugPage

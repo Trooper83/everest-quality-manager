@@ -24,7 +24,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
+        projectHomePage.navBar.goToProjectDomain('Test Groups')
     }
 
     void "verify list table headers order"() {
@@ -54,5 +54,14 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         def listPage = at ListTestGroupPage
         listPage.statusMessage.text() ==~ /TestGroup \d+ deleted/
+    }
+
+    void "create button menu displays"() {
+        when:
+        def page = at ListTestGroupPage
+        page.projectNavButtons.openCreateMenu()
+
+        then:
+        page.projectNavButtons.isCreateMenuOpen()
     }
 }

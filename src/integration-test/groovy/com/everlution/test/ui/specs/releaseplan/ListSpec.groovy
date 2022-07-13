@@ -63,4 +63,21 @@ class ListSpec extends GebSpec {
         def listPage = at ListReleasePlanPage
         listPage.statusMessage.text() ==~ /ReleasePlan \d+ deleted/
     }
+
+    void "create button menu displays"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to show page"
+        def id = projectService.list(max: 1).first().id
+        def page = to(ListReleasePlanPage, id)
+
+        when:
+        page.projectNavButtons.openCreateMenu()
+
+        then:
+        page.projectNavButtons.isCreateMenuOpen()
+    }
 }

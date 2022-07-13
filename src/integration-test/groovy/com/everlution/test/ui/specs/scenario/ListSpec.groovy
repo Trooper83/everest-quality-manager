@@ -77,4 +77,22 @@ class ListSpec extends GebSpec {
         then: "at show page"
         at ShowScenarioPage
     }
+
+    void "create button menu displays"() {
+        given: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to list page"
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/scenarios"
+
+        when:
+        def page = at ListScenarioPage
+        page.projectNavButtons.openCreateMenu()
+
+        then:
+        page.projectNavButtons.isCreateMenuOpen()
+    }
 }

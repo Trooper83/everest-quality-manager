@@ -30,7 +30,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="adminDropDown" role="button" data-toggle="dropdown" aria-expanded="false">
                 Admin
             </a>
-            <div class="dropdown-menu bg-secondary" aria-labelledby="adminButton">
+            <div class="dropdown-menu bg-secondary" id="adminDropDownMenu">
                 <h4 class="dropdown-header text-white">Project</h4>
                 <g:link class="dropdown-item" controller="project" action="create">Create Project</g:link>
                 <sec:ifAnyGranted roles="ROLE_APP_ADMIN">
@@ -45,10 +45,10 @@
         <sec:ifAnyGranted roles="ROLE_READ_ONLY">
             <g:if test="${params.projectId}">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="createDropDown" role="button" data-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="domainDropDown" role="button" data-toggle="dropdown" aria-expanded="false">
                         Project
                     </a>
-                    <div class="dropdown-menu bg-secondary" aria-labelledby="adminButton">
+                    <div class="dropdown-menu bg-secondary" id="domainDropDownMenu">
                         <g:link class="dropdown-item" uri="/project/home/${params.projectId}">Project Home</g:link>
                         <g:link class="dropdown-item" elementId="projectsLink" controller="project" action="projects">Projects</g:link>
                         <div class="dropdown-divider"></div>

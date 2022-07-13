@@ -7,7 +7,6 @@
     </head>
     <body>
         <a href="#edit-project" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <g:render template="/shared/projectButtonsTemplate"/>
         <div id="edit-project" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>

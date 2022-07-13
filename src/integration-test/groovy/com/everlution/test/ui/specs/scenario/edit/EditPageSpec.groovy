@@ -27,7 +27,7 @@ class EditPageSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         browser.page(ListProjectPage).projectTable.clickCell("Name", 0)
-        browser.page(ProjectHomePage).projectNavButtons.goToListsPage("Scenarios")
+        browser.page(ProjectHomePage).navBar.goToProjectDomain("Scenarios")
         browser.page(ListScenarioPage).scenarioTable.clickCell("Name", 0)
         browser.page(ShowScenarioPage).goToEdit()
     }

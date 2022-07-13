@@ -6,7 +6,6 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
-    <g:render template="/shared/projectButtonsTemplate"/>
         <div id="create-bug" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>

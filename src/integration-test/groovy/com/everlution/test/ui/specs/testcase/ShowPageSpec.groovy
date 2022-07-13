@@ -58,7 +58,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
+        projectHomePage.navBar.goToProjectDomain('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -84,7 +84,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
+        projectHomePage.navBar.goToProjectDomain('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -110,7 +110,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
+        projectHomePage.navBar.goToProjectDomain('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -143,7 +143,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
+        projectHomePage.navBar.goToProjectDomain('Test Cases')
 
         when: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -167,7 +167,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Test Cases')
+        projectHomePage.navBar.goToProjectDomain('Test Cases')
 
         and: "click first test case in list"
         ListTestCasePage listPage = browser.page(ListTestCasePage)
@@ -231,5 +231,31 @@ class ShowPageSpec extends GebSpec {
 
         then:
         show.errorsMessage.text() == "Test Case has associated Test Iterations and cannot be deleted"
+    }
+
+    void "create button menu displays"() {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToProjectDomain('Test Cases')
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.listTable.clickCell("Name", 0)
+
+        when:
+        def page = browser.page(ShowTestCasePage)
+        page.projectNavButtons.openCreateMenu()
+
+        then:
+        page.projectNavButtons.isCreateMenuOpen()
     }
 }

@@ -7,7 +7,6 @@
     </head>
     <body>
         <a href="#create-testCase" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <g:render template="/shared/projectButtonsTemplate"/>
         <div id="create-testCase" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testCase}" var="entity"/>

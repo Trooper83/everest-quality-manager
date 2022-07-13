@@ -6,7 +6,6 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
-    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#create-releasePlan" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div id="create-releasePlan" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
