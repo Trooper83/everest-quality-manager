@@ -6,9 +6,10 @@
         <title><g:message code="default.list.label" args="[entityName]" /></title>
     </head>
     <body>
+        <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
         <a href="#list-scenario" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <g:render template="/shared/projectButtonsTemplate"/>
-        <div id="list-scenario" class="content scaffold-list" role="main">
+        <div id="list-scenario" class="content scaffold-list col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
                 <div class="message" role="status">${flash.message}</div>
@@ -19,7 +20,6 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Person</th>
-                    <th>Project</th>
                     <th>Platform</th>
                     <th>Type</th>
                 </tr>
@@ -30,7 +30,6 @@
                         <td><g:link uri="/project/${project.id}/scenario/show/${scenario.id}">${scenario.name}</g:link></td>
                         <td>${scenario.description}</td>
                         <td>${scenario.person.email}</td>
-                        <td>${scenario.project.name}</td>
                         <td>${scenario.platform}</td>
                         <td>${scenario.type}</td>
                     </tr>

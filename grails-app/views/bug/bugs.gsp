@@ -6,11 +6,12 @@
     <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
+<g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
 <a href="#list-bug" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
 <g:render template="/shared/projectButtonsTemplate"/>
-<div id="list-bug" class="content scaffold-list" role="main">
+<div id="list-bug" class="content scaffold-list col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <h1>
         <g:message code="default.list.label" args="[entityName]"/>
     </h1>
@@ -23,7 +24,6 @@
             <th>Name</th>
             <th>Description</th>
             <th>Person</th>
-            <th>Project</th>
             <th>Platform</th>
             <th>Status</th>
         </tr>
@@ -34,7 +34,6 @@
                 <td><g:link uri="/project/${project.id}/bug/show/${bug.id}">${bug.name}</g:link></td>
                 <td>${bug.description}</td>
                 <td>${bug.person.email}</td>
-                <td>${bug.project.name}</td>
                 <td>${bug.platform}</td>
                 <td>${bug.status}</td>
             </tr>

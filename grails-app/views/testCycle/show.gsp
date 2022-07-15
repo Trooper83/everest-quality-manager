@@ -6,10 +6,11 @@
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
+<g:render template="/shared/sidebarTemplate" model="['name':testCycle.releasePlan.project.name, 'code':testCycle.releasePlan.project.code]"/>
 <a href="#show-testCycle" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<div id="show-testCycle" class="content scaffold-show" role="main">
+<div id="show-testCycle" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <h1>
         <g:message code="default.show.label" args="[entityName]"/>
     </h1>
@@ -33,12 +34,12 @@
             <span id="platform-label" class="property-label">Platform</span>
             <div class="property-value" id="platform">${testCycle.platform}</div>
         </li>
+        <sec:ifAnyGranted roles="ROLE_BASIC">
+            <button id="addTestsBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#testsModal">
+                Add Tests
+            </button>
+        </sec:ifAnyGranted>
     </ol>
-    <sec:ifAnyGranted roles="ROLE_BASIC">
-    <button id="addTestsBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#testsModal">
-        Add Tests
-    </button>
-    </sec:ifAnyGranted>
     <table>
         <thead>
         <tr>

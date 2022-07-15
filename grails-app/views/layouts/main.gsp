@@ -13,7 +13,7 @@
     <g:layoutHead/>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark navbar-static-top" role="navigation">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" role="navigation">
     <a class="navbar-brand" href="/projects">Title of App</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -42,30 +42,11 @@
             </div>
         </li>
         </sec:ifAnyGranted>
-        <sec:ifAnyGranted roles="ROLE_READ_ONLY">
-            <g:if test="${params.projectId}">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="domainDropDown" role="button" data-toggle="dropdown" aria-expanded="false">
-                        Project
-                    </a>
-                    <div class="dropdown-menu bg-secondary" id="domainDropDownMenu">
-                        <g:link class="dropdown-item" uri="/project/home/${params.projectId}">Project Home</g:link>
-                        <g:link class="dropdown-item" elementId="projectsLink" controller="project" action="projects">Projects</g:link>
-                        <div class="dropdown-divider"></div>
-                        <g:link class="dropdown-item" uri="/project/${params.projectId}/bugs">Bugs</g:link>
-                        <g:link class="dropdown-item" uri="/project/${params.projectId}/releasePlans">Release Plans</g:link>
-                        <g:link class="dropdown-item" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
-                        <g:link class="dropdown-item" uri="/project/${params.projectId}/testCases"> Test Cases</g:link>
-                        <g:link class="dropdown-item" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
-                    </div>
-                </li>
-            </g:if>
-            <g:else>
-                <li class="nav-item">
-                    <g:link class="nav-link" elementId="projectsLink" controller="project" action="projects">Projects</g:link>
-                </li>
-            </g:else>
-        </sec:ifAnyGranted>
+        <li class="nav-item">
+        <li class="nav-item">
+            <g:link class="nav-link" elementId="projectsLink" controller="project" action="projects">Projects</g:link>
+        </li>
+        </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="profileDropDown" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                 <asset:image src="icons/person-circle.svg" alt="User Profile" width="32" height="32"/>

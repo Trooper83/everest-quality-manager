@@ -6,8 +6,9 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
+        <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
         <a href="#create-testGroup" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <div id="create-testGroup" class="content scaffold-create" role="main">
+        <div id="create-testGroup" class="content scaffold-create col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
             <g:form resource="${this.testGroup}" method="POST" uri="/project/${project.id}/testGroup/save">
