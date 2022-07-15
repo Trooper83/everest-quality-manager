@@ -32,13 +32,6 @@ class EditPageSpec extends GebSpec {
         browser.page(ShowScenarioPage).goToEdit()
     }
 
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        def page = browser.page(EditScenarioPage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method", "Name *",
-                             "Platform", "Type", "Gherkin"]
-    }
-
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         def page = browser.page(EditScenarioPage)

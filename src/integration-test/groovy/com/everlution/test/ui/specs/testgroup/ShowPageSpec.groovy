@@ -139,29 +139,6 @@ class ShowPageSpec extends GebSpec {
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
-    void "correct fields are displayed"() {
-        given: "login as read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
-
-        when: "click first test group in list"
-        def listPage = browser.page(ListTestGroupPage)
-        listPage.listTable.clickCell("Name", 0)
-
-        then: "correct fields are displayed"
-        def page = browser.page(ShowTestGroupPage)
-        page.getFields() == ["Project", "Name"]
-    }
-
     void "test group not deleted if alert is canceled"() {
         given: "login as a basic user"
         to LoginPage

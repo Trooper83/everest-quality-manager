@@ -121,30 +121,6 @@ class ShowPageSpec extends GebSpec {
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
-    void "correct fields are displayed"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Scenarios')
-
-        when: "click first in list"
-        def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
-
-        then: "correct fields are displayed"
-        def page = browser.page(ShowScenarioPage)
-        page.getFields() == ["Created By", "Project", "Area", "Environments", "Name", "Description",
-                             "Execution Method", "Type", "Platform", "Gherkin"]
-    }
-
     void "scenario not deleted if alert is canceled"() {
         given: "login as a basic user"
         to LoginPage

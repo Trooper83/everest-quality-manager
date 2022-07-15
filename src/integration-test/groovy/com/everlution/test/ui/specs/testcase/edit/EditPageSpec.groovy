@@ -31,13 +31,6 @@ class EditPageSpec extends GebSpec {
         browser.page(ShowTestCasePage).goToEdit()
     }
 
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.getFields() == ["Project", "Area", "Environments", "Test Groups", "Description", "Execution Method", "Name *",
-                             "Platform", "Type"]
-    }
-
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         EditTestCasePage page = browser.page(EditTestCasePage)

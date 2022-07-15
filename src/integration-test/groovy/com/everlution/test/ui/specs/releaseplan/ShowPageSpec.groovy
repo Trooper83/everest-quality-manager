@@ -127,29 +127,6 @@ class ShowPageSpec extends GebSpec {
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
-    void "correct fields are displayed"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Release Plans')
-
-        when: "click first row in list"
-        def listPage = browser.page(ListReleasePlanPage)
-        listPage.listTable.clickCell("Name", 0)
-
-        then: "correct fields are displayed"
-        def page = browser.page(ShowReleasePlanPage)
-        page.getFields() == ["Name", "Project"]
-    }
-
     void "plan not deleted if alert is canceled"() {
         given: "login as a basic user"
         to LoginPage

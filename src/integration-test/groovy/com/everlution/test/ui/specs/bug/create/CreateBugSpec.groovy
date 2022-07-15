@@ -86,7 +86,6 @@ class CreateBugSpec extends GebSpec {
         ShowBugPage showPage = at ShowBugPage
         verifyAll {
             showPage.areaValue.text() == area.name
-            showPage.projectValue.text() == project.name
             showPage.nameValue.text() == name
             showPage.descriptionValue.text() == description
             showPage.platformValue.text() == "Web"

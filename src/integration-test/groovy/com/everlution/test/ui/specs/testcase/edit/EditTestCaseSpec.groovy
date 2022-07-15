@@ -177,7 +177,6 @@ class EditTestCaseSpec extends GebSpec {
         ShowTestCasePage showPage = at ShowTestCasePage
         verifyAll {
             showPage.areaValue.text() == ""
-            showPage.projectValue.text() == project.name
             !showPage.areEnvironmentsDisplayed([env.name])
             !showPage.areTestGroupsDisplayed([group.name])
             showPage.nameValue.text() == edited.name

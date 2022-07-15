@@ -26,12 +26,6 @@ class EditPageSpec extends GebSpec {
         browser.page(ShowTestGroupPage).goToEdit()
     }
 
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        def page = browser.page(EditTestGroupPage)
-        page.getFields() == ["Project", "Name *"]
-    }
-
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         def page = browser.page(EditTestGroupPage)
