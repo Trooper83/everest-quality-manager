@@ -78,6 +78,7 @@ class EditUserSpec extends GebSpec {
         loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
+        at ListProjectPage
         go "user/edit/${person.id}"
 
         when:
