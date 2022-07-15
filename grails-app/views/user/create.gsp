@@ -1,37 +1,54 @@
 <html>
 <head>
-	<meta name="layout" content="${layoutUi}"/>
-	<s2ui:title messageCode='default.create.label' entityNameMessageCode='user.label' entityNameDefault='User'/>
+	<meta name="layout" content="main"/>
+	<g:set var="entityName" value="${message(code: 'user.label', default: 'User')}" />
+	<title><g:message code="default.create.label" args="[entityName]" /></title>
 </head>
 <body>
-<h3><g:message code='default.create.label' args='[entityName]'/></h3>
-<s2ui:form type='save' beanName='user' focus='username' useToken='true'>
-	<s2ui:tabs elementId='tabs' height='375' data='${tabData}'>
-		<s2ui:tab name='userinfo' height='280'>
-			<table>
-				<tbody>
-				<s2ui:textFieldRow name='email' labelCodeDefault='Email'/>
-				<s2ui:passwordFieldRow name='password' labelCodeDefault='Password'/>
-				<s2ui:checkboxRow name='enabled' labelCodeDefault='Enabled'/>
-				<s2ui:checkboxRow name='accountExpired' labelCodeDefault='Account Expired'/>
-				<s2ui:checkboxRow name='accountLocked' labelCodeDefault='Account Locked'/>
-				<s2ui:checkboxRow name='passwordExpired' labelCodeDefault='Password Expired'/>
-				</tbody>
-			</table>
-		</s2ui:tab>
-		<s2ui:tab name='roles' height='280'>
-		<g:each var='role' in='${authorityList}'>
-			<div>
-				<g:set var='authority' value='${uiPropertiesStrategy.getProperty(role, "authority")}'/>
-				<g:checkBox name='${authority}'/>
-				<label>${authority}</label>
+<div id="create-user" class="content scaffold-create" role="main">
+	<h1><g:message code='default.create.label' args='[entityName]'/></h1>
+	<g:render template="/shared/messagesTemplate" bean="${user}" var="entity"/>
+	<g:form controller="user" action="save" focus="email" useToken="true">
+		<fieldset class="form">
+			<div class="fieldcontain">
+				<label for="email">Email</label>
+				<input type="text" name="email" id="email"/>
 			</div>
-		</g:each>
-		</s2ui:tab>
-	</s2ui:tabs>
-	<div style='float:left; margin-top: 10px;'>
-		<s2ui:submitButton/>
-	</div>
-</s2ui:form>
+			<div class="fieldcontain">
+				<label for="password">Password</label>
+				<input type="password" name="password" id="password"/>
+			</div>
+			<div class="fieldcontain">
+				<label for="enabled">Enabled</label>
+				<g:checkBox name="enabled"/>
+			</div>
+			<div class="fieldcontain">
+				<label for="accountExpired">Account Expired</label>
+				<g:checkBox name="accountExpired"/>
+			</div>
+			<div class="fieldcontain">
+				<label for="accountLocked">Account Locked</label>
+				<g:checkBox name="accountLocked"/>
+			</div>
+			<div class="fieldcontain">
+				<label for="passwordExpired">Password Expired</label>
+				<g:checkBox name="passwordExpired"/>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div class="fieldcontain"><h3>Roles</h3></div>
+			<g:each var='role' in='${authorityList}'>
+				<div class="fieldcontain">
+					<g:set var='authority' value='${uiPropertiesStrategy.getProperty(role, "authority")}'/>
+					<label>${authority}</label>
+					<g:checkBox name='${authority}'/>
+				</div>
+			</g:each>
+		</fieldset>
+		<fieldset class="buttons">
+			<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+		</fieldset>
+	</g:form>
+</div>
 </body>
 </html>

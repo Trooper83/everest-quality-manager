@@ -225,6 +225,13 @@ fieldset,
     width: 25%;
 }
 
+.fieldcontain h3 {
+    color: #666666;
+    text-align: right;
+    width: 25%;
+    text-decoration: underline;
+}
+
 .fieldcontain .property-label {
     float: left;
 }
