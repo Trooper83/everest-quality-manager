@@ -1,6 +1,7 @@
 package com.everlution.test.ui.support.pages.admin.user
 
 import com.everlution.test.ui.support.pages.common.BasePage
+import com.everlution.test.ui.support.pages.modules.TableModule
 
 class SearchUserPage extends BasePage {
     static url = "/user/search"
@@ -10,7 +11,7 @@ class SearchUserPage extends BasePage {
 
     static content = {
         emailInput { $("#email") }
-        resultsTable { $("#results") }
+        resultsTable { module TableModule }
         searchButton { $("#searchButton") }
         tableHeaders { resultsTable.find("thead th") }
         tableRows(required: false) { resultsTable.find("tbody tr") }

@@ -1,43 +1,28 @@
-<sec:ifNotSwitched>
-	<sec:ifAllGranted roles='${securityConfig.ui.switchUserRoleName}'>
-	<g:set var='username' value='${uiPropertiesStrategy.getProperty(user, 'username')}'/>
-	<g:if test='${username}'><g:set var='canRunAs' value='${true}'/></g:if>
-	</sec:ifAllGranted>
-</sec:ifNotSwitched>
 <html>
 <head>
-	<meta name="layout" content="${layoutUi}"/>
-	<s2ui:title messageCode='default.edit.label' entityNameMessageCode='user.label' entityNameDefault='User'/>
+	<meta name="layout" content="main"/>
+	<g:set var="entityName" value="${message(code: 'user.label', default: 'User')}" />
+	<title><g:message code="default.edit.label" args="[entityName]" /></title>
 </head>
 <body>
-<h3><g:message code='default.edit.label' args='[entityName]'/></h3>
-<s2ui:form type='update' beanName='user' focus='email' class='button-style' useToken='true'>
-	<s2ui:tabs elementId='tabs' height='375' data='${tabData}'>
-		<s2ui:tab name='userinfo' height='275'>
-			<table>
-				<tbody>
-				<s2ui:textFieldRow name='email' labelCodeDefault='Email'/>
-				<s2ui:passwordFieldRow name='password' labelCodeDefault='Password'/>
-				<s2ui:checkboxRow name='enabled' labelCodeDefault='Enabled'/>
-				<s2ui:checkboxRow name='accountExpired' labelCodeDefault='Account Expired'/>
-				<s2ui:checkboxRow name='accountLocked' labelCodeDefault='Account Locked'/>
-				<s2ui:checkboxRow name='passwordExpired' labelCodeDefault='Password Expired'/>
-				</tbody>
-			</table>
-		</s2ui:tab>
-		<s2ui:tab name='roles' height='275'>
+<div id="edit-user" class="content scaffold-edit" role="main">
+	<h1><g:message code="default.edit.label" args="[entityName]" /></h1>
+	<g:render template="/shared/messagesTemplate" bean="${user}" var="entity"/>
+	<g:form controller="user" action="update" focus="email" useToken="true">
+		<g:hiddenField name="id" value="${user.id}" />
+		<f:all bean="user" />
+		<div class="fieldcontain"><h3>Roles</h3></div>
 		<g:each var='entry' in='${roleMap}'>
-			<g:set var='roleName' value='${uiPropertiesStrategy.getProperty(entry.key, "authority")}'/>
-			<div>
-				<g:checkBox name='${roleName}' value='${entry.value}'/>
+			<div class="fieldcontain">
+				<g:set var='roleName' value='${uiPropertiesStrategy.getProperty(entry.key, "authority")}'/>
 				<label>${roleName}</label>
+				<g:checkBox name='${roleName}' value='${entry.value}'/>
 			</div>
 		</g:each>
-		</s2ui:tab>
-	</s2ui:tabs>
-	<div style="float:left; margin-top: 10px;">
-		<s2ui:submitButton/>
-	</div>
-</s2ui:form>
+		<fieldset class="buttons">
+			<input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
+		</fieldset>
+	</g:form>
+</div>
 </body>
 </html>

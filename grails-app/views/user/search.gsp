@@ -1,48 +1,94 @@
 <html>
 <head>
-	<meta name="layout" content="${layoutUi}"/>
-	<s2ui:title messageCode='spring.security.ui.user.search'/>
+	<meta name="layout" content="main"/>
+	<title>User Search</title>
 </head>
 <body>
-<div>
-	<s2ui:formContainer type='search' beanType='user'>
-		<s2ui:searchForm colspan='4'>
-			<tr>
-				<td><g:message code='user.username.label' default='Email'/>:</td>
-				<td colspan="3"><g:textField name='email' size='50' maxlength='255' autocomplete='off' value='${email}'/></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td><g:message code='spring.security.ui.search.true'/></td>
-				<td><g:message code='spring.security.ui.search.false'/></td>
-				<td><g:message code='spring.security.ui.search.either'/></td>
-			</tr>
-			<tr>
-				<td><g:message code='user.enabled.label' default='Enabled'/>:</td>
-				<g:radioGroup name='enabled' labels="['','','']" values='[1,-1,0]' value='${enabled ?: 0}'>
-					<td><%=it.radio%></td>
-				</g:radioGroup>
-			</tr>
-			<tr>
-				<td><g:message code='user.accountExpired.label' default='Account Expired'/>:</td>
-				<g:radioGroup name='accountExpired' labels="['','','']" values='[1,-1,0]' value='${accountExpired ?: 0}'>
-					<td><%=it.radio%></td>
-				</g:radioGroup>
-			</tr>
-			<tr>
-				<td><g:message code='user.accountLocked.label' default='Account Locked'/>:</td>
-				<g:radioGroup name='accountLocked' labels="['','','']" values='[1,-1,0]' value='${accountLocked ?: 0}'>
-					<td><%=it.radio%></td>
-				</g:radioGroup>
-			</tr>
-			<tr>
-				<td><g:message code='user.passwordExpired.label' default='Password Expired'/>:</td>
-				<g:radioGroup name='passwordExpired' labels="['','','']" values='[1,-1,0]' value='${passwordExpired ?: 0}'>
-					<td><%=it.radio%></td>
-				</g:radioGroup>
-			</tr>
-		</s2ui:searchForm>
-	</s2ui:formContainer>
+<div class="content" role="main">
+	<h1>User Search</h1>
+</div>
+<div class="mt-5">
+<g:form controller="user" action="search">
+	<div class="row">
+		<div class="col-2">Email:</div>
+		<div class="col-6">
+			<g:textField name='email' size='50' maxlength='255' autocomplete='off' value='${email}'/>
+		</div>
+	</div>
+	<div class="row mt-3 mb-3">
+		<div class="col-2">
+		</div>
+		<div class="col-1">
+			True
+		</div>
+		<div class="col-1">
+			False
+		</div>
+		<div class="col-1">
+			Either
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-2">
+			Enabled:
+		</div>
+		<div class="col-1">
+			<g:radio name="enabled" value="1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="enabled" value="-1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="enabled" value="0" checked="true"/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-2">
+			Account Expired:
+		</div>
+		<div class="col-1">
+			<g:radio name="accountExpired" value="1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="accountExpired" value="-1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="accountExpired" value="0" checked="true"/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-2">
+			Account Locked:
+		</div>
+		<div class="col-1">
+			<g:radio name="accountLocked" value="1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="accountLocked" value="-1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="accountLocked" value="0" checked="true"/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-2">
+			Password Expired:
+		</div>
+		<div class="col-1">
+			<g:radio name="passwordExpired" value="1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="passwordExpired" value="-1"/>
+		</div>
+		<div class="col-1">
+			<g:radio name="passwordExpired" value="0" checked="true"/>
+		</div>
+	</div>
+	<fieldset class="buttons pl-3 mt-5 mb-5">
+	<button type="submit" class="btn btn-secondary" id="searchButton">Search</button>
+	</fieldset>
+</g:form>
+</div>
 	<g:if test='${searched}'>
 	<div class="list">
 		<table id="results">
@@ -68,9 +114,10 @@
 			</tbody>
 		</table>
 	</div>
-	<s2ui:paginate total='${totalCount}'/>
+		<div class="pagination">
+			<g:paginate total="${totalCount ?: 0}"/>
+		</div>
 	</g:if>
-</div>
 <s2ui:ajaxSearch paramName='email'/>
 </body>
 </html>

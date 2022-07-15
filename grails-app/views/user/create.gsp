@@ -35,7 +35,7 @@
 				<g:checkBox name="passwordExpired"/>
 			</div>
 		</fieldset>
-		<fieldset>
+		<fieldset class="form">
 			<div class="fieldcontain"><h3>Roles</h3></div>
 			<g:each var='role' in='${authorityList}'>
 				<div class="fieldcontain">
