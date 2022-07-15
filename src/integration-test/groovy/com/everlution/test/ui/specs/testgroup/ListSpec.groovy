@@ -24,7 +24,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
     }
 
     void "verify list table headers order"() {

@@ -66,7 +66,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
 
         and: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -92,7 +92,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
 
         when: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -118,7 +118,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
 
         when: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -151,7 +151,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
 
         and: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -177,7 +177,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
 
         and: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)
@@ -261,7 +261,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
 
         and: "go to list page"
         def listPage = at ListTestGroupPage

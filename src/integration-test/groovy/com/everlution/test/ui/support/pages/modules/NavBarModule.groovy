@@ -7,8 +7,6 @@ class NavBarModule extends Module {
     static content = {
         adminButton(required: false) { $("#adminDropDown") }
         adminDropDownMenu { $("#adminDropDownMenu") }
-        domainDropDown { $("#domainDropDown") }
-        domainDropDownMenu { $("#domainDropDownMenu") }
         logoutButton { $("[data-test-id=main-logout-button]") }
         profileDropDown { $("#profileDropDown") }
         profileLink { $("#profileLink") }
@@ -36,14 +34,6 @@ class NavBarModule extends Module {
      */
     void goToProjects() {
         projectsLink.click()
-    }
-
-    /**
-     * goes to a project domain
-     */
-    void goToProjectDomain(String domain) {
-        domainDropDown.click()
-        domainDropDownMenu.find('a', text: domain).click()
     }
 
     /**

@@ -6,7 +6,7 @@
                     <sec:ifAnyGranted roles="ROLE_READ_ONLY">
                         <g:if test="${params.projectId}">
                             <li class="nav-item">
-                                <g:link class="nav-link" uri="/project/home/${params.projectId}"><h1>${name} (${code})</h1></g:link>
+                                <g:link class="nav-link text-capitalize text-wrap" uri="/project/home/${params.projectId}"><h1>${name} (${code})</h1></g:link>
                             </li>
                             <div class="dropdown-divider"></div>
                             <li class="nav-item">

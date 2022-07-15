@@ -48,7 +48,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Scenarios')
+        projectHomePage.sideBar.goToProjectDomain('Scenarios')
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -74,7 +74,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Scenarios')
+        projectHomePage.sideBar.goToProjectDomain('Scenarios')
 
         when: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -100,7 +100,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Scenarios')
+        projectHomePage.sideBar.goToProjectDomain('Scenarios')
 
         when: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -133,7 +133,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Scenarios')
+        projectHomePage.sideBar.goToProjectDomain('Scenarios')
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)
@@ -159,7 +159,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Scenarios')
+        projectHomePage.sideBar.goToProjectDomain('Scenarios')
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)

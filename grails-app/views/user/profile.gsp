@@ -4,7 +4,8 @@
 	<title>Profile</title>
 </head>
 <body>
-<h3>Edit Profile</h3>
+<div class="content">
+<h1>Edit Profile</h1>
 <g:render template="/shared/messagesTemplate" bean="${user}" var="entity"/>
 <g:form action="updatePassword" method="POST" useToken="true">
 	<g:hiddenField name="version" value="${this.user?.version}" />
@@ -37,5 +38,6 @@
 		</div>
 	</g:each>
 </g:form>
+</div>
 </body>
 </html>
