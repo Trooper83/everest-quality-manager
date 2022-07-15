@@ -12,7 +12,7 @@
 	<div class="row">
 		<div class="col-2">Email:</div>
 		<div class="col-6">
-			<g:textField name='email' size='50' maxlength='255' autocomplete='off' value='${email}'/>
+			<g:textField type='text' name='email' size='50' maxlength='255' autocomplete='off' value='${email}'/>
 		</div>
 	</div>
 	<div class="row mt-3 mb-3">

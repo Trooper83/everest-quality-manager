@@ -74,4 +74,13 @@ class TableModule extends Module {
     int getRowCount() {
         tableRows.size()
     }
+
+    /**
+     * determines if a value is found in a column
+     */
+    boolean isValueInColumn(String columnName, String value) {
+        int columnIndex = getColumnIndex(columnName)
+        def cells = tableRows.collect( r -> r.find('td')[columnIndex])
+        return cells.any { c -> c.text() == value }
+    }
 }

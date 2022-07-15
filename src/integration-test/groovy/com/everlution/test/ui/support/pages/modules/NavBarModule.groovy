@@ -5,7 +5,7 @@ import geb.Module
 class NavBarModule extends Module {
 
     static content = {
-        adminButton(required: false) { $("#adminButton") }
+        adminButton(required: false) { $("#adminDropDown") }
         adminDropDownMenu { $("#adminDropDownMenu") }
         domainDropDown { $("#domainDropDown") }
         domainDropDownMenu { $("#domainDropDownMenu") }

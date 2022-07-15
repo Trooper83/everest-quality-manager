@@ -1,5 +1,8 @@
 package com.everlution.test.ui.support.pages.common
 
+import geb.module.EmailInput
+import geb.module.PasswordInput
+
 class LoginPage extends BasePage {
     static url = "/login/auth"
     static at = { title == "Login" }
@@ -7,8 +10,8 @@ class LoginPage extends BasePage {
     static content = {
         loginButton { $(id: "submit") }
         loginFailureMessage { $("div.alert")}
-        passwordTextField { $(id: "password") }
-        emailTextField { $(id: "email") }
+        passwordTextField { $(id: "password").module(PasswordInput) }
+        emailTextField { $(id: "email").module(EmailInput) }
     }
 
     /**
@@ -17,8 +20,8 @@ class LoginPage extends BasePage {
      * @param password
      */
     void login(String username, String password) {
-        emailTextField << username
-        passwordTextField << password
+        emailTextField.text = username
+        passwordTextField.text = password
         loginButton.click()
     }
 }

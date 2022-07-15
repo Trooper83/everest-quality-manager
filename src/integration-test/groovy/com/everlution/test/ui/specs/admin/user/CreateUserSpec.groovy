@@ -29,10 +29,7 @@ class CreateUserSpec extends GebSpec {
         and:
         def person = DataFactory.person()
         page.createPerson(person.email, person.password, [], [SecurityRoles.ROLE_BASIC.role])
-
-        and: //TODO: needed due to logout not working on create user view, remove once bootstrapped
-        def project = to ListProjectPage
-        project.navBar.logout()
+        page.navBar.logout()
 
         when:
         def logPage = at LoginPage
@@ -56,24 +53,6 @@ class CreateUserSpec extends GebSpec {
 
         then:
         page.errorMessage.text() == "Property [email] of class [class com.everlution.Person] with value [basic@basic.com] must be unique"
-    }
-
-    void "error message displayed for null email"() {
-        given:
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
-
-        and:
-        def page = to CreateUserPage
-
-        when:
-        page.createPerson("", "", [], [])
-
-        then:
-        def errors = page.errorMessage*.text()
-        errors.contains("Property [email] of class [class com.everlution.Person] cannot be null")
-        errors.contains("Property [password] of class [class com.everlution.Person] cannot be null")
     }
 
     void "user attributes are persisted and displayed on edit view"() {
@@ -111,38 +90,5 @@ class CreateUserSpec extends GebSpec {
         then:
         def p = personService.findByEmail(person.email)
         p.password.startsWith("{bcrypt}")
-    }
-
-    void "error message displayed with invalid password"() {
-        given:
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
-
-        when:
-        def page = to CreateUserPage
-        def person = DataFactory.person()
-        page.createPerson(person.email, "password", [], [])
-
-        then:
-        page.errorMessage.text() ==
-                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
-    }
-
-    void "error message displayed with too small password"() {
-        given:
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
-
-        when:
-        def page = to CreateUserPage
-        def person = DataFactory.person()
-        page.createPerson(person.email, "passwor", [], [])
-
-        then:
-        def messages = page.errorMessage*.text()
-        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]")
-        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not fall within the valid size range from [8] to [256]")
     }
 }
