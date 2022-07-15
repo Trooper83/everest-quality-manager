@@ -20,16 +20,10 @@ class EditPageSpec extends GebSpec {
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 0)
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Test Groups')
+        projectHomePage.navBar.goToProjectDomain('Test Groups')
         def listPage = browser.page(ListTestGroupPage)
         listPage.listTable.clickCell("Name", 0)
         browser.page(ShowTestGroupPage).goToEdit()
-    }
-
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        def page = browser.page(EditTestGroupPage)
-        page.getFields() == ["Project", "Name *"]
     }
 
     void "required fields indicator displayed for required fields"() {

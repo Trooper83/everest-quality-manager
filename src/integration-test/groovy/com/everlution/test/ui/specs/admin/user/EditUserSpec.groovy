@@ -36,73 +36,15 @@ class EditUserSpec extends GebSpec {
         loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
+        at ListProjectPage
         go "user/edit/${person.id}"
 
         when:
         EditUserPage page = browser.page(EditUserPage)
-        page.editPerson(Credentials.BASIC.email, null, [], [])
+        page.editPerson(Credentials.BASIC.email, "!2022Password", [], [])
 
         then:
         page.errorMessage.text() == "Property [email] of class [class com.everlution.Person] with value [basic@basic.com] must be unique"
-    }
-
-    void "error message displayed for null email"() {
-        given:
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
-
-        expect:
-        at ListProjectPage
-
-        when:
-        go "/user/edit/${person.id}"
-
-        and:
-        EditUserPage page = browser.page(EditUserPage)
-        page.editPerson(" ", " ", [], [])
-
-        then:
-        def errors = page.errorMessage*.text()
-        errors.contains("Property [email] of class [class com.everlution.Person] cannot be null")
-        errors.contains("Property [password] of class [class com.everlution.Person] cannot be null")
-    }
-
-    void "error message displayed with invalid password"() {
-        given:
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.APP_ADMIN.email, "!Password#2022")
-
-        and:
-        go "user/edit/${person.id}"
-
-        when:
-        EditUserPage page = browser.page(EditUserPage)
-        page.editPerson("user@usingthis.com", "password", [], [])
-
-        then:
-        page.errorMessage.text() ==
-                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
-    }
-
-    void "error message displayed with too short password"() {
-        given:
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.APP_ADMIN.email, "!Password#2022")
-
-        and:
-        go "user/edit/${person.id}"
-
-        when:
-        EditUserPage page = browser.page(EditUserPage)
-        page.editPerson("user@usingthis.com", "passwor", [], [])
-
-        then:
-        def messages = page.errorMessage*.text()
-        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]")
-        messages.contains("Property [password] of class [class com.everlution.Person] with value [passwor] does not fall within the valid size range from [8] to [256]")
     }
 
     void "user attributes are persisted and displayed on edit view"() {
@@ -112,7 +54,8 @@ class EditUserSpec extends GebSpec {
         loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
-        go "/user/edit/${person.id}"
+        at ListProjectPage
+        go "user/edit/${person.id}"
 
         when:
         EditUserPage page = browser.page(EditUserPage)
@@ -135,6 +78,7 @@ class EditUserSpec extends GebSpec {
         loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
 
         and:
+        at ListProjectPage
         go "user/edit/${person.id}"
 
         when:
@@ -159,10 +103,7 @@ class EditUserSpec extends GebSpec {
         EditUserPage page = browser.page(EditUserPage)
         def p = DataFactory.person()
         page.editPerson(p.email, p.password, [], [SecurityRoles.ROLE_READ_ONLY.role])
-
-        and: //TODO: needed due to logout not working on create user view, remove once bootstrapped
-        def project = to ListProjectPage
-        project.navBar.logout()
+        page.navBar.logout()
 
         and:
         def logPage = at LoginPage

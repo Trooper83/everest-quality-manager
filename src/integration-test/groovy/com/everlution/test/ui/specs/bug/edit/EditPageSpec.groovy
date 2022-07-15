@@ -13,31 +13,6 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class EditPageSpec extends GebSpec {
 
-    void "correct fields are displayed"() {
-        given: "login as basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the create bug page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
-
-        when: "edit bug"
-        def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell("Name", 0)
-        def showPage = at ShowBugPage
-        showPage.goToEdit()
-
-        then: "correct fields are displayed"
-        def page = browser.page(EditBugPage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Name *", "Platform", "Status *"]
-    }
-
     void "required fields indicator displayed for required fields"() {
         given: "login as a basic user"
         to LoginPage
@@ -50,7 +25,7 @@ class EditPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "edit bug"
         def bugsPage = at ListBugPage
@@ -75,7 +50,7 @@ class EditPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "edit bug"
         def bugsPage = at ListBugPage
@@ -102,7 +77,7 @@ class EditPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "edit bug"
         def bugsPage = at ListBugPage

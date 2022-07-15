@@ -78,7 +78,6 @@ class CreateTestCaseSpec extends GebSpec {
         ShowTestCasePage showPage = at ShowTestCasePage
         verifyAll {
             showPage.areaValue.text() == area.name
-            showPage.projectValue.text() == project.name
             showPage.nameValue.text() == tcd.name
             showPage.descriptionValue.text() == tcd.description
             showPage.executionMethodValue.text() == "Automated"

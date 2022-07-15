@@ -56,11 +56,4 @@ class CreatePageSpec extends GebSpec {
             page.platformSelect().selected == ""
         })
     }
-
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.getFields() == ["Project", "Area", "Environments", "Test Groups", "Description", "Execution Method",
-                             "Name *", "Platform", "Type"]
-    }
 }

@@ -13,15 +13,11 @@
             <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
             <ol class="property-list testGroup">
                 <li class="fieldcontain">
-                    <span id="project-label" class="property-label">Project</span>
-                    <div class="property-value" id="project">${testGroup.project.name}</div>
-                </li>
-                <li class="fieldcontain">
                     <span id="name-label" class="property-label">Name</span>
                     <div class="property-value" id="name">${testGroup.name}</div>
                 </li>
             </ol>
-            <table class="table">
+            <table>
                 <thead>
                 <tr>
                     <th>Name</th>

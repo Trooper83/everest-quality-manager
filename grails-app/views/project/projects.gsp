@@ -15,7 +15,7 @@
         <div class="message" role="status">There are no projects in your organization.</div>
     </g:if>
     <g:else>
-    <table class="table">
+    <table>
         <thead>
         <tr>
             <th>Name</th>

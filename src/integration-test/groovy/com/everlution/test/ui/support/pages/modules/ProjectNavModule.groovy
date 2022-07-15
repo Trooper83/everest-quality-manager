@@ -5,9 +5,15 @@ import geb.Module
 class ProjectNavModule extends Module {
 
     static content = {
+        createMenuButton(required: false) { $("#dropdownMenuButton" ) }
         createMenuDropDown(required: false) { $("#createMenu" ) }
-        createMenuOptions { createMenuDropDown.find('a') }
-        listsMenuDropDown(required: false) { $("#listsMenu" ) }
+    }
+
+    /**
+     * determines if the create menu is open
+     */
+    boolean isCreateMenuOpen() {
+        return createMenuButton.attr("aria-expanded") == "true"
     }
 
     /**
@@ -15,16 +21,14 @@ class ProjectNavModule extends Module {
      * @param item
      */
     void goToCreatePage(String item) {
-        createMenuDropDown.click()
+        createMenuButton.click()
         createMenuDropDown.find('a', text: item).click()
     }
 
     /**
-     * goes to an items list page
-     * @param item
+     * displays the create menu
      */
-    void goToListsPage(String item) {
-        listsMenuDropDown.click()
-        listsMenuDropDown.find('a', text: item).click()
+    void openCreateMenu() {
+        createMenuButton.click()
     }
 }

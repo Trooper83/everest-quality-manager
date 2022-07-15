@@ -7,7 +7,6 @@
     </head>
     <body>
         <a href="#show-testIteration" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-
         <div id="show-testIteration" class="content scaffold-show" role="main">
             <h1><g:message code="default.show.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testIteration}" var="entity"/>

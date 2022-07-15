@@ -5,10 +5,12 @@ import geb.Module
 class NavBarModule extends Module {
 
     static content = {
-        adminButton(required: false) { $("#adminButton") }
+        adminButton(required: false) { $("#adminDropDown") }
         adminDropDownMenu { $("#adminDropDownMenu") }
-        loginLink { $("[data-test-id=main-login-link]") }
+        domainDropDown { $("#domainDropDown") }
+        domainDropDownMenu { $("#domainDropDownMenu") }
         logoutButton { $("[data-test-id=main-logout-button]") }
+        profileDropDown { $("#profileDropDown") }
         profileLink { $("#profileLink") }
         projectsLink { $("#projectsLink") }
     }
@@ -25,6 +27,7 @@ class NavBarModule extends Module {
      * clicks the profile link
      */
     void goToProfile() {
+        profileDropDown.click()
         profileLink.click()
     }
 
@@ -33,6 +36,14 @@ class NavBarModule extends Module {
      */
     void goToProjects() {
         projectsLink.click()
+    }
+
+    /**
+     * goes to a project domain
+     */
+    void goToProjectDomain(String domain) {
+        domainDropDown.click()
+        domainDropDownMenu.find('a', text: domain).click()
     }
 
     /**
@@ -48,6 +59,7 @@ class NavBarModule extends Module {
      * logs the user out of the app
      */
     void logout() {
+        profileDropDown.click()
         logoutButton.click()
     }
 }

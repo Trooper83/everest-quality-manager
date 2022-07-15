@@ -2,6 +2,7 @@ package com.everlution.test.ui.support.pages.admin.user
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import geb.module.Checkbox
+import geb.module.EmailInput
 import geb.module.PasswordInput
 import geb.module.TextInput
 
@@ -10,9 +11,9 @@ class EditUserPage extends BasePage {
     static at = { title == "Edit User" }
 
     static content = {
-        updateButton { $("#update") }
-        emailInput { $("#email").module(TextInput) }
-        errorMessage { $("span.s2ui_error") }
+        updateButton { $("[data-test-id=edit-update-button]") }
+        emailInput { $("#email").module(EmailInput) }
+        errorMessage { $("ul.errors") }
         passwordInput { $("#password").module(PasswordInput) }
         rolesTabButton { $("[aria-controls='tab-roles']") }
     }
@@ -54,13 +55,8 @@ class EditUserPage extends BasePage {
         if(password) {
             passwordInput.text = password
         }
-        if(statuses.size() > 0) {
-            editStatuses(statuses)
-        }
-        if(roles.size() > 0) {
-            rolesTabButton.click()
-            editRoles(roles)
-        }
+        editStatuses(statuses)
+        editRoles(roles)
         updateButton.click()
     }
 

@@ -6,7 +6,6 @@
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
     </head>
     <body>
-    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#edit-testGroup" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div id="edit-testGroup" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
@@ -14,10 +13,6 @@
             <g:form resource="${this.testGroup}" method="PUT" uri="/project/${testGroup.project.id}/testGroup/update/${testGroup.id}">
                 <g:hiddenField name="version" value="${this.testGroup?.version}" />
                 <fieldset class="form">
-                    <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span data-test-id="edit-project-name">${testGroup.project.name}</span>
-                    </div>
                     <f:all bean="testGroup" except="project, testCases"/>
                 </fieldset>
                 <fieldset class="buttons">

@@ -7,19 +7,12 @@
     </head>
     <body>
         <a href="#create-scenario" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <g:render template="/shared/projectButtonsTemplate"/>
         <div id="create-scenario" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${scenario}" var="entity"/>
             <g:form resource="${this.scenario}" method="POST" uri="/project/${project.id}/scenario/save">
                 <fieldset class="form">
-                    <div class="fieldcontain required">
-                        <g:hiddenField name="project" value="${project.id}"/>
-                        <div class="fieldcontain required">
-                            <label for="project">Project</label>
-                            <span>${project.name}</span>
-                        </div>
-                    </div>
+                    <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" from="${project.areas}"

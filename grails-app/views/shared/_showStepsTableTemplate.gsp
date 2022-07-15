@@ -1,5 +1,5 @@
 <fieldset>
-    <table class="table">
+    <table>
         <thead>
         <tr>
             <th>Action</th>

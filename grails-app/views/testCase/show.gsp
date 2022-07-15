@@ -18,11 +18,7 @@
     <ol class="property-list testCase">
         <li class="fieldcontain">
             <span id="person-label" class="property-label">Created By</span>
-            <div class="property-value" id="person">${testCase.person}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="project-label" class="property-label">Project</span>
-            <div class="property-value" id="project">${testCase.project.name}</div>
+            <div class="property-value" id="person">${testCase.person.email}</div>
         </li>
         <li class="fieldcontain">
             <span id="area-label" class="property-label">Area</span>

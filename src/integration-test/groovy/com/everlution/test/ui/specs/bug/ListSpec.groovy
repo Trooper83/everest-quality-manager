@@ -24,7 +24,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "go to list page"
         def page = at ListBugPage
@@ -45,7 +45,7 @@ class ListSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def page = at ListBugPage
@@ -58,5 +58,27 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         def listPage = at ListBugPage
         listPage.statusMessage.text() ==~ /Bug \d+ deleted/
+    }
+
+    void "create button menu displays"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToProjectDomain('Bugs')
+
+        when:
+        def page = at ListBugPage
+        page.projectNavButtons.openCreateMenu()
+
+        then:
+        page.projectNavButtons.isCreateMenuOpen()
     }
 }

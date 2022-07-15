@@ -54,7 +54,6 @@ class CreateTestGroupSpec extends GebSpec {
         def show = at ShowTestGroupPage
         verifyAll {
             show.nameValue.text() == name
-            show.projectValue.text() == "bootstrap project"
         }
     }
 }

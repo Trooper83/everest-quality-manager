@@ -6,7 +6,6 @@
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
     </head>
     <body>
-    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#edit-releasePlan" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div id="edit-releasePlan" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
@@ -14,10 +13,6 @@
             <g:form resource="${this.releasePlan}" method="PUT" uri="/project/${releasePlan.project.id}/releasePlan/update/${releasePlan.id}">
                 <g:hiddenField name="version" value="${this.releasePlan?.version}" />
                 <fieldset class="form">
-                    <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span data-test-id="edit-project-name">${releasePlan.project.name}</span>
-                    </div>
                     <f:all bean="releasePlan" except="project, testCycles"/>
                 </fieldset>
                 <fieldset class="buttons">

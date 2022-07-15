@@ -25,8 +25,8 @@ class SearchUserSpec extends GebSpec {
         page.search("read_only@readonly.com", map)
 
         then:
-        page.isValueInColumn("Email", "read_only@readonly.com")
-        page.getRowCount() == 1
+        page.resultsTable.isValueInColumn("Email", "read_only@readonly.com")
+        page.resultsTable.getRowCount() == 1
     }
 
     void "searching for user by account expired returns users"() {
@@ -43,8 +43,8 @@ class SearchUserSpec extends GebSpec {
         page.search("", map)
 
         then:
-        page.isValueInColumn("Email", "expired@accountexpired.com")
-        page.getRowCount() == 1
+        page.resultsTable.isValueInColumn("Email", "expired@accountexpired.com")
+        page.resultsTable.getRowCount() == 1
     }
 
     void "searching for user by account locked returns users"() {
@@ -61,7 +61,7 @@ class SearchUserSpec extends GebSpec {
         page.search("", map)
 
         then:
-        page.isValueInColumn("Email", "locked@accountlocked.com")
+        page.resultsTable.isValueInColumn("Email", "locked@accountlocked.com")
     }
 
     void "searching for user by password expired returns users"() {
@@ -78,8 +78,8 @@ class SearchUserSpec extends GebSpec {
         page.search("", map)
 
         then:
-        page.isValueInColumn("Email", "expired@passwordexpired.com")
-        page.getRowCount() == 1
+        page.resultsTable.isValueInColumn("Email", "expired@passwordexpired.com")
+        page.resultsTable.getRowCount() == 1
     }
 
     void "searching for user by inactive returns users"() {
@@ -96,7 +96,7 @@ class SearchUserSpec extends GebSpec {
         page.search("", map)
 
         then:
-        page.isValueInColumn("Email", "disabled@disabled.com")
+        page.resultsTable.isValueInColumn("Email", "disabled@disabled.com")
     }
 
     void "email link redirects to edit view"() {
@@ -110,7 +110,7 @@ class SearchUserSpec extends GebSpec {
 
         when:
         page.search("", [:])
-        page.clickCell("Email", 0)
+        page.resultsTable.clickCell("Email", 0)
 
         then:
         at EditUserPage

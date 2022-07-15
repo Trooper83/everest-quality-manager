@@ -55,7 +55,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -81,7 +81,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "go to list page"
         def bugsPage = at ListBugPage
@@ -107,7 +107,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         when: "go to list page"
         def bugsPage = at ListBugPage
@@ -128,29 +128,6 @@ class ShowPageSpec extends GebSpec {
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
-    void "correct fields are displayed"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists bug page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
-
-        when: "go to show page"
-        def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell('Name', 0)
-
-        then: "correct fields are displayed"
-        def page = browser.page(ShowBugPage)
-        page.getFields() == ["Status", "Created By", "Project", "Area", "Environments", "Name", "Description", "Platform"]
-    }
-
     void "bug not deleted if alert is canceled"() {
         given: "login as a basic user"
         to LoginPage
@@ -163,7 +140,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -189,7 +166,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Bugs')
+        projectHomePage.navBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -205,5 +182,31 @@ class ShowPageSpec extends GebSpec {
 
         then: "at show bug page with message displayed"
         showPage.statusMessage.text() ==~ /Bug \d+ updated/
+    }
+
+    void "create button menu displays"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists bug page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.navBar.goToProjectDomain('Bugs')
+
+        and: "go to list page"
+        def bugsPage = at ListBugPage
+        bugsPage.bugTable.clickCell('Name', 0)
+
+        when:
+        def showPage = browser.page(ShowBugPage)
+        showPage.projectNavButtons.openCreateMenu()
+
+        then:
+        showPage.projectNavButtons.isCreateMenuOpen()
     }
 }

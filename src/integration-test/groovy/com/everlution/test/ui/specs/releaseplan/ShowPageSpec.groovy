@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.releaseplan
 
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -14,6 +15,8 @@ import grails.testing.mixin.integration.Integration
 
 @Integration
 class ShowPageSpec extends GebSpec {
+
+    ProjectService projectService
 
     void "status message displayed after plan created"() {
         given: "login as a basic user"
@@ -49,7 +52,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first test group in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -75,7 +78,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -102,7 +105,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -124,29 +127,6 @@ class ShowPageSpec extends GebSpec {
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
-    void "correct fields are displayed"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
-
-        when: "click first row in list"
-        def listPage = browser.page(ListReleasePlanPage)
-        listPage.listTable.clickCell("Name", 0)
-
-        then: "correct fields are displayed"
-        def page = browser.page(ShowReleasePlanPage)
-        page.getFields() == ["Name", "Project"]
-    }
-
     void "plan not deleted if alert is canceled"() {
         given: "login as a basic user"
         to LoginPage
@@ -159,7 +139,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -185,7 +165,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -215,7 +195,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -242,7 +222,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -272,7 +252,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -301,7 +281,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -328,7 +308,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         when: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -353,7 +333,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -380,7 +360,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -407,7 +387,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToListsPage('Release Plans')
+        projectHomePage.navBar.goToProjectDomain('Release Plans')
 
         and: "click first row in list"
         def listPage = browser.page(ListReleasePlanPage)
@@ -427,5 +407,24 @@ class ShowPageSpec extends GebSpec {
 
         then:
         page.testCycleModalNameInput.text() == ''
+    }
+
+    void "create button menu displays"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to show page"
+        def id = projectService.list(max: 1).first().id
+        def listPage = to(ListReleasePlanPage, id)
+        listPage.listTable.clickCell("Name", 0)
+
+        when:
+        def showPage = browser.page(ShowReleasePlanPage)
+        showPage.projectNavButtons.openCreateMenu()
+
+        then:
+        showPage.projectNavButtons.isCreateMenuOpen()
     }
 }

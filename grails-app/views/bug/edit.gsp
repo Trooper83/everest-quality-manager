@@ -7,17 +7,12 @@
     </head>
     <body>
         <a href="#edit-bug" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <g:render template="/shared/projectButtonsTemplate"/>
         <div id="edit-bug" class="content scaffold-edit" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
             <g:form resource="${this.bug}" method="PUT" uri="/project/${bug.project.id}/bug/update/${bug.id}">
                 <g:hiddenField name="version" value="${this.bug?.version}" />
                 <fieldset class="form">
-                    <div class="fieldcontain">
-                        <label for="project">Project</label>
-                        <span data-test-id="edit-project-name">${bug.project.name}</span>
-                    </div>
                     <div class="fieldcontain">
                         <label for="area">Area</label>
                         <g:select name="area" id="area" from="${bug.project.areas}"

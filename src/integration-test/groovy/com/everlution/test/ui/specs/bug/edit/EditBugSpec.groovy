@@ -87,7 +87,6 @@ class EditBugSpec extends GebSpec {
         ShowBugPage showPage = at ShowBugPage
         verifyAll {
             showPage.areaValue.text() == ""
-            showPage.projectValue.text() == project.name
             showPage.nameValue.text() == data.name
             showPage.platformValue.text() == ""
             showPage.statusValue.text() == "Closed"

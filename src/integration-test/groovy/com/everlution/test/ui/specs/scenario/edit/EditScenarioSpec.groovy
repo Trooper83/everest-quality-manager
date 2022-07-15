@@ -82,7 +82,6 @@ class EditScenarioSpec extends GebSpec {
         verifyAll {
             showPage.areaValue.text() == ""
             !showPage.areEnvironmentsDisplayed([env.name])
-            showPage.projectValue.text() == project.name
             showPage.nameValue.text() == edited.name
             showPage.descriptionValue.text() == edited.description
             showPage.executionMethodValue.text() == "Automated"

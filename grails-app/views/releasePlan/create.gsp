@@ -6,7 +6,6 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
-    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#create-releasePlan" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div id="create-releasePlan" class="content scaffold-create" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
@@ -14,10 +13,6 @@
             <g:form resource="${this.releasePlan}" method="POST" uri="/project/${project.id}/releasePlan/save">
                 <fieldset class="form">
                     <g:hiddenField name="project" value="${project.id}"/>
-                    <div class="fieldcontain required">
-                        <label for="project">Project</label>
-                        <span>${project.name}</span>
-                    </div>
                     <f:all bean="releasePlan" except="project, testCycles"/>
                 </fieldset>
                 <fieldset class="buttons">

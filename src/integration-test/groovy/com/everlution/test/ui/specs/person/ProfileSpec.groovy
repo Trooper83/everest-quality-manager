@@ -49,6 +49,7 @@ class ProfileSpec extends GebSpec {
         loginPage.login(p.email, p.password)
 
         and:
+        at ListProjectPage
         go "/user/profile"
 
         when:
@@ -95,6 +96,7 @@ class ProfileSpec extends GebSpec {
         loginPage.login(p.email, p.password)
 
         and:
+        at ListProjectPage
         go "/user/profile"
 
         when:

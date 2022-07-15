@@ -18,12 +18,6 @@ class EditPageSpec extends GebSpec {
         to (EditReleasePlanPage, plan.project.id, plan.id)
     }
 
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        def page = browser.page(EditReleasePlanPage)
-        page.getFields() == ["Project", "Name *"]
-    }
-
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         def page = browser.page(EditReleasePlanPage)

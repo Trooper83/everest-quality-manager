@@ -70,7 +70,6 @@ class CreateScenarioSpec extends GebSpec {
         def showPage = at ShowScenarioPage
         verifyAll {
             showPage.areaValue.text() == area.name
-            showPage.projectValue.text() == project.name
             showPage.nameValue.text() == scn.name
             showPage.descriptionValue.text() == scn.description
             showPage.executionMethodValue.text() == "Automated"

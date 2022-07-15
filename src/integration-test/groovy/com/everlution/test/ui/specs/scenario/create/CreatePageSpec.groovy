@@ -23,13 +23,6 @@ class CreatePageSpec extends GebSpec {
         go "/project/${project.id}/scenario/create"
     }
 
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        def page = browser.page(CreateScenarioPage)
-        page.getFields() == ["Project", "Area", "Environments", "Gherkin", "Description",
-                             "Execution Method", "Name *", "Platform", "Type"]
-    }
-
     void "required fields indicator displayed for required fields"() {
         expect: "required field indicators displayed"
         def page = browser.page(CreateScenarioPage)

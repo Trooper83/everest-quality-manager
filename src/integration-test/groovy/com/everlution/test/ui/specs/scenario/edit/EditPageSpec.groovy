@@ -27,16 +27,9 @@ class EditPageSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         browser.page(ListProjectPage).projectTable.clickCell("Name", 0)
-        browser.page(ProjectHomePage).projectNavButtons.goToListsPage("Scenarios")
+        browser.page(ProjectHomePage).navBar.goToProjectDomain("Scenarios")
         browser.page(ListScenarioPage).scenarioTable.clickCell("Name", 0)
         browser.page(ShowScenarioPage).goToEdit()
-    }
-
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        def page = browser.page(EditScenarioPage)
-        page.getFields() == ["Project", "Area", "Environments", "Description", "Execution Method", "Name *",
-                             "Platform", "Type", "Gherkin"]
     }
 
     void "required fields indicator displayed for required fields"() {

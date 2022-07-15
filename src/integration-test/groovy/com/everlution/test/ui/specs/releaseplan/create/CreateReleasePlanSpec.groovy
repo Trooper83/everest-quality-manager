@@ -60,7 +60,6 @@ class CreateReleasePlanSpec extends GebSpec {
         def show = at ShowReleasePlanPage
         verifyAll {
             show.nameValue.text() == name
-            show.projectValue.text() == project.name
         }
     }
 }

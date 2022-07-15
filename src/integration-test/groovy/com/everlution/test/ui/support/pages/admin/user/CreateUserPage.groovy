@@ -2,6 +2,9 @@ package com.everlution.test.ui.support.pages.admin.user
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import geb.module.Checkbox
+import geb.module.EmailInput
+import geb.module.PasswordInput
+import geb.module.TextInput
 
 class CreateUserPage extends BasePage {
     static url = "/user/create"
@@ -9,9 +12,9 @@ class CreateUserPage extends BasePage {
 
     static content = {
         createButton { $("#create") }
-        emailInput { $("#email") }
-        errorMessage { $("span.s2ui_error") }
-        passwordInput { $("#password") }
+        emailInput { $("#email").module(EmailInput) }
+        errorMessage { $("ul.errors") }
+        passwordInput { $("#password").module(PasswordInput) }
         rolesTabButton { $("[aria-controls='tab-roles']") }
         userTabButton { $("[aria-controls='tab-userinfo']") }
     }
@@ -20,16 +23,13 @@ class CreateUserPage extends BasePage {
      * creates a new person
      */
     void createPerson(String email, String password, List<String> statuses, List<String> roles) {
-        emailInput << email
-        passwordInput << password
+        emailInput.text = email
+        passwordInput.text = password
         statuses.each {
             $("#${it}").module(Checkbox).check()
         }
-        if(roles.size() > 0) {
-            rolesTabButton.click()
-            roles.each {
-                $("#${it}").module(Checkbox).check()
-            }
+        roles.each {
+            $("#${it}").module(Checkbox).check()
         }
         createButton.click()
     }
