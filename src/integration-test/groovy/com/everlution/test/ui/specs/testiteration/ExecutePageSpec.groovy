@@ -39,24 +39,6 @@ class ExecutePageSpec extends GebSpec {
         testCycleService.addTestIterations(testCycle, [testCase])
     }
 
-    void "correct fields are displayed"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to cycle"
-        go "/project/${project.id}/testCycle/show/${testCycle.id}"
-
-        when:
-        def showCycle = at ShowTestCyclePage
-        showCycle.testsTable.clickCell("", 0)
-
-        then: "correct fields are displayed"
-        def page = browser.page(ExecuteTestIterationPage)
-        page.getFields() == ["Result", "Notes", "Name", "Test Cycle"]
-    }
-
     void "test cycle link directs to test cycle"() {
         given: "setup data"
         to LoginPage

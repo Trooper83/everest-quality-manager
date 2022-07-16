@@ -6,9 +6,10 @@
     <title>Project Home</title>
 </head>
 <body>
-<div id="show-project" class="content scaffold-show" role="main">
+<g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
+<div id="show-project" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <g:render template="/shared/projectButtonsTemplate"/>
-    <h1><g:message code="default.show.label" args="[entityName]" /></h1>
+    <h1>Project Home</h1>
     <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
     <ol class="property-list">
         <li class="fieldcontain">

@@ -6,8 +6,9 @@
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
     </head>
     <body>
+        <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
         <a href="#edit-project" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <div id="edit-project" class="content scaffold-edit" role="main">
+        <div id="edit-project" class="content scaffold-edit col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
             <g:form resource="${this.project}" method="PUT">

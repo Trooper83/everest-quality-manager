@@ -32,7 +32,7 @@ class EditTestGroupSpec extends GebSpec {
 
         and: "go to the lists page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Test Groups')
+        projectHomePage.sideBar.goToProjectDomain('Test Groups')
 
         and: "click first test group in list"
         def listPage = browser.page(ListTestGroupPage)

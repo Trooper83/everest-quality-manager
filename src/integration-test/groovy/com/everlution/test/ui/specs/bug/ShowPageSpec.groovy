@@ -55,7 +55,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Bugs')
+        projectHomePage.sideBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -81,7 +81,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Bugs')
+        projectHomePage.sideBar.goToProjectDomain('Bugs')
 
         when: "go to list page"
         def bugsPage = at ListBugPage
@@ -107,7 +107,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Bugs')
+        projectHomePage.sideBar.goToProjectDomain('Bugs')
 
         when: "go to list page"
         def bugsPage = at ListBugPage
@@ -140,7 +140,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Bugs')
+        projectHomePage.sideBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -166,7 +166,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Bugs')
+        projectHomePage.sideBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage
@@ -196,7 +196,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the lists bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.navBar.goToProjectDomain('Bugs')
+        projectHomePage.sideBar.goToProjectDomain('Bugs')
 
         and: "go to list page"
         def bugsPage = at ListBugPage

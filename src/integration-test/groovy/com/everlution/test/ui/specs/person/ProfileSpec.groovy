@@ -43,14 +43,13 @@ class ProfileSpec extends GebSpec {
     void "user password is encrypted and update message displayed"() {
         given:
         def p = DataFactory.person()
-        def person = springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        def person = springSecurityUiService.saveUser([email: p.email],[SecurityRoles.ROLE_READ_ONLY.role], p.password) as Person
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
         and:
-        at ListProjectPage
-        go "/user/profile"
+        to ProfilePage
 
         when:
         ProfilePage page = browser.page(ProfilePage)
@@ -70,7 +69,7 @@ class ProfileSpec extends GebSpec {
         loginPage.login(p.email, p.password)
 
         and:
-        go "/user/profile"
+        to ProfilePage
 
         when:
         ProfilePage page = browser.page(ProfilePage)
@@ -90,14 +89,14 @@ class ProfileSpec extends GebSpec {
     void "user cannot login with old password"() {
         given:
         def p = DataFactory.person()
-        springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        springSecurityUiService.saveUser([email: p.email],[SecurityRoles.ROLE_READ_ONLY.role], p.password) as Person
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
         and:
-        at ListProjectPage
-        go "/user/profile"
+        def projects = at ListProjectPage
+        projects.navBar.goToProfile()
 
         when:
         ProfilePage page = browser.page(ProfilePage)
@@ -123,7 +122,7 @@ class ProfileSpec extends GebSpec {
         loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         and:
-        go "/user/profile"
+        to ProfilePage
 
         when:
         ProfilePage page = browser.page(ProfilePage)
@@ -138,13 +137,13 @@ class ProfileSpec extends GebSpec {
     void "user error message displayed when passwords do not match"() {
         given:
         def p = DataFactory.person()
-        springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        springSecurityUiService.saveUser([email: p.email],[SecurityRoles.ROLE_READ_ONLY.role], p.password) as Person
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
         and:
-        go "user/profile"
+        to ProfilePage
 
         when:
         ProfilePage page = browser.page(ProfilePage)
@@ -159,13 +158,13 @@ class ProfileSpec extends GebSpec {
     void "user error message displayed for invalid password"() {
         given:
         def p = DataFactory.person()
-        springSecurityUiService.saveUser([email: p.email],[], p.password) as Person
+        springSecurityUiService.saveUser([email: p.email],[SecurityRoles.ROLE_READ_ONLY.role], p.password) as Person
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
         and:
-        go "/user/profile"
+        to ProfilePage
 
         when:
         ProfilePage page = browser.page(ProfilePage)
@@ -179,13 +178,13 @@ class ProfileSpec extends GebSpec {
     void "user error message displayed for too short password"() {
         given:
         def p = DataFactory.person()
-        springSecurityUiService.saveUser([email: p.email], [], p.password) as Person
+        springSecurityUiService.saveUser([email: p.email], [SecurityRoles.ROLE_READ_ONLY.role], p.password) as Person
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
         and:
-        go "user/profile"
+        to ProfilePage
 
         when:
         ProfilePage page = browser.page(ProfilePage)

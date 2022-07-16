@@ -2,6 +2,7 @@ package com.everlution.test.ui.support.pages.project
 
 import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.ProjectNavModule
+import com.everlution.test.ui.support.pages.modules.SideBarModule
 
 class ProjectHomePage extends BasePage {
     static url = "/home"
@@ -17,6 +18,7 @@ class ProjectHomePage extends BasePage {
         fieldLabels { $("ol.property-list>li>span") }
         nameValue { $("#name") }
         projectNavButtons { module ProjectNavModule }
+        sideBar { module SideBarModule }
         statusMessage { $("div.message") }
     }
 

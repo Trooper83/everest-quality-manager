@@ -1,10 +1,18 @@
 package com.everlution
 
+import grails.databinding.BindUsing
+
 class Project {
 
     List areas
+    @BindUsing({obj, source ->
+        source['code'].toUpperCase()
+    })
     String code
     List environments
+    @BindUsing({obj, source ->
+        source['name'].capitalize()
+    })
     String name
     Collection testGroups
 

@@ -21,6 +21,30 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         Project.count() == 2
     }
 
+    void "code is upper cased at binding"() {
+        setup:
+        def p = new Project(name: "first project999", code: "zzz").save()
+
+        expect:
+        p.code == "ZZZ"
+    }
+
+    void "code persists with numbers"() {
+        setup:
+        def p = new Project(name: "first project321", code: "1zz").save()
+
+        expect:
+        p.id != null
+    }
+
+    void "name is capitalized at binding"() {
+        setup:
+        def p = new Project(name: "capitalized", code: "zzz").save()
+
+        expect:
+        p.name == "Capitalized"
+    }
+
     void "test domain instance"() {
         setup: "get the domain's hashcode"
         id = System.identityHashCode(domain)
