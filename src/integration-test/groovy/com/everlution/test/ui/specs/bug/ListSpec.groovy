@@ -30,7 +30,7 @@ class ListSpec extends GebSpec {
         def page = at ListBugPage
 
         then: "correct headers are displayed"
-        page.bugTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Status"]
+        page.bugTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Status"]
     }
 
     void "delete message displays after bug deleted"() {

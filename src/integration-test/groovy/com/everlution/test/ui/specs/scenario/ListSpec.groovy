@@ -31,7 +31,7 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListScenarioPage page = browser.page(ListScenarioPage)
-        page.scenarioTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Type"]
+        page.scenarioTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Type"]
     }
 
     void "delete message displays after scenario deleted"() {

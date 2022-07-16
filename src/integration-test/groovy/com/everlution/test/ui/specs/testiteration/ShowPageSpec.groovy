@@ -28,42 +28,6 @@ class ShowPageSpec extends GebSpec {
     TestCaseService testCaseService
     TestCycleService testCycleService
 
-    void "correct fields are displayed"() {
-        given: "setup data"
-        def gd = DataFactory.testGroup()
-        def group = new TestGroup(name: gd.name)
-        def pd = DataFactory.project()
-        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
-        projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project)
-        releasePlanService.save(plan)
-        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
-        releasePlanService.addTestCycle(plan, testCycle)
-        def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
-        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
-        testCaseService.save(testCase)
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to cycle"
-        go "/project/${project.id}/testCycle/show/${testCycle.id}"
-
-        and:
-        def showCycle = at ShowTestCyclePage
-        showCycle.addTestsByGroup()
-
-        when:
-        showCycle.testsTable.clickCell("Id", 0)
-
-        then: "correct fields are displayed"
-        def page = browser.page(ShowTestIterationPage)
-        page.getFields() == ["Test Case", "Test Cycle", "Name", "Notes","Result"]
-    }
-
     void "test case link directs to test case"() {
         given: "setup data"
         def gd = DataFactory.testGroup()
