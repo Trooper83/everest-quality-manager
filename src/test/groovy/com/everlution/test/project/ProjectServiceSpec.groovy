@@ -15,9 +15,9 @@ class ProjectServiceSpec extends Specification implements ServiceUnitTest<Projec
     }
 
     private void setupData() {
-        new Project(name: "first", code: "1st").save()
-        new Project(name: "second", code: "2nd").save()
-        new Project(name: "third", code: "3rd").save(flush: true)
+        new Project(name: "first project", code: "1st").save()
+        new Project(name: "second project", code: "2nd").save()
+        new Project(name: "third project", code: "3rd").save(flush: true)
     }
 
     void "get with valid id returns instance"() {
@@ -113,5 +113,26 @@ class ProjectServiceSpec extends Specification implements ServiceUnitTest<Projec
 
         then:
         saved instanceof Project
+    }
+
+    void "find all by name ilike returns projects"(String q) {
+        setup:
+        setupData()
+
+        expect:
+        def projects = service.findAllByNameIlike(q)
+        projects.first().name == "First project"
+
+        where:
+        q << ['first', 'fi', 'irs', 't pro', 'FIRST']
+    }
+
+    void "find all by name ilike returns multiple projects"() {
+        setup:
+        setupData()
+
+        expect:
+        def projects = service.findAllByNameIlike("project")
+        projects.size() == 3
     }
 }

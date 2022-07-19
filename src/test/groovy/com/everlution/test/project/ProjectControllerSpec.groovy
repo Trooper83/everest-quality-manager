@@ -1,11 +1,8 @@
 package com.everlution.test.project
 
-import com.everlution.Area
-import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectController
 import com.everlution.ProjectService
-import com.everlution.TestGroup
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -312,7 +309,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when: "call index action"
         controller.projects()
 
-        then: "index view is returned"
+        then: "view is returned"
         view == 'projects'
     }
 
@@ -337,7 +334,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * list(_) >> []
         }
 
-        when:"the index action is executed"
+        when:"the action is executed"
         controller.projects(max)
 
         then:"the max is as expected"
@@ -349,6 +346,63 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         1    | 1
         99   | 99
         101  | 100
+    }
+
+    void "projects sets flash message when no projects found"() {
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
+        when:"the action is executed"
+        controller.projects()
+
+        then:
+        flash.message == 'There are no projects in your organization'
+    }
+
+    void "projects with search sets flash message when no projects found"() {
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> []
+        }
+
+        when:"the action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.projects()
+
+        then:
+        flash.message == "No projects were found using search term: 'test'"
+    }
+
+    void "projects with search renders projects view"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> [new Project()]
+        }
+
+        when: "call action"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.projects()
+
+        then: "view is returned"
+        view == '/project/projects'
+    }
+
+    void "projects action with search returns the correct model"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> [new Project()]
+        }
+
+        when: "call action"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.projects()
+
+        then:"The model is correct"
+        model.projectList
+        model.projectCount == 1
     }
 
     void "home action renders home view"() {

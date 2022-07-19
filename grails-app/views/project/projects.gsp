@@ -11,10 +11,15 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <g:if test="${projectCount == 0}">
-        <div class="message" role="status">There are no projects in your organization.</div>
+    <g:if test="${flash.error}">
+        <ul class="errors" role="alert">${flash.error}</ul>
     </g:if>
-    <g:else>
+    <div class="col-4 mt-4 mb-4">
+        <g:form action="projects" controller="project" params="['isSearch': 'true']">
+            <g:textField name="name" autocomplete="off" placeholder="Project Name"></g:textField>
+            <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
+        </g:form>
+    </div>
     <table>
         <thead>
         <tr>
@@ -34,7 +39,6 @@
     <div class="pagination">
         <g:paginate total="${projectCount ?: 0}" />
     </div>
-    </g:else>
 </div>
 </body>
 </html>
