@@ -9,11 +9,8 @@ class ListProjectPage extends ListPage {
     static at = { title == "Project List" }
 
     static content = {
-        createProjectLink(required: false) { $("[data-test-id=index-create-link]") }
-        homeLink { $("[data-test-id=index-home-link]") }
         nameInput { $("#name").module(TextInput) }
         searchButton { $("#searchButton") }
-        statusMessage { $("div.message") }
         projectTable { module TableModule }
     }
 

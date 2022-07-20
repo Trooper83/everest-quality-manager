@@ -20,6 +20,16 @@ abstract class TestCaseService implements ITestCaseService {
     }
 
     /**
+     * finds all test cases in the project with a name
+     * that contains the string
+     * @param name - the string to search
+     */
+    @Transactional
+    List<TestCase> findAllInProjectByName(Project project, String s) {
+        return TestCase.findAllByProjectAndNameIlike(project, "%${s}%")
+    }
+
+    /**
      * gets all test cases for the supplied ids
      */
     @Transactional

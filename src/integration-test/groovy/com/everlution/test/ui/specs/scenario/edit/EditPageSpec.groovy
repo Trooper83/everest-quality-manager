@@ -28,7 +28,7 @@ class EditPageSpec extends GebSpec {
 
         browser.page(ListProjectPage).projectTable.clickCell("Name", 0)
         browser.page(ProjectHomePage).sideBar.goToProjectDomain("Scenarios")
-        browser.page(ListScenarioPage).scenarioTable.clickCell("Name", 0)
+        browser.page(ListScenarioPage).listTable.clickCell("Name", 0)
         browser.page(ShowScenarioPage).goToEdit()
     }
 

@@ -37,6 +37,16 @@ abstract class TestGroupService implements ITestGroupService {
     }
 
     /**
+     * finds all groups in the project with a name
+     * that contains the string
+     * @param name - the string to search
+     */
+    @Transactional
+    List<TestGroup> findAllInProjectByName(Project project, String s) {
+        return TestGroup.findAllByProjectAndNameIlike(project, "%${s}%")
+    }
+
+    /**
      * gets all the test groups of the ids supplied
      */
     @Transactional

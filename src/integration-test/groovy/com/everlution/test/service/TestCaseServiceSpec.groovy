@@ -13,6 +13,7 @@ import com.everlution.command.RemovedItems
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import grails.validation.ValidationException
+import spock.lang.Shared
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -26,9 +27,11 @@ class TestCaseServiceSpec extends Specification {
     TestStepService testStepService
     SessionFactory sessionFactory
 
+    @Shared Project project
+
     private Long setupData() {
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        Project project = new Project(name: "TestCaseServiceSpec Project", code: "TTT").save()
+        project = new Project(name: "TestCaseServiceSpec Project", code: "TTT").save()
         TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project).save()
         new TestCase(person: person, name: "second", description: "desc2",
@@ -124,9 +127,9 @@ class TestCaseServiceSpec extends Specification {
     void "test save"() {
         when:
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        Project project = new Project(name: "Test Case Save Project", code: "TCS").save()
+        Project proj = new Project(name: "Test Case Save Project", code: "TCS").save()
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project)
+                executionMethod: "Automated", type: "API", project: proj)
         testCaseService.save(testCase)
 
         then:
@@ -157,11 +160,11 @@ class TestCaseServiceSpec extends Specification {
 
     void "saveUpdate removes steps"() {
         given: "valid test case with step"
-        def project = projectService.list(max: 1).first()
+        def proj = projectService.list(max: 1).first()
         def step = new Step(action: "action", result: "result")
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
-                executionMethod: "Automated", type: "UI", project: project, steps: [step]).save()
+                executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
         expect:
         testStepService.get(step.id) != null
@@ -191,11 +194,11 @@ class TestCaseServiceSpec extends Specification {
 
     void "delete test case with group"() {
         given:
-        def project = projectService.list(max: 1).first()
-        def group = new TestGroup(name: "test group", project: project).save()
+        def proj = projectService.list(max: 1).first()
+        def group = new TestGroup(name: "test group", project: proj).save()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
-                executionMethod: "Automated", type: "UI", project: project).save()
+                executionMethod: "Automated", type: "UI", project: proj).save()
         testCase.addToTestGroups(group)
 
         expect:
@@ -213,10 +216,10 @@ class TestCaseServiceSpec extends Specification {
     void "find all by project returns only test cases with project"() {
         given:
         setupData()
-        def project = projectService.list(max: 1).first()
+        def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "password").save()
-        new TestCase(person: person, name: "second", description: "desc2",
-                executionMethod: "Automated", type: "UI", project: project).save()
+        def tc = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: proj).save()
 
         when:
         def tests = testCaseService.findAllByProject(project)
@@ -224,6 +227,7 @@ class TestCaseServiceSpec extends Specification {
         then:
         tests.size() > 0
         tests.every { it.project.id == project.id }
+        !tests.contains(tc)
     }
 
     void "find all by project with null project returns empty list"() {
@@ -236,5 +240,14 @@ class TestCaseServiceSpec extends Specification {
         then:
         tests.size() == 0
         noExceptionThrown()
+    }
+
+    void "find all in project by name returns test cases"() {
+        setup:
+        setupData()
+
+        expect:
+        def tests = testCaseService.findAllInProjectByName(project, "first")
+        tests.first().name == "first"
     }
 }

@@ -29,7 +29,7 @@ class EditPageSpec extends GebSpec {
 
         when: "edit bug"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell("Name", 0)
+        bugsPage.listTable.clickCell("Name", 0)
         def showPage = at ShowBugPage
         showPage.goToEdit()
 
@@ -54,7 +54,7 @@ class EditPageSpec extends GebSpec {
 
         when: "edit bug"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell("Name", 0)
+        bugsPage.listTable.clickCell("Name", 0)
         def showPage = at ShowBugPage
         showPage.goToEdit()
 
@@ -81,7 +81,7 @@ class EditPageSpec extends GebSpec {
 
         when: "edit bug"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell("Name", 0)
+        bugsPage.listTable.clickCell("Name", 0)
         def showPage = at ShowBugPage
         showPage.goToEdit()
 

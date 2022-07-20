@@ -15,4 +15,14 @@ abstract class ScenarioService implements IScenarioService {
     List<Scenario> findAllByProject(Project project) {
         return Scenario.findAllByProject(project)
     }
+
+    /**
+     * finds all scenarios in the project with a name
+     * that contains the string
+     * @param name - the string to search
+     */
+    @Transactional
+    List<Scenario> findAllInProjectByName(Project project, String s) {
+        return Scenario.findAllByProjectAndNameIlike(project, "%${s}%")
+    }
 }

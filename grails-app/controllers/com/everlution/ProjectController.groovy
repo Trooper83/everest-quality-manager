@@ -14,7 +14,8 @@ class ProjectController {
     static allowedMethods = [getProjectItems: "GET", save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
-     * lists all projects
+     * lists all projects or perform search
+     * if [params.isSearch = true]
      * /projects
      */
     @Secured("ROLE_READ_ONLY")

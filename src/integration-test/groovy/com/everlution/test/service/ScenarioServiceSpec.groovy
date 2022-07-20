@@ -23,13 +23,14 @@ class ScenarioServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     @Shared Person person
+    @Shared Project project
 
     def setup() {
         person = personService.list(max: 1).first()
     }
 
     private Long setupData() {
-        Project project = new Project(name: "ScenarioServiceSpec Project", code: "TTT").save()
+        project = new Project(name: "ScenarioServiceSpec Project", code: "TTT").save()
         Scenario scenario = new Scenario(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project).save()
         new Scenario(person: person, name: "second", description: "desc2",
@@ -106,9 +107,9 @@ class ScenarioServiceSpec extends Specification {
 
     void "test save"() {
         when:
-        Project project = new Project(name: "Test Case Save Project", code: "TCS").save()
+        Project proj = new Project(name: "Test Case Save Project", code: "TCS").save()
         Scenario scenario = new Scenario(person: person, name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project)
+                executionMethod: "Automated", type: "API", project: proj)
         scenarioService.save(scenario)
 
         then:
@@ -142,9 +143,9 @@ class ScenarioServiceSpec extends Specification {
         given:
         setupData()
         def person = new Person(email: "test98899@test.com", password: "password").save()
-        def project = projectService.list(max: 1).first()
-        new Scenario(person: person, name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project).save()
+        def proj = projectService.list(max: 1).first()
+        def scn = new Scenario(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: proj).save()
 
         when:
         def scenarios = scenarioService.findAllByProject(project)
@@ -152,6 +153,7 @@ class ScenarioServiceSpec extends Specification {
         then:
         scenarios.size() > 0
         scenarios.every { it.project.id == project.id }
+        !scenarios.contains(scn)
     }
 
     void "find all by project with null project returns empty list"() {
@@ -164,5 +166,14 @@ class ScenarioServiceSpec extends Specification {
         then:
         scenarios.size() == 0
         noExceptionThrown()
+    }
+
+    void "find all in project by name returns scenarios"() {
+        setup:
+        setupData()
+
+        expect:
+        def scenarios = scenarioService.findAllInProjectByName(project, "first")
+        scenarios.first().name == "first"
     }
 }

@@ -38,33 +38,6 @@ class ListSpec extends GebSpec {
         page.listTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Type"]
     }
 
-    void "delete message displays after test case deleted"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Test Cases')
-
-        and: "click first test case in list"
-        ListTestCasePage listPage = browser.page(ListTestCasePage)
-        listPage.listTable.clickCell("Name", 0)
-
-        when: "delete test case"
-        ShowTestCasePage showPage = browser.page(ShowTestCasePage)
-        showPage.delete()
-
-        then: "at list page and message displayed"
-        at ListTestCasePage
-        listPage.statusMessage.text() ==~ /TestCase \d+ deleted/
-    }
-
     void "clicking name column directs to show page"() {
         given: "login as a read only user"
         to LoginPage
@@ -107,5 +80,76 @@ class ListSpec extends GebSpec {
 
         then:
         page.projectNavButtons.isCreateMenuOpen()
+    }
+
+    void "search returns results"() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list project page"
+        def listPage = to ListProjectPage
+        listPage.projectTable.clickCell('Name', 0)
+
+        and:
+        def projectPage = at ProjectHomePage
+        projectPage.sideBar.goToProjectDomain('Test Cases')
+
+        when:
+        def page = at ListTestCasePage
+        page.search('')
+
+        then:
+        page.listTable.rowCount > 0
+    }
+
+    void "search that returns no results displays message"() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list project page"
+        def listPage = to ListProjectPage
+        listPage.projectTable.clickCell('Name', 0)
+
+        and:
+        def projectPage = at ProjectHomePage
+        projectPage.sideBar.goToProjectDomain('Test Cases')
+
+        when:
+        def page = at ListTestCasePage
+        page.search('adsfasdf')
+
+        then: "at show page"
+        page.statusMessage.text() == "No test cases were found using search term: 'adsfasdf'"
+    }
+
+    void "delete message displays after test case deleted"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        and: "go to the lists page"
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.sideBar.goToProjectDomain('Test Cases')
+
+        and: "click first test case in list"
+        ListTestCasePage listPage = browser.page(ListTestCasePage)
+        listPage.listTable.clickCell("Name", 0)
+
+        when: "delete test case"
+        ShowTestCasePage showPage = browser.page(ShowTestCasePage)
+        showPage.delete()
+
+        then: "at list page and message displayed"
+        at ListTestCasePage
+        listPage.statusMessage.text() ==~ /TestCase \d+ deleted/
     }
 }

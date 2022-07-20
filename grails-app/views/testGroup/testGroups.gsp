@@ -13,7 +13,15 @@
         <g:render template="/shared/projectButtonsTemplate"/>
         <div id="list-testGroup" class="content scaffold-list col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
-            <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
+            <g:if test="${flash.message}">
+                <div class="message" role="status">${flash.message}</div>
+            </g:if>
+            <div class="col-4 mt-4 mb-4">
+                <g:form uri="/project/${project.id}/testGroups" params="['isSearch': 'true']">
+                    <g:textField name="name" autocomplete="off" placeholder="Test Group Name" />
+                    <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
+                </g:form>
+            </div>
             <table>
                 <thead>
                 <tr>

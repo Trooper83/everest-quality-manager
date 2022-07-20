@@ -15,6 +15,16 @@ abstract class ReleasePlanService implements IReleasePlanService {
     }
 
     /**
+     * finds all plans in the project with a name
+     * that contains the string
+     * @param name - the string to search
+     */
+    @Transactional
+    List<ReleasePlan> findAllInProjectByName(Project project, String s) {
+        return ReleasePlan.findAllByProjectAndNameIlike(project, "%${s}%")
+    }
+
+    /**
      * gets all plans in the domain with the associated project
      * @param projectId - id of the project
      * @return - list of all plans with the project

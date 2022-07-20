@@ -3,7 +3,6 @@ package com.everlution.test.releaseplan
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
-import com.everlution.TestCase
 import com.everlution.TestCycle
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -21,6 +20,8 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     def setup() {
         project = new Project(name: "name", code: "cod").save()
+        new ReleasePlan(name: "first plan", project: project).save()
+        new ReleasePlan(name: "second plan", project: project).save()
     }
 
     void "get with valid id returns instance"() {
@@ -34,12 +35,12 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     void "get with invalid id returns null"() {
         expect:
-        service.get(1) == null
+        service.get(99999) == null
     }
 
     void "read with invalid id returns null"() {
         expect:
-        service.read(1) == null
+        service.read(999999) == null
     }
 
     void "read returns instance"() {
@@ -61,8 +62,8 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         then:
         service.list(max: 1).size() == 1
         service.list(max: 2).size() == 2
-        service.list().size() == 3
-        service.list(offset: 1).size() == 2
+        service.list().size() == 5
+        service.list(offset: 1).size() == 4
     }
 
     void "count returns number of plans"() {
@@ -73,7 +74,7 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         new ReleasePlan(name: "name", project: pr).save(flush: true)
 
         then:
-        service.count() == 3
+        service.count() == 5
     }
 
     void "delete with valid id deletes instance"() {
@@ -181,5 +182,53 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
         then:
         cycle.id != null
+    }
+
+    void "find all by name ilike returns plans"(String q) {
+        expect:
+        def plans = service.findAllInProjectByName(project, q)
+        plans.first().name == "first plan"
+
+        where:
+        q << ['first', 'fi', 'irs', 't pl', 'FIRST']
+    }
+
+    void "find all in project by name only returns plans in project"() {
+        given:
+        def proj = new Project(name: "TestService Spec Project99999", code: "BP5").save()
+        def plan = new ReleasePlan(name: "Name of the plan", project: proj).save(flush: true)
+
+        expect:
+        ReleasePlan.list().contains(plan)
+
+        when:
+        def plans = service.findAllInProjectByName(project, 'plan')
+
+        then:
+        plans.every { it.project.id == project.id }
+        plans.size() > 0
+        !plans.contains(plan)
+    }
+
+    void "find all in project by name with null project"() {
+        when:
+        def plans = service.findAllInProjectByName(null, 'plan')
+
+        then:
+        plans.empty
+        noExceptionThrown()
+    }
+
+    void "find all by name ilike with string"(String s, int size) {
+        expect:
+        def plans = service.findAllInProjectByName(project, s)
+        plans.size() == size
+
+        where:
+        s           | size
+        null        | 0
+        ''          | 2
+        'not found' | 0
+        'plan'      | 2
     }
 }

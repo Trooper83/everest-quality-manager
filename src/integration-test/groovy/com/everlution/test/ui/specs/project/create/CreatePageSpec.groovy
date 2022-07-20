@@ -33,7 +33,7 @@ class CreatePageSpec extends GebSpec {
 
         then: "validation message is displayed"
         page.errors.text() ==
-                "Property [code] of class [class com.everlution.Project] with value [tt] is less than the minimum size of [3]"
+                "Property [code] of class [class com.everlution.Project] with value [TT] is less than the minimum size of [3]"
     }
 
     void "name field unique message displayed"() {
@@ -43,7 +43,7 @@ class CreatePageSpec extends GebSpec {
 
         then: "validation message is displayed"
         page.errors.text() ==
-                "Property [name] of class [class com.everlution.Project] with value [bootstrap project] must be unique"
+                "Property [name] of class [class com.everlution.Project] with value [Bootstrap project] must be unique"
     }
 
     void "code field unique message displayed"() {
@@ -53,7 +53,7 @@ class CreatePageSpec extends GebSpec {
 
         then: "validation message is displayed"
         page.errors.text() ==
-                "Property [code] of class [class com.everlution.Project] with value [bsp] must be unique"
+                "Property [code] of class [class com.everlution.Project] with value [BSP] must be unique"
     }
 
     void "correct fields are displayed"() {

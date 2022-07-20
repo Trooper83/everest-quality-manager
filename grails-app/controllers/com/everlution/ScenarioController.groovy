@@ -25,8 +25,22 @@ class ScenarioController {
             notFound()
             return
         }
-        def scenarios = scenarioService.findAllByProject(project)
-        respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
+
+        if(!params.isSearch) { // load view
+            def scenarios = scenarioService.findAllByProject(project)
+            if(scenarios.empty) {
+                flash.message = "There are no scenarios in the project"
+            }
+            respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
+
+        } else { // perform search
+            def scenarios = scenarioService.findAllInProjectByName(project, params.name)
+            if(scenarios.empty) {
+                flash.message = "No scenarios were found using search term: '${params.name}'"
+            }
+            respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
+        }
+
     }
 
     /**

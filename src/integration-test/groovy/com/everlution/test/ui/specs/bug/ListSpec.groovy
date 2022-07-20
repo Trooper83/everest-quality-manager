@@ -30,7 +30,7 @@ class ListSpec extends GebSpec {
         def page = at ListBugPage
 
         then: "correct headers are displayed"
-        page.bugTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Status"]
+        page.listTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Status"]
     }
 
     void "delete message displays after bug deleted"() {
@@ -49,7 +49,7 @@ class ListSpec extends GebSpec {
 
         and: "go to list page"
         def page = at ListBugPage
-        page.bugTable.clickCell('Name', 0)
+        page.listTable.clickCell('Name', 0)
 
         when: "delete bug"
         def showPage = browser.page(ShowBugPage)
@@ -80,5 +80,49 @@ class ListSpec extends GebSpec {
 
         then:
         page.projectNavButtons.isCreateMenuOpen()
+    }
+
+    void "search returns results"() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list project page"
+        def listPage = to ListProjectPage
+        listPage.projectTable.clickCell('Name', 0)
+
+        and:
+        def page = at ProjectHomePage
+        page.sideBar.goToProjectDomain('Bugs')
+
+        when:
+        def bugsPage = at ListBugPage
+        bugsPage.search('')
+
+        then:
+        bugsPage.listTable.rowCount > 0
+    }
+
+    void "search that returns no results displays message"() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list project page"
+        def listPage = to ListProjectPage
+        listPage.projectTable.clickCell('Name', 0)
+
+        and:
+        def page = at ProjectHomePage
+        page.sideBar.goToProjectDomain('Bugs')
+
+        when:
+        def bugsPage = at ListBugPage
+        bugsPage.search('adsfasdf')
+
+        then: "at show page"
+        listPage.statusMessage.text() == "No bugs were found using search term: 'adsfasdf'"
     }
 }

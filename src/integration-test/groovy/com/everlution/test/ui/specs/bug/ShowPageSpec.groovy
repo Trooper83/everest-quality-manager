@@ -59,7 +59,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to list page"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell('Name', 0)
+        bugsPage.listTable.clickCell('Name', 0)
 
         when: "click the edit button"
         def page = browser.page(ShowBugPage)
@@ -85,7 +85,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "go to list page"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell('Name', 0)
+        bugsPage.listTable.clickCell('Name', 0)
 
         then: "create delete edit test case buttons are not displayed"
         def page = browser.page(ShowBugPage)
@@ -111,7 +111,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "go to list page"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell('Name', 0)
+        bugsPage.listTable.clickCell('Name', 0)
 
         then: "create delete edit test case buttons are not displayed"
         def page = browser.page(ShowBugPage)
@@ -144,7 +144,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to list page"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell('Name', 0)
+        bugsPage.listTable.clickCell('Name', 0)
 
         when: "click delete and cancel | verify message"
         def showPage = browser.page(ShowBugPage)
@@ -170,7 +170,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to list page"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell('Name', 0)
+        bugsPage.listTable.clickCell('Name', 0)
 
         and: "go to edit"
         def showPage = browser.page(ShowBugPage)
@@ -200,7 +200,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to list page"
         def bugsPage = at ListBugPage
-        bugsPage.bugTable.clickCell('Name', 0)
+        bugsPage.listTable.clickCell('Name', 0)
 
         when:
         def showPage = browser.page(ShowBugPage)

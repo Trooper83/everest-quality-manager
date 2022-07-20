@@ -69,6 +69,61 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         response.status == 404
     }
 
+    void "scenarios sets flash message when no bugs found"() {
+        given:
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The action is executed"
+        controller.scenarios(1)
+
+        then:
+        flash.message == "There are no scenarios in the project"
+    }
+
+    void "scenarios search sets flash message when none found"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllInProjectByName(project, 'test') >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.scenarios(1)
+
+        then:
+        flash.message == "No scenarios were found using search term: 'test'"
+    }
+
+    void "scenarios search returns the correct model"() {
+        def project = new Project(name: 'test')
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllInProjectByName(project, 'test') >> [new Scenario()]
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.scenarios(1)
+
+        then:"model is correct"
+        model.scenarioList != null
+        model.scenarioCount != null
+        model.project != null
+    }
+
     void "test the create action returns the correct view"() {
         given: "mock service"
         controller.projectService = Mock(ProjectService) {

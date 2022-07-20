@@ -127,12 +127,19 @@ class ProjectServiceSpec extends Specification implements ServiceUnitTest<Projec
         q << ['first', 'fi', 'irs', 't pro', 'FIRST']
     }
 
-    void "find all by name ilike returns multiple projects"() {
+    void "find all by name ilike with string"(String s, int size) {
         setup:
         setupData()
 
         expect:
-        def projects = service.findAllByNameIlike("project")
-        projects.size() == 3
+        def projects = service.findAllByNameIlike(s)
+        projects.size() == size
+
+        where:
+        s           | size
+        null        | 0
+        ''          | 3
+        'not found' | 0
+        'project'   | 3
     }
 }
