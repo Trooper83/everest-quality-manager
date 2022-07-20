@@ -52,7 +52,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click the edit button"
         def page = browser.page(ShowScenarioPage)
@@ -78,7 +78,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "click first in list"
         def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "create delete edit test case buttons are not displayed"
         def page = browser.page(ShowScenarioPage)
@@ -104,7 +104,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "click first in list"
         def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         then: "create delete edit test case buttons are not displayed"
         def page = browser.page(ShowScenarioPage)
@@ -137,7 +137,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when: "click delete and cancel | verify message"
         def showPage = browser.page(ShowScenarioPage)
@@ -163,7 +163,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "click first in list"
         def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         and:
         browser.page(ShowScenarioPage).goToEdit()
@@ -189,7 +189,7 @@ class ShowPageSpec extends GebSpec {
 
         and:
         def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Name", 0)
 
         when:
         def page = at ShowScenarioPage

@@ -23,8 +23,22 @@ class TestGroupController {
             notFound()
             return
         }
-        def testGroups = testGroupService.findAllByProject(project)
-        respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
+
+        if(!params.isSearch) { // load view
+            def testGroups = testGroupService.findAllByProject(project)
+            if(testGroups.empty) {
+                flash.message = "There are no test groups in the project"
+            }
+            respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
+
+        } else { // perform search
+            def testGroups = testGroupService.findAllInProjectByName(project, params.name)
+            if(testGroups.empty) {
+                flash.message = "No test groups were found using search term: '${params.name}'"
+            }
+            respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
+        }
+
     }
 
     /**

@@ -21,31 +21,42 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
 
     def setup() {
         project = new Project(name: "Test Group Project", code: "TGP").save()
-        new TestGroup(name: "name123", project: project).save()
+    }
+
+    def setupData() {
+        new TestGroup(name: "test group 1", project: project).save()
+        new TestGroup(name: "test group 2", project: project).save()
+        new TestGroup(name: "test group 3", project: project).save()
     }
 
     void "get with valid id returns instance"() {
-        when:
-        new TestGroup(name: "name", project: project).save()
+        setup:
+        setupData()
 
-        then:
+        expect:
         service.get(1) instanceof TestGroup
     }
 
     void "get with invalid id returns null"() {
+        setup:
+        setupData()
+
         expect:
         service.get(11111111111) == null
     }
 
     void "read with valid id returns instance"() {
-        when:
-        new TestGroup(name: "name", project: project).save()
+        setup:
+        setupData()
 
-        then:
+        expect:
         service.read(1) instanceof TestGroup
     }
 
     void "read with invalid id returns null"() {
+        setup:
+        setupData()
+
         expect:
         service.read(11111111111) == null
     }
@@ -59,8 +70,8 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         service.list(max: 1).size() == 1
         service.list(max: 2).size() == 2
-        service.list().size() == 4
-        service.list(offset: 1).size() == 3
+        service.list().size() == 3
+        service.list(offset: 1).size() == 2
     }
 
     void "count returns number of groups"() {
@@ -70,13 +81,11 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         new TestGroup(name: "name2", project: project).save(flush: true)
 
         then:
-        service.count() == 4
+        service.count() == 3
     }
 
     void "delete with valid id deletes instance"() {
         given:
-        new TestGroup(name: "name", project: project).save()
-        new TestGroup(name: "name1", project: project).save()
         def id = new TestGroup(name: "name2", project: project).save(flush: true).id
 
         expect:
@@ -166,6 +175,9 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
     }
 
     void "find all by project returns test groups"() {
+        given:
+        setupData()
+
         when:
         def groups = service.findAllByProject(project)
 
@@ -175,6 +187,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
 
     void "find all by project only returns groups with project"() {
         given:
+        setupData()
         def proj = new Project(name: "BugServiceSpec Project1223", code: "BP8").save()
         def tg = new TestGroup(name: "name2", project: proj).save(flush: true)
 
@@ -197,5 +210,63 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         noExceptionThrown()
         groups.size() == 0
+    }
+
+    void "find all by name ilike returns test groups"(String q) {
+        setup:
+        setupData()
+
+        expect:
+        def tests = service.findAllInProjectByName(project, q)
+        tests.first().name == "test group 1"
+
+        where:
+        q << ['1', 'test group 1', 'oup 1', 'TEST GROUP 1']
+    }
+
+    void "find all in project by name only returns groups in project"() {
+        given:
+        setupData()
+        def proj = new Project(name: "BugServiceSpec Project1223", code: "BP8").save()
+        def tg = new TestGroup(name: "name2", project: proj).save(flush: true)
+
+        expect:
+        TestGroup.list().contains(tg)
+
+        when:
+        def groups = service.findAllInProjectByName(project, 'test')
+
+        then:
+        groups.every { it.project.id == project.id }
+        groups.size() > 0
+        !groups.contains(tg)
+    }
+
+    void "find all in project by name with null project"() {
+        given:
+        setupData()
+
+        when:
+        def groups = service.findAllInProjectByName(null, 'nothing')
+
+        then:
+        groups.empty
+        noExceptionThrown()
+    }
+
+    void "find all by name ilike with string"(String s, int size) {
+        setup:
+        setupData()
+
+        expect:
+        def groups = service.findAllInProjectByName(project, s)
+        groups.size() == size
+
+        where:
+        s           | size
+        null        | 0
+        ''          | 3
+        'not found' | 0
+        'test'      | 3
     }
 }

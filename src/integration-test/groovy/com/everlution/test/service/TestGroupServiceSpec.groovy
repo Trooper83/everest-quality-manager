@@ -164,4 +164,13 @@ class TestGroupServiceSpec extends Specification {
         groups.size() == 0
         noExceptionThrown()
     }
+
+    void "find all in project by name returns test groups"() {
+        setup:
+        setupData()
+
+        expect:
+        def groups = testGroupService.findAllInProjectByName(project, "name")
+        groups.first().name == "name 1"
+    }
 }

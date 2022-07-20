@@ -42,6 +42,24 @@ class ListSpec extends GebSpec {
         at ShowTestGroupPage
     }
 
+    void "search returns results"() {
+        when:
+        def page = at ListTestGroupPage
+        page.search('')
+
+        then:
+        page.listTable.rowCount > 0
+    }
+
+    void "search that returns no results displays message"() {
+        when:
+        def page = at ListTestGroupPage
+        page.search('adsfasdf')
+
+        then: "at show page"
+        page.statusMessage.text() == "No test groups were found using search term: 'adsfasdf'"
+    }
+
     void "delete message displays after group deleted"() {
         given: "click first test group in list"
         def page = browser.page(ListTestGroupPage)

@@ -2,29 +2,24 @@ package com.everlution.test.ui.support.pages.project
 
 import com.everlution.test.ui.support.pages.common.ListPage
 import com.everlution.test.ui.support.pages.modules.TableModule
+import geb.module.TextInput
 
 class ListProjectPage extends ListPage {
     static url = "/projects"
     static at = { title == "Project List" }
 
     static content = {
-        createProjectLink(required: false) { $("[data-test-id=index-create-link]") }
-        homeLink { $("[data-test-id=index-home-link]") }
-        statusMessage { $("div.message") }
+        nameInput { $("#name").module(TextInput) }
+        searchButton { $("#searchButton") }
         projectTable { module TableModule }
     }
 
     /**
-     * clicks the new project button
+     * performs a search
+     * @param name - name to search for
      */
-    void goToCreateProject() {
-        createProjectLink.click()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
+    void search(String name) {
+        nameInput << name
+        searchButton.click()
     }
 }

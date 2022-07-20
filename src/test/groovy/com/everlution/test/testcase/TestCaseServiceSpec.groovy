@@ -26,11 +26,11 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
     }
 
     private void setupData() {
-        new TestCase(person: person, name: "test", description: "desc",
+        new TestCase(person: person, name: "first test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new TestCase(person: person, name: "test1", description: "desc",
+        new TestCase(person: person, name: "second test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new TestCase(person: person, name: "test2", description: "desc",
+        new TestCase(person: person, name: "third test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save(flush: true)
     }
 
@@ -192,5 +192,64 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         then:
         noExceptionThrown()
         tests.size() == 0
+    }
+
+    void "find all by name ilike returns test case"(String q) {
+        setup:
+        setupData()
+
+        expect:
+        def tests = service.findAllInProjectByName(project, q)
+        tests.first().name == "first test"
+
+        where:
+        q << ['first', 'fi', 'irs', 't te', 'FIRST']
+    }
+
+    void "find all in project by name only returns tests in project"() {
+        given:
+        setupData()
+        def proj = new Project(name: "TestService Spec Project1223", code: "BP8").save()
+        def tc = new TestCase(person: person, name: "test999999999", description: "desc",
+                executionMethod: "Automated", type: "API", project: proj).save(flush: true)
+
+        expect:
+        TestCase.list().contains(tc)
+
+        when:
+        def tests = service.findAllInProjectByName(project, 'test')
+
+        then:
+        tests.every { it.project.id == project.id }
+        tests.size() > 0
+        !tests.contains(tc)
+    }
+
+    void "find all in project by name with null project"() {
+        given:
+        setupData()
+
+        when:
+        def groups = service.findAllInProjectByName(null, 'test')
+
+        then:
+        groups.empty
+        noExceptionThrown()
+    }
+
+    void "find all by name ilike with string"(String s, int size) {
+        setup:
+        setupData()
+
+        expect:
+        def tests = service.findAllInProjectByName(project, s)
+        tests.size() == size
+
+        where:
+        s           | size
+        null        | 0
+        ''          | 3
+        'not found' | 0
+        'test'      | 3
     }
 }

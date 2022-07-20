@@ -9,6 +9,7 @@ import com.everlution.TestCycleService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import grails.validation.ValidationException
+import spock.lang.Shared
 import spock.lang.Specification
 import org.hibernate.SessionFactory
 
@@ -21,8 +22,10 @@ class ReleasePlanServiceSpec extends Specification {
     TestCycleService testCycleService
     SessionFactory sessionFactory
 
+    @Shared Project project
+
     private Long setupData() {
-        def project = new Project(name: "project name 123", code: "pn1").save()
+        project = new Project(name: "project name 123", code: "pn1").save()
         def releasePlan = new ReleasePlan(name: "name1", project: project).save()
         new ReleasePlan(name: "name12", project: project).save()
         new ReleasePlan(name: "name123", project: project).save()
@@ -170,5 +173,14 @@ class ReleasePlanServiceSpec extends Specification {
 
         then:
         thrown(ValidationException)
+    }
+
+    void "find all in project by name returns plans"() {
+        setup:
+        setupData()
+
+        expect:
+        def plan = releasePlanService.findAllInProjectByName(project, "124")
+        plan.first().name == "name124"
     }
 }

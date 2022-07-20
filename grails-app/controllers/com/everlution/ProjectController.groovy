@@ -14,13 +14,29 @@ class ProjectController {
     static allowedMethods = [getProjectItems: "GET", save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
-     * lists all projects
+     * lists all projects or perform search
+     * if [params.isSearch = true]
      * /projects
      */
     @Secured("ROLE_READ_ONLY")
     def projects(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond projectService.list(params), model:[projectCount: projectService.count()]
+
+        if(!params.isSearch) { // load view
+            params.max = Math.min(max ?: 10, 100)
+            def projects = projectService.list(params)
+
+            if(projects.size() == 0) {
+                flash.message = 'There are no projects in your organization'
+            }
+            respond projects, model:[projectCount: projectService.count()]
+
+        } else { // perform search
+            def projects = projectService.findAllByNameIlike(params.name)
+            if(projects.size() == 0) {
+                flash.message = "No projects were found using search term: '${params.name}'"
+            }
+            render view:'projects', model: [projectList: projects, projectCount: projects.size()]
+        }
     }
 
     /**

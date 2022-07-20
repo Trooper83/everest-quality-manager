@@ -3,7 +3,6 @@ package com.everlution.test.service
 import com.everlution.Area
 import com.everlution.AreaService
 import com.everlution.Bug
-import com.everlution.BugService
 import com.everlution.Environment
 import com.everlution.EnvironmentService
 import com.everlution.Person
@@ -12,9 +11,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.Scenario
-import com.everlution.ScenarioService
 import com.everlution.TestCase
-import com.everlution.TestCaseService
 import com.everlution.command.RemovedItems
 import com.everlution.test.support.DataFactory
 import grails.testing.mixin.integration.Integration
@@ -31,13 +28,10 @@ import javax.persistence.PersistenceException
 class ProjectServiceSpec extends Specification {
 
     AreaService areaService
-    BugService bugService
     EnvironmentService environmentService
     PersonService personService
     ProjectService projectService
     SessionFactory sessionFactory
-    ScenarioService scenarioService
-    TestCaseService testCaseService
 
     @Shared Person person
 
@@ -348,5 +342,14 @@ class ProjectServiceSpec extends Specification {
     void "read returns null for not found id"() {
         expect:
         projectService.read(999999999) == null
+    }
+
+    void "find all by name ilike returns project"() {
+        setup:
+        setupData()
+
+        expect:
+        def project = projectService.findAllByNameIlike("service 1")
+        project.first().name == "Project service 1"
     }
 }

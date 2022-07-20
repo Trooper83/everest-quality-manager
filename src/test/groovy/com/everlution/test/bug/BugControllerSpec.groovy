@@ -50,9 +50,9 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         controller.bugs(1)
 
         then:"The model is correct"
-        model.bugList
-        model.bugCount
-        model.project
+        model.bugList != null
+        model.bugCount != null
+        model.project != null
     }
 
     void "bugs action returns not found with invalid project"() {
@@ -69,6 +69,61 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
 
         then:
         response.status == 404
+    }
+
+    void "bugs sets flash message when no bugs found"() {
+        given:
+        controller.bugService = Mock(BugService) {
+            1 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The action is executed"
+        controller.bugs(1)
+
+        then:
+        flash.message == "There are no bugs in the project"
+    }
+
+    void "bugs search sets flash message when no bugs found"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.bugService = Mock(BugService) {
+            1 * findAllInProjectByName(project, 'test') >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.bugs(1)
+
+        then:
+        flash.message == "No bugs were found using search term: 'test'"
+    }
+
+    void "bugs search returns the correct model"() {
+        def project = new Project(name: 'test')
+        controller.bugService = Mock(BugService) {
+            1 * findAllInProjectByName(project, 'test') >> [new Bug()]
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.bugs(1)
+
+        then:"model is correct"
+        model.bugList != null
+        model.bugCount != null
+        model.project != null
     }
 
     void "test the create action returns the correct view"() {

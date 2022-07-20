@@ -10,13 +10,13 @@ abstract class BugService implements IBugService {
     TestStepService testStepService
 
     /**
-     * gets all bugs in the domain with the associated project
-     * @param projectId - id of the project
-     * @return - list of all bugs with the project
+     * finds all bugs in the project with a name
+     * that contains the string
+     * @param name - the string to search
      */
     @Transactional
-    List<Bug> findAllByProject(Project project) {
-        return Bug.findAllByProject(project)
+    List<Bug> findAllInProjectByName(Project project, String s) {
+        return Bug.findAllByProjectAndNameIlike(project, "%${s}%")
     }
 
     /**

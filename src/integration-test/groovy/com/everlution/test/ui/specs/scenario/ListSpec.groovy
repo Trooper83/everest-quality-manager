@@ -7,6 +7,8 @@ import com.everlution.ScenarioService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
@@ -31,7 +33,87 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListScenarioPage page = browser.page(ListScenarioPage)
-        page.scenarioTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Type"]
+        page.listTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Type"]
+    }
+
+    void "clicking name column directs to show page"() {
+        given: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list page"
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/scenarios"
+
+        when: "click first scenario in list"
+        def listPage = browser.page(ListScenarioPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        then: "at show page"
+        at ShowScenarioPage
+    }
+
+    void "create button menu displays"() {
+        given: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to list page"
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/scenarios"
+
+        when:
+        def page = at ListScenarioPage
+        page.projectNavButtons.openCreateMenu()
+
+        then:
+        page.projectNavButtons.isCreateMenuOpen()
+    }
+
+    void "search returns results"() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list project page"
+        def listPage = to ListProjectPage
+        listPage.projectTable.clickCell('Name', 0)
+
+        and:
+        def projectPage = at ProjectHomePage
+        projectPage.sideBar.goToProjectDomain('Scenarios')
+
+        when:
+        def page = at ListScenarioPage
+        page.search('')
+
+        then:
+        page.listTable.rowCount > 0
+    }
+
+    void "search that returns no results displays message"() {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list project page"
+        def listPage = to ListProjectPage
+        listPage.projectTable.clickCell('Name', 0)
+
+        and:
+        def projectPage = at ProjectHomePage
+        projectPage.sideBar.goToProjectDomain('Scenarios')
+
+        when:
+        def page = at ListScenarioPage
+        page.search('adsfasdf')
+
+        then: "at show page"
+        page.statusMessage.text() == "No scenarios were found using search term: 'adsfasdf'"
     }
 
     void "delete message displays after scenario deleted"() {
@@ -58,41 +140,5 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         def listPage = at ListScenarioPage
         listPage.statusMessage.text() ==~ /Scenario \d+ deleted/
-    }
-
-    void "clicking name column directs to show page"() {
-        given: "login as a read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
-
-        and: "go to list page"
-        def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/scenarios"
-
-        when: "click first scenario in list"
-        def listPage = browser.page(ListScenarioPage)
-        listPage.scenarioTable.clickCell("Name", 0)
-
-        then: "at show page"
-        at ShowScenarioPage
-    }
-
-    void "create button menu displays"() {
-        given: "login as a read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to list page"
-        def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/scenarios"
-
-        when:
-        def page = at ListScenarioPage
-        page.projectNavButtons.openCreateMenu()
-
-        then:
-        page.projectNavButtons.isCreateMenuOpen()
     }
 }

@@ -16,19 +16,36 @@ class BugController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
-     * lists all bugs
+     * lists all bugs or perform search
+     * if [params.isSearch = true]
      * /bugs
      * @return - list of bugs
      */
     @Secured("ROLE_READ_ONLY")
     def bugs(Long projectId) {
+
         def project = projectService.get(projectId)
         if (project == null) {
             notFound()
             return
         }
-        def bugs = bugService.findAllByProject(project)
-        respond bugs, model: [bugCount: bugs.size(), project: project], view: 'bugs'
+
+        if(!params.isSearch) { // load view
+
+            def bugs = bugService.findAllByProject(project)
+            if(bugs.size() == 0) {
+                flash.message = 'There are no bugs in the project'
+            }
+            respond bugs, model: [bugCount: bugs.size(), project: project], view: 'bugs'
+
+        } else { // perform search
+
+            def bugs = bugService.findAllInProjectByName(project, params.name)
+            if(bugs.size() == 0) {
+                flash.message = "No bugs were found using search term: '${params.name}'"
+            }
+            respond bugs, model: [bugCount: bugs.size(), project: project], view:'bugs'
+        }
     }
 
     /**

@@ -22,11 +22,11 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
     def setup() {
         project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
         person = new Person(email: "email@test.com", password: "password").save()
-        new Scenario(person: person, name: "test", description: "desc",
+        new Scenario(person: person, name: "first scenario", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new Scenario(person: person, name: "test1", description: "desc",
+        new Scenario(person: person, name: "second scenario", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
-        new Scenario(person: person, name: "test2", description: "desc",
+        new Scenario(person: person, name: "third scenario", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save(flush: true)
     }
 
@@ -135,5 +135,54 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
         then:
         noExceptionThrown()
         scenarios.size() == 0
+    }
+
+    void "find all by name ilike returns scenarios"(String q) {
+        expect:
+        def scenarios = service.findAllInProjectByName(project, q)
+        scenarios.first().name == "first scenario"
+
+        where:
+        q << ['first', 'fi', 'irs', 't sc', 'FIRST']
+    }
+
+    void "find all in project by name only returns scenarios in project"() {
+        given:
+        def proj = new Project(name: "TestService Spec Project99999", code: "BP5").save()
+        def scn = new Scenario(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: proj).save(flush: true)
+
+        expect:
+        Scenario.list().contains(scn)
+
+        when:
+        def scenarios = service.findAllInProjectByName(project, 'scenario')
+
+        then:
+        scenarios.every { it.project.id == project.id }
+        scenarios.size() > 0
+        !scenarios.contains(scn)
+    }
+
+    void "find all in project by name with null project"() {
+        when:
+        def groups = service.findAllInProjectByName(null, 'scenario')
+
+        then:
+        groups.empty
+        noExceptionThrown()
+    }
+
+    void "find all by name ilike with string"(String s, int size) {
+        expect:
+        def scenarios = service.findAllInProjectByName(project, s)
+        scenarios.size() == size
+
+        where:
+        s           | size
+        null        | 0
+        ''          | 3
+        'not found' | 0
+        'scenario'  | 3
     }
 }

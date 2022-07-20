@@ -67,6 +67,61 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         response.status == 404
     }
 
+    void "testGroups sets flash message when no testGroups found"() {
+        given:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * findAllByProject(_) >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The action is executed"
+        controller.testGroups(1)
+
+        then:
+        flash.message == "There are no test groups in the project"
+    }
+
+    void "testGroups search sets flash message when no testGroups found"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * findAllInProjectByName(project, 'test') >> []
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.testGroups(1)
+
+        then:
+        flash.message == "No test groups were found using search term: 'test'"
+    }
+
+    void "testGroups search returns the correct model"() {
+        def project = new Project(name: 'test')
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * findAllInProjectByName(project, 'test') >> [new TestGroup()]
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.testGroups(1)
+
+        then:"model is correct"
+        model.testGroupList != null
+        model.testGroupCount != null
+        model.project != null
+    }
+
     void "create action returns create view"() {
         given: "mock service"
         controller.projectService = Mock(ProjectService) {

@@ -23,8 +23,8 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
     def setup() {
         project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
         person = new Person(email: "test123@test.com", password: "password").save()
-        new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project, status: "Open").save()
-        new Bug(person: person, description: "Found a bug again!", name: "Name of the bug again", project: project, status: "Open").save(flush: true)
+        new Bug(person: person, description: "Found a bug", name: "first bug", project: project, status: "Open").save()
+        new Bug(person: person, description: "Found a bug again!", name: "Second bug", project: project, status: "Open").save(flush: true)
     }
 
     void "get with valid id returns instance"() {
@@ -152,5 +152,54 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         then:
         noExceptionThrown()
         bugs.size() == 0
+    }
+
+    void "find all by name ilike returns bugs"(String q) {
+        expect:
+        def bugs = service.findAllInProjectByName(project, q)
+        bugs.first().name == "first bug"
+
+        where:
+        q << ['first', 'fi', 'irs', 't bu', 'FIRST']
+    }
+
+    void "find all in project by name with null project"() {
+        when:
+        def bugs = service.findAllInProjectByName(null, 'bug')
+
+        then:
+        bugs.empty
+        noExceptionThrown()
+    }
+
+    void "find all by name ilike with string"(String s, int size) {
+        expect:
+        def bugs = service.findAllInProjectByName(project, s)
+        bugs.size() == size
+
+        where:
+        s           | size
+        null        | 0
+        ''          | 2
+        'not found' | 0
+        'bug'       | 2
+    }
+
+    void "find all by name iLike by project only returns bugs with project"() {
+        given:
+        def proj = new Project(name: "BugServiceSpec Project1", code: "BP4").save()
+        def bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: proj,
+                status: "Open").save(flush: true)
+
+        expect:
+        Bug.list().contains(bug)
+
+        when:
+        def bugs = service.findAllInProjectByName(project, 'bug')
+
+        then:
+        bugs.every { it.project.id == project.id }
+        bugs.size() > 0
+        !bugs.contains(bug)
     }
 }

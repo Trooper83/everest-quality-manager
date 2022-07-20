@@ -11,6 +11,15 @@ abstract class ProjectService implements IProjectService {
     EnvironmentService environmentService
 
     /**
+     * finds all projects with a name that contains the string
+     * @param name - the string to search
+     */
+    @Transactional
+    List<Project> findAllByNameIlike(String s) {
+        return Project.findAllByNameIlike("%${s}%")
+    }
+
+    /**
      * save an updated project, deletes any removed areas
      * @param project - the project to update
      * @param removedItems - ids of the items to remove

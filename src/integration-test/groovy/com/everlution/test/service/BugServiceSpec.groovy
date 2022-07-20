@@ -19,12 +19,13 @@ import spock.lang.Specification
 class BugServiceSpec extends Specification {
 
     BugService bugService
-    ProjectService projectService
     SessionFactory sessionFactory
     TestStepService testStepService
 
+    Project project
+
     private Long setupData() {
-        Project project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
+        project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
         def person = new Person(email: "test123@test.com", password: "!Password2022").save()
         Bug bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project, status: "Open").save()
         new Bug(person: person, description: "Found a bug again!", name: "Name of the bug again", project: project, status: "Open").save()
@@ -97,8 +98,8 @@ class BugServiceSpec extends Specification {
     void "test save"() {
         when:
         def person = new Person(email: "test988@test.com", password: "!Password2022").save()
-        Project project = new Project(name: "BugServiceSpec Project", code: "BPM").save()
-        Bug bug = new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: project, status: "Open")
+        Project proj = new Project(name: "BugServiceSpec Project", code: "BPM").save()
+        Bug bug = new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: proj, status: "Open")
         bugService.save(bug)
 
         then:
@@ -126,8 +127,8 @@ class BugServiceSpec extends Specification {
     }
 
     void "saveUpdate removes steps"() {
+        setupData()
         given: "valid test case with step"
-        def project = projectService.list(max: 1).first()
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
         def step = new Step(action: "action", result: "result")
         def bug = new Bug(person: person, name: "second", description: "desc2",
@@ -163,7 +164,6 @@ class BugServiceSpec extends Specification {
     void "find all bugs by project returns only bugs with project"() {
         given:
         setupData()
-        def project = projectService.list(max: 1).first()
 
         when:
         def bugs = bugService.findAllByProject(project)
@@ -183,5 +183,14 @@ class BugServiceSpec extends Specification {
         then:
         bugs.size() == 0
         noExceptionThrown()
+    }
+
+    void "find all in project by name returns bugs"() {
+        setup:
+        def id = setupData()
+
+        expect:
+        def bug = bugService.findAllInProjectByName(project, "again")
+        bug.first().name == "Name of the bug again"
     }
 }

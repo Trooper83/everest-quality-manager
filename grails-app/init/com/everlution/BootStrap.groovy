@@ -67,26 +67,44 @@ class BootStrap {
         Step testStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         Step testStep1 = new Step(action: "do something12", result: "something happened12").save(failOnError: true)
         Step testStep2 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
+        Step testStep3 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
+        Step testStep4 = new Step(action: "do something123", result: "something happened123").save(failOnError: true)
         def group = new TestGroup(name: "Bootstrapped test group", project: project).save(failOnError: true)
         def group1 = new TestGroup(name: "Bootstrapped test group1", project: project).save(failOnError: true)
+        def group2 = new TestGroup(name: "Bootstrapped test group2", project: project1).save(failOnError: true)
         def testCase = new TestCase(person: person, name: "everest", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep, testStep1],
                 project: project, area: area).save(failOnError: true)
-        new TestCase(person: person, name: "everest123", description: "desc",
+        def testCase1 = new TestCase(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep2],
+                project: project1, area: area1).save(failOnError: true)
+        def testCase2 = new TestCase(person: person, name: "everest123", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep3],
+                project: project, area: area).save(failOnError: true)
+        def testCase3 = new TestCase(person: person, name: "everest123", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
                 project: project1, area: area1).save(failOnError: true)
         testCase.addToTestGroups(group)
         testCase.addToTestGroups(group1)
+        testCase1.addToTestGroups(group2)
+        testCase2.addToTestGroups(group)
+        testCase3.addToTestGroups(group2)
         def bugStep = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep1 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep2 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep3 = new Step(action: "do something", result: "something happened").save(failOnError: true)
+        def bugStep4 = new Step(action: "do something", result: "something happened").save(failOnError: true)
+        def bugStep5 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 1", description: "description of the bug",
                 project: project1, steps: [bugStep], area: area1, status: "Open").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 2", description: "description of the bug 1",
                 project: project, steps: [bugStep1], area: area, status: "Open").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 3", description: "description of the bug 2",
                 project: project1, steps: [bugStep2, bugStep3], area: area1, status: "Open").save(failOnError: true)
+        new Bug(person: person, name: "seeded bug 4", description: "description of the bug 1",
+                project: project, steps: [bugStep4], area: area, status: "Open").save(failOnError: true)
+        new Bug(person: person, name: "seeded bug 5", description: "description of the bug 2",
+                project: project1, steps: [bugStep5], area: area1, status: "Open").save(failOnError: true)
         new Scenario(person: person, name: "everest123", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project1).save(failOnError: true)
@@ -94,6 +112,7 @@ class BootStrap {
                 executionMethod: "Automated", type: "UI",
                 project: project).save(failOnError: true)
         def plan = new ReleasePlan(name: "Bootstrapped release plan", project: project).save(failOnError: true)
+        new ReleasePlan(name: "Bootstrapped release plan1", project: project1).save(failOnError: true)
         def cycle = new TestCycle(name: "Bootstrapped test cycle")
         plan.addToTestCycles(cycle).save(failOnError: true)
     }
