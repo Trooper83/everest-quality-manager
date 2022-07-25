@@ -35,7 +35,8 @@
         </fieldset>
     </g:form>
 </div>
-<asset:javascript src="project.js"/>
+<asset:javascript src="createProjectArea.js"/>
+<asset:javascript src="createProjectEnvironment.js"/>
 <asset:javascript src="popper.min.js"/>
 </body>
 </html>

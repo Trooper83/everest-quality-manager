@@ -37,7 +37,7 @@
             <span id="result-label" class="property-label">Result</span>
             <div class="property-value" aria-labelledby="result-label">${testIteration.result}</div>
         </li>
-    <g:link class="btn btn-primary" role="button"
+    <g:link class="btn btn-secondary" role="button"
             uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testIteration/execute/${this.testIteration.id}">Execute</g:link>
     </ol>
         <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>

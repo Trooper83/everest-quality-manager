@@ -21,7 +21,7 @@
     <div class="col-4 mt-4 mb-4">
         <g:form uri="/project/${project.id}/bugs" params="['isSearch': 'true']">
             <g:textField name="name" autocomplete="off" placeholder="Bug Name" />
-            <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
+            <button class="btn btn-secondary" type="submit" id="searchButton">Search</button>
         </g:form>
     </div>
     <table>
