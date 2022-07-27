@@ -104,11 +104,11 @@ class EditPageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(edited)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(edited).size() == 1
+        and:
+        page.environmentTagEditButton(edited).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagRemoveButton(edited).size() == 1
+        and:
+        page.environmentTagRemoveButton(edited).size() == 0
     }
 
     void "create environment input tooltip text"() {
@@ -161,11 +161,11 @@ class EditPageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and:
+        page.environmentTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and:
+        page.environmentTagEditButton(tag).size() == 0
     }
 
     void "environment tag edit fields removed or hidden when click outside of input field"() {
@@ -186,11 +186,11 @@ class EditPageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and:
+        page.environmentTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagRemoveButton(tag).size() == 1
+        and:
+        page.environmentTagRemoveButton(tag).size() == 0
     }
 
     void "environment tag edit fields removed or hidden when second tag is edited"() {
@@ -211,11 +211,11 @@ class EditPageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and:
+        page.environmentTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagRemoveButton(tag).size() == 1
+        and:
+        page.environmentTagRemoveButton(tag).size() == 0
     }
 
     void "environment tag edits not persisted when cancelled"() {
@@ -236,5 +236,24 @@ class EditPageEnvironmentSpec extends GebSpec {
         then: "save button removed"
         page.displayEnvironmentTagEditFields(tag)
         page.environmentTagInput(tag).value() == tag
+    }
+
+    void "environment tag edit options removed or hidden when click outside of button group"() {
+        given: "add a tag"
+        def tag = "Env Edit"
+        def page = browser.page(EditProjectPage)
+        page.addEnvironmentTag(tag)
+
+        and: "edit tag"
+        page.displayEnvironmentTagEditOptions(tag)
+
+        when: "click outside input"
+        page.environmentInput.click()
+
+        then:
+        page.environmentTagEditButton(tag).size() == 0
+
+        and:
+        page.environmentTagRemoveButton(tag).size() == 0
     }
 }

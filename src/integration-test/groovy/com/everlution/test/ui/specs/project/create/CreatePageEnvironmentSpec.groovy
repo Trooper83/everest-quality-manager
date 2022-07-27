@@ -21,7 +21,7 @@ class CreatePageEnvironmentSpec extends GebSpec {
 
     void "environment tag is added and removed"() {
         given: "add a tag"
-        def tag = "Test Environment"
+        def tag = "Test Env"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag(tag)
 
@@ -37,7 +37,7 @@ class CreatePageEnvironmentSpec extends GebSpec {
 
     void "environment tag input is cleared when tag added"() {
         given: "add a tag"
-        def tag = "Test Environment"
+        def tag = "Test Env"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag(tag)
 
@@ -49,47 +49,47 @@ class CreatePageEnvironmentSpec extends GebSpec {
     void "hidden environment input is added"() {
         given: "add a tag"
         def page = browser.page(CreateProjectPage)
-        page.addEnvironmentTag("Test Environment")
+        page.addEnvironmentTag("Test Env")
 
         expect: "hidden input is present and not displayed"
-        !page.isEnvironmentTagHiddenInputDisplayed("Test Environment")
+        !page.isEnvironmentTagHiddenInputDisplayed("Test Env")
     }
 
     void "removing one tag does not remove all"() {
         given: "add two tags"
         def page = browser.page(CreateProjectPage)
-        page.addEnvironmentTag("Test Environment1")
-        page.addEnvironmentTag("Test Environment2")
+        page.addEnvironmentTag("first")
+        page.addEnvironmentTag("second")
 
         expect: "two tags are found"
         page.environmentTags.size() == 2
-        page.isEnvironmentTagDisplayed("Test Environment2")
+        page.isEnvironmentTagDisplayed("second")
 
         when: "remove one tag"
-        page.removeEnvironmentTag("Test Environment1")
+        page.removeEnvironmentTag("first")
 
         then: "only the selected tag is removed"
         page.environmentTags.size() == 1
-        page.isEnvironmentTagDisplayed("Test Environment2")
+        page.isEnvironmentTagDisplayed("second")
     }
 
     void "environment tag can be edited"() {
         given: "add a tag"
         def page = browser.page(CreateProjectPage)
-        page.addEnvironmentTag("Test Environment Edit")
+        page.addEnvironmentTag("Env Edit")
 
         when: "edit tag"
-        page.editEnvironmentTag("Test Environment Edit", "Edited Environment Tag")
+        page.editEnvironmentTag("Env Edit", "Edit Env")
 
         then: "tag is updated"
-        page.isEnvironmentTagDisplayed("Edited Environment Tag")
-        !page.isEnvironmentTagDisplayed("Test Environment Edit")
+        page.isEnvironmentTagDisplayed("Edit Env")
+        !page.isEnvironmentTagDisplayed("Env Edit")
     }
 
     void "environment tag elements correct after tag edited"() {
         given: "add a tag"
-        def tag = "Test Environment Edit"
-        def edited = "Edited Environment Tag"
+        def tag = "Env Edit"
+        def edited = "Edit Env"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag(tag)
 
@@ -102,11 +102,11 @@ class CreatePageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(edited)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(edited).size() == 1
+        and: "edit button is not displayed"
+        page.environmentTagEditButton(edited).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagRemoveButton(edited).size() == 1
+        and: "delete button is not displayed"
+        page.environmentTagRemoveButton(edited).size() == 0
     }
 
     void "create environment input tooltip text"() {
@@ -121,10 +121,10 @@ class CreatePageEnvironmentSpec extends GebSpec {
     void "edit environment name input tooltip text"() {
         given: "add tag with name"
         def page = browser.page(CreateProjectPage)
-        page.addEnvironmentTag("test")
+        page.addEnvironmentTag("Edit Env")
 
         when: "edit tag with blank value"
-        page.editEnvironmentTag("test", "")
+        page.editEnvironmentTag("Edit Env", "")
 
         then: "tooltip displayed"
         page.tooltip.text() == "Environment Name cannot be blank"
@@ -144,7 +144,7 @@ class CreatePageEnvironmentSpec extends GebSpec {
 
     void "environment tag edit fields removed or hidden when cancelled"() {
         given: "add a tag"
-        def tag = "Test Env Edit"
+        def tag = "Env Edit"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag(tag)
 
@@ -160,16 +160,16 @@ class CreatePageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and: "edit button is not displayed"
+        page.environmentTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and: "delete button is not displayed"
+        page.environmentTagEditButton(tag).size() == 0
     }
 
     void "environment tag edit fields removed or hidden when click outside of input field"() {
         given: "add a tag"
-        def tag = "Test Env Edit"
+        def tag = "Env Edit"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag(tag)
 
@@ -185,17 +185,17 @@ class CreatePageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and: "edit button is not displayed"
+        page.environmentTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagRemoveButton(tag).size() == 1
+        and: "delete button is not displayed"
+        page.environmentTagRemoveButton(tag).size() == 0
     }
 
     void "environment tag edit fields removed or hidden when second tag is edited"() {
         given: "add a tag"
-        def tag = "Test Env Edit"
-        def tag1 = "Second Test Env Edit"
+        def tag = "Edit Env"
+        def tag1 = "Tag"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag(tag)
         page.addEnvironmentTag(tag1)
@@ -210,16 +210,16 @@ class CreatePageEnvironmentSpec extends GebSpec {
         and: "input is hidden"
         !page.isEnvironmentTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.environmentTagEditButton(tag).size() == 1
+        and:
+        page.environmentTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.environmentTagRemoveButton(tag).size() == 1
+        and:
+        page.environmentTagRemoveButton(tag).size() == 0
     }
 
     void "environment tag edits not persisted when cancelled"() {
         given: "add a tag"
-        def tag = "Test Env Edit"
+        def tag = "Env Edit"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag(tag)
 
@@ -235,5 +235,24 @@ class CreatePageEnvironmentSpec extends GebSpec {
         then: "save button removed"
         page.displayEnvironmentTagEditFields(tag)
         page.environmentTagInput(tag).value() == tag
+    }
+
+    void "environment tag edit options removed or hidden when click outside of button group"() {
+        given: "add a tag"
+        def tag = "Env Edit"
+        def page = browser.page(CreateProjectPage)
+        page.addEnvironmentTag(tag)
+
+        and: "edit tag"
+        page.displayEnvironmentTagEditOptions(tag)
+
+        when: "click outside input"
+        page.environmentInput.click()
+
+        then: "edit button is displayed"
+        page.environmentTagEditButton(tag).size() == 0
+
+        and: "delete button is displayed"
+        page.environmentTagRemoveButton(tag).size() == 0
     }
 }

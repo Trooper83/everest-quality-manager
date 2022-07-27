@@ -10,7 +10,7 @@ function addAreaTag() {
                 itemIndex + '].name" id="areas[' + itemIndex + '].name" value="' + text + '"' +
                 'data-toggle="tooltip" trigger="manual" data-original-title="Area Name cannot be blank"/>');
         let pill = $(`<h3><p class="badge badge-secondary">${text}
-            <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
+            <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil ml-1" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
             </svg>
         </p></h3>`);
@@ -42,15 +42,15 @@ function displayAreaOptions(element) {
     $(element).parents('li').append(buttonGroup);
 
     // adds a click handler to cancel edit if clicked outside input
-   $(document).on('click', function(event) {
-      let ele = $('.btn-group');
-      if($(event.target).is('p svg')) return;
-      if(ele.length < 1) return;
-      if(!ele.is(event.target)) {
-          ele.remove();
-          $(document).off('div[role=main] form');
-      }
-   });
+      $(document).on('click', function(event) {
+         let ele = $('div.btn-group:visible');
+         if($(event.target).is('svg, path')) return;
+         if(ele.length < 1) return;
+         if(!ele.is(event.target)) {
+             ele.remove();
+             $(document).off('div[role=main] form');
+         }
+      });
 }
 
 /**
@@ -80,7 +80,7 @@ function editAreaTag(button) {
             let text = ele.parent().attr('name');
             ele.val(text);
             let pill = $(`<h3><p class="badge badge-secondary">${text}
-                        <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil ml-1" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                         </svg>
                     </p></h3>`);
@@ -109,7 +109,7 @@ function cancelAreaTag(element) {
     let text = ele.parent().attr('name');
     input.val(text);
     let pill = $(`<h3><p class="badge badge-secondary">${text}
-                <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil ml-1" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                 </svg>
             </p></h3>`);
@@ -130,7 +130,7 @@ function saveAreaTag(element) {
         input.attr('value', text);
         ele.parent().attr('name', text);
         let pill = $(`<h3><p class="badge badge-secondary">${text}
-                        <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer" width="12" height="12" fill="currentColor" class="bi bi-pencil ml-1" viewBox="0 0 20 20" onclick="displayAreaOptions(this)">
                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                         </svg>
                     </p></h3>`);
