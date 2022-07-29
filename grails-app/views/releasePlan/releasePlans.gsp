@@ -24,14 +24,18 @@
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Project</th>
+                    <th>Status</th>
+                    <th>Planned Date</th>
+                    <th>Release Date</th>
                 </tr>
                 </thead>
                 <tbody>
                 <g:each var="releasePlan" in="${releasePlanList}">
                     <tr>
                         <td><g:link uri="/project/${project.id}/releasePlan/show/${releasePlan.id}">${releasePlan.name}</g:link></td>
-                        <td>${releasePlan.project.name}</td>
+                        <td>${releasePlan.status}</td>
+                        <td><g:formatDate format="MMMM dd, yyyy" date="${releasePlan.plannedDate}"/></td>
+                        <td><g:formatDate format="MMMM dd, yyyy" date="${releasePlan.releaseDate}"/></td>
                     </tr>
                 </g:each>
                 </tbody>

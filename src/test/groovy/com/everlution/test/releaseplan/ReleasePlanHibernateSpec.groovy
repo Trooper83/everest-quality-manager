@@ -17,7 +17,7 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
 
     void "test date created auto generated"() {
         when:
-        def plan = new ReleasePlan(name: "name", project: project).save()
+        def plan = new ReleasePlan(name: "name", project: project, status: "ToDo").save()
 
         then:
         plan.dateCreated != null
@@ -26,7 +26,7 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
     void "save does not cascade to project"() {
         when: "unsaved project is added to plan"
         def p = new Project(name: "fail", code: "fai")
-        new ReleasePlan(name: "name", project: p).save()
+        new ReleasePlan(name: "name", project: p, status: "ToDo").save()
 
         then: "exception is thrown"
         thrown(InvalidDataAccessApiUsageException)
@@ -34,7 +34,7 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
 
     void "delete plan does not cascade to project"() {
         given:
-        def plan = new ReleasePlan(name: "name", project: project).save()
+        def plan = new ReleasePlan(name: "name", project: project, status: "ToDo").save()
 
         when: "delete test case"
         plan.delete()
@@ -48,7 +48,7 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
     void "delete release plan cascades to test cycles"() {
         given:
         def cycle = new TestCycle(name: "cycle name")
-        def plan = new ReleasePlan(name: "name", project: project).addToTestCycles(cycle).save()
+        def plan = new ReleasePlan(name: "name", project: project, status: "ToDo").addToTestCycles(cycle).save()
 
         expect:
         ReleasePlan.findById(plan.id) != null
@@ -65,7 +65,7 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
     void "save release plan cascades to test cycles"() {
         when:
         def cycle = new TestCycle(name: "cycle name")
-        def plan = new ReleasePlan(name: "name", project: project).addToTestCycles(cycle).save()
+        def plan = new ReleasePlan(name: "name", project: project, status: "ToDo").addToTestCycles(cycle).save()
 
         then:
         ReleasePlan.findById(plan.id) != null
@@ -75,7 +75,7 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
     void "removeFromTestCycles deletes test cycles"() {
         given:
         def cycle = new TestCycle(name: "cycle name")
-        def plan = new ReleasePlan(name: "name", project: project).addToTestCycles(cycle).save()
+        def plan = new ReleasePlan(name: "name", project: project, status: "ToDo").addToTestCycles(cycle).save()
 
         expect:
         ReleasePlan.findById(plan.id) != null

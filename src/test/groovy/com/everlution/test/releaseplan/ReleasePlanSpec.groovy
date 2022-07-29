@@ -13,8 +13,8 @@ class ReleasePlanSpec extends Specification implements DomainUnitTest<ReleasePla
     void "test instances are persisted"() {
         setup:
         def project = new Project(name: "rps domain project", code: "rps")
-        new ReleasePlan(name: "First Test Case", project: project).save()
-        new ReleasePlan(name: "Second Test Case", project: project).save()
+        new ReleasePlan(name: "First Test Case", project: project, status: "ToDo").save()
+        new ReleasePlan(name: "Second Test Case", project: project, status: "ToDo").save()
 
         expect:
         ReleasePlan.count() == 2
@@ -102,5 +102,59 @@ class ReleasePlanSpec extends Specification implements DomainUnitTest<ReleasePla
         then:
         !domain.validate(["project"])
         domain.errors["project"].code == "nullable"
+    }
+
+    void "planned date can be null"() {
+        when:
+        domain.plannedDate = null
+
+        then:
+        domain.validate(["plannedDate"])
+    }
+
+    void "release date can be null"() {
+        when:
+        domain.releaseDate = null
+
+        then:
+        domain.validate(["releaseDate"])
+    }
+
+    void "status cannot be null"() {
+        when:
+        domain.status = null
+
+        then:
+        !domain.validate(["status"])
+        domain.errors["status"].code == "nullable"
+    }
+
+    void "status cannot be blank"() {
+        when:
+        domain.status = ''
+
+        then:
+        !domain.validate(["status"])
+        domain.errors["status"].code == "blank"
+    }
+
+    void "status validates with value in list"(String value) {
+        when:
+        domain.status = value
+
+        then:
+        domain.validate(["status"])
+
+        where:
+        value << ["ToDo", "Planning", "In Progress", "Released"]
+    }
+
+    void "status does not validate with value not in list"() {
+        when:
+        domain.status = 'test'
+
+        then:
+        !domain.validate(["status"])
+        domain.errors["status"].code == "not.inList"
     }
 }

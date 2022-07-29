@@ -21,15 +21,31 @@
                     <span id="name-label" class="property-label">Name</span>
                     <div class="property-value" id="name">${releasePlan.name}</div>
                 </li>
+                <li class="fieldcontain">
+                    <span id="status-label" class="property-label">Status</span>
+                    <div class="property-value" id="status">${releasePlan.status}</div>
+                </li>
+                <li class="fieldcontain">
+                    <span id="plannedDate-label" class="property-label">Planned Date</span>
+                    <div class="property-value" id="plannedDate">
+                        <g:formatDate format="MMMM dd, yyyy" date="${releasePlan.plannedDate}"/>
+                    </div>
+                </li>
+                <li class="fieldcontain">
+                    <span id="releaseDate-label" class="property-label">Release Date</span>
+                    <div class="property-value" id="releaseDate">
+                        <g:formatDate format="MMMM dd, yyyy" date="${releasePlan.releaseDate}"/>
+                    </div>
+                </li>
             </ol>
             <div class="container">
                 <h1>Test Cycles</h1>
                 <sec:ifAnyGranted roles="ROLE_BASIC">
-                    <button id="addTestCycleBtn" type="button" class="btn btn-secondary" data-toggle="modal"
+                    <button id="addTestCycleBtn" type="button" class="btn btn-secondary mt-2 mb-3" data-toggle="modal"
                             data-target="#testCycleModal">Add Test Cycle
                     </button>
                 </sec:ifAnyGranted>
-            <div class="accordion" id="testCycles">
+            <div class="accordion mb-3" id="testCycles">
                 <g:each status="i" var="cycle" in="${releasePlan.testCycles}">
                 <div class="card">
                     <div class="card-header" id="testCycle-${i}">

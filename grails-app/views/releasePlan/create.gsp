@@ -14,7 +14,26 @@
             <g:form resource="${this.releasePlan}" method="POST" uri="/project/${project.id}/releasePlan/save">
                 <fieldset class="form">
                     <g:hiddenField name="project" value="${project.id}"/>
-                    <f:all bean="releasePlan" except="project, testCycles"/>
+                    <div class="fieldcontain">
+                        <label for="name">Name
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <g:textField name="name" required="true"/>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="status">Status</label>
+                        <g:select name="status" from="${['ToDo', 'Planning', 'In Progress', 'Released']}"/>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="plannedDate">Planned Date</label>
+                        <g:datePicker name="plannedDate" value=" " precision="day"
+                                      noSelection="['':'']" relativeYears="[0..1]"/>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="releaseDate">Release Date</label>
+                        <g:datePicker name="releaseDate" value=" " precision="day"
+                                      noSelection="['':'']" relativeYears="[0..1]"/>
+                    </div>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
