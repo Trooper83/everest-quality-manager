@@ -61,21 +61,21 @@ class ReleasePlanServiceSpec extends Specification {
         setupData()
 
         expect:
-        releasePlanService.count() == 5
+        releasePlanService.count() == 6
     }
 
     void "delete removes plan"() {
         Long releasePlanId = setupData()
 
         expect:
-        releasePlanService.count() == 5
+        releasePlanService.count() == 6
 
         when:
         releasePlanService.delete(releasePlanId)
         sessionFactory.currentSession.flush()
 
         then:
-        releasePlanService.count() == 4
+        releasePlanService.count() == 5
     }
 
     void "save persists instance"() {
