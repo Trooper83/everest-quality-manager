@@ -1,8 +1,11 @@
 package com.everlution.test.project
 
+import com.everlution.BugService
 import com.everlution.Project
 import com.everlution.ProjectController
 import com.everlution.ProjectService
+import com.everlution.ScenarioService
+import com.everlution.TestCaseService
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -407,8 +410,18 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "home action renders home view"() {
         given:
+        def project = new Project()
         controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
+            1 * get(2) >> project
+        }
+        controller.bugService = Mock(BugService) {
+            1 * findAllByProject(project) >> []
+        }
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllByProject(project) >> []
+        }
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * findAllByProject(project) >> []
         }
 
         when:"a domain instance is passed to the home action"
@@ -433,8 +446,18 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "home action with a valid id"() {
         given:
+        def project = new Project()
         controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> new Project()
+            1 * get(2) >> project
+        }
+        controller.bugService = Mock(BugService) {
+            1 * findAllByProject(project) >> []
+        }
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllByProject(project) >> []
+        }
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * findAllByProject(project) >> []
         }
 
         when:"A domain instance is passed to the home action"
@@ -442,6 +465,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:"A model is populated containing the domain instance"
         model.project instanceof Project
+        model.bugCount == 0
+        model.scenarioCount == 0
+        model.testCaseCount == 0
     }
 }
 

@@ -10,16 +10,6 @@ abstract class TestCaseService implements ITestCaseService {
     TestStepService testStepService
 
     /**
-     * gets all test cases in the domain with the associated project
-     * @param projectId - id of the project
-     * @return - list of all test cases with the project
-     */
-    @Transactional
-    List<TestCase> findAllByProject(Project project) {
-        return TestCase.findAllByProject(project)
-    }
-
-    /**
      * finds all test cases in the project with a name
      * that contains the string
      * @param name - the string to search

@@ -2,6 +2,8 @@ package com.everlution
 
 interface IScenarioService {
 
+    List<Scenario> findAllByProject(Project project)
+
     Scenario get(Serializable id)
 
     List<Scenario> list(Map args)

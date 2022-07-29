@@ -2,6 +2,8 @@ package com.everlution
 
 interface ITestCaseService {
 
+    List<TestCase> findAllByProject(Project project)
+
     TestCase get(Serializable id)
 
     List<TestCase> list(Map args)

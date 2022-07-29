@@ -9,7 +9,11 @@ import static org.springframework.http.HttpStatus.*
 
 class ProjectController {
 
+    BugService bugService
     ProjectService projectService
+    ReleasePlanService releasePlanService
+    ScenarioService scenarioService
+    TestCaseService testCaseService
 
     static allowedMethods = [getProjectItems: "GET", save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -52,7 +56,11 @@ class ProjectController {
             notFound()
             return
         }
-        respond project, view: "home"
+        def bugCount = bugService.findAllByProject(project).size()
+        def testCaseCount = testCaseService.findAllByProject(project).size()
+        def scenarioCount = scenarioService.findAllByProject(project).size()
+        respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
+                bugCount: bugCount]
     }
 
     /**
