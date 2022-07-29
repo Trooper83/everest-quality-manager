@@ -34,7 +34,7 @@
                 <g:textArea class="property-value" name="notes" value="${this.testIteration.notes}"></g:textArea>
             </li>
             <sec:ifAnyGranted roles="ROLE_BASIC">
-                <input data-test-id="edit-update-button" class="btn btn-primary" type="submit" value="Complete">
+                <input data-test-id="edit-update-button" class="btn btn-secondary" type="submit" value="Complete">
             </sec:ifAnyGranted>
         </ol>
     </g:form>

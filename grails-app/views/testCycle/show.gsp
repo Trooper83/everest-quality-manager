@@ -35,7 +35,7 @@
             <div class="property-value" id="platform">${testCycle.platform}</div>
         </li>
         <sec:ifAnyGranted roles="ROLE_BASIC">
-            <button id="addTestsBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#testsModal">
+            <button id="addTestsBtn" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#testsModal">
                 Add Tests
             </button>
         </sec:ifAnyGranted>
@@ -88,7 +88,7 @@
                         <button type="button" class="btn btn-secondary" data-dismiss="modal"
                                 data-test-id="modal-cancel-button">Cancel
                         </button>
-                        <g:submitButton data-test-id="modal-submit-button" class="btn btn-primary" name="submit" value="Add Tests"/>
+                        <g:submitButton data-test-id="modal-submit-button" class="btn btn-secondary" name="submit" value="Add Tests"/>
                     </div>
                 </form>
             </div>

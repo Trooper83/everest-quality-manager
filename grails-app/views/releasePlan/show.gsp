@@ -25,7 +25,7 @@
             <div class="container">
                 <h1>Test Cycles</h1>
                 <sec:ifAnyGranted roles="ROLE_BASIC">
-                    <button id="addTestCycleBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                    <button id="addTestCycleBtn" type="button" class="btn btn-secondary" data-toggle="modal"
                             data-target="#testCycleModal">Add Test Cycle
                     </button>
                 </sec:ifAnyGranted>
@@ -102,7 +102,7 @@
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"
                                         data-test-id="modal-cancel-button">Cancel
                                 </button>
-                                <g:submitButton data-test-id="modal-submit-button" class="btn btn-primary"
+                                <g:submitButton data-test-id="modal-submit-button" class="btn btn-secondary"
                                                 name="submit" value="Add Test Cycle"
                                 />
                             </div>

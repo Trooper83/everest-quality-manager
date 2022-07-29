@@ -89,14 +89,14 @@ class TestGroupServiceSpec extends Specification {
         Long testGroupId = setupData()
 
         expect:
-        testGroupService.count() == 7
+        testGroupService.count() == 8
 
         when:
         testGroupService.delete(testGroupId)
         sessionFactory.currentSession.flush()
 
         then:
-        testGroupService.count() == 6
+        testGroupService.count() == 7
     }
 
     void "test save"() {

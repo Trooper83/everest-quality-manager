@@ -102,11 +102,11 @@ class CreatePageAreaSpec extends GebSpec {
         and: "input is hidden"
         !page.isAreaTagHiddenInputDisplayed(edited)
 
-        and: "edit button is displayed"
-        page.areaTagEditButton(edited).size() == 1
+        and: "edit button is not displayed"
+        page.areaTagEditButton(edited).size() == 0
 
-        and: "delete button is displayed"
-        page.areaTagRemoveButton(edited).size() == 1
+        and: "delete button is not displayed"
+        page.areaTagRemoveButton(edited).size() == 0
     }
 
     void "create area input tooltip text"() {
@@ -160,11 +160,11 @@ class CreatePageAreaSpec extends GebSpec {
         and: "input is hidden"
         !page.isAreaTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.areaTagEditButton(tag).size() == 1
+        and:
+        page.areaTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.areaTagRemoveButton(tag).size() == 1
+        and:
+        page.areaTagRemoveButton(tag).size() == 0
     }
 
     void "area tag edit fields removed or hidden when click outside of input field"() {
@@ -185,11 +185,11 @@ class CreatePageAreaSpec extends GebSpec {
         and: "input is hidden"
         !page.isAreaTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.areaTagEditButton(tag).size() == 1
+        and:
+        page.areaTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.areaTagRemoveButton(tag).size() == 1
+        and:
+        page.areaTagRemoveButton(tag).size() == 0
     }
 
     void "area tag edit fields removed or hidden when second tag is edited"() {
@@ -210,11 +210,11 @@ class CreatePageAreaSpec extends GebSpec {
         and: "input is hidden"
         !page.isAreaTagHiddenInputDisplayed(tag)
 
-        and: "edit button is displayed"
-        page.areaTagEditButton(tag).size() == 1
+        and:
+        page.areaTagEditButton(tag).size() == 0
 
-        and: "delete button is displayed"
-        page.areaTagRemoveButton(tag).size() == 1
+        and:
+        page.areaTagRemoveButton(tag).size() == 0
     }
 
     void "area tag edits not persisted when cancelled"() {
@@ -235,5 +235,24 @@ class CreatePageAreaSpec extends GebSpec {
         then: "save button removed"
         page.displayAreaTagEditFields(tag)
         page.areaTagInput(tag).value() == tag
+    }
+
+    void "area tag edit options removed or hidden when click outside of button group"() {
+        given: "add a tag"
+        def tag = "Test Area Edit"
+        def page = browser.page(CreateProjectPage)
+        page.addAreaTag(tag)
+
+        and: "edit tag"
+        page.displayAreaTagEditOptions(tag)
+
+        when: "click outside input"
+        page.environmentInput.click()
+
+        then: "edit button is displayed"
+        page.areaTagEditButton(tag).size() == 0
+
+        and: "remove button is displayed"
+        page.areaTagRemoveButton(tag).size() == 0
     }
 }
