@@ -14,7 +14,9 @@ class ShowReleasePlanPage extends ShowPage {
     static content = {
         addTestCycleButton(required: false) { $("#addTestCycleBtn") }
         nameValue { $("#name") }
-        projectValue { $("#project") }
+        plannedDateValue { $("#plannedDate") }
+        releaseDateValue { $("#releaseDate") }
+        statusValue { $("#status") }
         testCycleButtons { $("#testCycles button") }
         testCyclesContent { $("#testCycles [data-test-id=testCycle-content]") }
         testCycleModal { $("#testCycleModal") }
@@ -136,13 +138,6 @@ class ShowReleasePlanPage extends ShowPage {
         waitFor {
             testCycleModal.displayed
         }
-    }
-
-    /**
-     * clicks the edit link
-     */
-    void goToEdit() {
-        editLink.click()
     }
 
     /**

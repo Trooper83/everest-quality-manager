@@ -54,12 +54,15 @@ class CreateReleasePlanSpec extends GebSpec {
         when: "go to the create page & create instance"
         def page = to(CreateReleasePlanPage, project.id)
         def name = DataFactory.releasePlan().name
-        page.createReleasePlan(name)
+        page.createReleasePlan(name, "ToDo", "July 25, 2023", "July 31, 2023")
 
         then: "at show page"
         def show = at ShowReleasePlanPage
         verifyAll {
             show.nameValue.text() == name
+            show.statusValue.text() == "ToDo"
+            show.plannedDateValue.text() == "July 25, 2023"
+            show.releaseDateValue.text() == "July 31, 2023"
         }
     }
 }

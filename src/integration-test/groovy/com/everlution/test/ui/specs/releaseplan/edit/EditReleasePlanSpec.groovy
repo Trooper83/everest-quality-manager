@@ -65,7 +65,7 @@ class EditReleasePlanSpec extends GebSpec {
         def projectData = DataFactory.project()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code))
         def pd = DataFactory.releasePlan()
-        def plan = new ReleasePlan(name: pd.name, project: project)
+        def plan = new ReleasePlan(name: pd.name, project: project, status: "ToDo")
         def id = releasePlanService.save(plan).id
 
         and: "login as a basic user"
@@ -78,10 +78,13 @@ class EditReleasePlanSpec extends GebSpec {
 
         when: "edit instance"
         def editPage = at EditReleasePlanPage
-        editPage.editReleasePlan("edited name")
+        editPage.editReleasePlan("edited name", "Released", "August 10, 2023", "August 23, 2023")
 
         then: "at show page with edited data"
         def showPage = at ShowReleasePlanPage
         showPage.nameValue.text() == "edited name"
+        showPage.statusValue.text() == "Released"
+        showPage.plannedDateValue.text() == "August 10, 2023"
+        showPage.releaseDateValue.text() == "August 23, 2023"
     }
 }

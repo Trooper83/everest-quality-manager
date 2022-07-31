@@ -1,6 +1,8 @@
 package com.everlution.test.ui.specs.releaseplan
 
 import com.everlution.ProjectService
+import com.everlution.ReleasePlanService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -26,7 +28,7 @@ class ListSpec extends GebSpec {
         def page = to(ListReleasePlanPage, id)
 
         then: "correct headers are displayed"
-        page.listTable.getHeaders() == ["Name", "Project"]
+        page.listTable.getHeaders() == ["Name", "Status", "Planned Date", "Release Date"]
     }
 
     void "clicking name column directs to show page"() {
@@ -113,9 +115,14 @@ class ListSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
+        and:
+        def project = projectService.list(max: 1).first()
+        def plan = DataFactory.createReleasePlan(project)
+        DataFactory.createReleasePlan(project)
+
         and: "go to show page"
-        def id = projectService.list(max: 1).first().id
-        def page = to(ListReleasePlanPage, id)
+
+        def page = to(ListReleasePlanPage, project.id)
         page.listTable.clickCell("Name", 0)
 
         when: "delete"

@@ -110,9 +110,12 @@ class DataFactory {
         }
     }
 
-    static ReleasePlan createReleasePlan() {
+    static ReleasePlan createReleasePlan(Project project = null) {
+        if(project == null) {
+            project = createProject()
+        }
         ReleasePlan.withNewSession { session ->
-            new ReleasePlan(name: faker.ancient().god(), project: createProject()).save()
+            new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo").save()
         }
     }
 

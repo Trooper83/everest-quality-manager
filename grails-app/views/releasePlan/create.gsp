@@ -26,12 +26,12 @@
                     </div>
                     <div class="fieldcontain">
                         <label for="plannedDate">Planned Date</label>
-                        <g:datePicker name="plannedDate" value=" " precision="day"
+                        <g:datePicker name="plannedDate" default="none" precision="day"
                                       noSelection="['':'']" relativeYears="[0..1]"/>
                     </div>
                     <div class="fieldcontain">
                         <label for="releaseDate">Release Date</label>
-                        <g:datePicker name="releaseDate" value=" " precision="day"
+                        <g:datePicker name="releaseDate1" default="none" precision="day"
                                       noSelection="['':'']" relativeYears="[0..1]"/>
                     </div>
                 </fieldset>
