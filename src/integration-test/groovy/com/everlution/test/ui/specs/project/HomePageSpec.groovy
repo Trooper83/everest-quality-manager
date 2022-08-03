@@ -13,6 +13,9 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
 @Integration
 class HomePageSpec extends GebSpec {
 
@@ -70,7 +73,7 @@ class HomePageSpec extends GebSpec {
     void "error message displayed when project cannot be deleted with associated items"() {
         given: "a project with a release plan"
         def project = projectService.list(max: 1).first()
-        def plan = new ReleasePlan(name: "test plan", project: project)
+        def plan = new ReleasePlan(name: "test plan", project: project, status: "ToDo")
         releasePlanService.save(plan)
 
         and: "go to show project page"
@@ -83,5 +86,24 @@ class HomePageSpec extends GebSpec {
         then: "message displayed"
         at ProjectHomePage
         page.errorsMessage.text() == "Project has associated items and cannot be deleted"
+    }
+
+    void "next and previous links display"() {
+        given: "a project with a release plan"
+        def project = projectService.list(max: 1).first()
+        def futureDate = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
+        def pastDate = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def nextPlan = new ReleasePlan(name: "next plan", project: project, status: "ToDo", plannedDate: futureDate)
+        def previousPlan = new ReleasePlan(name: "previous plan", project: project, status: "Released", releaseDate: pastDate)
+        releasePlanService.save(nextPlan)
+        releasePlanService.save(previousPlan)
+
+        when: "go to project page"
+        go "/project/home/${project.id}"
+
+        then:
+        def page = at ProjectHomePage
+        page.nextReleaseLink.displayed
+        page.previousReleaseLink.displayed
     }
 }

@@ -59,8 +59,10 @@ class ProjectController {
         def bugCount = bugService.findAllByProject(project).size()
         def testCaseCount = testCaseService.findAllByProject(project).size()
         def scenarioCount = scenarioService.findAllByProject(project).size()
+        def releasePlans = releasePlanService.findAllByProject(project)
+        def plans = getPlans(releasePlans)
         respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
-                bugCount: bugCount]
+                bugCount: bugCount, nextRelease: plans.nextRelease, previousRelease: plans.previousRelease]
     }
 
     /**
@@ -183,5 +185,27 @@ class ProjectController {
             }
             '*'{ render status: NOT_FOUND }
         }
+    }
+
+    /**
+     * gets the next and previous release plans
+     */
+    private LinkedHashMap<String, ReleasePlan> getPlans(List<ReleasePlan> releasePlans) {
+
+        def now = new Date()
+
+        List<ReleasePlan> previous = List.copyOf(releasePlans)
+        def previousRelease = previous
+                .findAll {it.releaseDate != null & it.releaseDate < now }
+                .findAll {it.status == 'Released' }
+                .max { it.releaseDate }
+
+
+        List<ReleasePlan> next = List.copyOf(releasePlans)
+        def nextRelease = next
+                .findAll {it.plannedDate != null & it.plannedDate > now }
+                .findAll {it.status != 'Released' }
+                .min { it.plannedDate }
+        return [ nextRelease: nextRelease, previousRelease: previousRelease ]
     }
 }

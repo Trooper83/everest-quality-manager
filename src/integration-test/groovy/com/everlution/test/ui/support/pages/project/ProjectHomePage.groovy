@@ -17,6 +17,8 @@ class ProjectHomePage extends BasePage {
         errorsMessage { $("ul.errors") }
         fieldLabels { $("ol.property-list>li>span") }
         nameValue { $("#name") }
+        nextReleaseLink(required: false) { $("#releasePlanCard #nextLink") }
+        previousReleaseLink(required: false) { $("#releasePlanCard #previousLink") }
         projectNavButtons { module ProjectNavModule }
         sideBar { module SideBarModule }
         statusMessage { $("div.message") }

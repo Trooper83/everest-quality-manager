@@ -14,7 +14,7 @@
     <div class="container-fluid mt-5">
         <div class="row row-cols-1">
             <div class="col mb-4">
-                <div class="card h-100">
+                <div class="card h-100" id="testCaseCard">
                     <div class="bg-secondary" style="height: 50px; width: 100%;"> </div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">
@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="col mb-4">
-                <div class="card h-100">
+                <div class="card h-100" id="scenarioCard">
                     <div class="bg-secondary" style="height: 50px; width: 100%;"> </div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col mb-4">
-                <div class="card h-100">
+                <div class="card h-100" id="bugCard">
                     <div class="bg-secondary" style="height: 50px; width: 100%;"> </div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">
@@ -47,14 +47,18 @@
                 </div>
             </div>
             <div class="col mb-4">
-                <div class="card h-100">
+                <div class="card h-100" id="releasePlanCard">
                     <div class="bg-secondary" style="height: 50px; width: 100%;"> </div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">
                             <g:link uri="/project/${project.id}/releasePlans">Release Plans</g:link>
                         </h5>
-                        <p>Last Release</p>
-                        <p>Next Release</p>
+                        <p>Previous Release:
+                            <g:link elementId="previousLink" uri="/project/${project.id}/releasePlan/show/${previousRelease?.id}">${previousRelease?.name}</g:link>
+                        </p>
+                        <p>Next Release:
+                            <g:link elementId="nextLink" uri="/project/${project.id}/releasePlan/show/${nextRelease?.id}">${nextRelease?.name}</g:link>
+                        </p>
                     </div>
                 </div>
             </div>
