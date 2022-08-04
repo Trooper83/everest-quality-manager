@@ -14,7 +14,28 @@
             <g:form resource="${this.releasePlan}" method="PUT" uri="/project/${releasePlan.project.id}/releasePlan/update/${releasePlan.id}">
                 <g:hiddenField name="version" value="${this.releasePlan?.version}" />
                 <fieldset class="form">
-                    <f:all bean="releasePlan" except="project, testCycles"/>
+                    <div class="fieldcontain">
+                        <label for="name">Name
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <g:textField name="name" required="true" value="${releasePlan.name}"/>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="status">Status</label>
+                        <g:select name="status" value="${releasePlan.status}"
+                                  from="${['ToDo', 'Planning', 'In Progress', 'Released']}"
+                        />
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="plannedDate">Planned Date</label>
+                        <g:datePicker name="plannedDate" value="${releasePlan.plannedDate}" precision="day"
+                                      noSelection="['':'']" relativeYears="[0..1]" default="none"/>
+                    </div>
+                    <div class="fieldcontain">
+                        <label for="releaseDate">Release Date</label>
+                        <g:datePicker name="releaseDate" value="${releasePlan.releaseDate}" precision="day"
+                                      noSelection="['':'']" relativeYears="[0..1]" default="none"/>
+                    </div>
                 </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />

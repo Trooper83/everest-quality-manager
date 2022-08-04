@@ -25,7 +25,7 @@ class TestCycleServiceSpec extends Specification {
 
     private Long setupData() {
         def project = new Project(name: "release name765", code: "glo").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         new TestCycle(name: "First Test Case", releasePlan: plan).save()
         new TestCycle(name: "Second Test Case", releasePlan: plan).save(flush: true).id
     }
@@ -40,7 +40,7 @@ class TestCycleServiceSpec extends Specification {
     void "removeFrom cycle deletes iteration"() {
         given:
         def project = new Project(name: "release project name", code: "rpn").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         def person = new Person(email: "test@test.com", password: "!Password2022").save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
@@ -65,7 +65,7 @@ class TestCycleServiceSpec extends Specification {
     void "add iterations persists iterations"() {
         given:
         def project = new Project(name: "release project name", code: "rpn").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         def person = new Person(email: "test@test.com", password: "!Password2022").save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
@@ -88,7 +88,7 @@ class TestCycleServiceSpec extends Specification {
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
         TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
         TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "").save(flush: true)
         testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
@@ -104,7 +104,7 @@ class TestCycleServiceSpec extends Specification {
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
         TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
         TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web").save(flush: true)
         testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
@@ -123,7 +123,7 @@ class TestCycleServiceSpec extends Specification {
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
         TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
         TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan).save(flush: true)
         testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
@@ -142,7 +142,7 @@ class TestCycleServiceSpec extends Specification {
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
         TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
         TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, environ: env1).save(flush: true)
         testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
@@ -155,7 +155,7 @@ class TestCycleServiceSpec extends Specification {
         def project = DataFactory.createProject()
         def person = new Person(email: "test@test.com", password: "!Password2022").save()
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
 
         when:
@@ -171,7 +171,7 @@ class TestCycleServiceSpec extends Specification {
         def person = new Person(email: "test@test.com", password: "!Password2022").save()
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
 
         expect:

@@ -2,6 +2,7 @@ package com.everlution.test.ui.support.pages.releaseplan
 
 import com.everlution.test.ui.support.pages.common.CreatePage
 import com.github.javafaker.Faker
+import geb.module.Select
 
 class CreateReleasePlanPage extends CreatePage {
     static at = { title == "Create ReleasePlan" }
@@ -12,6 +13,13 @@ class CreateReleasePlanPage extends CreatePage {
 
     static content = {
         nameInput { $("#name") }
+        plannedDateDaySelect { $("#plannedDate_day").module(Select) }
+        plannedDateMonthSelect { $("#plannedDate_month").module(Select) }
+        plannedDateYearSelect { $("#plannedDate_year").module(Select) }
+        releaseDateDaySelect { $("#releaseDate_day").module(Select) }
+        releaseDateMonthSelect { $("#releaseDate_month").module(Select) }
+        releaseDateYearSelect { $("#releaseDate_year").module(Select) }
+        statusSelect { $("#status").module(Select) }
     }
 
     /**
@@ -26,8 +34,17 @@ class CreateReleasePlanPage extends CreatePage {
     /**
      * creates a plan with the supplied data
      */
-    void createReleasePlan(String name) {
+    void createReleasePlan(String name, String status, String plannedDate, String releaseDate) {
+        def plannedDateList = plannedDate.replace(',', '').split(' ')
+        def releaseDateList = releaseDate.replace(',', '').split(' ')
         nameInput << name
+        statusSelect.selected = status
+        plannedDateMonthSelect.selected = plannedDateList[0]
+        plannedDateDaySelect.selected = plannedDateList[1]
+        plannedDateYearSelect.selected = plannedDateList[2]
+        releaseDateDaySelect.selected = releaseDateList[1]
+        releaseDateMonthSelect.selected = releaseDateList[0]
+        releaseDateYearSelect.selected = releaseDateList[2]
         createButton.click()
     }
 

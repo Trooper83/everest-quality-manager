@@ -1,6 +1,7 @@
 package com.everlution.test.ui.specs.testcase
 
 import com.everlution.PersonService
+import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.test.support.DataFactory
@@ -17,6 +18,7 @@ import grails.testing.mixin.integration.Integration
 class ListSpec extends GebSpec {
 
     PersonService personService
+    ProjectService projectService
     TestCaseService testCaseService
 
     void "verify list table headers order"() {
@@ -58,28 +60,6 @@ class ListSpec extends GebSpec {
 
         then: "at show page"
         at ShowTestCasePage
-    }
-
-    void "create button menu displays"() {
-        given: "login as read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Test Cases')
-
-        when: "correct headers are displayed"
-        ListTestCasePage page = browser.page(ListTestCasePage)
-        page.projectNavButtons.openCreateMenu()
-
-        then:
-        page.projectNavButtons.isCreateMenuOpen()
     }
 
     void "search returns results"() {
@@ -151,5 +131,47 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         at ListTestCasePage
         listPage.statusMessage.text() ==~ /TestCase \d+ deleted/
+    }
+
+    void "create button not displayed for read only"(String email, String password) {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(email, password)
+
+        when:
+        def id = projectService.list().first().id
+        go "/project/${id}/testCases"
+
+        then:
+        def page = at ListTestCasePage
+        !page.createButton.displayed
+
+        where:
+        email                           | password
+        Credentials.READ_ONLY.email     | Credentials.READ_ONLY.password
+
+    }
+
+    void "create button displayed for basic and above"(String email, String password) {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(email, password)
+
+        when:
+        def id = projectService.list().first().id
+        go "/project/${id}/testCases"
+
+        then:
+        def page = at ListTestCasePage
+        page.createButton.displayed
+
+        where:
+        email                           | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
     }
 }

@@ -23,7 +23,7 @@ class DeleteReleasePlanSpec extends GebSpec {
 
     def setup() {
         project = projectService.list(max: 1).first()
-        def plan = new ReleasePlan(name: "delete spec plan", project: project)
+        def plan = new ReleasePlan(name: "delete spec plan", project: project, status: "ToDo")
         id = releasePlanService.save(plan).id
     }
 

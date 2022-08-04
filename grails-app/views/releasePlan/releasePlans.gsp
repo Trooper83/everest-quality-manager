@@ -8,7 +8,13 @@
     <body>
     <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
         <a href="#list-releasePlan" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-        <g:render template="/shared/projectButtonsTemplate"/>
+    <div class="row justify-content-end mt-3">
+        <sec:ifAnyGranted roles="ROLE_BASIC">
+            <g:if test="${params.projectId}">
+                <g:link role="button" class="btn btn-secondary" elementId="createButton" uri="/project/${params.projectId}/releasePlan/create">Create Plan</g:link>
+            </g:if>
+        </sec:ifAnyGranted>
+    </div>
         <div id="list-releasePlan" class="content scaffold-list col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
@@ -24,14 +30,18 @@
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Project</th>
+                    <th>Status</th>
+                    <th>Planned Date</th>
+                    <th>Release Date</th>
                 </tr>
                 </thead>
                 <tbody>
                 <g:each var="releasePlan" in="${releasePlanList}">
                     <tr>
                         <td><g:link uri="/project/${project.id}/releasePlan/show/${releasePlan.id}">${releasePlan.name}</g:link></td>
-                        <td>${releasePlan.project.name}</td>
+                        <td>${releasePlan.status}</td>
+                        <td><g:formatDate format="MMMM dd, yyyy" date="${releasePlan.plannedDate}"/></td>
+                        <td><g:formatDate format="MMMM dd, yyyy" date="${releasePlan.releaseDate}"/></td>
                     </tr>
                 </g:each>
                 </tbody>

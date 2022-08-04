@@ -1,4 +1,4 @@
-package com.everlution.test.ui.specs.project
+package com.everlution.test.ui.specs.project.home
 
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
@@ -9,9 +9,13 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
+import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
+
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Integration
 class HomePageSpec extends GebSpec {
@@ -38,20 +42,20 @@ class HomePageSpec extends GebSpec {
         page.createProject("status message project", "SMP")
 
         then: "at show page with message displayed"
-        def homePage = at ProjectHomePage
-        homePage.statusMessage.text() ==~ /Project \S+ created/
+        def show = at ShowProjectPage
+        show.statusMessage.text() ==~ /Project \S+ created/
     }
 
     void "project not deleted if alert is canceled"() {
         when: "go to show project page"
-        go "/project/home/${id}"
+        go "/project/show/${id}"
 
         and: "click delete and cancel | verify message"
-        def page = browser.page(ProjectHomePage)
+        def page = browser.page(ShowProjectPage)
         assert withConfirm(false) { page.deleteLink.click() } == "Are you sure?"
 
-        then: "at home page"
-        at ProjectHomePage
+        then: "at show page"
+        at ShowProjectPage
     }
 
     void "updated message displays after updating project"() {
@@ -63,25 +67,44 @@ class HomePageSpec extends GebSpec {
         page.editProject()
 
         then: "at show page with message displayed"
-        def homePage = at ProjectHomePage
-        homePage.statusMessage.text() == "Project ${id} updated"
+        def showPage = at ShowProjectPage
+        showPage.statusMessage.text() == "Project ${id} updated"
     }
 
     void "error message displayed when project cannot be deleted with associated items"() {
         given: "a project with a release plan"
         def project = projectService.list(max: 1).first()
-        def plan = new ReleasePlan(name: "test plan", project: project)
+        def plan = new ReleasePlan(name: "test plan", project: project, status: "ToDo")
         releasePlanService.save(plan)
 
         and: "go to show project page"
-        go "/project/home/${id}"
+        go "/project/show/${id}"
 
         when: "delete project"
-        def page = at ProjectHomePage
+        def page = at ShowProjectPage
         page.deleteProject()
 
         then: "message displayed"
-        at ProjectHomePage
+        at ShowProjectPage
         page.errorsMessage.text() == "Project has associated items and cannot be deleted"
+    }
+
+    void "next and previous links display"() {
+        given: "a project with a release plan"
+        def project = projectService.list(max: 1).first()
+        def futureDate = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
+        def pastDate = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def nextPlan = new ReleasePlan(name: "next plan", project: project, status: "ToDo", plannedDate: futureDate)
+        def previousPlan = new ReleasePlan(name: "previous plan", project: project, status: "Released", releaseDate: pastDate)
+        releasePlanService.save(nextPlan)
+        releasePlanService.save(previousPlan)
+
+        when: "go to project page"
+        go "/project/home/${project.id}"
+
+        then:
+        def page = at ProjectHomePage
+        page.nextReleaseLink.displayed
+        page.previousReleaseLink.displayed
     }
 }

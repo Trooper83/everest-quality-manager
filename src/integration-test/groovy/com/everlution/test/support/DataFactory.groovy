@@ -110,16 +110,19 @@ class DataFactory {
         }
     }
 
-    static ReleasePlan createReleasePlan() {
+    static ReleasePlan createReleasePlan(Project project = null) {
+        if(project == null) {
+            project = createProject()
+        }
         ReleasePlan.withNewSession { session ->
-            new ReleasePlan(name: faker.ancient().god(), project: createProject()).save()
+            new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo").save()
         }
     }
 
     static TestCycle createTestCycle() {
         TestCycle.withNewSession { session ->
             def project = new Project(name: faker.lorem().sentence(2), code: projectCodes.removeAt(0)).save()
-            def plan = new ReleasePlan(name: faker.ancient().god(), project: project).save()
+            def plan = new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo").save()
             new TestCycle(name: faker.animal().name(), releasePlan: plan).save()
         }
     }

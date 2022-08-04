@@ -7,6 +7,7 @@ class UrlMappings {
         "/projects"(controller: "project", action: "projects")
         "/project/home/$projectId"(controller: "project", action: "home")
         "/project/edit/$projectId"(controller: "project", action: "edit")
+        "/project/show/$projectId"(controller: "project", action: "show")
         group "/project/$projectId", {
             "/bugs"(controller: "bug", action: "bugs")
             "/releasePlans"(controller: "releasePlan", action: "releasePlans")

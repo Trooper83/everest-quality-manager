@@ -1,5 +1,6 @@
 package com.everlution.test.ui.specs.bug
 
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
@@ -11,6 +12,8 @@ import grails.testing.mixin.integration.Integration
 
 @Integration
 class ListSpec extends GebSpec {
+
+    ProjectService projectService
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -60,28 +63,6 @@ class ListSpec extends GebSpec {
         listPage.statusMessage.text() ==~ /Bug \d+ deleted/
     }
 
-    void "create button menu displays"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists bug page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Bugs')
-
-        when:
-        def page = at ListBugPage
-        page.projectNavButtons.openCreateMenu()
-
-        then:
-        page.projectNavButtons.isCreateMenuOpen()
-    }
-
     void "search returns results"() {
         given: "login as a project admin user"
         to LoginPage
@@ -124,5 +105,48 @@ class ListSpec extends GebSpec {
 
         then: "at show page"
         listPage.statusMessage.text() == "No bugs were found using search term: 'adsfasdf'"
+    }
+
+    void "create button not displayed for read only"(String email, String password) {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(email, password)
+
+        when:
+        def id = projectService.list().first().id
+        go "/project/${id}/bugs"
+
+        then:
+        def page = at ListBugPage
+        !page.createButton.displayed
+
+        where:
+        email                           | password
+        Credentials.READ_ONLY.email     | Credentials.READ_ONLY.password
+
+    }
+
+    void "create button displayed for basic and above"(String email, String password) {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(email, password)
+
+        when:
+        def id = projectService.list().first().id
+        go "/project/${id}/bugs"
+
+        then:
+        def page = at ListBugPage
+        page.createButton.displayed
+
+        where:
+        email                           | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
+
     }
 }

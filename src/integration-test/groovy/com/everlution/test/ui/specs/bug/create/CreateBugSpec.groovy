@@ -5,6 +5,7 @@ import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
+import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
@@ -32,7 +33,11 @@ class CreateBugSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToCreatePage('Bug')
+        projectHomePage.sideBar.goToProjectDomain("Bugs")
+
+        and:
+        def bugs = at ListBugPage
+        bugs.createButton.click()
 
         when: "create a bug"
         def page = at CreateBugPage
@@ -76,7 +81,11 @@ class CreateBugSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToCreatePage('Bug')
+        projectHomePage.sideBar.goToProjectDomain("Bugs")
+
+        and:
+        def bugs = at ListBugPage
+        bugs.createButton.click()
 
         when: "create bug"
         CreateBugPage createPage = browser.page(CreateBugPage)

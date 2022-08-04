@@ -72,7 +72,6 @@ class ShowTestCyclePage extends ShowPage {
     void closeAddTestsModal() {
         waitFor {
             addTestsModalCloseButton.displayed
-            addTestsModalCloseButton.displayed
         }
         addTestsModalCloseButton.click()
     }

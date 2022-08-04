@@ -15,7 +15,7 @@ import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-
+import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -53,8 +53,8 @@ class EditProjectAreaSpec extends GebSpec {
         page.editProject()
 
         then: "area tag is displayed"
-        def homePage = at ProjectHomePage
-        homePage.isAreaDisplayed("Added area tag")
+        def showPage = at ShowProjectPage
+        showPage.isAreaDisplayed("Added area tag")
     }
 
     void "area tag can be edited on existing project"() {
@@ -68,21 +68,21 @@ class EditProjectAreaSpec extends GebSpec {
         loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to show page"
-        go "/project/home/${id}"
+        go "/project/show/${id}"
 
         expect: "area tag is displayed"
-        def homePage = at ProjectHomePage
-        homePage.isAreaDisplayed("area name")
+        def showPage = at ShowProjectPage
+        showPage.isAreaDisplayed("area name")
 
         when: "edit the project"
-        homePage.goToEdit()
+        showPage.goToEdit()
         EditProjectPage page = browser.page(EditProjectPage)
         page.editAreaTag("area name", "edited area tag")
         page.editProject()
 
         then: "area tag is displayed"
-        homePage.isAreaDisplayed("edited area tag")
-        !homePage.isAreaDisplayed("area name")
+        showPage.isAreaDisplayed("edited area tag")
+        !showPage.isAreaDisplayed("area name")
     }
 
     void "tooltip displays for editing existing area with blank name"() {
@@ -205,23 +205,23 @@ class EditProjectAreaSpec extends GebSpec {
         loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
 
         and: "go to show page"
-        go "/project/home/${id}"
+        go "/project/show/${id}"
 
         expect: "area to be found"
         areaService.get(area.id) != null
 
         and: "area tag is displayed"
-        def homePage = at ProjectHomePage
-        homePage.isAreaDisplayed(area.name)
+        def showPage = at ShowProjectPage
+        showPage.isAreaDisplayed(area.name)
 
         when: "remove the area tag"
-        homePage.goToEdit()
+        showPage.goToEdit()
         EditProjectPage page = browser.page(EditProjectPage)
         page.removeAreaTag(area.name)
         page.editProject()
 
         then: "area tag is displayed and was deleted"
-        !homePage.isAreaDisplayed(area.name)
+        !showPage.isAreaDisplayed(area.name)
         areaService.get(area.id) == null
     }
 

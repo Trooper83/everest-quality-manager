@@ -28,7 +28,7 @@ class ExecutePageSpec extends GebSpec {
         def pd = DataFactory.project()
         def proj = new Project(name: pd.name, code: pd.code, testGroups: [group])
         project = projectService.save(proj)
-        def plan = new ReleasePlan(name: "release plan 1", project: project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
         releasePlanService.save(plan)
         testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)

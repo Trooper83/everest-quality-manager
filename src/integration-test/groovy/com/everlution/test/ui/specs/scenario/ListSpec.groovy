@@ -54,24 +54,6 @@ class ListSpec extends GebSpec {
         at ShowScenarioPage
     }
 
-    void "create button menu displays"() {
-        given: "login as a read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to list page"
-        def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/scenarios"
-
-        when:
-        def page = at ListScenarioPage
-        page.projectNavButtons.openCreateMenu()
-
-        then:
-        page.projectNavButtons.isCreateMenuOpen()
-    }
-
     void "search returns results"() {
         given: "login as a project admin user"
         to LoginPage
@@ -140,5 +122,47 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         def listPage = at ListScenarioPage
         listPage.statusMessage.text() ==~ /Scenario \d+ deleted/
+    }
+
+    void "create button not displayed for read only"(String email, String password) {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(email, password)
+
+        when:
+        def id = projectService.list().first().id
+        go "/project/${id}/scenarios"
+
+        then:
+        def page = at ListScenarioPage
+        !page.createButton.displayed
+
+        where:
+        email                           | password
+        Credentials.READ_ONLY.email     | Credentials.READ_ONLY.password
+
+    }
+
+    void "create button displayed for basic and above"(String email, String password) {
+        given: "login as a project admin user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(email, password)
+
+        when:
+        def id = projectService.list().first().id
+        go "/project/${id}/scenarios"
+
+        then:
+        def page = at ListScenarioPage
+        page.createButton.displayed
+
+        where:
+        email                           | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
     }
 }

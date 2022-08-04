@@ -19,7 +19,7 @@
                                 <g:link class="nav-link" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
                             </li>
                             <li class="nav-item">
-                                <g:link class="nav-link" uri="/project/${params.projectId}/testCases"> Test Cases</g:link>
+                                <g:link class="nav-link" uri="/project/${params.projectId}/testCases">Test Cases</g:link>
                             </li>
                             <li class="nav-item">
                                 <g:link class="nav-link" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>

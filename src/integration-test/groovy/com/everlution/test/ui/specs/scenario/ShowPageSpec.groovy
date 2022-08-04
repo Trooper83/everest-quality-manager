@@ -176,26 +176,4 @@ class ShowPageSpec extends GebSpec {
         def showPage = at ShowScenarioPage
         showPage.statusMessage.text() ==~ /Scenario \d+ updated/
     }
-
-    void "create button menu displays"() {
-        given: "login as a read only user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to list page"
-        def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/scenarios"
-
-        and:
-        def listPage = browser.page(ListScenarioPage)
-        listPage.listTable.clickCell("Name", 0)
-
-        when:
-        def page = at ShowScenarioPage
-        page.projectNavButtons.openCreateMenu()
-
-        then:
-        page.projectNavButtons.isCreateMenuOpen()
-    }
 }
