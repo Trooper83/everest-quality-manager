@@ -137,11 +137,13 @@ class ProjectController {
         } catch (ValidationException e) {
             def p = projectService.read(project.id)
             p.errors = e.errors
+            params.projectId = p.id
             render view:'edit', model: [project: p]
             return
         } catch (DataIntegrityViolationException ignored) {
             flash.error = 'Removed entity has associated items and cannot be deleted'
             def p = projectService.read(params.id)
+            params.projectId = p.id
             render view:'edit', model: [project: p]
             return
         }

@@ -175,7 +175,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.update(null, null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/project/index'
         flash.message == "default.not.found.message"
     }
 
@@ -202,49 +201,48 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "Test the update action with an invalid instance"() {
         given:
+        def proj = new Project()
+        proj.id = 1
         controller.projectService = Mock(ProjectService) {
             1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
                 throw new ValidationException("Invalid instance", project.errors)
             }
-            1 * read(_) >> {
-                Mock(Project)
-            }
+            1 * read(_) >> proj
         }
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(new Project(), new RemovedItems())
+        controller.update(proj, new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
         model.project instanceof Project
+        params.projectId != null
         view == '/project/edit'
     }
 
     void "Test the update action with constraint violation"() {
         given:
+        Project proj = new Project(name: "test", code: "ccc").save()
+        params.id = proj.id
         controller.projectService = Mock(ProjectService) {
             1 * saveUpdate(_ as Project, _ as RemovedItems) >> { Project project, RemovedItems removedItems ->
                 throw new DataIntegrityViolationException("Foreign Key constraint violation")
             }
-            1 * read(_) >> {
-                Mock(Project)
-            }
+            1 * read(_) >> proj
         }
-
-        Project project = new Project(name: "test", code: "ccc").save()
-        params.id = project.id
 
         when:"The update action is executed"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
 
-        controller.update(project, new RemovedItems())
+        controller.update(proj, new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
         model.project instanceof Project
         controller.flash.error == "Removed entity has associated items and cannot be deleted"
         view == '/project/edit'
+        params.projectId != null
     }
 
     void "test the delete action method"(String httpMethod) {
@@ -268,7 +266,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.delete(null)
 
         then:"A 404 is returned"
-        response.redirectedUrl == '/project/index'
         flash.message == "default.not.found.message"
     }
 
@@ -290,13 +287,13 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "delete action responds when data integrity violation exception thrown"() {
         given:
+        def p = new Project()
+        p.id = 2
         controller.projectService = Mock(ProjectService) {
             1 * delete(2) >> { Long id ->
                 throw new DataIntegrityViolationException("Foreign Key constraint violation")
             }
-            1 * read(_) >> {
-                new Project(params)
-            }
+            1 * read(_) >> p
         }
 
         when:"The domain instance is passed to the delete action"
@@ -308,6 +305,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.project instanceof Project
         flash.error == "Project has associated items and cannot be deleted"
         view == 'show'
+        params.projectId != null
     }
 
     void "projects action renders projects view"() {
