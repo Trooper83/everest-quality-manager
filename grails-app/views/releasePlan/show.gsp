@@ -7,7 +7,6 @@
     </head>
     <body>
     <g:render template="/shared/sidebarTemplate" model="['name':releasePlan.project.name, 'code':releasePlan.project.code]"/>
-    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#show-releasePlan" class="skip" tabindex="-1">
             <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
         </a>

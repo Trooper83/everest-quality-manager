@@ -10,7 +10,13 @@
 <a href="#list-bug" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<g:render template="/shared/projectButtonsTemplate"/>
+<div class="row justify-content-end mt-3">
+    <sec:ifAnyGranted roles="ROLE_BASIC">
+        <g:if test="${params.projectId}">
+            <g:link role="button" class="btn btn-secondary" elementId="createButton" uri="/project/${params.projectId}/bug/create">Create Bug</g:link>
+        </g:if>
+    </sec:ifAnyGranted>
+</div>
 <div id="list-bug" class="content scaffold-list col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <h1>
         <g:message code="default.list.label" args="[entityName]"/>

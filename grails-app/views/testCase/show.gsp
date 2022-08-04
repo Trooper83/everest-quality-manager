@@ -10,7 +10,6 @@
 <a href="#show-testCase" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<g:render template="/shared/projectButtonsTemplate"/>
 <div id="show-testCase" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <h1>
         <g:message code="default.show.label" args="[entityName]"/>

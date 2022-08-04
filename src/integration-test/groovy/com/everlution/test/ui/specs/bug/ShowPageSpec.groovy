@@ -29,7 +29,11 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToCreatePage('Bug')
+        projectHomePage.sideBar.goToProjectDomain("Bugs")
+
+        and:
+        def bugs = at ListBugPage
+        bugs.createButton.click()
 
         when: "create a bug"
         def page = at CreateBugPage
@@ -182,31 +186,5 @@ class ShowPageSpec extends GebSpec {
 
         then: "at show bug page with message displayed"
         showPage.statusMessage.text() ==~ /Bug \d+ updated/
-    }
-
-    void "create button menu displays"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists bug page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Bugs')
-
-        and: "go to list page"
-        def bugsPage = at ListBugPage
-        bugsPage.listTable.clickCell('Name', 0)
-
-        when:
-        def showPage = browser.page(ShowBugPage)
-        showPage.projectNavButtons.openCreateMenu()
-
-        then:
-        showPage.projectNavButtons.isCreateMenuOpen()
     }
 }

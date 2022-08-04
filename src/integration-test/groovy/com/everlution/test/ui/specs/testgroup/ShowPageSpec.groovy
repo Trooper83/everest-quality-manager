@@ -248,30 +248,4 @@ class ShowPageSpec extends GebSpec {
         then: "at show test case page"
         at ShowTestCasePage
     }
-
-    void "create button menu displays"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists bug page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Test Groups')
-
-        and: "go to list page"
-        def listPage = at ListTestGroupPage
-        listPage.listTable.clickCell('Name', 0)
-
-        when:
-        def showPage = browser.page(ShowTestGroupPage)
-        showPage.projectNavButtons.openCreateMenu()
-
-        then:
-        showPage.projectNavButtons.isCreateMenuOpen()
-    }
 }

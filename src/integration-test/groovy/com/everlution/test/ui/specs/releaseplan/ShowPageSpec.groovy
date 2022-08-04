@@ -2,6 +2,7 @@ package com.everlution.test.ui.specs.releaseplan
 
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -28,9 +29,13 @@ class ShowPageSpec extends GebSpec {
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 0)
 
-        and: "go to the lists page"
+        and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.projectNavButtons.goToCreatePage('Release Plan')
+        projectHomePage.sideBar.goToProjectDomain("Release Plans")
+
+        and:
+        def plans = at ListReleasePlanPage
+        plans.createButton.click()
 
         when: "create a plan"
         browser.page(CreateReleasePlanPage).createReleasePlan()
@@ -407,24 +412,5 @@ class ShowPageSpec extends GebSpec {
 
         then:
         page.testCycleModalNameInput.text() == ''
-    }
-
-    void "create button menu displays"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to show page"
-        def id = projectService.list(max: 1).first().id
-        def listPage = to(ListReleasePlanPage, id)
-        listPage.listTable.clickCell("Name", 0)
-
-        when:
-        def showPage = browser.page(ShowReleasePlanPage)
-        showPage.projectNavButtons.openCreateMenu()
-
-        then:
-        showPage.projectNavButtons.isCreateMenuOpen()
     }
 }

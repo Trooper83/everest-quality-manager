@@ -7,7 +7,6 @@
     </head>
     <body>
     <g:render template="/shared/sidebarTemplate" model="['name':testGroup.project.name, 'code':testGroup.project.code]"/>
-    <g:render template="/shared/projectButtonsTemplate"/>
         <a href="#show-testGroup" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div id="show-testGroup" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.show.label" args="[entityName]" /></h1>
