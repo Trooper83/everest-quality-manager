@@ -69,7 +69,7 @@ class ProjectHibernateSpec extends HibernateSpec {
     void "delete project with release plan throws persistence exception"() {
         given: "valid scenario with project"
         Project project = new Project(name: "Delete Test Case Cascade Project001", code: "ZZ6").save()
-        new ReleasePlan(name: "test plan", project: project).save()
+        new ReleasePlan(name: "test plan", project: project, status: "ToDo").save()
 
         when: "delete project"
         project.delete()

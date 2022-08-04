@@ -1,6 +1,8 @@
 package com.everlution.test.ui.specs.project.edit
 
+import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -13,26 +15,14 @@ import spock.lang.Shared
 class EditPageSpec extends GebSpec {
 
     ProjectService projectService
-    @Shared int id
+    @Shared Project project
 
     def setup() {
-        id = projectService.list(max: 1)[0].id
-        given: "login as a project admin user"
+        project = DataFactory.createProject()
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
-        go "/project/edit/${id}"
-    }
-
-    void "required fields indicator displayed for required fields"() {
-        expect: "required field indicators displayed"
-        EditProjectPage page = at EditProjectPage
-        page.areRequiredFieldIndicatorsDisplayed(["name", "code"])
-    }
-
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        browser.page(EditProjectPage).getFields() == ["Code *", "Name *", "Areas", "Environments"]
+        go "/project/edit/${project.id}"
     }
 
     void "error message displayed when adding two areas with the same name to project"() {
@@ -44,7 +34,7 @@ class EditPageSpec extends GebSpec {
 
         then: "message displayed"
         page.errorMessages.text() ==
-                "Property [areas] of class [class com.everlution.Project] with value [[com.everlution.Area : 1, com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
+                "Property [areas] of class [class com.everlution.Project] with value [[com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
     }
 
     void "error message displayed when adding two envs with the same name to project"() {
@@ -56,6 +46,6 @@ class EditPageSpec extends GebSpec {
 
         then: "message displayed"
         page.errorMessages.text() ==
-                "Property [environments] of class [class com.everlution.Project] with value [[com.everlution.Environment : 1, com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
+                "Property [environments] of class [class com.everlution.Project] with value [[com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
     }
 }

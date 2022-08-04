@@ -178,7 +178,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
         given:
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def plan = new ReleasePlan(name: "rp123", project: project).save()
+        def plan = new ReleasePlan(name: "rp123", project: project, status: "ToDo").save()
         def cycle = new TestCycle(name: "test cycle", releasePlan: plan).save()
         def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: cycle).save()
 

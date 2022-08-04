@@ -9,6 +9,11 @@
 <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
 <div id="show-project" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <g:render template="/shared/projectButtonsTemplate"/>
+    <div class="row justify-content-end mt-3">
+        <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
+            <g:link role="button" action="show" controller="project" id="${project.id}" class="btn btn-secondary" elementId="adminButton">Admin</g:link>
+        </sec:ifAnyGranted>
+    </div>
     <h1>Project Home</h1>
     <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
     <div class="container-fluid mt-5">
@@ -64,16 +69,6 @@
             </div>
         </div>
     </div>
-    <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
-        <g:form resource="${this.project}" method="DELETE">
-            <fieldset class="buttons">
-                <g:link class="edit" action="edit" resource="${this.project}" data-test-id="home-edit-link">
-                    <g:message code="default.button.edit.label" default="Edit" />
-                </g:link>
-                <input class="delete" type="submit" data-test-id="home-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
-            </fieldset>
-        </g:form>
-    </sec:ifAnyGranted>
 </div>
 <asset:javascript src="popper.min.js"/>
 </body>

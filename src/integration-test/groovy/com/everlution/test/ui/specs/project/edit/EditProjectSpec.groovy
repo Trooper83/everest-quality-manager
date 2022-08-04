@@ -8,7 +8,7 @@ import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-
+import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -34,7 +34,7 @@ class EditProjectSpec extends GebSpec {
         page.editProject()
 
         then: "at home page"
-        at ProjectHomePage
+        at ShowProjectPage
 
         where:
         username                         | password
@@ -63,10 +63,10 @@ class EditProjectSpec extends GebSpec {
         page.editProject(edited.name, edited.code)
 
         then: "at home page and data displayed"
-        def home = at ProjectHomePage
+        def showPage = at ShowProjectPage
         verifyAll {
-            home.nameValue.text() == edited.name
-            home.codeValue.text() == edited.code
+            showPage.nameValue.text() == edited.name
+            showPage.codeValue.text() == edited.code
         }
     }
 }

@@ -90,7 +90,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.save(project)
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/project/home/1'
+        response.redirectedUrl == '/project/show/1'
         controller.flash.message == "default.created.message"
     }
 
@@ -196,7 +196,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.update(project, new RemovedItems())
 
         then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/project/home/1'
+        response.redirectedUrl == '/project/show/1'
         controller.flash.message == "default.updated.message"
     }
 
@@ -307,7 +307,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         then:"The edit view is rendered again with the correct model"
         model.project instanceof Project
         flash.error == "Project has associated items and cannot be deleted"
-        view == 'home'
+        view == 'show'
     }
 
     void "projects action renders projects view"() {
@@ -653,6 +653,45 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:"A model is populated containing the domain instance"
         model.previousRelease == null
+    }
+
+    void "show action with a null id"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(null) >> null
+        }
+
+        when:"The show action is executed with a null domain"
+        controller.show(null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "show action with a valid id"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(2) >> new Project()
+        }
+
+        when:"A domain instance is passed to the show action"
+        controller.show(2)
+
+        then:"A model is populated containing the domain instance"
+        model.project instanceof Project
+    }
+
+    void "show action renders edit view"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(2) >> new Project()
+        }
+
+        when:"a domain instance is passed to the show action"
+        controller.show(2)
+
+        then:
+        view == "show"
     }
 }
 

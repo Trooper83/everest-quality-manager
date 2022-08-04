@@ -28,7 +28,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
     def setup() {
         project = new Project(name: "release name", code: "doc").save()
         person = new Person(email: "test@test.com", password: "test").save()
-        releasePlan = new ReleasePlan(name: "release plan name", project: project).save()
+        releasePlan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo").save()
     }
 
     private void setupData() {

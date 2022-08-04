@@ -122,7 +122,7 @@ class DataFactory {
     static TestCycle createTestCycle() {
         TestCycle.withNewSession { session ->
             def project = new Project(name: faker.lorem().sentence(2), code: projectCodes.removeAt(0)).save()
-            def plan = new ReleasePlan(name: faker.ancient().god(), project: project).save()
+            def plan = new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo").save()
             new TestCycle(name: faker.animal().name(), releasePlan: plan).save()
         }
     }

@@ -9,56 +9,12 @@ class ProjectHomePage extends BasePage {
     static at = { title == "Project Home" }
 
     static content = {
-        areasList { $("#areas") }
-        codeValue { $("#code") }
-        deleteLink(required: false) { $("[data-test-id=home-delete-link]") }
-        editLink(required: false) { $("[data-test-id=home-edit-link]") }
-        environmentsList { $("#environments") }
+        adminButton(required: false) { $("#adminButton") }
         errorsMessage { $("ul.errors") }
-        fieldLabels { $("ol.property-list>li>span") }
-        nameValue { $("#name") }
         nextReleaseLink(required: false) { $("#releasePlanCard #nextLink") }
         previousReleaseLink(required: false) { $("#releasePlanCard #previousLink") }
         projectNavButtons { module ProjectNavModule }
         sideBar { module SideBarModule }
         statusMessage { $("div.message") }
-    }
-
-    /**
-     * clicks the delete link
-     */
-    void deleteProject() {
-        withConfirm(true) { deleteLink.click() }
-    }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the edit link
-     */
-    void goToEdit() {
-        editLink.click()
-    }
-
-    /**
-     * determines if an area is displayed
-     * @param name - name of the area to check
-     */
-    boolean isAreaDisplayed(String name) {
-        return areasList.find("div")*.text().contains(name)
-    }
-
-    /**
-     * determines if an environment is displayed
-     * @param name - name of the env to check
-     */
-    boolean isEnvironmentDisplayed(String name) {
-        return environmentsList.find("div")*.text().contains(name)
     }
 }

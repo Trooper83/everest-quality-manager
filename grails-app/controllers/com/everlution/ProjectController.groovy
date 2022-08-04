@@ -15,7 +15,7 @@ class ProjectController {
     ScenarioService scenarioService
     TestCaseService testCaseService
 
-    static allowedMethods = [getProjectItems: "GET", save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     /**
      * lists all projects or perform search
@@ -75,6 +75,16 @@ class ProjectController {
     }
 
     /**
+     * displays the show view with project properties
+     * @param projectId
+     * @return
+     */
+    @Secured("ROLE_PROJECT_ADMIN")
+    def show(Long projectId) {
+        respond projectService.get(projectId), view: "show"
+    }
+
+    /**
      * saves a project instance
      * @param project - the project to save
      */
@@ -95,7 +105,7 @@ class ProjectController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'project.label', default: 'Project'), project.id])
-                redirect controller: "project", action: "home", id: project.id
+                redirect controller: "project", action: "show", id: project.id
             }
             '*' { respond project, [status: CREATED] }
         }
@@ -139,7 +149,7 @@ class ProjectController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'project.label', default: 'Project'), project.id])
-                redirect controller: "project", action: "home", id: project.id
+                redirect controller: "project", action: "show", id: project.id
             }
             '*'{ respond project, [status: OK] }
         }
@@ -161,7 +171,8 @@ class ProjectController {
         } catch (DataIntegrityViolationException ignored) {
             def project = projectService.read(id)
             flash.error = 'Project has associated items and cannot be deleted'
-            respond project, view:'home'
+            params.projectId = project.id
+            respond project, view: 'show'
             return
         }
 

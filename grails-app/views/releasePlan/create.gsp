@@ -31,7 +31,7 @@
                     </div>
                     <div class="fieldcontain">
                         <label for="releaseDate">Release Date</label>
-                        <g:datePicker name="releaseDate1" default="none" precision="day"
+                        <g:datePicker name="releaseDate" default="none" precision="day"
                                       noSelection="['':'']" relativeYears="[0..1]"/>
                     </div>
                 </fieldset>
