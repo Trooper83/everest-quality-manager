@@ -43,7 +43,8 @@
                     <g:paginate total="${testGroup.testCases.size() ?: 0}"/>
                 </div>
             <sec:ifAnyGranted roles="ROLE_BASIC">
-                <g:form resource="${this.testGroup}" method="DELETE" uri="/project/${this.testGroup.project.id}/testGroup/delete/${this.testGroup.id}">
+                <g:form resource="${this.testGroup}" method="DELETE" useToken="true"
+                        uri="/project/${this.testGroup.project.id}/testGroup/delete/${this.testGroup.id}">
                     <fieldset class="buttons">
                         <g:link class="edit" uri="/project/${this.testGroup.project.id}/testGroup/edit/${this.testGroup.id}" data-test-id="show-edit-link">
                             <g:message code="default.button.edit.label" default="Edit"/>

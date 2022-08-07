@@ -34,11 +34,15 @@ class ScenarioController {
             respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
 
         } else { // perform search
-            def scenarios = scenarioService.findAllInProjectByName(project, params.name)
-            if(scenarios.empty) {
-                flash.message = "No scenarios were found using search term: '${params.name}'"
+            withForm {
+                def scenarios = scenarioService.findAllInProjectByName(project, params.name)
+                if(scenarios.empty) {
+                    flash.message = "No scenarios were found using search term: '${params.name}'"
+                }
+                respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
+            }.invalidToken {
+                error()
             }
-            respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
         }
 
     }
@@ -75,28 +79,32 @@ class ScenarioController {
      */
     @Secured("ROLE_BASIC")
     def save(Scenario scenario) {
-        if (scenario == null) {
-            notFound()
-            return
-        }
-
-        def person = springSecurityService.getCurrentUser() as Person
-        scenario.person = person
-
-        try {
-            scenarioService.save(scenario)
-        } catch (ValidationException ignored) {
-            def project = projectService.read(scenario.project.id)
-            respond scenario.errors, view:'create', model: [ project: project ]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'scenario.label', default: 'Scenario'), scenario.id])
-                redirect uri: "/project/${scenario.project.id}/scenario/show/${scenario.id}"
+        withForm {
+            if (scenario == null) {
+                notFound()
+                return
             }
-            '*' { respond scenario, [status: CREATED] }
+
+            def person = springSecurityService.getCurrentUser() as Person
+            scenario.person = person
+
+            try {
+                scenarioService.save(scenario)
+            } catch (ValidationException ignored) {
+                def project = projectService.read(scenario.project.id)
+                respond scenario.errors, view:'create', model: [ project: project ]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.created.message', args: [message(code: 'scenario.label', default: 'Scenario'), scenario.id])
+                    redirect uri: "/project/${scenario.project.id}/scenario/show/${scenario.id}"
+                }
+                '*' { respond scenario, [status: CREATED] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -116,32 +124,36 @@ class ScenarioController {
      */
     @Secured("ROLE_BASIC")
     def update(Scenario scenario, Long projectId) {
-        if (scenario == null|| projectId == null) {
-            notFound()
-            return
-        }
-
-        def scnProjectId = scenario.project.id
-        if (projectId != scnProjectId) {
-            notFound()
-            return
-        }
-
-        try {
-            scenarioService.save(scenario)
-        } catch (ValidationException e) {
-            def scn = scenarioService.read(scenario.id)
-            scn.errors = e.errors
-            render view:'edit', model: [scenario: scn]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'scenario.label', default: 'Scenario'), scenario.id])
-                redirect uri: "/project/${scenario.project.id}/scenario/show/${scenario.id}"
+        withForm {
+            if (scenario == null|| projectId == null) {
+                notFound()
+                return
             }
-            '*'{ respond scenario, [status: OK] }
+
+            def scnProjectId = scenario.project.id
+            if (projectId != scnProjectId) {
+                notFound()
+                return
+            }
+
+            try {
+                scenarioService.save(scenario)
+            } catch (ValidationException e) {
+                def scn = scenarioService.read(scenario.id)
+                scn.errors = e.errors
+                render view:'edit', model: [scenario: scn]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.updated.message', args: [message(code: 'scenario.label', default: 'Scenario'), scenario.id])
+                    redirect uri: "/project/${scenario.project.id}/scenario/show/${scenario.id}"
+                }
+                '*'{ respond scenario, [status: OK] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -151,24 +163,28 @@ class ScenarioController {
      */
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
-        if (id == null || projectId == null) {
-            notFound()
-            return
-        }
-        def scenario = scenarioService.read(id)
-        if (scenario.project.id != projectId) {
-            notFound()
-            return
-        }
-
-        scenarioService.delete(id)
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'scenario.label', default: 'Scenario'), id])
-                redirect uri: "/project/${projectId}/scenarios"
+        withForm {
+            if (id == null || projectId == null) {
+                notFound()
+                return
             }
-            '*'{ render status: NO_CONTENT }
+            def scenario = scenarioService.read(id)
+            if (scenario.project.id != projectId) {
+                notFound()
+                return
+            }
+
+            scenarioService.delete(id)
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.deleted.message', args: [message(code: 'scenario.label', default: 'Scenario'), id])
+                    redirect uri: "/project/${projectId}/scenarios"
+                }
+                '*'{ render status: NO_CONTENT }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -178,6 +194,15 @@ class ScenarioController {
     protected void notFound() {
         request.withFormat {
             '*'{ render status: NOT_FOUND }
+        }
+    }
+
+    /**
+     * displays error view (500)
+     */
+    protected void error() {
+        request.withFormat {
+            '*'{ render status: INTERNAL_SERVER_ERROR }
         }
     }
 }

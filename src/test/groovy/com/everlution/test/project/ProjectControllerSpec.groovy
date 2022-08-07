@@ -12,6 +12,7 @@ import com.everlution.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.*
 
@@ -28,6 +29,12 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         params.name = "unit test project"
         params.code = "SOX"
+    }
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/project/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
     void "test the create action returns the correct view"() {
@@ -66,11 +73,21 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         controller.save(null)
 
         then:"A 404 error is returned"
-        response.redirectedUrl == '/project/index'
         flash.message == "default.not.found.message"
+    }
+
+    void "save responds with 500 with invalid token"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        controller.save(null)
+
+        then:"A 500 error is returned"
+        response.status == 500
     }
 
     void "test the save action correctly persists"() {
@@ -81,6 +98,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when:"The save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
@@ -105,6 +123,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         def project = new Project()
         controller.save(project)
 
@@ -168,10 +187,21 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         httpMethod << ["GET", "DELETE", "POST", "PATCH"]
     }
 
-    void "Test the update action with a null instance"() {
+    void "updated responds with 500 with invalid token"() {
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        controller.update(null, null)
+
+        then:"A 500 error is returned"
+        response.status == 500
+    }
+
+    void "update action with a null instance"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
         controller.update(null, null)
 
         then:"A 404 error is returned"
@@ -186,6 +216,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when:"The save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
@@ -213,6 +244,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(proj, new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
@@ -235,7 +267,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"The update action is executed"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-
+        setToken(params)
         controller.update(proj, new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
@@ -263,10 +295,21 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(null)
 
         then:"A 404 is returned"
         flash.message == "default.not.found.message"
+    }
+
+    void "delete responds with 500 with invalid token"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(null)
+
+        then:"A 500 is returned"
+        response.status == 500
     }
 
     void "Test the delete action with an instance"() {
@@ -277,6 +320,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'DELETE'
         controller.delete(2)
 
@@ -299,6 +343,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(2)
 
         then:"The edit view is rendered again with the correct model"
@@ -377,6 +422,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when:"the action is executed"
         params.isSearch = 'true'
         params.name = 'test'
+        setToken(params)
         controller.projects()
 
         then:
@@ -392,10 +438,21 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when: "call action"
         params.isSearch = 'true'
         params.name = 'test'
+        setToken(params)
         controller.projects()
 
         then: "view is returned"
         view == '/project/projects'
+    }
+
+    void "projects search returns 500 when token invalid"() {
+        when: "call action"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.projects()
+
+        then:
+        response.status == 500
     }
 
     void "projects action with search returns the correct model"() {
@@ -407,6 +464,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         when: "call action"
         params.isSearch = 'true'
         params.name = 'test'
+        setToken(params)
         controller.projects()
 
         then:"The model is correct"

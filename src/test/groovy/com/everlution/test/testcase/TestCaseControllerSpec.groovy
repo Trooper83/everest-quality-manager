@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.*
 
@@ -20,6 +21,12 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         params.name = "unit testing name"
         params.description = "unit testing description"
+    }
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/testCase/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
     void "test cases action renders index view"() {
@@ -99,12 +106,29 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         }
 
         when:"The action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.testCases(1)
 
         then:
         flash.message == "No test cases were found using search term: 'test'"
+    }
+
+    void "tests search responds with 500 when no token present"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.testCases(1)
+
+        then:
+        response.status == 500
     }
 
     void "test cases search returns the correct model"() {
@@ -118,6 +142,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         when:"action is executed"
         params.isSearch = 'true'
+        setToken(params)
         params.name = 'test'
         controller.testCases(1)
 
@@ -190,10 +215,21 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         controller.save(null)
 
         then:"a 404 error is returned"
         response.status == 404
+    }
+
+    void "save responds with 500 when no token present"() {
+        when:"save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        controller.save(null)
+
+        then:
+        response.status == 500
     }
 
     void "test the save action correctly persists"() {
@@ -207,6 +243,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         when:"the save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
@@ -243,6 +280,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"the save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         def testCase = new TestCase()
         testCase.project = p
         controller.save(testCase)
@@ -354,16 +392,28 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(null, null, 999)
 
         then:"a 404 error is returned"
         response.status == 404
     }
 
+    void "update responds with 500 when no token present"() {
+        when:"save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(null, null, 999)
+
+        then:
+        response.status == 500
+    }
+
     void "update action with a valid test case instance and null projectId param returns 404"() {
         when:
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(new TestCase(), null, null)
 
         then:"A 404 error is returned"
@@ -376,6 +426,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         def project = new Project()
         project.id = 999
         testCase.project = project
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(testCase, null, 1)
@@ -392,6 +443,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
 
         when:
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
@@ -425,6 +477,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         project.id = 1
         testCase.id = 1
         testCase.project = project
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(testCase, new RemovedItems(), 1)
@@ -455,10 +508,21 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"the delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(null, 1)
 
         then:"a 404 is returned"
         response.status == 404
+    }
+
+    void "delete responds with 500 when no token present"() {
+        when:"the delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(null, 1)
+
+        then:
+        response.status == 500
     }
 
     void "test the delete action with an instance"() {
@@ -478,6 +542,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"the domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(2, 1)
 
         then:
@@ -489,6 +554,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(1, null)
 
         then:"A 404 is returned"
@@ -512,6 +578,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(2, 999)
 
         then:"A 404 is returned"
@@ -538,6 +605,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"the domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(2, 1)
 
         then:"the user is redirected to index"

@@ -11,7 +11,8 @@
         <div id="edit-scenario" class="content scaffold-edit col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${scenario}" var="entity"/>
-            <g:form resource="${this.scenario}" method="PUT" uri="/project/${scenario.project.id}/scenario/update/${scenario.id}">
+            <g:form resource="${this.scenario}" method="PUT"
+                    uri="/project/${scenario.project.id}/scenario/update/${scenario.id}" useToken="true">
                 <g:hiddenField name="version" value="${this.scenario?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">

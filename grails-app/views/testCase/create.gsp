@@ -11,7 +11,7 @@
         <div id="create-testCase" class="content scaffold-create col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.create.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${testCase}" var="entity"/>
-            <g:form method="POST" uri="/project/${project.id}/testCase/save">
+            <g:form method="POST" uri="/project/${project.id}/testCase/save" useToken="true">
                 <fieldset class="form">
                     <g:hiddenField name="project" value="${project.id}"/>
                     <div class="fieldcontain">

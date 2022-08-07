@@ -11,7 +11,8 @@
         <div id="edit-releasePlan" class="content scaffold-edit col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
             <g:render template="/shared/messagesTemplate" bean="${releasePlan}" var="entity"/>
-            <g:form resource="${this.releasePlan}" method="PUT" uri="/project/${releasePlan.project.id}/releasePlan/update/${releasePlan.id}">
+            <g:form resource="${this.releasePlan}" method="PUT"
+                    uri="/project/${releasePlan.project.id}/releasePlan/update/${releasePlan.id}" useToken="true">
                 <g:hiddenField name="version" value="${this.releasePlan?.version}" />
                 <fieldset class="form">
                     <div class="fieldcontain">

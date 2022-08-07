@@ -74,6 +74,9 @@ class ShowTestCyclePage extends ShowPage {
             addTestsModalCloseButton.displayed
         }
         addTestsModalCloseButton.click()
+        if(addTestsModalCloseButton.displayed) {
+            addTestsModalCloseButton.click()
+        }
     }
 
     /**

@@ -17,24 +17,28 @@ class ReleasePlanController {
      */
     @Secured("ROLE_BASIC")
     def addTestCycle(ReleasePlan releasePlan, TestCycle testCycle) {
-        if (releasePlan == null || testCycle == null) {
-            notFound()
-            return
-        }
-
-        try {
-            releasePlanService.addTestCycle(releasePlan, testCycle)
-        } catch (ValidationException ignored) {
-            respond testCycle.errors, view: 'create'
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), testCycle.id])
-                redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
+        withForm {
+            if (releasePlan == null || testCycle == null) {
+                notFound()
+                return
             }
-            '*' { respond testCycle, [status: CREATED] }
+
+            try {
+                releasePlanService.addTestCycle(releasePlan, testCycle)
+            } catch (ValidationException ignored) {
+                respond testCycle.errors, view: 'create'
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.created.message', args: [message(code: 'testCycle.label', default: 'TestCycle'), testCycle.id])
+                    redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
+                }
+                '*' { respond testCycle, [status: CREATED] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -60,12 +64,15 @@ class ReleasePlanController {
             respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
 
         } else { // perform search
-
-            def plans = releasePlanService.findAllInProjectByName(project, params.name)
-            if(plans.empty) {
-                flash.message = "No release plans were found using search term: '${params.name}'"
+            withForm {
+                def plans = releasePlanService.findAllInProjectByName(project, params.name)
+                if(plans.empty) {
+                    flash.message = "No release plans were found using search term: '${params.name}'"
+                }
+                respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
+            }.invalidToken {
+                error()
             }
-            respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
         }
     }
 
@@ -100,25 +107,29 @@ class ReleasePlanController {
      */
     @Secured("ROLE_BASIC")
     def save(ReleasePlan releasePlan) {
-        if (releasePlan == null) {
-            notFound()
-            return
-        }
-
-        try {
-            releasePlanService.save(releasePlan)
-        } catch (ValidationException e) {
-            def project = projectService.read(releasePlan.project.id)
-            respond releasePlan.errors, view:'create', model: [ project: project ]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), releasePlan.id])
-                redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
+        withForm {
+            if (releasePlan == null) {
+                notFound()
+                return
             }
-            '*' { respond releasePlan, [status: CREATED] }
+
+            try {
+                releasePlanService.save(releasePlan)
+            } catch (ValidationException e) {
+                def project = projectService.read(releasePlan.project.id)
+                respond releasePlan.errors, view:'create', model: [ project: project ]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.created.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), releasePlan.id])
+                    redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
+                }
+                '*' { respond releasePlan, [status: CREATED] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -138,29 +149,33 @@ class ReleasePlanController {
      */
     @Secured("ROLE_BASIC")
     def update(ReleasePlan releasePlan, Long projectId) {
-        if (releasePlan == null || projectId == null) {
-            notFound()
-            return
-        }
-        def planProjectId = releasePlan.project.id
-        if (projectId != planProjectId) {
-            notFound()
-            return
-        }
-
-        try {
-            releasePlanService.save(releasePlan)
-        } catch (ValidationException e) {
-            respond releasePlan.errors, view:'edit'
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), releasePlan.id])
-                redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
+        withForm {
+            if (releasePlan == null || projectId == null) {
+                notFound()
+                return
             }
-            '*'{ respond releasePlan, [status: OK] }
+            def planProjectId = releasePlan.project.id
+            if (projectId != planProjectId) {
+                notFound()
+                return
+            }
+
+            try {
+                releasePlanService.save(releasePlan)
+            } catch (ValidationException e) {
+                respond releasePlan.errors, view:'edit'
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.updated.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), releasePlan.id])
+                    redirect uri: "/project/${releasePlan.project.id}/releasePlan/show/${releasePlan.id}"
+                }
+                '*'{ respond releasePlan, [status: OK] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -170,25 +185,29 @@ class ReleasePlanController {
      */
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
-        if (id == null || projectId == null) {
-            notFound()
-            return
-        }
-
-        def plan = releasePlanService.read(id)
-        if (plan.project.id != projectId) {
-            notFound()
-            return
-        }
-
-        releasePlanService.delete(id)
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), id])
-                redirect uri: "/project/${projectId}/releasePlans"
+        withForm {
+            if (id == null || projectId == null) {
+                notFound()
+                return
             }
-            '*'{ render status: NO_CONTENT }
+
+            def plan = releasePlanService.read(id)
+            if (plan.project.id != projectId) {
+                notFound()
+                return
+            }
+
+            releasePlanService.delete(id)
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.deleted.message', args: [message(code: 'releasePlan.label', default: 'ReleasePlan'), id])
+                    redirect uri: "/project/${projectId}/releasePlans"
+                }
+                '*'{ render status: NO_CONTENT }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -198,6 +217,15 @@ class ReleasePlanController {
     protected void notFound() {
         request.withFormat {
             '*'{ render status: NOT_FOUND }
+        }
+    }
+
+    /**
+     * displays error view (500)
+     */
+    protected void error() {
+        request.withFormat {
+            '*'{ render status: INTERNAL_SERVER_ERROR }
         }
     }
 }

@@ -10,7 +10,7 @@
 <div id="create-bug" class="content scaffold-create col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <h1><g:message code="default.create.label" args="[entityName]" /></h1>
     <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
-    <g:form resource="${this.bug}" method="POST" uri="/project/${project.id}/bug/save">
+    <g:form resource="${this.bug}" method="POST" uri="/project/${project.id}/bug/save" useToken="true">
         <fieldset class="form">
             <f:all bean="${this.bug}" except="area, person, environments, project, steps, status"/>
             <g:hiddenField name="project" value="${project.id}"/>

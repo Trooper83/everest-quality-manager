@@ -15,7 +15,7 @@
         <ul class="errors" role="alert">${flash.error}</ul>
     </g:if>
     <div class="col-4 mt-4 mb-4">
-        <g:form action="projects" controller="project" params="['isSearch': 'true']">
+        <g:form action="projects" controller="project" params="['isSearch': 'true']" useToken="true">
             <g:textField name="name" autocomplete="off" placeholder="Project Name"></g:textField>
             <button class="btn btn-secondary" type="submit" id="searchButton">Search</button>
         </g:form>

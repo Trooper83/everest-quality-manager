@@ -33,7 +33,7 @@
         </li>
     </ol>
     <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
-        <g:form resource="${this.project}" method="DELETE">
+        <g:form resource="${this.project}" method="DELETE" useToken="true">
             <fieldset class="buttons">
                 <g:link class="edit" action="edit" resource="${this.project}" data-test-id="home-edit-link">
                     <g:message code="default.button.edit.label" default="Edit" />

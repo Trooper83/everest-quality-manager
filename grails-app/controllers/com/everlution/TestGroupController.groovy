@@ -32,11 +32,15 @@ class TestGroupController {
             respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
 
         } else { // perform search
-            def testGroups = testGroupService.findAllInProjectByName(project, params.name)
-            if(testGroups.empty) {
-                flash.message = "No test groups were found using search term: '${params.name}'"
+            withForm {
+                def testGroups = testGroupService.findAllInProjectByName(project, params.name)
+                if(testGroups.empty) {
+                    flash.message = "No test groups were found using search term: '${params.name}'"
+                }
+                respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
+            }.invalidToken {
+                error()
             }
-            respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
         }
 
     }
@@ -72,25 +76,29 @@ class TestGroupController {
      */
     @Secured("ROLE_BASIC")
     def save(TestGroup testGroup) {
-        if (testGroup == null) {
-            notFound()
-            return
-        }
-
-        try {
-            testGroupService.save(testGroup)
-        } catch (ValidationException ignored) {
-            def project = projectService.read(testGroup.project.id)
-            respond testGroup.errors, view:'create', model: [ project: project ]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), testGroup.id])
-                redirect uri: "/project/${testGroup.project.id}/testGroup/show/${testGroup.id}"
+        withForm {
+            if (testGroup == null) {
+                notFound()
+                return
             }
-            '*' { respond testGroup, [status: CREATED] }
+
+            try {
+                testGroupService.save(testGroup)
+            } catch (ValidationException ignored) {
+                def project = projectService.read(testGroup.project.id)
+                respond testGroup.errors, view:'create', model: [ project: project ]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.created.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), testGroup.id])
+                    redirect uri: "/project/${testGroup.project.id}/testGroup/show/${testGroup.id}"
+                }
+                '*' { respond testGroup, [status: CREATED] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -110,29 +118,33 @@ class TestGroupController {
      */
     @Secured("ROLE_BASIC")
     def update(TestGroup testGroup, Long projectId) {
-        if (testGroup == null || projectId == null) {
-            notFound()
-            return
-        }
-        def groupId = testGroup.project.id
-        if (projectId != groupId) {
-            notFound()
-            return
-        }
-
-        try {
-            testGroupService.save(testGroup)
-        } catch (ValidationException ignored) {
-            respond testGroup.errors, view:'edit'
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), testGroup.id])
-                redirect uri: "/project/${testGroup.project.id}/testGroup/show/${testGroup.id}"
+        withForm {
+            if (testGroup == null || projectId == null) {
+                notFound()
+                return
             }
-            '*'{ respond testGroup, [status: OK] }
+            def groupId = testGroup.project.id
+            if (projectId != groupId) {
+                notFound()
+                return
+            }
+
+            try {
+                testGroupService.save(testGroup)
+            } catch (ValidationException ignored) {
+                respond testGroup.errors, view:'edit'
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.updated.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), testGroup.id])
+                    redirect uri: "/project/${testGroup.project.id}/testGroup/show/${testGroup.id}"
+                }
+                '*'{ respond testGroup, [status: OK] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -142,24 +154,28 @@ class TestGroupController {
      */
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
-        if (id == null || projectId == null) {
-            notFound()
-            return
-        }
-        def group = testGroupService.read(id)
-        if (group.project.id != projectId) {
-            notFound()
-            return
-        }
-
-        testGroupService.delete(id)
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), id])
-                redirect uri: "/project/${projectId}/testGroups"
+        withForm {
+            if (id == null || projectId == null) {
+                notFound()
+                return
             }
-            '*'{ render status: NO_CONTENT }
+            def group = testGroupService.read(id)
+            if (group.project.id != projectId) {
+                notFound()
+                return
+            }
+
+            testGroupService.delete(id)
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.deleted.message', args: [message(code: 'testGroup.label', default: 'TestGroup'), id])
+                    redirect uri: "/project/${projectId}/testGroups"
+                }
+                '*'{ render status: NO_CONTENT }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -169,6 +185,15 @@ class TestGroupController {
     protected void notFound() {
         request.withFormat {
             '*'{ render status: NOT_FOUND }
+        }
+    }
+
+    /**
+     * displays error view (500)
+     */
+    protected void error() {
+        request.withFormat {
+            '*'{ render status: INTERNAL_SERVER_ERROR }
         }
     }
 }

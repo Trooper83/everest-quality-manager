@@ -38,11 +38,15 @@ class TestCaseController {
             respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
 
         } else { // perform search
-            def testCases = testCaseService.findAllInProjectByName(project, params.name)
-            if(testCases.empty) {
-                flash.message = "No test cases were found using search term: '${params.name}'"
+            withForm {
+                def testCases = testCaseService.findAllInProjectByName(project, params.name)
+                if(testCases.empty) {
+                    flash.message = "No test cases were found using search term: '${params.name}'"
+                }
+                respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
+            }.invalidToken {
+                error()
             }
-            respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
         }
     }
 
@@ -78,28 +82,32 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def save(TestCase testCase) {
-        if (testCase == null) {
-            notFound()
-            return
-        }
-
-        Person person = springSecurityService.getCurrentUser() as Person
-        testCase.person = person
-        try {
-            testCaseService.save(testCase)
-        } catch (ValidationException ignored) {
-            def project = projectService.read(testCase.project.id)
-            params.projectId = project.id
-            respond testCase.errors, view:"create", model: [ project: project ]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: "default.created.message", args: [message(code: "testCase.name", default: "TestCase"), testCase.id])
-                redirect uri: "/project/${testCase.project.id}/testCase/show/${testCase.id}"
+        withForm {
+            if (testCase == null) {
+                notFound()
+                return
             }
-            "*" { respond testCase, [status: CREATED] }
+
+            Person person = springSecurityService.getCurrentUser() as Person
+            testCase.person = person
+            try {
+                testCaseService.save(testCase)
+            } catch (ValidationException ignored) {
+                def project = projectService.read(testCase.project.id)
+                params.projectId = project.id
+                respond testCase.errors, view:"create", model: [ project: project ]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: "default.created.message", args: [message(code: "testCase.name", default: "TestCase"), testCase.id])
+                    redirect uri: "/project/${testCase.project.id}/testCase/show/${testCase.id}"
+                }
+                "*" { respond testCase, [status: CREATED] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -119,32 +127,36 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def update(TestCase testCase, RemovedItems removedItems, Long projectId) {
-        if (testCase == null || projectId == null) {
-            notFound()
-            return
-        }
-
-        def testProjectId = testCase.project.id
-        if (projectId != testProjectId) {
-            notFound()
-            return
-        }
-
-        try {
-            testCaseService.saveUpdate(testCase, removedItems)
-        } catch (ValidationException e) {
-            def tc = testCaseService.read(testCase.id)
-            tc.errors = e.errors
-            render view:'edit', model: [testCase: tc]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: "default.updated.message", args: [message(code: "testCase.label", default: "TestCase"), testCase.id])
-                redirect uri: "/project/${testCase.project.id}/testCase/show/${testCase.id}"
+        withForm {
+            if (testCase == null || projectId == null) {
+                notFound()
+                return
             }
-            "*"{ respond testCase, [status: OK] }
+
+            def testProjectId = testCase.project.id
+            if (projectId != testProjectId) {
+                notFound()
+                return
+            }
+
+            try {
+                testCaseService.saveUpdate(testCase, removedItems)
+            } catch (ValidationException e) {
+                def tc = testCaseService.read(testCase.id)
+                tc.errors = e.errors
+                render view:'edit', model: [testCase: tc]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: "default.updated.message", args: [message(code: "testCase.label", default: "TestCase"), testCase.id])
+                    redirect uri: "/project/${testCase.project.id}/testCase/show/${testCase.id}"
+                }
+                "*"{ respond testCase, [status: OK] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -155,30 +167,34 @@ class TestCaseController {
      */
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
-        if (id == null || projectId == null) {
-            notFound()
-            return
-        }
-        def testCase = testCaseService.read(id)
-        if (testCase.project.id != projectId) {
-            notFound()
-            return
-        }
-
-        try {
-            testCaseService.delete(id)
-        } catch(DataIntegrityViolationException ignored) {
-            flash.error = "Test Case has associated Test Iterations and cannot be deleted"
-            render view: 'show', model: [ testCase: testCaseService.get(id) ]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: "default.deleted.message", args: [message(code: "testCase.label", default: "TestCase"), id])
-                redirect uri: "/project/${projectId}/testCases"
+        withForm {
+            if (id == null || projectId == null) {
+                notFound()
+                return
             }
-            "*"{ render status: NO_CONTENT }
+            def testCase = testCaseService.read(id)
+            if (testCase.project.id != projectId) {
+                notFound()
+                return
+            }
+
+            try {
+                testCaseService.delete(id)
+            } catch(DataIntegrityViolationException ignored) {
+                flash.error = "Test Case has associated Test Iterations and cannot be deleted"
+                render view: 'show', model: [ testCase: testCaseService.get(id) ]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: "default.deleted.message", args: [message(code: "testCase.label", default: "TestCase"), id])
+                    redirect uri: "/project/${projectId}/testCases"
+                }
+                "*"{ render status: NO_CONTENT }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -188,6 +204,15 @@ class TestCaseController {
     protected void notFound() {
         request.withFormat {
             "*"{ render status: NOT_FOUND }
+        }
+    }
+
+    /**
+     * displays error view (500)
+     */
+    protected void error() {
+        request.withFormat {
+            '*'{ render status: INTERNAL_SERVER_ERROR }
         }
     }
 }
