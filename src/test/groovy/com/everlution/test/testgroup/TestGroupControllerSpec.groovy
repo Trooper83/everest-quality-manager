@@ -8,6 +8,7 @@ import com.everlution.TestGroupService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.*
 
 class TestGroupControllerSpec extends Specification implements ControllerUnitTest<TestGroupController>, DomainUnitTest<TestGroup> {
@@ -15,6 +16,12 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     def populateValidParams(params) {
         assert params != null
         params.name = "test group name"
+    }
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/testCase/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
     void "test groups action renders index view"() {
@@ -94,12 +101,29 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:"The action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.testGroups(1)
 
         then:
         flash.message == "No test groups were found using search term: 'test'"
+    }
+
+    void "testGroups search responds 500 when no token present"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.testGroups(1)
+
+        then:
+        response.status == 500
     }
 
     void "testGroups search returns the correct model"() {
@@ -113,6 +137,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
 
         when:"action is executed"
         params.isSearch = 'true'
+        setToken(params)
         params.name = 'test'
         controller.testGroups(1)
 
@@ -180,10 +205,21 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         controller.save(null)
 
         then:"A 404 error is returned"
         response.status == 404
+    }
+
+    void "save responds 500 when no token present"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        controller.save(null)
+
+        then:
+        response.status == 500
     }
 
     void "Test the save action correctly persists"() {
@@ -196,6 +232,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         populateValidParams(params)
         def testGroup = new TestGroup(params)
         testGroup.id = 1
@@ -227,6 +264,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         def testGroup = new TestGroup()
         testGroup.project = p
         controller.save(testGroup)
@@ -338,16 +376,28 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(null, 1)
 
         then:"A 404 error is returned"
         response.status == 404
     }
 
+    void "update responds with 500 when no token present"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "update action with a valid test case instance and null projectId param returns 404"() {
         when:
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(new TestGroup(), null)
 
         then:"A 404 error is returned"
@@ -360,6 +410,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         testGroup.id = 1
         def project = new Project()
         project.id = 1
+        setToken(params)
         testGroup.project = project
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
@@ -377,6 +428,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
 
         when:"The save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
@@ -407,6 +459,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         def project = new Project()
         project.id = 1
         testGroup.project = project
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(testGroup, 1)
@@ -437,16 +490,28 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(null, 1)
 
         then:"A 404 is returned"
         response.status == 404
     }
 
+    void "delete responds with 500 when no token present"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "delete action with a null project returns 404"() {
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(1, null)
 
         then:"A 404 is returned"
@@ -458,6 +523,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         testGroup.id = 2
         def project = new Project()
         project.id = 1
+        setToken(params)
         testGroup.project = project
         given:
         controller.testGroupService = Mock(TestGroupService) {
@@ -481,6 +547,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         testGroup.id = 2
         def project = new Project()
         project.id = 1
+        setToken(params)
         testGroup.project = project
 
         controller.testGroupService = Mock(TestGroupService) {

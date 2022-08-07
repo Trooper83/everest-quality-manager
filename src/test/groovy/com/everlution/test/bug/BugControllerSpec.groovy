@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.*
 
 class BugControllerSpec extends Specification implements ControllerUnitTest<BugController>, DomainUnitTest<Bug> {
@@ -19,6 +20,12 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
 
         params.name = "controller unit test bug"
         params.description = "this is the description"
+    }
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/bugController/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
     void "bugs action renders bugs view"() {
@@ -87,6 +94,22 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         flash.message == "There are no bugs in the project"
     }
 
+    void "bugs search responds 500 when no token present"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.bugs(1)
+
+        then:
+        response.status == 500
+    }
+
     void "bugs search sets flash message when no bugs found"() {
         given:
         def project = new Project(name: 'test')
@@ -98,6 +121,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"The action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.bugs(1)
@@ -116,6 +140,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.bugs(1)
@@ -186,10 +211,21 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         controller.save(null)
 
         then:"A 404 error is returned"
         response.status == 404
+    }
+
+    void "save responds with 500 when no token present"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        controller.save(null)
+
+        then:"A 500 error is returned"
+        response.status == 500
     }
 
     void "save action correctly persists"() {
@@ -206,6 +242,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
+        setToken(params)
         def bug = new Bug(params)
         def project = new Project()
         bug.id = 1
@@ -236,6 +273,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"The save action is executed with an invalid instance"
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def bug = new Bug()
@@ -346,16 +384,28 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         when:"update is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(null, null, 1)
 
         then:"A 404 error is returned"
         response.status == 404
     }
 
+    void "update responds with 500 when no token present"() {
+        when:"update is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(null, null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "update action with a valid bug instance and null projectId param returns 404"() {
         when:
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(new Bug(), null, null)
 
         then:"A 404 error is returned"
@@ -368,6 +418,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         def project = new Project()
         project.id = 999
         bug.project = project
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(bug, null, 1)
@@ -386,6 +437,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         populateValidParams(params)
         def bug = new Bug(params)
         def project = new Project()
@@ -414,6 +466,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         when:"update action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         populateValidParams(params)
         def bug = new Bug(params)
         def project = new Project()
@@ -445,16 +498,28 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(null, 1)
 
         then:"A 404 is returned"
         response.status == 404
     }
 
+    void "delete responds with 500 when no token present"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(null, 1)
+
+        then:"A 500 is returned"
+        response.status == 500
+    }
+
     void "delete action with a null project"() {
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(1, null)
 
         then:"A 404 is returned"
@@ -476,6 +541,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"The domain instance is passed to the delete action"
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
         controller.delete(2, 999)
@@ -500,6 +566,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         }
 
         when:"The domain instance is passed to the delete action"
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
         controller.delete(2, 1)

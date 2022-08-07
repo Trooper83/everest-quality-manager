@@ -72,7 +72,8 @@
             </div>
             </div>
             <sec:ifAnyGranted roles="ROLE_BASIC">
-            <g:form resource="${this.releasePlan}" method="DELETE" uri="/project/${releasePlan.project.id}/releasePlan/delete/${releasePlan.id}">
+            <g:form resource="${this.releasePlan}" method="DELETE"
+                    uri="/project/${releasePlan.project.id}/releasePlan/delete/${releasePlan.id}" useToken="true">
                 <fieldset class="buttons">
                     <g:link class="edit" uri="/project/${releasePlan.project.id}/releasePlan/edit/${releasePlan.id}" data-test-id="show-edit-link">
                         <g:message code="default.button.edit.label" default="Edit" />
@@ -92,7 +93,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <g:form action="addTestCycle" controller="releasePlan" method="POST">
+                        <g:form action="addTestCycle" controller="releasePlan" method="POST" useToken="true">
                             <fieldset class="form">
                                 <g:hiddenField name="releasePlan.id" value="${releasePlan.id}" />
                                 <div class="fieldcontain required">

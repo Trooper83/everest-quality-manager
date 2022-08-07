@@ -12,7 +12,8 @@
 <div id="execute-testIteration" class="content col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <h1><g:message code="default.execute.label" args="[entityName]" /></h1>
     <g:render template="/shared/messagesTemplate" bean="${testIteration}" var="entity"/>
-    <g:form resource="${this.testIteration}" method="PUT" uri="/project/${testIteration.testCycle.releasePlan.project.id}/testIteration/update/${testIteration.id}">
+    <g:form resource="${this.testIteration}" method="PUT" useToken="true"
+            uri="/project/${testIteration.testCycle.releasePlan.project.id}/testIteration/update/${testIteration.id}">
         <g:hiddenField name="version" value="${this.testIteration?.version}" />
         <ol class="property-list testIteration">
             <li class="fieldcontain">

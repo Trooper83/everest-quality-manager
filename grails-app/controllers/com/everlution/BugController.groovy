@@ -39,12 +39,15 @@ class BugController {
             respond bugs, model: [bugCount: bugs.size(), project: project], view: 'bugs'
 
         } else { // perform search
-
-            def bugs = bugService.findAllInProjectByName(project, params.name)
-            if(bugs.size() == 0) {
-                flash.message = "No bugs were found using search term: '${params.name}'"
+            withForm {
+                def bugs = bugService.findAllInProjectByName(project, params.name)
+                if(bugs.size() == 0) {
+                    flash.message = "No bugs were found using search term: '${params.name}'"
+                }
+                respond bugs, model: [bugCount: bugs.size(), project: project], view:'bugs'
+            }.invalidToken {
+                error()
             }
-            respond bugs, model: [bugCount: bugs.size(), project: project], view:'bugs'
         }
     }
 
@@ -79,28 +82,32 @@ class BugController {
      */
     @Secured("ROLE_BASIC")
     def save(Bug bug) {
-        if (bug == null) {
-            notFound()
-            return
-        }
-
-        def person = springSecurityService.getCurrentUser() as Person
-        bug.person = person
-
-        try {
-            bugService.save(bug)
-        } catch (ValidationException ignored) {
-            def project = projectService.read(bug.project.id)
-            respond bug.errors, view:'create', model: [ project: project ]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'bug.label', default: 'Bug'), bug.id])
-                redirect uri: "/project/${bug.project.id}/bug/show/${bug.id}"
+        withForm {
+            if (bug == null) {
+                notFound()
+                return
             }
-            '*' { respond bug, [status: CREATED] }
+
+            def person = springSecurityService.getCurrentUser() as Person
+            bug.person = person
+
+            try {
+                bugService.save(bug)
+            } catch (ValidationException ignored) {
+                def project = projectService.read(bug.project.id)
+                respond bug.errors, view:'create', model: [ project: project ]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.created.message', args: [message(code: 'bug.label', default: 'Bug'), bug.id])
+                    redirect uri: "/project/${bug.project.id}/bug/show/${bug.id}"
+                }
+                '*' { respond bug, [status: CREATED] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -120,31 +127,35 @@ class BugController {
      */
     @Secured("ROLE_BASIC")
     def update(Bug bug, RemovedItems removedItems, Long projectId) {
-        if (bug == null || projectId == null) {
-            notFound()
-            return
-        }
-        def bugProjectId = bug.project.id
-        if (projectId != bugProjectId) {
-            notFound()
-            return
-        }
-
-        try {
-            bugService.saveUpdate(bug, removedItems)
-        } catch (ValidationException e) {
-            def b = bugService.read(bug.id)
-            b.errors = e.errors
-            render view: 'edit', model: [bug: b]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'bug.label', default: 'Bug'), bug.id])
-                redirect uri: "/project/${bug.project.id}/bug/show/${bug.id}"
+        withForm {
+            if (bug == null || projectId == null) {
+                notFound()
+                return
             }
-            '*'{ respond bug, [status: OK] }
+            def bugProjectId = bug.project.id
+            if (projectId != bugProjectId) {
+                notFound()
+                return
+            }
+
+            try {
+                bugService.saveUpdate(bug, removedItems)
+            } catch (ValidationException e) {
+                def b = bugService.read(bug.id)
+                b.errors = e.errors
+                render view: 'edit', model: [bug: b]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.updated.message', args: [message(code: 'bug.label', default: 'Bug'), bug.id])
+                    redirect uri: "/project/${bug.project.id}/bug/show/${bug.id}"
+                }
+                '*'{ respond bug, [status: OK] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -154,23 +165,27 @@ class BugController {
      */
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
-        if (id == null || projectId == null) {
-            notFound()
-            return
-        }
-        def bug = bugService.read(id)
-        if (bug.project.id != projectId) {
-            notFound()
-            return
-        }
-        bugService.delete(id)
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'bug.label', default: 'Bug'), id])
-                redirect uri: "/project/${projectId}/bugs"
+        withForm {
+            if (id == null || projectId == null) {
+                notFound()
+                return
             }
-            '*'{ render status: NO_CONTENT }
+            def bug = bugService.read(id)
+            if (bug.project.id != projectId) {
+                notFound()
+                return
+            }
+            bugService.delete(id)
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.deleted.message', args: [message(code: 'bug.label', default: 'Bug'), id])
+                    redirect uri: "/project/${projectId}/bugs"
+                }
+                '*'{ render status: NO_CONTENT }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -180,6 +195,15 @@ class BugController {
     protected void notFound() {
         request.withFormat {
             '*'{ render status: NOT_FOUND }
+        }
+    }
+
+    /**
+     * displays error view (500)
+     */
+    protected void error() {
+        request.withFormat {
+            '*'{ render status: INTERNAL_SERVER_ERROR }
         }
     }
 }

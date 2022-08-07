@@ -74,7 +74,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form name="addTests" action="/testCycle/addTests?testCycleId=${testCycle.id}" method="POST" resource="${this.testCycle}">
+                <g:form name="addTests" uri="/testCycle/addTests?testCycleId=${testCycle.id}" method="POST"
+                        resource="${this.testCycle}" useToken="true">
                     <fieldset class="form">
                         <div class="fieldcontain">
                             <label for="testGroups">Test Groups</label>
@@ -90,7 +91,7 @@
                         </button>
                         <g:submitButton data-test-id="modal-submit-button" class="btn btn-secondary" name="submit" value="Add Tests"/>
                     </div>
-                </form>
+                </g:form>
             </div>
         </div>
     </div>

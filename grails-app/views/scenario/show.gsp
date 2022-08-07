@@ -56,7 +56,8 @@
         </li>
     </ol>
     <sec:ifAnyGranted roles="ROLE_BASIC">
-        <g:form resource="${this.scenario}" method="DELETE" uri="/project/${scenario.project.id}/scenario/delete/${scenario.id}">
+        <g:form resource="${this.scenario}" method="DELETE" useToken="true"
+                uri="/project/${scenario.project.id}/scenario/delete/${scenario.id}">
             <fieldset class="buttons">
                 <g:link class="edit" uri="/project/${scenario.project.id}/scenario/edit/${scenario.id}" data-test-id="show-edit-link">
                     <g:message code="default.button.edit.label" default="Edit"/>

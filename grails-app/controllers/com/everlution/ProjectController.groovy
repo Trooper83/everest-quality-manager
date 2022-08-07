@@ -35,11 +35,15 @@ class ProjectController {
             respond projects, model:[projectCount: projectService.count()]
 
         } else { // perform search
-            def projects = projectService.findAllByNameIlike(params.name)
-            if(projects.size() == 0) {
-                flash.message = "No projects were found using search term: '${params.name}'"
+            withForm {
+                def projects = projectService.findAllByNameIlike(params.name)
+                if(projects.size() == 0) {
+                    flash.message = "No projects were found using search term: '${params.name}'"
+                }
+                render view:'projects', model: [projectList: projects, projectCount: projects.size()]
+            }.invalidToken {
+                error()
             }
-            render view:'projects', model: [projectList: projects, projectCount: projects.size()]
         }
     }
 
@@ -90,24 +94,28 @@ class ProjectController {
      */
     @Secured("ROLE_PROJECT_ADMIN")
     def save(Project project) {
-        if (project == null) {
-            notFound()
-            return
-        }
-
-        try {
-            projectService.save(project)
-        } catch (ValidationException ignored) {
-            respond project.errors, view:'create'
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'project.label', default: 'Project'), project.id])
-                redirect controller: "project", action: "show", id: project.id
+        withForm {
+            if (project == null) {
+                notFound()
+                return
             }
-            '*' { respond project, [status: CREATED] }
+
+            try {
+                projectService.save(project)
+            } catch (ValidationException ignored) {
+                respond project.errors, view:'create'
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.created.message', args: [message(code: 'project.label', default: 'Project'), project.id])
+                    redirect controller: "project", action: "show", id: project.id
+                }
+                '*' { respond project, [status: CREATED] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -127,31 +135,37 @@ class ProjectController {
      */
     @Secured("ROLE_PROJECT_ADMIN")
     def update(Project project, RemovedItems removedItems) {
-        if (project == null) {
-            notFound()
-            return
-        }
-
-        try {
-            projectService.saveUpdate(project, removedItems)
-        } catch (ValidationException e) {
-            def p = projectService.read(project.id)
-            p.errors = e.errors
-            render view:'edit', model: [project: p]
-            return
-        } catch (DataIntegrityViolationException ignored) {
-            flash.error = 'Removed entity has associated items and cannot be deleted'
-            def p = projectService.read(params.id)
-            render view:'edit', model: [project: p]
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'project.label', default: 'Project'), project.id])
-                redirect controller: "project", action: "show", id: project.id
+        withForm {
+            if (project == null) {
+                notFound()
+                return
             }
-            '*'{ respond project, [status: OK] }
+
+            try {
+                projectService.saveUpdate(project, removedItems)
+            } catch (ValidationException e) {
+                def p = projectService.read(project.id)
+                p.errors = e.errors
+                params.projectId = p.id
+                render view:'edit', model: [project: p]
+                return
+            } catch (DataIntegrityViolationException ignored) {
+                flash.error = 'Removed entity has associated items and cannot be deleted'
+                def p = projectService.read(params.id)
+                params.projectId = p.id
+                render view:'edit', model: [project: p]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.updated.message', args: [message(code: 'project.label', default: 'Project'), project.id])
+                    redirect controller: "project", action: "show", id: project.id
+                }
+                '*'{ respond project, [status: OK] }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -161,27 +175,31 @@ class ProjectController {
      */
     @Secured("ROLE_PROJECT_ADMIN")
     def delete(Long id) {
-        if (id == null) {
-            notFound()
-            return
-        }
-
-        try {
-            projectService.delete(id)
-        } catch (DataIntegrityViolationException ignored) {
-            def project = projectService.read(id)
-            flash.error = 'Project has associated items and cannot be deleted'
-            params.projectId = project.id
-            respond project, view: 'show'
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'project.label', default: 'Project'), id])
-                redirect controller: "project", action:"projects", method:"GET"
+        withForm {
+            if (id == null) {
+                notFound()
+                return
             }
-            '*'{ render status: NO_CONTENT }
+
+            try {
+                projectService.delete(id)
+            } catch (DataIntegrityViolationException ignored) {
+                def project = projectService.read(id)
+                flash.error = 'Project has associated items and cannot be deleted'
+                params.projectId = project.id
+                respond project, view: 'show'
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.deleted.message', args: [message(code: 'project.label', default: 'Project'), id])
+                    redirect controller: "project", action:"projects", method:"GET"
+                }
+                '*'{ render status: NO_CONTENT }
+            }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -195,6 +213,15 @@ class ProjectController {
                 redirect action: "index", method: "GET"
             }
             '*'{ render status: NOT_FOUND }
+        }
+    }
+
+    /**
+     * displays error view (500)
+     */
+    protected void error() {
+        request.withFormat {
+            '*'{ render status: INTERNAL_SERVER_ERROR }
         }
     }
 

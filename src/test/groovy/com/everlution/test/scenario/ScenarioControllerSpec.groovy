@@ -9,6 +9,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.*
 
 class ScenarioControllerSpec extends Specification implements ControllerUnitTest<ScenarioController>, DomainUnitTest<Scenario> {
@@ -17,6 +18,12 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         assert params != null
 
         params.name = "unit test scenario name"
+    }
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/scenario/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
     void "scenarios action renders bugs view"() {
@@ -96,12 +103,29 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         }
 
         when:"The action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.scenarios(1)
 
         then:
         flash.message == "No scenarios were found using search term: 'test'"
+    }
+
+    void "scenarios search responds 500 when no token present"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.scenarios(1)
+
+        then:
+        response.status == 500
     }
 
     void "scenarios search returns the correct model"() {
@@ -114,6 +138,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         }
 
         when:"action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.scenarios(1)
@@ -171,10 +196,21 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         controller.save(null)
 
         then:"A 404 error is returned"
         response.status == 404
+    }
+
+    void "save responds 500 when no token present"() {
+        when:"save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        controller.save(null)
+
+        then:
+        response.status == 500
     }
 
     void "save action correctly persists"() {
@@ -188,6 +224,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         when:"the save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
@@ -224,6 +261,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         when:"the save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'POST'
         def scenario = new Scenario()
         scenario.project = p
@@ -333,16 +371,28 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         when:"save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(null, 1)
 
         then:"404 error is returned"
         response.status == 404
     }
 
+    void "update responds with 500 when no token present"() {
+        when:"save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "update action with a valid scenario instance and null projectId param returns 404"() {
         when:
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(new Scenario(), null)
 
         then:"A 404 error is returned"
@@ -356,6 +406,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         scenario.id = 1
         project.id = 1
         scenario.project = project
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         controller.update(scenario, 999)
@@ -372,6 +423,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         when:"save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
@@ -405,6 +457,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         when:"save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'PUT'
         controller.update(scenario, 1)
 
@@ -431,16 +484,28 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         when:"delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(null, 1)
 
         then:"404 is returned"
         response.status == 404
     }
 
+    void "delete responds with 500 when no token present"() {
+        when:"delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "delete action with a null project"() {
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(1, null)
 
         then:"A 404 is returned"
@@ -462,6 +527,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         when:"domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'DELETE'
         controller.delete(2, 1)
 
@@ -485,6 +551,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'DELETE'
         controller.delete(2, 999)
 

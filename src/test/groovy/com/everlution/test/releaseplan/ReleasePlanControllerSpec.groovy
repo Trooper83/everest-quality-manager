@@ -9,6 +9,7 @@ import com.everlution.TestCycle
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.*
 
 class ReleasePlanControllerSpec extends Specification implements ControllerUnitTest<ReleasePlanController>, DomainUnitTest<ReleasePlan> {
@@ -17,6 +18,12 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         assert params != null
 
         params.name = "test release plan"
+    }
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/releasePlan/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
     void "release plans action renders correct view"() {
@@ -93,12 +100,29 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         }
 
         when:"The action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.releasePlans(1)
 
         then:
         flash.message == "No release plans were found using search term: 'test'"
+    }
+
+    void "release plans search responds 500 when no token present"() {
+        given:
+        def project = new Project(name: 'test')
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> project
+        }
+
+        when:"The action is executed"
+        params.isSearch = 'true'
+        params.name = 'test'
+        controller.releasePlans(1)
+
+        then:
+        response.status == 500
     }
 
     void "release plans search returns the correct model"() {
@@ -111,6 +135,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         }
 
         when:"action is executed"
+        setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
         controller.releasePlans(1)
@@ -184,10 +209,21 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         controller.save(null)
 
         then:"A 404 error is returned"
         response.status == 404
+    }
+
+    void "save responds with 500 when no token present"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        controller.save(null)
+
+        then:
+        response.status == 500
     }
 
     void "save action correctly persists"() {
@@ -198,6 +234,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         when:"The save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
@@ -228,6 +265,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         }
 
         when:"The save action is executed with an invalid instance"
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         def releasePlan = new ReleasePlan()
@@ -341,15 +379,27 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(null, 1)
 
         then:"redirected to index"
         response.status == 404
     }
 
+    void "update responds with 500 when no token present"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "update action with a valid plan instance and null projectId param returns 404"() {
         when:
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'PUT'
         controller.update(new ReleasePlan(), null)
 
@@ -366,6 +416,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         releasePlan.project = project
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(releasePlan, 99)
 
         then:"A 404 error is returned"
@@ -380,6 +431,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         when:"The save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         populateValidParams(params)
@@ -412,6 +464,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'PUT'
         controller.update(releasePlan, 1)
 
@@ -441,16 +494,28 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(null, 1)
 
         then:"redirect to index"
         response.status == 404
     }
 
+    void "delete responds with 500 when no token present"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "delete action with a null project returns 404"() {
         when:"The delete action is called for a null instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(1, null)
 
         then:"A 404 is returned"
@@ -472,6 +537,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(2, 999)
 
         then:"A 404 is returned"
@@ -494,6 +560,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"The domain instance is passed to the delete action"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'DELETE'
+        setToken(params)
         controller.delete(2, 1)
 
         then:"The user is redirected to index"
@@ -505,6 +572,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         populateValidParams(params)
         controller.addTestCycle(null, new TestCycle())
 
@@ -512,11 +580,23 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         response.status == 404
     }
 
+    void "add test cycle responds 500 when no token present"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        controller.addTestCycle(null, new TestCycle())
+
+        then:
+        response.status == 500
+    }
+
     void "add test cycle action returns 404 with a null test cycle instance"() {
         when:
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
+        setToken(params)
         controller.addTestCycle(new ReleasePlan(), null)
 
         then:"404 error is returned"
@@ -531,6 +611,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         when:"save action is executed with a valid instance"
         response.reset()
+        setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         populateValidParams(params)
@@ -560,6 +641,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"add test cycles action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
+        setToken(params)
         controller.addTestCycle(new ReleasePlan(), new TestCycle())
 
         then:"create view is rendered again with the correct model"

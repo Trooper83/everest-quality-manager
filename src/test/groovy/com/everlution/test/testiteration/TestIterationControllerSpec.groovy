@@ -9,9 +9,16 @@ import com.everlution.TestIterationService
 import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.Specification
 
 class TestIterationControllerSpec extends Specification implements ControllerUnitTest<TestIterationController>, DataTest {
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/testCase/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
+    }
 
     void "show action renders show view"() {
         given:
@@ -96,16 +103,29 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(null, 1)
 
         then:
         response.status == 404
     }
 
+    void "update responds with 500 when no token present"() {
+        when:
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(null, 1)
+
+        then:
+        response.status == 500
+    }
+
     void "update action with a valid iteration instance and null projectId param returns 404"() {
         when:
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         controller.update(new TestIteration(), null)
 
         then:"A 404 error is returned"
@@ -125,6 +145,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         cycle.releasePlan = plan
         iteration.testCycle = cycle
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'PUT'
         controller.update(iteration, 9999)
 
@@ -161,6 +182,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
+        setToken(params)
         def iteration = new TestIteration()
         iteration.id = 1
         def plan = new ReleasePlan()
@@ -198,6 +220,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
 
         when:"The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
+        setToken(params)
         request.method = 'PUT'
         controller.update(iteration, 1)
 

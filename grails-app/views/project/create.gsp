@@ -14,7 +14,7 @@
         <g:message code="default.create.label" args="[entityName]"/>
     </h1>
     <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
-    <g:form resource="${this.project}" method="POST">
+    <g:form resource="${this.project}" method="POST" useToken="true">
         <fieldset class="form">
             <f:all bean="project" except="areas, bugs, environments, testCases, testGroups"/>
             <div class="fieldcontain" id="areas">

@@ -25,7 +25,7 @@
         <div class="message" role="status">${flash.message}</div>
     </g:if>
     <div class="col-4 mt-4 mb-4">
-        <g:form uri="/project/${project.id}/bugs" params="['isSearch': 'true']">
+        <g:form uri="/project/${project.id}/bugs" params="['isSearch': 'true']" useToken="true">
             <g:textField name="name" autocomplete="off" placeholder="Bug Name" />
             <button class="btn btn-secondary" type="submit" id="searchButton">Search</button>
         </g:form>

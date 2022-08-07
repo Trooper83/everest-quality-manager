@@ -14,6 +14,7 @@ import com.everlution.TestGroupService
 import com.everlution.command.IterationsCmd
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
+import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.*
 
 class TestCycleControllerSpec extends Specification implements ControllerUnitTest<TestCycleController>, DomainUnitTest<TestCycle> {
@@ -25,6 +26,12 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         params["name"] = 'someValidName'
         params["releasePlan.id"] = plan.id
         params["releasePlan"] = plan
+    }
+
+    def setToken(params) {
+        def token = SynchronizerTokensHolder.store(session)
+        params[SynchronizerTokensHolder.TOKEN_URI] = '/testCase/action'
+        params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
     void "show action with a null id"() {
@@ -105,6 +112,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:
+        setToken(params)
         controller.addTests(cmd)
 
         then:
@@ -114,6 +122,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
     void "add tests with groups that have no tests renders error message"() {
         given:
+        setToken(params)
         request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
@@ -144,6 +153,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
     void "add tests renders error message"() {
         given:
+        setToken(params)
         request.method = 'POST'
         def group = new TestGroup(name: "group name").save()
         def tc = new TestCase()
@@ -179,6 +189,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
     void "add tests executes groups logic when group ids specified"() {
         given:
+        setToken(params)
         request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
@@ -210,6 +221,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
 
     void "add tests executes test case logic when test case ids specified"() {
         given:
+        setToken(params)
         request.method = 'POST'
         def cmd = new IterationsCmd()
         cmd.testCycleId = 1
@@ -246,11 +258,21 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:
+        setToken(params)
         request.method = 'POST'
         controller.addTests(new IterationsCmd())
 
         then:
         status == 404
+    }
+
+    void "add tests responds 500 when no token present"() {
+        when:
+        request.method = 'POST'
+        controller.addTests(new IterationsCmd())
+
+        then:
+        response.status == 500
     }
 
     void "add tests action method type"(String httpMethod) {
