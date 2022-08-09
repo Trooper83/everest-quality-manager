@@ -127,7 +127,7 @@ class CreatePageEnvironmentSpec extends GebSpec {
         page.editEnvironmentTag("Edit Env", "")
 
         then: "tooltip displayed"
-        page.tooltip.text() == "Environment Name cannot be blank"
+        page.getToolTipText() == "Environment Name cannot be blank"
     }
 
     void "environment name cannot be null"() {

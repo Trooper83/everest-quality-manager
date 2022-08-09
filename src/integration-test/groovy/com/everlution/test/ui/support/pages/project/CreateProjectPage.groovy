@@ -167,6 +167,17 @@ class CreateProjectPage extends BasePage {
     }
 
     /**
+     * gets the text of the displayed tooltip
+     * @return
+     */
+    String getToolTipText() {
+        waitFor() {
+            tooltip.displayed
+        }
+        return tooltip.text()
+    }
+
+    /**
      * determines if an area tag is displayed
      * @param name - name of the tag
      * @return boolean - true if tag found, false if not

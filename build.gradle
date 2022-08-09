@@ -49,12 +49,12 @@ configurations.all {
 }
 
 dependencies {
-    developmentOnly('org.springframework.boot:spring-boot-devtools:2.5.6')
-    implementation 'org.springframework.boot:spring-boot-starter-logging:2.5.6'
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.5.6'
+    developmentOnly('org.springframework.boot:spring-boot-devtools:2.7.2')
+    implementation 'org.springframework.boot:spring-boot-starter-logging:2.7.2'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.7.2'
     implementation 'org.grails:grails-core:5.2.1'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.5.6'
-    implementation 'org.springframework.boot:spring-boot-starter-tomcat:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.2'
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat:2.7.2'
     implementation 'org.grails:grails-web-boot:5.2.1'
     implementation 'org.grails:grails-logging:5.2.1'
     implementation 'org.grails:grails-plugin-rest:5.2.1'
