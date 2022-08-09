@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "org.grails.plugins:hibernate5:7.1.0"
+        classpath "org.grails.plugins:hibernate5:7.3.0"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.2.4"
     }
 }
@@ -33,45 +33,60 @@ configurations {
     }
 }
 
+/* required due to failed faker dependency as documented
+*  here: https://github.com/DiUS/java-faker/issues/327
+*  can remove once fixed or switch to
+*  https://www.datafaker.net/documentation/getting-started/#installation
+*/
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.module.toString() == 'org.yaml:snakeyaml') {
+            details.artifactSelection {
+                it.selectArtifact(DependencyArtifact.DEFAULT_TYPE, null, null)
+            }
+        }
+    }
+}
+
 dependencies {
-    developmentOnly('org.springframework.boot:spring-boot-devtools:2.5.6')
-    implementation "com.github.javafaker:javafaker:1.0.2"
-    implementation 'org.springframework.boot:spring-boot-starter-logging:2.5.6'
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.5.6'
-    implementation 'org.grails:grails-core:5.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.5.6'
-    implementation 'org.springframework.boot:spring-boot-starter-tomcat:2.5.6'
-    implementation 'org.grails:grails-web-boot:5.0.0'
-    implementation "org.grails:grails-logging"
-    implementation "org.grails:grails-plugin-rest"
-    implementation "org.grails:grails-plugin-databinding"
-    implementation "org.grails:grails-plugin-i18n"
-    implementation "org.grails:grails-plugin-services"
-    implementation "org.grails:grails-plugin-url-mappings"
-    implementation "org.grails:grails-plugin-interceptors"
-    implementation "org.grails.plugins:cache"
+    developmentOnly('org.springframework.boot:spring-boot-devtools:2.7.2')
+    implementation 'org.springframework.boot:spring-boot-starter-logging:2.7.2'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.7.2'
+    implementation 'org.grails:grails-core:5.2.1'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.2'
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat:2.7.2'
+    implementation 'org.grails:grails-web-boot:5.2.1'
+    implementation 'org.grails:grails-logging:5.2.1'
+    implementation 'org.grails:grails-plugin-rest:5.2.1'
+    implementation 'org.grails:grails-plugin-databinding:5.2.1'
+    implementation 'org.grails:grails-plugin-i18n:5.2.1'
+    implementation 'org.grails:grails-plugin-services:5.2.1'
+    implementation 'org.grails:grails-plugin-url-mappings:5.2.1'
+    implementation 'org.grails:grails-plugin-interceptors:5.2.1'
+    implementation 'org.grails.plugins:cache:5.0.1'
     implementation "org.grails.plugins:async"
-    implementation "org.grails.plugins:scaffolding"
-    implementation 'org.grails.plugins:spring-security-core:4.0.3'
+    implementation 'org.grails.plugins:scaffolding:4.1.0'
+    implementation 'org.grails.plugins:spring-security-core:5.1.0'
     implementation 'org.grails.plugins:spring-security-ui:4.0.0.M1'
     implementation "org.grails.plugins:events"
-    implementation 'org.grails.plugins:hibernate5:7.1.0'
+    implementation 'org.grails.plugins:hibernate5:7.3.0'
     implementation 'org.hibernate:hibernate-core:5.6.1.Final'
-    implementation "org.grails.plugins:gsp"
+    implementation 'org.grails.plugins:gsp:5.2.1'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.5'
-    compileOnly "io.micronaut:micronaut-inject-groovy"
-    console "org.grails:grails-console"
-    profile "org.grails.profiles:web"
-    runtimeOnly "org.glassfish.web:el-impl:2.1.2-b03"
+    compileOnly 'io.micronaut:micronaut-inject-groovy:3.5.4'
+    console 'org.grails:grails-console:5.2.1'
+    profile 'org.grails.profiles:web:5.0.5'
+    runtimeOnly 'org.glassfish.web:el-impl:2.2'
     runtimeOnly 'com.h2database:h2:1.4.200'
-    runtimeOnly "org.apache.tomcat:tomcat-jdbc"
-    runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
-    runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:3.2.4"
-    testImplementation "io.micronaut:micronaut-inject-groovy"
-    testImplementation 'org.grails:grails-gorm-testing-support:2.2.0'
-    testImplementation 'org.mockito:mockito-core:4.0.0'
-    testImplementation 'org.grails:grails-web-testing-support:2.2.0'
+    runtimeOnly 'org.apache.tomcat:tomcat-jdbc:10.0.23'
+    runtimeOnly 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    runtimeOnly 'com.bertramlabs.plugins:asset-pipeline-grails:3.4.6'
+    testImplementation 'io.micronaut:micronaut-inject-groovy:3.5.4'
+    testImplementation 'org.grails:grails-gorm-testing-support:2.6.1'
+    testImplementation 'org.mockito:mockito-core:4.6.1'
+    testImplementation 'org.grails:grails-web-testing-support:2.6.1'
     testImplementation 'org.gebish:geb-spock:5.1'
+    testImplementation "com.github.javafaker:javafaker:1.0.2"
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:3.14.0"
     testImplementation "org.seleniumhq.selenium:selenium-api:3.14.0"
     testImplementation "org.seleniumhq.selenium:selenium-support:3.14.0"

@@ -115,7 +115,7 @@ class CreatePageAreaSpec extends GebSpec {
         page.addAreaTag("")
 
         then: "tooltip is displayed"
-        page.tooltip.text() == "Area Name cannot be blank"
+        page.getToolTipText() == "Area Name cannot be blank"
     }
 
     void "edit area name input tooltip text"() {
@@ -127,7 +127,7 @@ class CreatePageAreaSpec extends GebSpec {
         page.editAreaTag("test", "")
 
         then: "tooltip displayed"
-        page.tooltip.text() == "Area Name cannot be blank"
+        page.getToolTipText() == "Area Name cannot be blank"
     }
 
     void "area name cannot be null"() {

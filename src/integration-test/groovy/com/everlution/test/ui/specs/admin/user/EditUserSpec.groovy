@@ -125,10 +125,7 @@ class EditUserSpec extends GebSpec {
         when:
         EditUserPage page = browser.page(EditUserPage)
         page.editPerson("", "p123!password", [], [])
-
-        and: //TODO: needed due to logout not working on create user view, remove once bootstrapped
-        def project = to ListProjectPage
-        project.navBar.logout()
+        page.navBar.logout()
 
         and:
         def logPage = at LoginPage
