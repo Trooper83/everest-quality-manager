@@ -118,18 +118,14 @@ environments:
             username: sa
             password: ''
             dialect: org.hibernate.dialect.H2Dialect
-    integrated:
+    production:
         dataSource:
-            dbCreate: create
+            dbCreate: none
             driverClassName: org.postgresql.Driver
             url: jdbc:postgresql://localhost:5432/everest
             username: "everest_admin"
             password: "!I-Am-Invincible#2022!" #TODO: update once live
             dialect: org.hibernate.dialect.PostgreSQLDialect
-    production:
-        dataSource:
-            dbCreate: none
-            url: jdbc:h2:./prodDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
             properties:
                 jmxEnabled: true
                 initialSize: 5
