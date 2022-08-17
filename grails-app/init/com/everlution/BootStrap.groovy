@@ -14,9 +14,8 @@ class BootStrap {
                 seedTestUsers()
                 seedTestData()
             }
-            integrated {
-                seedTestUsers()
-                seedTestData()
+            production {
+
             }
         }
     }
