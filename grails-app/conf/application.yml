@@ -120,7 +120,7 @@ environments:
             dialect: org.hibernate.dialect.H2Dialect
     integrated:
         dataSource:
-            dbCreate: create-drop
+            dbCreate: none
             driverClassName: org.postgresql.Driver
             url: jdbc:postgresql://localhost:5432/everest_int
             username: "everest_admin"
