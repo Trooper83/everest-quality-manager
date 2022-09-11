@@ -45,10 +45,7 @@ class ShowPageSpec extends GebSpec {
     }
 
     void "edit link directs to home view"() {
-        setup: "get a bug id"
-        def bug = bugService.list(max: 1).first()
-
-        and: "login as a basic user"
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
