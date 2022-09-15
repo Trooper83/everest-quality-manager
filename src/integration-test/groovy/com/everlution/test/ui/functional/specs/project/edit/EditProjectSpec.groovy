@@ -1,6 +1,5 @@
 package com.everlution.test.ui.functional.specs.project.edit
 
-
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
@@ -59,7 +58,7 @@ class EditProjectSpec extends GebSpec {
         when: "edit the project"
         def edited = DataFactory.project()
         EditProjectPage page = browser.page(EditProjectPage)
-        page.editProject(edited.name, edited.code)
+        page.editProject(edited.name, edited.code, [], [])
 
         then: "at home page and data displayed"
         def showPage = at ShowProjectPage
