@@ -24,24 +24,19 @@ class BugSpec extends GebSpec {
     def env1 = 'Production'
 
     def setup() {
-        and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
-        and:
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 'Atlas')
 
-        and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
         projectHomePage.sideBar.goToProjectDomain("Bugs")
 
-        and:
         def bugs = at ListBugPage
         bugs.createButton.click()
 
-        and: "create bug"
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.createBug(name, description, area, [env, env1], "Web", action, result)
     }

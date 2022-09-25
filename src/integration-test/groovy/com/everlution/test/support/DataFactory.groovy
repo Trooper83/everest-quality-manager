@@ -26,7 +26,7 @@ class DataFactory {
      */
     static getFutureDate(int days) {
         LocalDate date = LocalDate.now().plusDays(days);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
         return date.format(formatter);
     }
 
@@ -36,7 +36,7 @@ class DataFactory {
      */
     static getPastDate(int days) {
         LocalDate date = LocalDate.now().minusDays(days);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
         return date.format(formatter);
     }
 

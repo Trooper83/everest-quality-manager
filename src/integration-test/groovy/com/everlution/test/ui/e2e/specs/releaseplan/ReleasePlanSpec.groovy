@@ -9,6 +9,9 @@ import com.everlution.test.ui.support.pages.releaseplan.CreateReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.EditReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
+import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
+import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
+import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 
 class ReleasePlanSpec extends GebSpec {
@@ -57,6 +60,29 @@ class ReleasePlanSpec extends GebSpec {
 
         then:
         show.isTestCyclePresent("Test cycle")
+    }
+
+    void "test iteration result persists"() {
+        given:
+        def show = browser.page(ShowReleasePlanPage)
+        show.createTestCycle("Test cycle", "Integrated", "Web")
+        show.goToTestCycle(0)
+
+        and:
+        def cycle = at ShowTestCyclePage
+        cycle.addTestsByGroup()
+
+        and:
+        cycle.testsTable.clickCell("", 0)
+
+        when:
+        def page = browser.page(ExecuteTestIterationPage)
+        page.setResult("Pass", "Some notes")
+
+        then:
+        def iteration = at ShowTestIterationPage
+        iteration.resultValue.text() == "Pass"
+        iteration.notesValue.text() == "Some notes"
     }
 
     void "release plan can be edited"() {

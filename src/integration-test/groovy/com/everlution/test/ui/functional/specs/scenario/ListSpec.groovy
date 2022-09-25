@@ -117,7 +117,7 @@ class ListSpec extends GebSpec {
 
         when: "delete scenario"
         ShowScenarioPage showPage = browser.page(ShowScenarioPage)
-        showPage.deleteScenario()
+        showPage.delete()
 
         then: "at list page and message displayed"
         def listPage = at ListScenarioPage
