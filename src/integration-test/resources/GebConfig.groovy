@@ -4,10 +4,10 @@ import org.openqa.selenium.chrome.ChromeOptions
 cacheDriverPerThread = true
 
 //TODO: need to set this appropriately depending on test type
-// baseUrl = "http://localhost:8080"
+baseUrl = "http://localhost:8080"
 
 waiting {
-    timeout = 10
+    timeout = 20
 }
 
 environments {

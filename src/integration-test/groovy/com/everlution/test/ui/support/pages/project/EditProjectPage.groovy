@@ -154,9 +154,11 @@ class EditProjectPage extends BasePage {
     /**
      * edits a projects with the supplied data
      */
-    void editProject(String name, String code) {
+    void editProject(String name, String code, List<String> areas, List<String> environments) {
         nameInput = name
         codeInput = code
+        areas.each { addAreaTag(it) }
+        environments.each { addEnvironmentTag(it) }
         updateButton.click()
     }
 

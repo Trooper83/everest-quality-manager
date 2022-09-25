@@ -14,8 +14,11 @@ class BootStrap {
                 seedTestUsers()
                 seedTestData()
             }
+            integrated {
+                // intentionally blank
+            }
             production {
-
+                // intentionally blank
             }
         }
     }
