@@ -104,6 +104,7 @@ class ShowReleasePlanPage extends ShowPage {
     void closeTestCycleModal() {
         waitFor {
             testCycleModalCloseButton.displayed
+            testCycleModal.attr('class').contains('show')
         }
         testCycleModalCloseButton.click()
         waitFor {
