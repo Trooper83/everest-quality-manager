@@ -40,8 +40,8 @@
                     <tr>
                         <td><g:link uri="/project/${project.id}/releasePlan/show/${releasePlan.id}">${releasePlan.name}</g:link></td>
                         <td>${releasePlan.status}</td>
-                        <td><g:formatDate format="MMMM dd, yyyy" date="${releasePlan.plannedDate}"/></td>
-                        <td><g:formatDate format="MMMM dd, yyyy" date="${releasePlan.releaseDate}"/></td>
+                        <td><g:formatDate format="MMMM d, yyyy" date="${releasePlan.plannedDate}"/></td>
+                        <td><g:formatDate format="MMMM d, yyyy" date="${releasePlan.releaseDate}"/></td>
                     </tr>
                 </g:each>
                 </tbody>

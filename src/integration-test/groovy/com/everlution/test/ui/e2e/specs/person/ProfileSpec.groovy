@@ -19,6 +19,9 @@ class ProfileSpec extends GebSpec {
         browser.page(LoginPage).login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
         def createPage = to CreateUserPage
         createPage.createPerson(person.email, person.password, [], [SecurityRoles.ROLE_READ_ONLY.role])
+        waitFor {
+            createPage.statusMessage.displayed
+        }
         createPage.navBar.logout()
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)

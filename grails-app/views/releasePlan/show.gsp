@@ -27,13 +27,13 @@
                 <li class="fieldcontain">
                     <span id="plannedDate-label" class="property-label">Planned Date</span>
                     <div class="property-value" id="plannedDate">
-                        <g:formatDate format="MMMM dd, yyyy" date="${releasePlan.plannedDate}"/>
+                        <g:formatDate format="MMMM d, yyyy" date="${releasePlan.plannedDate}"/>
                     </div>
                 </li>
                 <li class="fieldcontain">
                     <span id="releaseDate-label" class="property-label">Release Date</span>
                     <div class="property-value" id="releaseDate">
-                        <g:formatDate format="MMMM dd, yyyy" date="${releasePlan.releaseDate}"/>
+                        <g:formatDate format="MMMM d, yyyy" date="${releasePlan.releaseDate}"/>
                     </div>
                 </li>
             </ol>

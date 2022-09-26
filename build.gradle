@@ -82,6 +82,7 @@ dependencies {
     implementation 'org.hibernate:hibernate-core:5.6.1.Final'
     implementation 'org.grails.plugins:gsp'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.5'
+    implementation 'org.apache.tomcat:tomcat-jdbc:10.0.23'
     implementation 'org.grails.plugins:database-migration:4.1.0'
     implementation 'org.liquibase:liquibase-core:4.8.0'
     console 'org.grails:grails-console'
@@ -90,7 +91,6 @@ dependencies {
     runtimeOnly 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
     runtimeOnly 'com.bertramlabs.plugins:asset-pipeline-grails:3.4.6'
     testImplementation 'org.glassfish.web:el-impl:2.2'
-    testImplementation 'org.apache.tomcat:tomcat-jdbc:10.0.23'
     testImplementation 'org.springframework.boot:spring-boot-starter-tomcat:2.7.2'
     testImplementation 'org.grails:grails-gorm-testing-support:2.6.1'
     testImplementation 'org.mockito:mockito-core:4.6.1'
@@ -124,7 +124,7 @@ tasks.withType(GroovyCompile) {
 
 tasks.withType(Test) {
     useJUnitPlatform()
-    systemProperty "geb.env", System.getProperty('geb.env')
+    systemProperty "geb.env", 'test'
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 }
 
