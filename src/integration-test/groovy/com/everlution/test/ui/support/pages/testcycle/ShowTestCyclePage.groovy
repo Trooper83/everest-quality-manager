@@ -70,10 +70,7 @@ class ShowTestCyclePage extends ShowPage {
      * closes the add tests modal
      */
     void closeAddTestsModal() {
-        waitFor {
-            addTestsModalCloseButton.displayed
-            addTestsModal.attr('class').contains('show')
-        }
+        sleep(2000) //need to slow test down
         addTestsModalCloseButton.click()
         if(addTestsModalCloseButton.displayed) {
             addTestsModalCloseButton.click()

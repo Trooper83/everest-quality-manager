@@ -102,10 +102,7 @@ class ShowReleasePlanPage extends ShowPage {
      * closes the test cycle modal
      */
     void closeTestCycleModal() {
-        waitFor {
-            testCycleModalCloseButton.displayed
-            testCycleModal.attr('class').contains('show')
-        }
+        sleep(2000) //need to slow test down
         testCycleModalCloseButton.click()
         waitFor {
             !testCycleModal.displayed

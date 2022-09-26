@@ -3,9 +3,6 @@ import org.openqa.selenium.chrome.ChromeOptions
 
 cacheDriverPerThread = true
 
-//TODO: need to set this appropriately depending on test type
-baseUrl = "http://localhost:8080"
-
 waiting {
     timeout = 20
 }
@@ -13,7 +10,7 @@ waiting {
 environments {
 
     // run via “./gradlew -Dgeb.env=chrome iT”
-    chrome {
+    test {
         driver = { new ChromeDriver() }
     }
 
@@ -24,5 +21,11 @@ environments {
             o.addArguments('headless')
             new ChromeDriver(o)
         }
+    }
+
+    // run via “./gradlew -Dgeb.env=integrated iT”
+    integrated {
+        baseUrl = "http://localhost:8080"
+        driver = { new ChromeDriver() }
     }
 }

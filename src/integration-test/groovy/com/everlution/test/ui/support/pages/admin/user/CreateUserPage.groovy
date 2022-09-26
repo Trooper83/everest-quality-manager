@@ -15,6 +15,7 @@ class CreateUserPage extends BasePage {
         emailInput { $("#email").module(EmailInput) }
         errorMessage { $("ul.errors") }
         passwordInput { $("#password").module(PasswordInput) }
+        statusMessage { $("div.message") }
         rolesTabButton { $("[aria-controls='tab-roles']") }
         userTabButton { $("[aria-controls='tab-userinfo']") }
     }
