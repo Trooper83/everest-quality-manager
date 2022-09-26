@@ -4,7 +4,7 @@
 function addAreaTag() {
     let itemIndex = $('#areas li').length;
     let text = $('#area').val();
-    if(text) {
+    if(text.trim().length > 0) {
         let element = $('<li/>');
         let hiddenElement = $('<input type="text" data-test-id="tag-input" style="display: none;" name="areas[' +
                 itemIndex + '].name" id="areas[' + itemIndex + '].name" value="' + text + '"' +
@@ -126,7 +126,7 @@ function saveAreaTag(element) {
     let ele = $(element);
     let input = ele.siblings('input[type="text"]');
     let text = input.val();
-    if(text) {
+    if(text.trim().length > 0) {
         input.attr('value', text);
         ele.parent().attr('name', text);
         let pill = $(`<h3><p class="badge badge-secondary">${text}

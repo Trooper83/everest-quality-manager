@@ -109,37 +109,31 @@ class CreatePageAreaSpec extends GebSpec {
         page.areaTagRemoveButton(edited).size() == 0
     }
 
-    void "create area input tooltip text"() {
+    void "create area input tooltip text displayed when blank or whitespace"(String text) {
         when: "add a blank tag name"
         def page = browser.page(CreateProjectPage)
-        page.addAreaTag("")
+        page.addAreaTag(text)
 
         then: "tooltip is displayed"
         page.getToolTipText() == "Area Name cannot be blank"
+
+        where:
+        text << ['', ' ']
     }
 
-    void "edit area name input tooltip text"() {
+    void "edit area name input tooltip displayed when empty"(String text) {
         given: "add tag with name"
         def page = browser.page(CreateProjectPage)
         page.addAreaTag("test")
 
         when: "edit tag with blank value"
-        page.editAreaTag("test", "")
+        page.editAreaTag("test", text)
 
         then: "tooltip displayed"
         page.getToolTipText() == "Area Name cannot be blank"
-    }
 
-    void "area name cannot be null"() {
-        when: "add a blank tag name"
-        def page = browser.page(CreateProjectPage)
-        page.completeCreateForm("project name", "ttt")
-        page.addAreaTag(" ")
-        page.submitForm()
-
-        then: "message is displayed"
-        page.errors.text() ==
-                "Property [name] of class [class com.everlution.Area] cannot be null"
+        where:
+        text << ['', ' ']
     }
 
     void "area tag edit fields removed or hidden when cancelled"() {

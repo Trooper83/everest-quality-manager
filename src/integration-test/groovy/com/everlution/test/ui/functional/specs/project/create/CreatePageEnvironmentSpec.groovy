@@ -109,37 +109,31 @@ class CreatePageEnvironmentSpec extends GebSpec {
         page.environmentTagRemoveButton(edited).size() == 0
     }
 
-    void "create environment input tooltip text"() {
+    void "create environment input tooltip displayed when blank or whitespace"(String text) {
         when: "add a blank tag name"
         def page = browser.page(CreateProjectPage)
-        page.addEnvironmentTag("")
+        page.addEnvironmentTag(text)
 
         then: "tooltip is displayed"
         page.getToolTipText() == "Environment Name cannot be blank"
+
+        where:
+        text << ['', ' ']
     }
 
-    void "edit environment name input tooltip text"() {
+    void "edit environment name input tooltip displayed when empty"(String text) {
         given: "add tag with name"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag("Edit Env")
 
         when: "edit tag with blank value"
-        page.editEnvironmentTag("Edit Env", "")
+        page.editEnvironmentTag("Edit Env", text)
 
         then: "tooltip displayed"
         page.getToolTipText() == "Environment Name cannot be blank"
-    }
 
-    void "environment name cannot be null"() {
-        when: "add a blank tag name"
-        def page = browser.page(CreateProjectPage)
-        page.completeCreateForm("project name", "ttt")
-        page.addEnvironmentTag(" ")
-        page.submitForm()
-
-        then: "message is displayed"
-        page.errors.text() ==
-                "Property [name] of class [class com.everlution.Environment] cannot be null"
+        where:
+        text << ['', ' ']
     }
 
     void "environment tag edit fields removed or hidden when cancelled"() {

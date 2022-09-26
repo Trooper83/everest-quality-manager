@@ -4,7 +4,7 @@
 function addEnvironmentTag() {
     let itemIndex = $('#environments li').length;
     let text = $('#environment').val();
-    if(text) {
+    if(text.trim().length > 0) {
         let element = $('<li/>');
         let hiddenElement = $('<input type="text" data-test-id="tag-input" style="display: none;" name="environments[' +
                 itemIndex + '].name" id="environments[' + itemIndex + '].name" value="' + text + '"' +
@@ -130,7 +130,7 @@ function saveEnvTag(element, id) {
     let ele = $(element);
     let input = ele.siblings('input[type="text"]');
     let text = input.val();
-    if(text) {
+    if(text.trim().length > 0) {
         input.attr('value', text);
         ele.parent().attr('name', text);
         let pill = $('<h3><p class="badge badge-secondary">' + text +
