@@ -28,17 +28,11 @@ class ScenarioController {
 
         if(!params.isSearch) { // load view
             def scenarios = scenarioService.findAllByProject(project)
-            if(scenarios.empty) {
-                flash.message = "There are no scenarios in the project"
-            }
             respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
 
         } else { // perform search
             withForm {
                 def scenarios = scenarioService.findAllInProjectByName(project, params.name)
-                if(scenarios.empty) {
-                    flash.message = "No scenarios were found using search term: '${params.name}'"
-                }
                 respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
             }.invalidToken {
                 error()

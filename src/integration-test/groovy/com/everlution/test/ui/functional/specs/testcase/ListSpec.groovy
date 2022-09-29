@@ -78,32 +78,11 @@ class ListSpec extends GebSpec {
 
         when:
         def page = at ListTestCasePage
-        page.search('')
+        page.search('test')
 
         then:
         page.listTable.rowCount > 0
-    }
-
-    void "search that returns no results displays message"() {
-        given: "login as a project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
-
-        and: "go to list project page"
-        def listPage = to ListProjectPage
-        listPage.projectTable.clickCell('Name', 0)
-
-        and:
-        def projectPage = at ProjectHomePage
-        projectPage.sideBar.goToProjectDomain('Test Cases')
-
-        when:
-        def page = at ListTestCasePage
-        page.search('adsfasdf')
-
-        then: "at show page"
-        page.statusMessage.text() == "No test cases were found using search term: 'adsfasdf'"
+        page.nameInput.text == 'test'
     }
 
     void "delete message displays after test case deleted"() {

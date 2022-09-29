@@ -79,42 +79,6 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         response.status == 404
     }
 
-    void "test cases sets flash message when no tests found"() {
-        given:
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(_) >> []
-        }
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> new Project()
-        }
-
-        when:"The action is executed"
-        controller.testCases(1)
-
-        then:
-        flash.message == "There are no test cases in the project"
-    }
-
-    void "tests search sets flash message when no test cases found"() {
-        given:
-        def project = new Project(name: 'test')
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllInProjectByName(project, 'test') >> []
-        }
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> project
-        }
-
-        when:"The action is executed"
-        setToken(params)
-        params.isSearch = 'true'
-        params.name = 'test'
-        controller.testCases(1)
-
-        then:
-        flash.message == "No test cases were found using search term: 'test'"
-    }
-
     void "tests search responds with 500 when no token present"() {
         given:
         def project = new Project(name: 'test')

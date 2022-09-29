@@ -31,19 +31,12 @@ class BugController {
         }
 
         if(!params.isSearch) { // load view
-
             def bugs = bugService.findAllByProject(project)
-            if(bugs.size() == 0) {
-                flash.message = 'There are no bugs in the project'
-            }
             respond bugs, model: [bugCount: bugs.size(), project: project], view: 'bugs'
 
         } else { // perform search
             withForm {
                 def bugs = bugService.findAllInProjectByName(project, params.name)
-                if(bugs.size() == 0) {
-                    flash.message = "No bugs were found using search term: '${params.name}'"
-                }
                 respond bugs, model: [bugCount: bugs.size(), project: project], view:'bugs'
             }.invalidToken {
                 error()

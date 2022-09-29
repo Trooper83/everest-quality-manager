@@ -28,18 +28,11 @@ class ProjectController {
         if(!params.isSearch) { // load view
             params.max = Math.min(max ?: 10, 100)
             def projects = projectService.list(params)
-
-            if(projects.size() == 0) {
-                flash.message = 'There are no projects in your organization'
-            }
             respond projects, model:[projectCount: projectService.count()]
 
         } else { // perform search
             withForm {
                 def projects = projectService.findAllByNameIlike(params.name)
-                if(projects.size() == 0) {
-                    flash.message = "No projects were found using search term: '${params.name}'"
-                }
                 render view:'projects', model: [projectList: projects, projectCount: projects.size()]
             }.invalidToken {
                 error()

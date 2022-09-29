@@ -60,10 +60,7 @@ class ShowTestCyclePage extends ShowPage {
      * cancels the add tests modal
      */
     void cancelAddTestsModal() {
-        waitFor {
-            addTestsModalSubmitButton.displayed
-            addTestsModalCancelButton.displayed
-        }
+        sleep(2000) //need to slow test down
         addTestsModalCancelButton.click()
     }
     /**

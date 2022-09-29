@@ -48,19 +48,11 @@ class ListSpec extends GebSpec {
     void "search returns results"() {
         when:
         def page = at ListTestGroupPage
-        page.search('')
+        page.search('test')
 
         then:
         page.listTable.rowCount > 0
-    }
-
-    void "search that returns no results displays message"() {
-        when:
-        def page = at ListTestGroupPage
-        page.search('adsfasdf')
-
-        then: "at show page"
-        page.statusMessage.text() == "No test groups were found using search term: 'adsfasdf'"
+        page.nameInput.text == 'test'
     }
 
     void "delete message displays after group deleted"() {

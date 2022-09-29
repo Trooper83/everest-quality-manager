@@ -63,32 +63,11 @@ class ListSpec extends GebSpec {
 
         when:
         def plansPage = at ListReleasePlanPage
-        plansPage.search('')
+        plansPage.search('plan')
 
         then:
         plansPage.listTable.rowCount > 0
-    }
-
-    void "search that returns no results displays message"() {
-        given: "login as a project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
-
-        and: "go to list project page"
-        def listPage = to ListProjectPage
-        listPage.projectTable.clickCell('Name', 0)
-
-        and:
-        def page = at ProjectHomePage
-        page.sideBar.goToProjectDomain('Release Plans')
-
-        when:
-        def plansPage = at ListReleasePlanPage
-        plansPage.search('adsfasdf')
-
-        then: "at show page"
-        plansPage.statusMessage.text() == "No release plans were found using search term: 'adsfasdf'"
+        plansPage.nameInput.text == 'plan'
     }
 
     void "delete message displays after plan deleted"() {
