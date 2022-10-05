@@ -110,4 +110,34 @@ class EditPageStepsSpec extends GebSpec {
         then: "hidden input added"
         page.stepRemovedInput.size() == 1
     }
+
+    void "remove button only displayed for last step"() {
+        given: "test case"
+        Project project = projectService.list(max: 1).first()
+        TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project, steps: [])
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/testCase/edit/${id}"
+
+        and:
+        def page = browser.page(EditTestCasePage)
+        page.stepsTable.addRow()
+
+        expect:
+        page.stepsTable.getRow(0).find('input[value=Remove]').displayed
+
+        when:
+        page.stepsTable.addRow()
+
+        then:
+        !page.stepsTable.getRow(0).find('input[value=Remove]').displayed
+        page.stepsTable.getRow(1).find('input[value=Remove]').displayed
+    }
 }

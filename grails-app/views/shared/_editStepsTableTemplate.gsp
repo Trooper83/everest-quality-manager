@@ -14,7 +14,14 @@
                 <td><g:hiddenField name="stepsIndex[${i}]" class="iHidden" /></td>
                 <td><g:field type="text" name="steps[${i}].action" value="${step.action}" /></td>
                 <td><g:field type="text" name="steps[${i}].result" value="${step.result}" /></td>
-                <td><input type="button" value="Remove" onclick="removeEntryRow(this, ${step.id})" /></td>
+                <td>
+                    <g:if test="${i == entity.steps.size() - 1}">
+                        <input type="button" value="Remove" onclick="removeEntryRow(this, ${step.id})" />
+                    </g:if>
+                    <g:else>
+                        <input type="button" value="Remove" style="display: none;" onclick="removeEntryRow(this, ${step.id})" />
+                    </g:else>
+                </td>
             </tr>
         </g:each>
         </tbody>
