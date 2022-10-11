@@ -1,8 +1,10 @@
 package com.everlution.test.ui.functional.specs.project.create
 
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
+import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -248,5 +250,28 @@ class CreatePageEnvironmentSpec extends GebSpec {
 
         and: "delete button is displayed"
         page.environmentTagRemoveButton(tag).size() == 0
+    }
+
+    void "removed env tags do not persist"() {
+        given: "add two tags"
+        def page = browser.page(CreateProjectPage)
+        page.addEnvironmentTag("Test Env1")
+        page.addEnvironmentTag("Test Env2")
+
+        when: "remove one tag"
+        page.removeEnvironmentTag("Test Env1")
+
+        and:
+        page.addEnvironmentTag("Test Env3")
+
+        and:
+        def p = DataFactory.project()
+        page.createProject(p.name, p.code)
+
+        then: "only the selected tag is removed"
+        def show = browser.page(ShowProjectPage)
+        !show.isEnvironmentDisplayed("Test Env1")
+        show.isEnvironmentDisplayed("Test Env2")
+        show.isEnvironmentDisplayed("Test Env3")
     }
 }

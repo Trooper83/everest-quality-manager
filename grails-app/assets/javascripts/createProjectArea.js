@@ -98,6 +98,11 @@ function editAreaTag(button) {
 */
 function removeAreaTag(element) {
     $(element).parents('li').remove();
+    const items = document.querySelectorAll('#areas input[data-test-id=tag-input]');
+    items.forEach((item, index) => {
+        item.setAttribute('name', `areas[${index}].name`);
+        item.setAttribute('id', `areas[${index}].id`);
+    });
 }
 
 /**

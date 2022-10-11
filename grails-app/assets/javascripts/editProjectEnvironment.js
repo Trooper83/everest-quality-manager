@@ -99,9 +99,11 @@ function removeEnvTag(element, id) {
     if(id) {
         let input = $('<input style="display: none;" data-test-id="removed-tag-input" type="text" id="removedItems.environmentIds" name="removedItems.environmentIds" value="' + id + '" />');
         $(element).parents('ul').append(input);
-        $(element).parents('li').remove();
+        $(element).parents('li').hide();
     } else {
-        $(element).parents('li').remove();
+        const parent = $(element).parents('li');
+        parent.children().remove();
+        parent.hide();
     }
 }
 

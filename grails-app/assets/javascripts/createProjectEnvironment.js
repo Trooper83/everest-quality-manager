@@ -98,6 +98,11 @@ function editEnvTag(button) {
 */
 function removeEnvTag(element) {
     $(element).parents('li').remove();
+    const items = document.querySelectorAll('#environments input[data-test-id=tag-input]');
+    items.forEach((item, index) => {
+        item.setAttribute('name', `environments[${index}].name`);
+        item.setAttribute('id', `environments[${index}].id`);
+    });
 }
 
 /**
