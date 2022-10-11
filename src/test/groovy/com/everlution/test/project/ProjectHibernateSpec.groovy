@@ -125,23 +125,6 @@ class ProjectHibernateSpec extends HibernateSpec {
         Project.findById(p.id).areas[0].name == "edited name"
     }
 
-    void "area order persists"() {
-        given: "save a project with areas"
-        def area1 = new Area(name: "area name1")
-        def area2 = new Area(name: "area name2")
-        def area3 = new Area(name: "area name3")
-        Project project = new Project(name: "TestStep Cascade Project669", code: "TC2",
-            areas: [area1, area2, area3]).save()
-
-        when: "get the project"
-        def p = Project.findById(project.id)
-
-        then: "order is the same as when it was created"
-        p.areas[0].id == area1.id
-        p.areas[1].id == area2.id
-        p.areas[2].id == area3.id
-    }
-
     void "removeFrom project deletes orphaned environments"() {
         given: "project with valid area params"
         def e = new Environment(name: "env name")
@@ -186,23 +169,6 @@ class ProjectHibernateSpec extends HibernateSpec {
 
         then: "env was updated"
         Project.findById(p.id).environments[0].name == "edited name"
-    }
-
-    void "environment order persists"() {
-        given: "save a project with environments"
-        def env1 = new Environment(name: "Environment name1")
-        def env2 = new Environment(name: "Environment name2")
-        def env3 = new Environment(name: "Environment name3")
-        Project project = new Project(name: "Environment Cascade Project669", code: "TC2",
-                environments: [env1, env2, env3]).save()
-
-        when: "get the project"
-        def p = Project.findById(project.id)
-
-        then: "order is the same as when it was created"
-        p.environments[0].id == env1.id
-        p.environments[1].id == env2.id
-        p.environments[2].id == env3.id
     }
 
     void "delete project cascades to test group"() {

@@ -187,7 +187,8 @@ class EditProjectPage extends BasePage {
      * @return boolean - true if tag found, false if not
      */
     boolean isAreaTagDisplayed(String name) {
-        return areaTag(name).size() == 1
+        def tag = areaTag(name)
+        return tag.size() == 1 && tag.displayed
     }
 
     /**
@@ -196,7 +197,8 @@ class EditProjectPage extends BasePage {
      * @return boolean - true if tag found, false if not
      */
     boolean isEnvironmentTagDisplayed(String name) {
-        return environmentTag(name).size() == 1
+        def tag = environmentTag(name)
+        return tag.size() == 1 && tag.displayed
     }
 
     /**
