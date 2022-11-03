@@ -29,6 +29,7 @@
                                             </svg>
                                         </p>
                                     </h3>
+                                    <g:hiddenField name="areas[${i}].id" value="${area.id}"/>
                                     <input style="display: none;" type="text" id="areas[${i}].name"
                                            name="areas[${i}].name" value="${area.name}" data-test-id="tag-input"
                                            data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"
@@ -51,6 +52,7 @@
                                             </svg>
                                         </p>
                                     </h3>
+                                    <g:hiddenField name="environments[${i}].id" value="${env.id}"/>
                                     <input style="display: none;" type="text" id="environments[${i}].name"
                                            name="environments[${i}].name" value="${env.name}" data-test-id="tag-input"
                                            data-toggle="tooltip" trigger="manual" title="Environment Name cannot be blank"

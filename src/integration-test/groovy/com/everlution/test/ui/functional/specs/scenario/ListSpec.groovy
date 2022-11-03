@@ -70,32 +70,11 @@ class ListSpec extends GebSpec {
 
         when:
         def page = at ListScenarioPage
-        page.search('')
+        page.search('scenario')
 
         then:
         page.listTable.rowCount > 0
-    }
-
-    void "search that returns no results displays message"() {
-        given: "login as a project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
-
-        and: "go to list project page"
-        def listPage = to ListProjectPage
-        listPage.projectTable.clickCell('Name', 0)
-
-        and:
-        def projectPage = at ProjectHomePage
-        projectPage.sideBar.goToProjectDomain('Scenarios')
-
-        when:
-        def page = at ListScenarioPage
-        page.search('adsfasdf')
-
-        then: "at show page"
-        page.statusMessage.text() == "No scenarios were found using search term: 'adsfasdf'"
+        page.nameInput.text == 'scenario'
     }
 
     void "delete message displays after scenario deleted"() {

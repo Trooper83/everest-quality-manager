@@ -16,7 +16,7 @@
     </g:if>
     <div class="col-4 mt-4 mb-4">
         <g:form action="projects" controller="project" params="['isSearch': 'true']" useToken="true">
-            <g:textField name="name" autocomplete="off" placeholder="Project Name"></g:textField>
+            <g:textField name="name" autocomplete="off" placeholder="Project Name" value="${params.name}"/>
             <button class="btn btn-secondary" type="submit" id="searchButton">Search</button>
         </g:form>
     </div>

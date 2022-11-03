@@ -63,7 +63,7 @@ class ListSpec extends GebSpec {
         listPage.statusMessage.text() ==~ /Bug \d+ deleted/
     }
 
-    void "search returns results"() {
+    void "search text field retains search value"() {
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -79,32 +79,11 @@ class ListSpec extends GebSpec {
 
         when:
         def bugsPage = at ListBugPage
-        bugsPage.search('')
+        bugsPage.search('bug')
 
         then:
         bugsPage.listTable.rowCount > 0
-    }
-
-    void "search that returns no results displays message"() {
-        given: "login as a project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
-
-        and: "go to list project page"
-        def listPage = to ListProjectPage
-        listPage.projectTable.clickCell('Name', 0)
-
-        and:
-        def page = at ProjectHomePage
-        page.sideBar.goToProjectDomain('Bugs')
-
-        when:
-        def bugsPage = at ListBugPage
-        bugsPage.search('adsfasdf')
-
-        then: "at show page"
-        listPage.statusMessage.text() == "No bugs were found using search term: 'adsfasdf'"
+        bugsPage.nameInput.text == 'bug'
     }
 
     void "create button not displayed for read only"(String email, String password) {

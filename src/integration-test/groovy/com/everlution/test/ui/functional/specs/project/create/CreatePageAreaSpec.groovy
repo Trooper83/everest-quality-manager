@@ -1,8 +1,10 @@
 package com.everlution.test.ui.functional.specs.project.create
 
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
+import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -73,6 +75,29 @@ class CreatePageAreaSpec extends GebSpec {
         page.isAreaTagDisplayed("Test Area2")
     }
 
+    void "removed area tags do not persist"() {
+        given: "add two tags"
+        def page = browser.page(CreateProjectPage)
+        page.addAreaTag("Test Area1")
+        page.addAreaTag("Test Area2")
+
+        when: "remove one tag"
+        page.removeAreaTag("Test Area1")
+
+        and:
+        page.addAreaTag("Test Area3")
+
+        and:
+        def p = DataFactory.project()
+        page.createProject(p.name, p.code)
+
+        then: "only the selected tag is removed"
+        def show = browser.page(ShowProjectPage)
+        !show.isAreaDisplayed("Test Area1")
+        show.isAreaDisplayed("Test Area2")
+        show.isAreaDisplayed("Test Area3")
+    }
+
     void "area tag can be edited"() {
         given: "add a tag"
         def page = browser.page(CreateProjectPage)
@@ -109,37 +134,31 @@ class CreatePageAreaSpec extends GebSpec {
         page.areaTagRemoveButton(edited).size() == 0
     }
 
-    void "create area input tooltip text"() {
+    void "create area input tooltip text displayed when blank or whitespace"(String text) {
         when: "add a blank tag name"
         def page = browser.page(CreateProjectPage)
-        page.addAreaTag("")
+        page.addAreaTag(text)
 
         then: "tooltip is displayed"
         page.getToolTipText() == "Area Name cannot be blank"
+
+        where:
+        text << ['', ' ']
     }
 
-    void "edit area name input tooltip text"() {
+    void "edit area name input tooltip displayed when empty"(String text) {
         given: "add tag with name"
         def page = browser.page(CreateProjectPage)
         page.addAreaTag("test")
 
         when: "edit tag with blank value"
-        page.editAreaTag("test", "")
+        page.editAreaTag("test", text)
 
         then: "tooltip displayed"
         page.getToolTipText() == "Area Name cannot be blank"
-    }
 
-    void "area name cannot be null"() {
-        when: "add a blank tag name"
-        def page = browser.page(CreateProjectPage)
-        page.completeCreateForm("project name", "ttt")
-        page.addAreaTag(" ")
-        page.submitForm()
-
-        then: "message is displayed"
-        page.errors.text() ==
-                "Property [name] of class [class com.everlution.Area] cannot be null"
+        where:
+        text << ['', ' ']
     }
 
     void "area tag edit fields removed or hidden when cancelled"() {

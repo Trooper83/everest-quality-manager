@@ -84,21 +84,6 @@ class ListSpec extends GebSpec {
 
         then: "at show page"
         listPage.projectTable.rowCount > 0
-    }
-
-    void "search that returns no results displays message"() {
-        given: "login as a project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
-
-        and: "go to list project page"
-        def listPage = to ListProjectPage
-
-        when:
-        listPage.search('fkjasdkf')
-
-        then: "at show page"
-        listPage.statusMessage.text() == "No projects were found using search term: 'fkjasdkf'"
+        listPage.nameInput.text == 'bootstrap'
     }
 }

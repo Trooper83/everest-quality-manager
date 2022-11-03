@@ -22,7 +22,7 @@
             </g:if>
             <div class="col-4 mt-4 mb-4">
                 <g:form uri="/project/${project.id}/releasePlans" params="['isSearch': 'true']" useToken="true">
-                    <g:textField name="name" autocomplete="off" placeholder="Release Plan Name" />
+                    <g:textField name="name" autocomplete="off" placeholder="Release Plan Name" value="${params.name}"/>
                     <button class="btn btn-secondary" type="submit" id="searchButton">Search</button>
                 </g:form>
             </div>

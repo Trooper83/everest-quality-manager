@@ -61,4 +61,20 @@ class CreatePageStepsSpec extends GebSpec {
         createPage.errorsMessage.text() ==
                 "Property [action] of class [class com.everlution.Step] with value [null] does not pass custom validation\nProperty [result] of class [class com.everlution.Step] with value [null] does not pass custom validation"
     }
+
+    void "remove button only displayed for last step"() {
+        setup: "add a row"
+        def page = browser.page(CreateTestCasePage)
+        page.testStepTable.addRow()
+
+        expect:
+        page.testStepTable.getRow(0).find('input[value=Remove]').displayed
+
+        when:
+        page.testStepTable.addRow()
+
+        then:
+        !page.testStepTable.getRow(0).find('input[value=Remove]').displayed
+        page.testStepTable.getRow(1).find('input[value=Remove]').displayed
+    }
 }

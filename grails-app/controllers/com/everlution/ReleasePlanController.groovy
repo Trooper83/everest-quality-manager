@@ -58,17 +58,11 @@ class ReleasePlanController {
 
         if(!params.isSearch) { // load view
             def plans = releasePlanService.findAllByProject(project)
-            if(plans.empty) {
-                flash.message = 'There are no release plans in the project'
-            }
             respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
 
         } else { // perform search
             withForm {
                 def plans = releasePlanService.findAllInProjectByName(project, params.name)
-                if(plans.empty) {
-                    flash.message = "No release plans were found using search term: '${params.name}'"
-                }
                 respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
             }.invalidToken {
                 error()

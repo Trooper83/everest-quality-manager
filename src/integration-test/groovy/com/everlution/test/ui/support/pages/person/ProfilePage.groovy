@@ -21,5 +21,6 @@ class ProfilePage extends BasePage {
         passwordInput.text = password
         confirmPasswordInput.text = password
         updateButton.click()
+        sleep(2000) //need to slow down the test
     }
 }

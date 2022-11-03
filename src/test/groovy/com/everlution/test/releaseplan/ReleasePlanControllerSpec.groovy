@@ -73,42 +73,6 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         response.status == 404
     }
 
-    void "release plans sets flash message when no bugs found"() {
-        given:
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(_) >> []
-        }
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> new Project()
-        }
-
-        when:"The action is executed"
-        controller.releasePlans(1)
-
-        then:
-        flash.message == "There are no release plans in the project"
-    }
-
-    void "release plans search sets flash message when no plans found"() {
-        given:
-        def project = new Project(name: 'test')
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllInProjectByName(project, 'test') >> []
-        }
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> project
-        }
-
-        when:"The action is executed"
-        setToken(params)
-        params.isSearch = 'true'
-        params.name = 'test'
-        controller.releasePlans(1)
-
-        then:
-        flash.message == "No release plans were found using search term: 'test'"
-    }
-
     void "release plans search responds 500 when no token present"() {
         given:
         def project = new Project(name: 'test')

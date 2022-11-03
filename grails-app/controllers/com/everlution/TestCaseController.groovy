@@ -32,17 +32,11 @@ class TestCaseController {
 
         if(!params.isSearch) { // load view
             def testCases = testCaseService.findAllByProject(project)
-            if(testCases.empty) {
-                flash.message = "There are no test cases in the project"
-            }
             respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
 
         } else { // perform search
             withForm {
                 def testCases = testCaseService.findAllInProjectByName(project, params.name)
-                if(testCases.empty) {
-                    flash.message = "No test cases were found using search term: '${params.name}'"
-                }
                 respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
             }.invalidToken {
                 error()

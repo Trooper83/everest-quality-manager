@@ -1,8 +1,10 @@
 package com.everlution.test.ui.functional.specs.project.create
 
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
+import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -109,37 +111,31 @@ class CreatePageEnvironmentSpec extends GebSpec {
         page.environmentTagRemoveButton(edited).size() == 0
     }
 
-    void "create environment input tooltip text"() {
+    void "create environment input tooltip displayed when blank or whitespace"(String text) {
         when: "add a blank tag name"
         def page = browser.page(CreateProjectPage)
-        page.addEnvironmentTag("")
+        page.addEnvironmentTag(text)
 
         then: "tooltip is displayed"
         page.getToolTipText() == "Environment Name cannot be blank"
+
+        where:
+        text << ['', ' ']
     }
 
-    void "edit environment name input tooltip text"() {
+    void "edit environment name input tooltip displayed when empty"(String text) {
         given: "add tag with name"
         def page = browser.page(CreateProjectPage)
         page.addEnvironmentTag("Edit Env")
 
         when: "edit tag with blank value"
-        page.editEnvironmentTag("Edit Env", "")
+        page.editEnvironmentTag("Edit Env", text)
 
         then: "tooltip displayed"
         page.getToolTipText() == "Environment Name cannot be blank"
-    }
 
-    void "environment name cannot be null"() {
-        when: "add a blank tag name"
-        def page = browser.page(CreateProjectPage)
-        page.completeCreateForm("project name", "ttt")
-        page.addEnvironmentTag(" ")
-        page.submitForm()
-
-        then: "message is displayed"
-        page.errors.text() ==
-                "Property [name] of class [class com.everlution.Environment] cannot be null"
+        where:
+        text << ['', ' ']
     }
 
     void "environment tag edit fields removed or hidden when cancelled"() {
@@ -254,5 +250,28 @@ class CreatePageEnvironmentSpec extends GebSpec {
 
         and: "delete button is displayed"
         page.environmentTagRemoveButton(tag).size() == 0
+    }
+
+    void "removed env tags do not persist"() {
+        given: "add two tags"
+        def page = browser.page(CreateProjectPage)
+        page.addEnvironmentTag("Test Env1")
+        page.addEnvironmentTag("Test Env2")
+
+        when: "remove one tag"
+        page.removeEnvironmentTag("Test Env1")
+
+        and:
+        page.addEnvironmentTag("Test Env3")
+
+        and:
+        def p = DataFactory.project()
+        page.createProject(p.name, p.code)
+
+        then: "only the selected tag is removed"
+        def show = browser.page(ShowProjectPage)
+        !show.isEnvironmentDisplayed("Test Env1")
+        show.isEnvironmentDisplayed("Test Env2")
+        show.isEnvironmentDisplayed("Test Env3")
     }
 }

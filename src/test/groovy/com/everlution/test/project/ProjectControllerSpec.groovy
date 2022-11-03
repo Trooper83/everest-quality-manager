@@ -402,33 +402,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         101  | 100
     }
 
-    void "projects sets flash message when no projects found"() {
-        controller.projectService = Mock(ProjectService) {
-            1 * list(_) >> []
-        }
-
-        when:"the action is executed"
-        controller.projects()
-
-        then:
-        flash.message == 'There are no projects in your organization'
-    }
-
-    void "projects with search sets flash message when no projects found"() {
-        controller.projectService = Mock(ProjectService) {
-            1 * findAllByNameIlike('test') >> []
-        }
-
-        when:"the action is executed"
-        params.isSearch = 'true'
-        params.name = 'test'
-        setToken(params)
-        controller.projects()
-
-        then:
-        flash.message == "No projects were found using search term: 'test'"
-    }
-
     void "projects with search renders projects view"() {
         given:
         controller.projectService = Mock(ProjectService) {

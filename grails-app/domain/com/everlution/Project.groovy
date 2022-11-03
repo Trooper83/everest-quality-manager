@@ -4,12 +4,12 @@ import grails.databinding.BindUsing
 
 class Project {
 
-    List areas
+    Set areas
     @BindUsing({obj, source ->
         source['code'].toUpperCase()
     })
     String code
-    List environments
+    Set environments
     @BindUsing({obj, source ->
         source['name'].capitalize()
     })

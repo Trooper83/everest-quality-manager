@@ -273,4 +273,34 @@ class EditProjectEnvironmentSpec extends GebSpec {
         then: "removed input is added to dom"
         page.environmentRemovedInput.size() == 1
     }
+
+    void "removed env tags are not persisted"() {
+        given: "project with tag"
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, environments: [new Environment(name: "Env Name"),
+                                                                               new Environment(name: "Env Name1")])
+        def id = projectService.save(project).id
+
+        and: "login as an authorized user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
+
+        and: "go to edit page"
+        go "/project/edit/${id}"
+
+        and: "remove the area tag"
+        EditProjectPage page = browser.page(EditProjectPage)
+        page.removeEnvironmentTag("Env Name")
+        page.addEnvironmentTag("Env Name2")
+
+        when:
+        page.editProject()
+
+        then:
+        def show = browser.page(ShowProjectPage)
+        !show.isEnvironmentDisplayed("Env Name")
+        show.isEnvironmentDisplayed("Env Name1")
+        show.isEnvironmentDisplayed("Env Name2")
+    }
 }

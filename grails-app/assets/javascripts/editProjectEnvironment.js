@@ -4,7 +4,7 @@
 function addEnvironmentTag() {
     let itemIndex = $('#environments li').length;
     let text = $('#environment').val();
-    if(text) {
+    if(text.trim().length > 0) {
         let element = $('<li/>');
         let hiddenElement = $('<input type="text" data-test-id="tag-input" style="display: none;" name="environments[' +
                 itemIndex + '].name" id="environments[' + itemIndex + '].name" value="' + text + '"' +
@@ -99,9 +99,11 @@ function removeEnvTag(element, id) {
     if(id) {
         let input = $('<input style="display: none;" data-test-id="removed-tag-input" type="text" id="removedItems.environmentIds" name="removedItems.environmentIds" value="' + id + '" />');
         $(element).parents('ul').append(input);
-        $(element).parents('li').remove();
+        $(element).parents('li').hide();
     } else {
-        $(element).parents('li').remove();
+        const parent = $(element).parents('li');
+        parent.children().remove();
+        parent.hide();
     }
 }
 
@@ -130,7 +132,7 @@ function saveEnvTag(element, id) {
     let ele = $(element);
     let input = ele.siblings('input[type="text"]');
     let text = input.val();
-    if(text) {
+    if(text.trim().length > 0) {
         input.attr('value', text);
         ele.parent().attr('name', text);
         let pill = $('<h3><p class="badge badge-secondary">' + text +
