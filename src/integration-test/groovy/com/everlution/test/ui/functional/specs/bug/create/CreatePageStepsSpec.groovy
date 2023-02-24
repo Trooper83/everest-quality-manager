@@ -89,4 +89,17 @@ class CreatePageStepsSpec extends GebSpec {
         !page.stepsTable.getRow(0).find('input[value=Remove]').displayed
         page.stepsTable.getRow(1).find('input[value=Remove]').displayed
     }
+
+    void "alt+n adds new step row with action input focused"() {
+        expect:
+        def page = browser.page(CreateBugPage)
+        page.stepsTable.getRowCount() == 0
+
+        when: "add a row"
+        page.stepsTable.addRowHotKey()
+
+        then:
+        page.stepsTable.getRowCount() == 1
+        page.stepsTable.getRow(0).find('input[name="steps[0].action"]').focused
+    }
 }

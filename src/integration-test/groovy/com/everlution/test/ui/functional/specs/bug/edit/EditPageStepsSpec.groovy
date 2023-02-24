@@ -54,7 +54,7 @@ class EditPageStepsSpec extends GebSpec {
         page.stepsTable.getRowCount() == 1
 
         when: "add a test step row"
-        page.stepsTable.addRow()
+        page.stepsTable.addRowHotKey()
 
         then: "row count is 2"
         page.stepsTable.getRowCount() == 2

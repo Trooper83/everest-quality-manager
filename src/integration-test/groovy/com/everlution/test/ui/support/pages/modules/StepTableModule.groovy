@@ -1,5 +1,7 @@
 package com.everlution.test.ui.support.pages.modules
 
+import org.openqa.selenium.Keys
+
 class StepTableModule extends TableModule {
 
     static content = {
@@ -23,6 +25,13 @@ class StepTableModule extends TableModule {
      */
     void addRow() {
         addRowButton.click()
+    }
+
+    /**
+     * adds a new row with ALT+n
+     */
+    void addRowHotKey() {
+        addRowButton << Keys.chord(Keys.ALT, 'n')
     }
 
     /**

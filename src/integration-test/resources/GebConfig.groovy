@@ -10,12 +10,12 @@ waiting {
 environments {
 
     // run via “./gradlew -Dgeb.env=chrome iT”
-    test {
+    chrome {
         driver = { new ChromeDriver() }
     }
 
     // run via “./gradlew -Dgeb.env=chromeHeadless iT”
-    chromeHeadless {
+    headless {
         driver = {
             ChromeOptions o = new ChromeOptions()
             o.addArguments('headless')
@@ -26,6 +26,10 @@ environments {
     // run via “./gradlew -Dgeb.env=integrated iT”
     integrated {
         baseUrl = "http://localhost:8080"
-        driver = { new ChromeDriver() }
+        driver = {
+            ChromeOptions o = new ChromeOptions()
+            o.addArguments('headless')
+            new ChromeDriver(o)
+        }
     }
 }
