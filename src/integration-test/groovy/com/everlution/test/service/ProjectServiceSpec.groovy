@@ -3,6 +3,7 @@ package com.everlution.test.service
 import com.everlution.Area
 import com.everlution.AreaService
 import com.everlution.Bug
+import com.everlution.BugService
 import com.everlution.Environment
 import com.everlution.EnvironmentService
 import com.everlution.Person
@@ -28,6 +29,7 @@ import javax.persistence.PersistenceException
 class ProjectServiceSpec extends Specification {
 
     AreaService areaService
+    BugService bugService
     EnvironmentService environmentService
     PersonService personService
     ProjectService projectService
@@ -191,7 +193,7 @@ class ProjectServiceSpec extends Specification {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZC").save()
         Bug bug = new Bug(name: "cascade project", description: "this should delete", person: person,
-                project: project, status: "Open").save()
+                project: project, status: "Open", actual: "actual", expected: "expected").save()
 
         expect:
         project.id != null
@@ -246,7 +248,7 @@ class ProjectServiceSpec extends Specification {
         when:
         def area = new Area(name: "area")
         def area1 = new Area(name: "area")
-        Project project = new Project(name: "testing save project", areas: [area, area1])
+        Project project = new Project(name: "testing save project", code: 'ttt', areas: [area, area1])
         projectService.saveUpdate(project, new RemovedItems())
 
         then:
@@ -257,14 +259,14 @@ class ProjectServiceSpec extends Specification {
         when:
         def env = new Environment(name: "env")
         def env1 = new Environment(name: "env")
-        Project project = new Project(name: "testing save project", areas: [env, env1])
+        Project project = new Project(name: "testing save project", code: "ccx", environments: [env, env1])
         projectService.saveUpdate(project, new RemovedItems())
 
         then:
         thrown(ValidationException)
     }
 
-    void "saveUpdate throws exception with validation fail"() {
+    void "saveUpdate throws exception with no code validation fail"() {
         when:
         Project project = new Project(name: "testing save project")
         projectService.saveUpdate(project, new RemovedItems())

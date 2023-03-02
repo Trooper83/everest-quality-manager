@@ -11,11 +11,13 @@ class CreateBugPage extends BasePage {
     static at = { title == "Create Bug" }
 
     static content = {
+        actualInput { $("#actual") }
         areaOptions { $("#area>option") }
         createButton { $("#create") }
         descriptionInput { $("#description") }
         environmentsOptions { $("#environments>option") }
         errorsMessage { $("ul.errors") }
+        expectedInput { $("#expected") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
@@ -62,6 +64,8 @@ class CreateBugPage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
+        actualInput = faker.beer().name()
+        expectedInput = faker.beer().name()
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
@@ -70,13 +74,15 @@ class CreateBugPage extends BasePage {
      * creates a bug with the supplied data
      */
     void createBug(String name, String description, String area, List<String> environment,
-                   String platform, String action, String result) {
+                   String platform, String action, String result, String actual, String expected) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
         platformSelect().selected = platform
         environmentsSelect().selected = environment
         stepsTable.addStep(action, result)
+        expectedInput = expected
+        actualInput = actual
         createButton.click()
     }
 
@@ -89,6 +95,8 @@ class CreateBugPage extends BasePage {
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        actualInput = faker.beer().name()
+        expectedInput = faker.beer().name()
     }
 
     /**

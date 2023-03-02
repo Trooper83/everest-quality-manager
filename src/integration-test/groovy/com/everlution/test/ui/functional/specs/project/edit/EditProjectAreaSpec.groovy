@@ -140,7 +140,8 @@ class EditProjectAreaSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, areas: [area])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, person: person, project: project, area: area, status: "Open")
+        def bug = new Bug(name: bd.name, person: person, project: project, area: area, status: "Open", actual: "actual",
+                expected: "expected")
         def id = projectService.save(project).id
         bugService.save(bug)
 
@@ -168,7 +169,8 @@ class EditProjectAreaSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, areas: [area])
         def bd = DataFactory.bug()
-        def bug = new Bug(name: bd.name, person: person, project: project, area: area, status: "Open")
+        def bug = new Bug(name: bd.name, person: person, project: project, area: area, status: "Open",
+                actual: "actual", expected: "expected")
         def id = projectService.save(project).id
         bugService.save(bug)
 

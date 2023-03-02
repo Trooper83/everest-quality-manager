@@ -48,7 +48,7 @@ class StepHibernateSpec extends HibernateSpec {
         Step testStep = new Step(action: "do something", result: "something happened")
         def person = new Person(email: "test@test.com", password: "!Password2022").save()
         Bug bug = new Bug(person: person, name: "test", description: "desc",
-               project: project, status: "Open").addToSteps(testStep)
+               project: project, status: "Open", actual: "actual", expected: "expected").addToSteps(testStep)
         bug.save()
 
         expect:

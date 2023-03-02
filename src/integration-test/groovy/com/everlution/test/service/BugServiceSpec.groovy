@@ -27,8 +27,10 @@ class BugServiceSpec extends Specification {
     private Long setupData() {
         project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
         def person = new Person(email: "test123@test.com", password: "!Password2022").save()
-        Bug bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project, status: "Open").save()
-        new Bug(person: person, description: "Found a bug again!", name: "Name of the bug again", project: project, status: "Open").save()
+        Bug bug = new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project,
+                status: "Open", actual: "actual", expected: "expected").save()
+        new Bug(person: person, description: "Found a bug again!", name: "Name of the bug again", project: project,
+                status: "Open", actual: "actual", expected: "expected").save()
         bug.id
     }
 
@@ -99,7 +101,8 @@ class BugServiceSpec extends Specification {
         when:
         def person = new Person(email: "test988@test.com", password: "!Password2022").save()
         Project proj = new Project(name: "BugServiceSpec Project", code: "BPM").save()
-        Bug bug = new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: proj, status: "Open")
+        Bug bug = new Bug(person: person, description: "Found a bug123", name: "Name of the bug123", project: proj,
+                status: "Open", actual: "actual", expected: "expected")
         bugService.save(bug)
 
         then:
@@ -131,8 +134,8 @@ class BugServiceSpec extends Specification {
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
         def step = new Step(action: "action", result: "result")
-        def bug = new Bug(person: person, name: "second", description: "desc2",
-                project: project, steps: [step], status: "Open").save(failOnError: true)
+        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
+                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
         expect:
         testStepService.get(step.id) != null

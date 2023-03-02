@@ -8,10 +8,12 @@ class ShowBugPage extends ShowPage {
     static at = { title == "Show Bug" }
 
     static content = {
+        actualValue { $("#actual") }
         areaValue { $("#area") }
         creatorValue { $("#creator") }
         descriptionValue { $("#description") }
         environmentsList { $("#environments") }
+        expectedValue { $("#expected") }
         nameValue { $("#name") }
         platformValue { $("#platform") }
         projectValue { $("#project") }

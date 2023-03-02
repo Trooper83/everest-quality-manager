@@ -18,6 +18,8 @@ class BugSpec extends GebSpec {
     def description = faker.zelda().character()
     def action = faker.lorem().sentence(5)
     def result = faker.lorem().sentence(7)
+    def actual = faker.lorem().sentence(4)
+    def expected = faker.lorem().sentence(4)
     def name = faker.lorem().sentence(5)
     def area = 'Bugs'
     def env = 'Integrated'
@@ -38,7 +40,7 @@ class BugSpec extends GebSpec {
         bugs.createButton.click()
 
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createBug(name, description, area, [env, env1], "Web", action, result)
+        createPage.createBug(name, description, area, [env, env1], "Web", action, result, actual, expected)
     }
 
     void "bug can be created and data persists"() {
@@ -52,6 +54,8 @@ class BugSpec extends GebSpec {
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env, env1])
             showPage.stepsTable.isRowDisplayed(action, result)
+            showPage.expectedValue.text() == expected
+            showPage.actualValue.text() == actual
         }
     }
 
@@ -63,7 +67,7 @@ class BugSpec extends GebSpec {
         when: "edit all bug data"
         EditBugPage editPage = browser.page(EditBugPage)
         def data = DataFactory.bug()
-        editPage.editBug(data.name, data.description, "",[""], "")
+        editPage.editBug(data.name, data.description, "",[""], "", data.expected, data.actual)
 
         then: "data is displayed on show page"
         verifyAll {
@@ -73,6 +77,8 @@ class BugSpec extends GebSpec {
             showPage.statusValue.text() == "Closed"
             showPage.descriptionValue.text() == data.description
             !showPage.areEnvironmentsDisplayed([env, env1])
+            showPage.expectedValue.text() == data.expected
+            showPage.actualValue.text() == data.actual
         }
     }
 

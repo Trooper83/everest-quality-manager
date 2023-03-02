@@ -69,6 +69,8 @@ class CreateBugSpec extends GebSpec {
         def description = faker.zelda().character()
         def action = faker.lorem().sentence(5)
         def result = faker.lorem().sentence(7)
+        def actual = faker.lorem().sentence(7)
+        def expected = faker.lorem().sentence(7)
 
         and: "login as a basic user"
         to LoginPage
@@ -89,7 +91,7 @@ class CreateBugSpec extends GebSpec {
 
         when: "create bug"
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createBug(name, description, area.name, [env.name, env1.name], "Web", action, result)
+        createPage.createBug(name, description, area.name, [env.name, env1.name], "Web", action, result, actual, expected)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
