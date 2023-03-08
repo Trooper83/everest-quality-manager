@@ -29,6 +29,11 @@ class CreateUserSpec extends GebSpec {
         and:
         def person = DataFactory.person()
         page.createPerson(person.email, person.password, [], [SecurityRoles.ROLE_BASIC.role])
+
+        and:
+        waitFor(10, 2) {
+            personService.findByEmail(person.email) != null
+        }
         page.navBar.logout()
 
         when:
@@ -86,6 +91,11 @@ class CreateUserSpec extends GebSpec {
         def page = to CreateUserPage
         def person = DataFactory.person()
         page.createPerson(person.email, person.password, [], [])
+
+        and:
+        waitFor(10, 2) {
+            personService.findByEmail(person.email) != null
+        }
 
         then:
         def p = personService.findByEmail(person.email)

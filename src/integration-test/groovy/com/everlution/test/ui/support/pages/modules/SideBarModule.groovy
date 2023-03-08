@@ -6,6 +6,16 @@ class SideBarModule extends Module {
 
     static content = {
         sidebar { $("#sidebarMenu") }
+        createButton(required: false) { sidebar.find('#dropdownCreateButton') }
+        createMenu { $('#dropdownCreateMenu') }
+    }
+
+    /**
+     * goes to create {domain} page
+     */
+    void goToCreate(String domain) {
+        createButton.click()
+        createMenu.find('a', text: domain).click()
     }
 
     /**

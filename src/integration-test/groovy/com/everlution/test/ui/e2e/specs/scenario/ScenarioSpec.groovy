@@ -27,10 +27,7 @@ class ScenarioSpec extends GebSpec {
         projectsPage.projectTable.clickCell('Name', 'Atlas')
 
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Scenarios")
-
-        def scenarios = at ListScenarioPage
-        scenarios.createButton.click()
+        projectHomePage.sideBar.goToCreate("Scenario")
 
         CreateScenarioPage createPage = browser.page(CreateScenarioPage)
         createPage.createScenario(scn.name, scn.description, scn.gherkin, area, [env], scn.executionMethod,

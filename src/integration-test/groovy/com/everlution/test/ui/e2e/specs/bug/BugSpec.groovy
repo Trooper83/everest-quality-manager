@@ -34,10 +34,7 @@ class BugSpec extends GebSpec {
         projectsPage.projectTable.clickCell('Name', 'Atlas')
 
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Bugs")
-
-        def bugs = at ListBugPage
-        bugs.createButton.click()
+        projectHomePage.sideBar.goToCreate("Bug")
 
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.createBug(name, description, area, [env, env1], "Web", action, result, actual, expected)

@@ -27,10 +27,7 @@ class TestCaseSpec extends GebSpec {
         projectsPage.projectTable.clickCell('Name', 'Atlas')
 
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Test Cases")
-
-        def testCases = at ListTestCasePage
-        testCases.createButton.click()
+        projectHomePage.sideBar.goToCreate("Test Case")
 
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,

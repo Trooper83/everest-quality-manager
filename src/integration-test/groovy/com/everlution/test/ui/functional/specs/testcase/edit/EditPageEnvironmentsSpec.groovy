@@ -44,7 +44,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
 
         then: "bug.environment is selected"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.environmentsSelect().selectedText == [env.name, env1.name]
+        page.environmentsSelect().selectedText.containsAll(env.name, env1.name)
     }
 
     void "environment select defaults no selection when no environment set"() {

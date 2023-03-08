@@ -24,10 +24,7 @@ class TestGroupSpec extends GebSpec {
         projectsPage.projectTable.clickCell('Name', 'Atlas')
 
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Test Groups")
-
-        def testGroups = at ListTestGroupPage
-        testGroups.createButton.click()
+        projectHomePage.sideBar.goToCreate("Test Group")
 
         def createPage = browser.page(CreateTestGroupPage)
         createPage.createTestGroup(group.name)

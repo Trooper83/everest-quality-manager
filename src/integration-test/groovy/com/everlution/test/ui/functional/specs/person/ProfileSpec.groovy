@@ -48,6 +48,9 @@ class ProfileSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
+        expect:
+        at ListProjectPage
+
         and:
         to ProfilePage
 
@@ -67,6 +70,9 @@ class ProfileSpec extends GebSpec {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
+
+        expect:
+        at ListProjectPage
 
         and:
         to ProfilePage
@@ -142,6 +148,9 @@ class ProfileSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
+        expect:
+        at ListProjectPage
+
         and:
         to ProfilePage
 
@@ -163,6 +172,9 @@ class ProfileSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
 
+        expect:
+        at ListProjectPage
+
         and:
         to ProfilePage
 
@@ -182,6 +194,9 @@ class ProfileSpec extends GebSpec {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(p.email, p.password)
+
+        expect:
+        at ListProjectPage
 
         and:
         to ProfilePage

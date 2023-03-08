@@ -29,11 +29,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Bugs")
-
-        and:
-        def bugs = at ListBugPage
-        bugs.createButton.click()
+        projectHomePage.sideBar.goToCreate("Bug")
 
         when: "create a bug"
         def page = at CreateBugPage

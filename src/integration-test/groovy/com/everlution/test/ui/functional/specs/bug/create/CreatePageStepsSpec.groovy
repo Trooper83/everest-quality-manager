@@ -1,7 +1,5 @@
 package com.everlution.test.ui.functional.specs.bug.create
 
-import com.everlution.Step
-import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
@@ -26,11 +24,7 @@ class CreatePageStepsSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Bugs")
-
-        and:
-        def bugs = at ListBugPage
-        bugs.createButton.click()
+        projectHomePage.sideBar.goToCreate("Bug")
     }
 
     void "add test step row"() {
