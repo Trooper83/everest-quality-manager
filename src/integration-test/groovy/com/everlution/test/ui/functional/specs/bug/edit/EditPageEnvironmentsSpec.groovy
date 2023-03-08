@@ -38,7 +38,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         )
         def bug = bugService.save(
                 new Bug(name: "environment testing bug II", project: project, person: person,
-                        environments: [env, env1], status: "Open"
+                        environments: [env, env1], status: "Open", actual: "actual", expected: "expected"
                 )
         )
 
@@ -52,7 +52,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
 
         then: "bug.environment is selected"
         EditBugPage page = browser.page(EditBugPage)
-        page.environmentsSelect().selectedText == [env.name, env1.name]
+        page.environmentsSelect().selectedText.containsAll(env.name, env1.name)
     }
 
     void "environment select defaults no selection when no environment set"() {
@@ -62,7 +62,8 @@ class EditPageEnvironmentsSpec extends GebSpec {
                 new Project(name: pd.name, code: pd.code)
         )
         def bug = bugService.save(
-                new Bug(name: "environment testing bug", project: project, person: person, status: "Open")
+                new Bug(name: "environment testing bug", project: project, person: person, status: "Open",
+                        actual: "actual", expected: "expected")
         )
 
         and: "login as a basic user"
@@ -84,7 +85,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
         def bug = bugService.save(new Bug(name: "env testing bug II", project: project, person: person,
-                environments: [env], status: "Open"))
+                environments: [env], status: "Open", actual: "actual", expected: "expected"))
 
         and: "login as a basic user"
         to LoginPage

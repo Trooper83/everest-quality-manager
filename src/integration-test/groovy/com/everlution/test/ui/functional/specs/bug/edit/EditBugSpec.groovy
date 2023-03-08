@@ -33,7 +33,8 @@ class EditBugSpec extends GebSpec {
     void "authorized users can edit bug"(String username, String password) {
         setup: "create bug"
         def project = projectService.list(max: 10).first()
-        def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open")
+        def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open", actual: "actual",
+                expected: "expected")
         def id = bugService.save(bug).id
 
         and: "login as a basic user"
@@ -68,7 +69,8 @@ class EditBugSpec extends GebSpec {
                 areas: [area], environments: [env]))
         def bugData = DataFactory.bug()
         def bug = bugService.save(new Bug(person: person, name: bugData.name,
-                description: bugData.description, project: project, area: area, platform: "Web", status: "Open"))
+                description: bugData.description, project: project, area: area, platform: "Web", status: "Open",
+                actual: "actual", expected: "expected"))
 
         when: "login as a basic user"
         to LoginPage
@@ -81,7 +83,7 @@ class EditBugSpec extends GebSpec {
         and: "edit all bug data"
         EditBugPage editPage = browser.page(EditBugPage)
         def data = DataFactory.bug()
-        editPage.editBug(data.name, data.description, "",[""], "")
+        editPage.editBug(data.name, data.description, "",[""], "", data.expected, data.actual)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage

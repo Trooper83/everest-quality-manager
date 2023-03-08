@@ -10,9 +10,11 @@ class EditBugPage extends EditPage {
     static at = { title == "Edit Bug" }
 
     static content = {
+        actualInput { $("#actual") }
         areaOptions { $("#area>option") }
         descriptionInput { $("#description") }
         environmentsOptions { $("#environments>option") }
+        expectedInput { $("#expected") }
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
@@ -45,13 +47,16 @@ class EditBugPage extends EditPage {
     /**
      * edits a bug with the supplied data
      */
-    void editBug(String name, String description, String area, List<String> environments, String platform) {
+    void editBug(String name, String description, String area, List<String> environments, String platform,
+                 String expected, String actual) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
         platformSelect().selected = platform
         environmentsSelect().selected = environments
         statusSelect().selected = "Closed"
+        expectedInput = expected
+        actualInput = actual
         updateButton.click()
     }
 }

@@ -33,7 +33,8 @@ class EditPageAreaSpec extends GebSpec {
         def area = new Area(name: "area testing area II")
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
-        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person, area: area, status: "Open"))
+        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person,
+                area: area, status: "Open", actual: "actual", expected: "expected"))
 
         and: "login as a basic user"
         to LoginPage

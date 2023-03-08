@@ -33,11 +33,7 @@ class CreateBugSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Bugs")
-
-        and:
-        def bugs = at ListBugPage
-        bugs.createButton.click()
+        projectHomePage.sideBar.goToCreate("Bug")
 
         when: "create a bug"
         def page = at CreateBugPage
@@ -47,7 +43,7 @@ class CreateBugSpec extends GebSpec {
         at ShowBugPage
 
         where:
-        username                         | password
+        username                        | password
         Credentials.BASIC.email         | Credentials.BASIC.password
         Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
         Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
@@ -69,6 +65,8 @@ class CreateBugSpec extends GebSpec {
         def description = faker.zelda().character()
         def action = faker.lorem().sentence(5)
         def result = faker.lorem().sentence(7)
+        def actual = faker.lorem().sentence(7)
+        def expected = faker.lorem().sentence(7)
 
         and: "login as a basic user"
         to LoginPage
@@ -81,15 +79,11 @@ class CreateBugSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Bugs")
-
-        and:
-        def bugs = at ListBugPage
-        bugs.createButton.click()
+        projectHomePage.sideBar.goToCreate("Bug")
 
         when: "create bug"
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createBug(name, description, area.name, [env.name, env1.name], "Web", action, result)
+        createPage.createBug(name, description, area.name, [env.name, env1.name], "Web", action, result, actual, expected)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage

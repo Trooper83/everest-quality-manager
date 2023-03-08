@@ -124,7 +124,7 @@ tasks.withType(GroovyCompile) {
 
 tasks.withType(Test) {
     useJUnitPlatform()
-    systemProperty "geb.env", 'test'
+    systemProperty "geb.env", "chrome"
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 }
 

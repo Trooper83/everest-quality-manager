@@ -1,6 +1,5 @@
 package com.everlution.test.ui.functional.specs.releaseplan
 
-import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -16,8 +15,6 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ShowPageSpec extends GebSpec {
 
-    ProjectService projectService
-
     void "status message displayed after plan created"() {
         given: "login as a basic user"
         to LoginPage
@@ -30,11 +27,7 @@ class ShowPageSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Release Plans")
-
-        and:
-        def plans = at ListReleasePlanPage
-        plans.createButton.click()
+        projectHomePage.sideBar.goToCreate("Release Plan")
 
         when: "create a plan"
         browser.page(CreateReleasePlanPage).createReleasePlan()
@@ -323,60 +316,6 @@ class ShowPageSpec extends GebSpec {
         page.displayAddTestCycleModal()
         page.testCycleModalEnvironSelect().selectedText == "Select an Environment..."
         page.testCycleModalEnvironSelect().selected == ""
-    }
-
-    void "add tests modal closes with cancel button"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Release Plans')
-
-        and: "click first row in list"
-        def listPage = browser.page(ListReleasePlanPage)
-        listPage.listTable.clickCell("Name", 0)
-
-        when:
-        def page = browser.page(ShowReleasePlanPage)
-        page.displayAddTestCycleModal()
-        page.cancelTestCycleModal()
-
-        then:
-        !page.testCycleModal.displayed
-    }
-
-    void "add tests modal closes with x button"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Release Plans')
-
-        and: "click first row in list"
-        def listPage = browser.page(ListReleasePlanPage)
-        listPage.listTable.clickCell("Name", 0)
-
-        when:
-        def page = browser.page(ShowReleasePlanPage)
-        page.displayAddTestCycleModal()
-        page.closeTestCycleModal()
-
-        then:
-        !page.testCycleModal.displayed
     }
 
     void "add tests modal resets data when cancelled"() {

@@ -18,6 +18,7 @@ function addEntryRow() {
     let button = $('tr input[type=button]').last().hide();
     let row = getEntryRow();
     $('#stepsTableContent').append(row);
+    $('tr').last().find('input[name$=action]').focus();
 }
 
 function removeEntryRow(element, id) {

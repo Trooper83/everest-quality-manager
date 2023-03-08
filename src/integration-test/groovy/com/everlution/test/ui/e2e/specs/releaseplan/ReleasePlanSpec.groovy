@@ -29,11 +29,7 @@ class ReleasePlanSpec extends GebSpec {
         projectsPage.projectTable.clickCell('Name', 'Atlas')
 
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Release Plans")
-
-        and:
-        def plans = at ListReleasePlanPage
-        plans.createButton.click()
+        projectHomePage.sideBar.goToCreate("Release Plan")
 
         name = DataFactory.releasePlan().name
         futureDate = DataFactory.getFutureDate(10)

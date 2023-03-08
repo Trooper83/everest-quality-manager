@@ -50,6 +50,16 @@
         </li>
     </ol>
     <g:render template="/shared/showStepsTableTemplate" bean="${bug}" var="entity"/>
+    <fieldset>
+        <div>
+            <p>
+                <label id="expected-label">Expected</label>
+                <span id="expected">${bug.expected}</span>
+                <label id="actual-label">Actual</label>
+                <span id="actual">${bug.actual}</span>
+            </p>
+        </div>
+    </fieldset>
     <sec:ifAnyGranted roles="ROLE_BASIC">
         <g:form resource="${this.bug}" method="DELETE" uri="/project/${bug.project.id}/bug/delete/${bug.id}" useToken="true">
             <fieldset class="buttons">

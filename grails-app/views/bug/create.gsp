@@ -12,7 +12,7 @@
     <g:render template="/shared/messagesTemplate" bean="${bug}" var="entity"/>
     <g:form resource="${this.bug}" method="POST" uri="/project/${project.id}/bug/save" useToken="true">
         <fieldset class="form">
-            <f:all bean="${this.bug}" except="area, person, environments, project, steps, status"/>
+            <f:all bean="${this.bug}" except="actual, area, expected, person, environments, project, steps, status"/>
             <g:hiddenField name="project" value="${project.id}"/>
             <g:hiddenField name="status" value="Open"/>
             <div class="fieldcontain">
@@ -32,6 +32,18 @@
             </div>
         </fieldset>
         <g:render template="/shared/createStepsTableTemplate"/>
+        <fieldset>
+            <div>
+                <label for="expected">Expected
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="expected"></g:textField>
+                <label for="actual">Actual
+                    <span class="required-indicator">*</span>
+                </label>
+                <g:textField name="actual"></g:textField>
+            </div>
+        </fieldset>
         <fieldset class="buttons">
             <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
         </fieldset>

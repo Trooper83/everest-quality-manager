@@ -54,7 +54,7 @@ class EditPageStepsSpec extends GebSpec {
         page.stepsTable.getRowCount() == 1
 
         when: "add a test step row"
-        page.stepsTable.addRow()
+        page.stepsTable.addRowHotKey()
 
         then: "row count is 2"
         page.stepsTable.getRowCount() == 2
@@ -100,7 +100,7 @@ class EditPageStepsSpec extends GebSpec {
         Step step = new Step(action: "step123", result: "result123")
         def person = personService.list(max: 1).first()
         Bug bug = new Bug(person: person,name: "first", description: "desc1",
-                project: project, steps: [step], status: "Open")
+                project: project, steps: [step], status: "Open", actual: "actual", expected: "expected")
         def id = bugService.save(bug).id
 
         and: "login as a basic user"

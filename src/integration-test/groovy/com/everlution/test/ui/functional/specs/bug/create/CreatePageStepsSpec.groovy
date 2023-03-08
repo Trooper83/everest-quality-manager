@@ -1,6 +1,5 @@
 package com.everlution.test.ui.functional.specs.bug.create
 
-import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
@@ -25,11 +24,7 @@ class CreatePageStepsSpec extends GebSpec {
 
         and: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain("Bugs")
-
-        and:
-        def bugs = at ListBugPage
-        bugs.createButton.click()
+        projectHomePage.sideBar.goToCreate("Bug")
     }
 
     void "add test step row"() {
@@ -67,11 +62,28 @@ class CreatePageStepsSpec extends GebSpec {
 
         when: "create bug"
         CreateBugPage createPage = at CreateBugPage
-        createPage.createBug(name, description, "", [], "", "", "")
+        createPage.createBug(name, description, "", [], "", "", "", "actual", "expected")
 
         then:
         createPage.errorsMessage.text() ==
-                "Property [action] of class [class com.everlution.Step] with value [null] does not pass custom validation\nProperty [result] of class [class com.everlution.Step] with value [null] does not pass custom validation"
+                "Property [action] of class [class com.everlution.Step] with value [null] does not pass custom validation\n" +
+                "Property [result] of class [class com.everlution.Step] with value [null] does not pass custom validation"
+    }
+
+    void "null actual and expected message"() {
+        given: "get fake data"
+        Faker faker = new Faker()
+        def name = faker.zelda().game()
+        def description = faker.zelda().character()
+
+        when: "create bug"
+        CreateBugPage createPage = at CreateBugPage
+        createPage.createBug(name, description, "", [], "", "action", "result", "", "")
+
+        then:
+        createPage.errorsMessage.text() ==
+                "Property [actual] of class [class com.everlution.Bug] cannot be null\n" +
+                "Property [expected] of class [class com.everlution.Bug] cannot be null"
     }
 
     void "remove button only displayed for last step"() {
@@ -88,5 +100,18 @@ class CreatePageStepsSpec extends GebSpec {
         then:
         !page.stepsTable.getRow(0).find('input[value=Remove]').displayed
         page.stepsTable.getRow(1).find('input[value=Remove]').displayed
+    }
+
+    void "alt+n adds new step row with action input focused"() {
+        expect:
+        def page = browser.page(CreateBugPage)
+        page.stepsTable.getRowCount() == 0
+
+        when: "add a row"
+        page.stepsTable.addRowHotKey()
+
+        then:
+        page.stepsTable.getRowCount() == 1
+        page.stepsTable.getRow(0).find('input[name="steps[0].action"]').focused
     }
 }

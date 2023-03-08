@@ -17,8 +17,10 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         setup:
         def project = new Project(name: "tc domain project321", code: "td5").save()
         def person = new Person(email: "test@test.com", password: "test")
-        new Bug(person: person, name: "First Bug", description: "test", project: project, status: "Open").save()
-        new Bug(person: person, name: "Second Bug", description: "test", project: project, status: "Open").save()
+        new Bug(person: person, name: "First Bug", description: "test", project: project, status: "Open",
+                actual: "actual", expected: "expected").save()
+        new Bug(person: person, name: "Second Bug", description: "test", project: project, status: "Open",
+                actual: "actual", expected: "expected").save()
 
         expect:
         Bug.count() == 2
@@ -347,5 +349,79 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         then:
         !domain.validate(["status"])
         domain.errors["status"].code == "not.inList"
+    }
+
+    void "actual cannot be null"() {
+        when:
+        domain.actual = null
+
+        then:
+        !domain.validate(["actual"])
+        domain.errors["actual"].code == "nullable"
+    }
+
+    void "actual cannot be blank"() {
+        when:
+        domain.actual = ""
+
+        then:
+        !domain.validate(["actual"])
+        domain.errors["actual"].code == "blank"
+    }
+
+    void "actual cannot exceed 500 characters"() {
+        when: "for a string of 256 characters"
+        String str = "a" * 501
+        domain.actual = str
+
+        then: "actual validation fails"
+        !domain.validate(["actual"])
+        domain.errors["actual"].code == "maxSize.exceeded"
+    }
+
+    void "actual validates with 500 characters"() {
+        when: "for a string of 255 characters"
+        String str = "a" * 500
+        domain.actual = str
+
+        then: "actual validation passes"
+        domain.validate(["actual"])
+    }
+
+    void "expected cannot be null"() {
+        when:
+        domain.expected = null
+
+        then:
+        !domain.validate(["expected"])
+        domain.errors["expected"].code == "nullable"
+    }
+
+    void "expected cannot be blank"() {
+        when:
+        domain.expected = ""
+
+        then:
+        !domain.validate(["expected"])
+        domain.errors["expected"].code == "blank"
+    }
+
+    void "expected cannot exceed 500 characters"() {
+        when: "for a string of 256 characters"
+        String str = "a" * 501
+        domain.expected = str
+
+        then: "expected validation fails"
+        !domain.validate(["expected"])
+        domain.errors["expected"].code == "maxSize.exceeded"
+    }
+
+    void "expected validates with 500 characters"() {
+        when: "for a string of 255 characters"
+        String str = "a" * 500
+        domain.expected = str
+
+        then: "expected validation passes"
+        domain.validate(["expected"])
     }
 }

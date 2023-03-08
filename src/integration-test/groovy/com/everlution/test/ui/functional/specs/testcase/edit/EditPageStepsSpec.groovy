@@ -72,7 +72,7 @@ class EditPageStepsSpec extends GebSpec {
 
         and: "add a row"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.stepsTable.addRow()
+        page.stepsTable.addRowHotKey()
 
         expect: "row count is 2"
         page.stepsTable.getRowCount() == 2

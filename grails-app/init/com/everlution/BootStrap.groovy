@@ -98,15 +98,20 @@ class BootStrap {
         def bugStep4 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         def bugStep5 = new Step(action: "do something", result: "something happened").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 1", description: "description of the bug",
-                project: project1, steps: [bugStep], area: area1, status: "Open").save(failOnError: true)
+                project: project1, steps: [bugStep], area: area1, status: "Open",
+                actual: "actual", expected: "expected").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 2", description: "description of the bug 1",
-                project: project, steps: [bugStep1], area: area, status: "Open").save(failOnError: true)
+                project: project, steps: [bugStep1], area: area, status: "Open",
+                actual: "actual", expected: "expected").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 3", description: "description of the bug 2",
-                project: project1, steps: [bugStep2, bugStep3], area: area1, status: "Open").save(failOnError: true)
+                project: project1, steps: [bugStep2, bugStep3], area: area1, status: "Open",
+                actual: "actual", expected: "expected").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 4", description: "description of the bug 1",
-                project: project, steps: [bugStep4], area: area, status: "Open").save(failOnError: true)
+                project: project, steps: [bugStep4], area: area, status: "Open",
+                actual: "actual", expected: "expected").save(failOnError: true)
         new Bug(person: person, name: "seeded bug 5", description: "description of the bug 2",
-                project: project1, steps: [bugStep5], area: area1, status: "Open").save(failOnError: true)
+                project: project1, steps: [bugStep5], area: area1, status: "Open",
+                actual: "actual", expected: "expected").save(failOnError: true)
         new Scenario(person: person, name: "scenario part 1", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project1).save(failOnError: true)

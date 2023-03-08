@@ -28,9 +28,21 @@
                                   noSelection="${['':'No Environment...']}" multiple="true"
                         />
                     </div>
-                    <f:all bean="bug" except="area, environments, project, steps, person"/>
+                    <f:all bean="bug" except="actual, expected, area, environments, project, steps, person"/>
                 </fieldset>
                 <g:render template="/shared/editStepsTableTemplate" bean="${bug}" var="entity"/>
+                <fieldset>
+                    <div>
+                        <label for="expected">Expected
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <g:textField name="expected" value="${bug.expected}"></g:textField>
+                        <label for="actual">Actual
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <g:textField name="actual" value="${bug.actual}"></g:textField>
+                    </div>
+                </fieldset>
                 <fieldset class="buttons">
                     <input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                 </fieldset>

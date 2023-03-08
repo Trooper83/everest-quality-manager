@@ -10,13 +10,6 @@
 <a href="#list-testCase" class="skip" tabindex="-1">
     <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
 </a>
-<div class="row justify-content-end mt-3">
-    <sec:ifAnyGranted roles="ROLE_BASIC">
-        <g:if test="${params.projectId}">
-            <g:link role="button" class="btn btn-secondary" elementId="createButton" uri="/project/${params.projectId}/testCase/create">Create Test</g:link>
-        </g:if>
-    </sec:ifAnyGranted>
-</div>
 <div id="list-testCase" class="content scaffold-list col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
     <h1>
         <g:message code="default.list.label" args="[entityName]"/>
@@ -24,7 +17,7 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <div class="col-4 mt-4 mb-4">
+    <div class="col-6 mt-4 mb-4">
         <g:form uri="/project/${project.id}/testCases" params="['isSearch': 'true']" useToken="true">
             <g:textField name="name" autocomplete="off" placeholder="Test Case Name" value="${params.name}"/>
             <button class="btn btn-secondary" type="submit" id="searchButton">Search</button>

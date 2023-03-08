@@ -22,7 +22,8 @@ class DeleteBugSpec extends GebSpec {
         given: "log in as authorized user"
         def project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
-        def bug = new Bug(name: "delete bug", person: person, project: project, status: "Open")
+        def bug = new Bug(name: "delete bug", person: person, project: project, status: "Open",
+                actual: "actual", expected: "expected")
         def id = bugService.save(bug).id
 
         and:
