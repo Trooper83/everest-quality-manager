@@ -95,6 +95,8 @@ class CreateBugSpec extends GebSpec {
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.stepsTable.isRowDisplayed(action, result)
+            showPage.actualValue.text() == actual
+            showPage.expectedValue.text() == expected
         }
     }
 }

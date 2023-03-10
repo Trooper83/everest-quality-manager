@@ -25,7 +25,7 @@ class Bug {
     }
 
     static constraints = {
-        actual nullable: false, blank: false, maxSize: 500
+        actual nullable: true, blank: true, maxSize: 500
         area nullable: true, validator: { val, Bug obj ->
             if(val == null) {
                 return
@@ -37,7 +37,7 @@ class Bug {
             val.id in ids
         }
         description blank: true, nullable: true, maxSize: 1000
-        expected nullable: false, blank: false, maxSize: 500
+        expected nullable: true, blank: true, maxSize: 500
         name blank: false, maxSize: 255, nullable: false
         person nullable: false
         platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]

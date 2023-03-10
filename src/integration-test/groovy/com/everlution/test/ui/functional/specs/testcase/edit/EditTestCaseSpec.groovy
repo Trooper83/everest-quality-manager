@@ -92,7 +92,7 @@ class EditTestCaseSpec extends GebSpec {
         Project project = projectService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project,
-                steps: [new Step(action: "initial entry", result: "initial entry")])
+                steps: [new Step(action: "changelog entry", result: "changelog entry")])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"

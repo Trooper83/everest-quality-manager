@@ -351,22 +351,20 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         domain.errors["status"].code == "not.inList"
     }
 
-    void "actual cannot be null"() {
+    void "actual can be null"() {
         when:
         domain.actual = null
 
         then:
-        !domain.validate(["actual"])
-        domain.errors["actual"].code == "nullable"
+        domain.validate(["actual"])
     }
 
-    void "actual cannot be blank"() {
+    void "actual can be blank"() {
         when:
         domain.actual = ""
 
         then:
-        !domain.validate(["actual"])
-        domain.errors["actual"].code == "blank"
+        domain.validate(["actual"])
     }
 
     void "actual cannot exceed 500 characters"() {
@@ -388,22 +386,20 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         domain.validate(["actual"])
     }
 
-    void "expected cannot be null"() {
+    void "expected can be null"() {
         when:
         domain.expected = null
 
         then:
-        !domain.validate(["expected"])
-        domain.errors["expected"].code == "nullable"
+        domain.validate(["expected"])
     }
 
-    void "expected cannot be blank"() {
+    void "expected can be blank"() {
         when:
         domain.expected = ""
 
         then:
-        !domain.validate(["expected"])
-        domain.errors["expected"].code == "blank"
+        domain.validate(["expected"])
     }
 
     void "expected cannot exceed 500 characters"() {

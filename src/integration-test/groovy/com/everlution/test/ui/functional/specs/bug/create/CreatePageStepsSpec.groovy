@@ -70,22 +70,6 @@ class CreatePageStepsSpec extends GebSpec {
                 "Property [result] of class [class com.everlution.Step] with value [null] does not pass custom validation"
     }
 
-    void "null actual and expected message"() {
-        given: "get fake data"
-        Faker faker = new Faker()
-        def name = faker.zelda().game()
-        def description = faker.zelda().character()
-
-        when: "create bug"
-        CreateBugPage createPage = at CreateBugPage
-        createPage.createBug(name, description, "", [], "", "action", "result", "", "")
-
-        then:
-        createPage.errorsMessage.text() ==
-                "Property [actual] of class [class com.everlution.Bug] cannot be null\n" +
-                "Property [expected] of class [class com.everlution.Bug] cannot be null"
-    }
-
     void "remove button only displayed for last step"() {
         setup: "add a row"
         def page = browser.page(CreateBugPage)

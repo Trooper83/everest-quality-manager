@@ -92,6 +92,12 @@ management:
             unique-names: true
 
 ---
+grails:
+    plugin:
+        databasemigration:
+            updateOnStart: false
+            updateOnStartFileName: changelog.groovy
+---
 hibernate:
     cache:
         queries: false
