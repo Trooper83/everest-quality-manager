@@ -90,6 +90,8 @@ class EditBugSpec extends GebSpec {
         verifyAll {
             showPage.areaValue.text() == ""
             showPage.nameValue.text() == data.name
+            showPage.actualValue.text() == data.actual
+            showPage.expectedValue.text() == data.expected
             showPage.platformValue.text() == ""
             showPage.statusValue.text() == "Closed"
             showPage.descriptionValue.text() == data.description
