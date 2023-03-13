@@ -96,7 +96,7 @@ class DataFactory {
      * creates fake data to populate a scenario instance
      */
     static Map<String, String> scenario() {
-        def name = faker.zelda().game()
+        def name = faker.lorem().sentence(5)
         def creator = faker.zelda().character()
         def description = faker.lorem().sentence(3)
         def gherkin = faker.lorem().sentence(5)
@@ -108,7 +108,7 @@ class DataFactory {
      * creates fake data to populate a testCase instance
      */
     static Map<String, String> testCase() {
-        def name = faker.zelda().game()
+        def name = faker.beer().name()
         def creator = faker.zelda().character()
         def description = faker.lorem().sentence(3)
         return [name: name, creator: creator, description: description, executionMethod: "Automated", type: "UI"]
