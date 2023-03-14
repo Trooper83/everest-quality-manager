@@ -5,7 +5,7 @@ function addEnvironmentTag() {
     let itemIndex = $('#environments li').length;
     let text = $('#environment').val();
     if(text.trim().length > 0) {
-        let element = $('<li/>');
+        let element = $('<li class="list-inline-item"/>');
         let hiddenElement = $('<input type="text" data-test-id="tag-input" style="display: none;" name="environments[' +
                 itemIndex + '].name" id="environments[' + itemIndex + '].name" value="' + text + '"' +
                 'data-toggle="tooltip" trigger="manual" data-original-title="Environment Name cannot be blank"/>');

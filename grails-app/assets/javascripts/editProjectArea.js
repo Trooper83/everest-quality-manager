@@ -5,7 +5,7 @@ function addAreaTag() {
     let itemIndex = $('#areas li').length;
     let text = $('#area').val();
     if(text.trim().length > 0) {
-        let element = $('<li/>');
+        let element = $('<li class="list-inline-item"/>');
         let hiddenElement = $('<input type="text" data-test-id="tag-input" style="display: none;" name="areas[' +
                 itemIndex + '].name" id="areas[' + itemIndex + '].name" value="' + text + '"' +
                 'data-toggle="tooltip" trigger="manual" data-original-title="Area Name cannot be blank"/>');

@@ -23,7 +23,7 @@
                                  value="${params.name}"/>
                     </div>
                     <div class="col">
-                        <button class="btn btn-secondary" type="submit" id="searchButton">Search</button>
+                        <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
                     </div>
                 </div>
             </g:form>
@@ -50,7 +50,7 @@
             <div class="pagination">
                 <g:paginate total="${projectCount ?: 0}" />
             </div>
-            </div>
+        </div>
     </div>
 </div>
 </div>
