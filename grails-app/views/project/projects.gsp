@@ -6,7 +6,7 @@
     <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
-<div class="container height-100" id="list-project" role="main">
+<div class="container" id="list-project" role="main">
     <h1><g:message code="default.list.label" args="[entityName]" /></h1>
     <g:if test="${flash.message}">
         <div class="alert alert-primary" role="alert">${flash.message}</div>
@@ -31,7 +31,7 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <table class="table table-hover table-striped table-sm table-bordered">
+            <table class="table table-striped table-bordered">
                 <thead class="thead-light">
                 <tr>
                     <th>Name</th>
