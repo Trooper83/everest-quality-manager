@@ -445,6 +445,254 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.projectCount == 1
     }
 
+    void "projects action with no activePage param sets activePage to 1"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
+        when: "call action"
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.activePage as Integer == 1
+    }
+
+    void "projects search action with no activePage param sets activePage to 1"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> [new Project()]
+        }
+
+        when: "call action"
+        params.isSearch = 'true'
+        params.name = 'test'
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.activePage as Integer == 1
+    }
+
+    void "projects action returns correct number of links"(Long num, int size) {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> num
+        }
+
+        when: "call action"
+        params.offset = 0
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        model.pageLinks.size() == size
+
+        where:
+        num | size
+        5   | 0
+        11  | 1
+        40  | 3
+        66  | 5
+    }
+
+    void "projects action includes activePage next and previous"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 1
+        }
+
+        when: "call action"
+        params.offset = 10
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        model.next == "/projects?offset=20&max=10"
+        model.previous == "/projects?offset=0&max=10"
+    }
+
+    void "projects search action includes activePage next and previous"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> [new Project(name: 'test')]
+        }
+
+        when: "call action"
+        params.offset = 10
+        params.isSearch = 'true'
+        params.name = 'test'
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        model.next == "/projects?offset=20&max=10"
+        model.previous == "/projects?offset=0&max=10"
+    }
+
+    void "projects action does not include previous when last page"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
+        when: "call action"
+        params.offset = 0
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        model.previous.length() == 0
+    }
+
+    void "projects search action does not include previous when first page"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> [new Project()]
+        }
+
+        when: "call action"
+        params.offset = 0
+        params.isSearch = 'true'
+        params.name = 'test'
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.activePage as Integer == 1
+        model.previous.length() == 0
+    }
+
+    void "projects action does not include next when last page"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+        }
+
+        when: "call action"
+        params.offset = 0
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.activePage as Integer == 1
+        model.next.length() == 0
+    }
+
+    void "projects search action does not include next when last page"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> [new Project()]
+        }
+
+        when: "call action"
+        params.offset = 0
+        params.isSearch = 'true'
+        params.name = 'test'
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.activePage as Integer == 1
+        model.next.length() == 0
+    }
+
+    void "projects action returns correct links"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 31
+        }
+
+        when: "call action"
+        params.offset = 0
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.activePage as Integer == 1
+        model.pageLinks.size() == 3
+        model.pageLinks[0] == "/projects?offset=10&max=10&activePage=2"
+        model.pageLinks[1] == "/projects?offset=20&max=10&activePage=3"
+        model.pageLinks[2] == "/projects?offset=30&max=10&activePage=4"
+    }
+
+    void "projects search action returns correct number of links"() {
+        given:
+        def projects = []
+        def i = 0;
+        while(i < 30) {
+            projects.add(new Project())
+            i++
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> projects
+        }
+
+        when: "call action"
+        params.offset = 0
+        params.isSearch = 'true'
+        params.name = 'test'
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.activePage as Integer == 1
+        model.pageLinks.size() == 2
+        model.pageLinks[0] == "/projects?offset=10&max=10&activePage=2"
+        model.pageLinks[1] == "/projects?offset=20&max=10&activePage=3"
+    }
+
+    void "projects action returns correct links when above 5"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 100
+        }
+
+        when: "call action"
+        params.offset = 30
+        params.activePage = 4
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        model.pageLinks.size() == 5
+        model.pageLinks[0] == "/projects?offset=40&max=10&activePage=5"
+        model.pageLinks[1] == "/projects?offset=50&max=10&activePage=6"
+        model.pageLinks[2] == "/projects?offset=60&max=10&activePage=7"
+    }
+
+    void "projects search action returns correct number of links when above 5"() {
+        given:
+        def projects = []
+        def i = 0;
+        while(i < 80) {
+            projects.add(new Project())
+            i++
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> projects
+        }
+
+        when: "call action"
+        params.isSearch = 'true'
+        params.offset = 30
+        params.activePage = 4
+        params.name = 'test'
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        model.pageLinks.size() == 5
+        model.pageLinks[0] == "/projects?offset=40&max=10&activePage=5"
+        model.pageLinks[1] == "/projects?offset=50&max=10&activePage=6"
+        model.pageLinks[2] == "/projects?offset=60&max=10&activePage=7"
+    }
+
     void "home action renders home view"() {
         given:
         def project = new Project()

@@ -25,19 +25,46 @@ class ProjectController {
     @Secured("ROLE_READ_ONLY")
     def projects(Integer max) {
 
+        if(!params.activePage) {
+            params.activePage = "1"
+        }
+
         if(!params.isSearch) { // load view
             params.max = Math.min(max ?: 10, 100)
             def projects = projectService.list(params)
-            respond projects, model:[projectCount: projectService.count()]
+            def count = projectService.count()
+            def links = getLinks(count, params.activePage.toString())
+            respond projects, model:[projectCount: count, pageLinks: links]
 
         } else { // perform search
             withForm {
                 def projects = projectService.findAllByNameIlike(params.name)
-                render view:'projects', model: [projectList: projects, projectCount: projects.size()]
+                def count = projects.size()
+                def links = getLinks(count, params.activePage.toString())
+                render view:'projects', model: [projectList: projects, projectCount: count, pageLinks: links]
             }.invalidToken {
                 error()
             }
         }
+    }
+
+    private List<String> getLinks(Long count, String activePage) {
+        def links = []
+        if(count > 10) {
+            def num = Math.floor(count / 10) as Integer
+            if (count % 10 == 0) {
+                num--
+            }
+            def max = num >= 5 ? 5 : num
+            def offset = (activePage as Integer) * 10
+            def i = 1;
+            while(i <= max) {
+                links.add("/projects?offset=${offset}&max=10&activePage=${offset/10 + 1}")
+                offset = offset + 10
+                i++
+            }
+        }
+        return links
     }
 
     /**

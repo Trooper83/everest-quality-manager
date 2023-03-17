@@ -31,7 +31,7 @@
     </div>
     <div class="row mt-3">
         <div class="col">
-            <table class="table table-striped table-bordered">
+            <table class="table table-light table-bordered">
                 <thead class="thead-light">
                 <tr>
                     <th>Name</th>
