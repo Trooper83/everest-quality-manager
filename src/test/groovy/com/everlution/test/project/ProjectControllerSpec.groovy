@@ -386,6 +386,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         given:
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
+            1 * count() >> 1
         }
 
         when:"the action is executed"
@@ -449,6 +450,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         given:
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
+            1 * count() >> 1
         }
 
         when: "call action"
@@ -456,7 +458,22 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        params.activePage as Integer == 1
+        params.activePage == "1"
+    }
+
+    void "projects action with no start param sets start to 1"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 1
+        }
+
+        when: "call action"
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.start == "1"
     }
 
     void "projects search action with no activePage param sets activePage to 1"() {
@@ -472,7 +489,23 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        params.activePage as Integer == 1
+        params.activePage == "1"
+    }
+
+    void "projects search action with no start param sets start to 1"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * findAllByNameIlike('test') >> [new Project()]
+        }
+
+        when: "call action"
+        params.isSearch = 'true'
+        params.name = 'test'
+        setToken(params)
+        controller.projects()
+
+        then:"The model is correct"
+        params.start == "1"
     }
 
     void "projects action returns correct number of links"(Long num, int size) {
@@ -495,48 +528,57 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         5   | 0
         11  | 1
         40  | 3
-        66  | 5
+        66  | 4
+        100 | 4
     }
 
-    void "projects action includes activePage next and previous"() {
+    void "projects action includes next and previous"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
-            1 * count() >> 1
+            1 * count() >> 31
         }
 
         when: "call action"
         params.offset = 10
+        params.activePage = 2
         setToken(params)
         controller.projects()
 
         then:"The model is correct"
-        model.next == "/projects?offset=20&max=10"
-        model.previous == "/projects?offset=0&max=10"
+        model.nextPage == "/projects?offset=20&max=10&activePage=3"
+        model.previousPage == "/projects?offset=0&max=10&activePage=1"
     }
 
-    void "projects search action includes activePage next and previous"() {
-        given:
+    void "projects search action includes next and previous"() {
+        def projects = []
+        def i = 0;
+        while(i < 35) {
+            projects.add(new Project())
+            i++
+        }
         controller.projectService = Mock(ProjectService) {
-            1 * findAllByNameIlike('test') >> [new Project(name: 'test')]
+            1 * findAllByNameIlike('test') >> projects
         }
 
         when: "call action"
         params.offset = 10
+        params.activePage = 2
         params.isSearch = 'true'
         params.name = 'test'
         setToken(params)
         controller.projects()
 
         then:"The model is correct"
-        model.next == "/projects?offset=20&max=10"
-        model.previous == "/projects?offset=0&max=10"
+        model.nextPage == "/projects?offset=20&max=10&activePage=3"
+        model.previousPage == "/projects?offset=0&max=10&activePage=1"
     }
 
-    void "projects action does not include previous when last page"() {
+    void "projects action does not include previous when first page"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
+            1 * count() >> 31
         }
 
         when: "call action"
@@ -545,7 +587,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        model.previous.length() == 0
+        model.previousPage.length() == 0
     }
 
     void "projects search action does not include previous when first page"() {
@@ -562,14 +604,14 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        params.activePage as Integer == 1
-        model.previous.length() == 0
+        model.previousPage.length() == 0
     }
 
     void "projects action does not include next when last page"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
+            1 * count() >> 1
         }
 
         when: "call action"
@@ -578,8 +620,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        params.activePage as Integer == 1
-        model.next.length() == 0
+        model.nextPage.length() == 0
     }
 
     void "projects search action does not include next when last page"() {
@@ -596,8 +637,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        params.activePage as Integer == 1
-        model.next.length() == 0
+        model.nextPage.length() == 0
     }
 
     void "projects action returns correct links"() {
@@ -660,7 +700,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        model.pageLinks.size() == 5
+        model.pageLinks.size() == 4
         model.pageLinks[0] == "/projects?offset=40&max=10&activePage=5"
         model.pageLinks[1] == "/projects?offset=50&max=10&activePage=6"
         model.pageLinks[2] == "/projects?offset=60&max=10&activePage=7"
@@ -687,10 +727,30 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.projects()
 
         then:"The model is correct"
-        model.pageLinks.size() == 5
+        model.pageLinks.size() == 4
         model.pageLinks[0] == "/projects?offset=40&max=10&activePage=5"
         model.pageLinks[1] == "/projects?offset=50&max=10&activePage=6"
         model.pageLinks[2] == "/projects?offset=60&max=10&activePage=7"
+    }
+
+    void "project action returns correct links when start is 1"() {
+        expect:
+        false
+    }
+
+    void "project search action returns correct links when start is 1"() {
+        expect:
+        false
+    }
+
+    void "project action returns correct links when start is 6"() {
+        expect:
+        false
+    }
+
+    void "project search action returns correct links when start is 6"() {
+        expect:
+        false
     }
 
     void "home action renders home view"() {

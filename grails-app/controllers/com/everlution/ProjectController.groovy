@@ -28,39 +28,57 @@ class ProjectController {
         if(!params.activePage) {
             params.activePage = "1"
         }
+        if(!params.start) {
+            params.start = "1"
+        }
+
+        def active = params.activePage as Integer
+        def start = params.start as Integer
 
         if(!params.isSearch) { // load view
             params.max = Math.min(max ?: 10, 100)
             def projects = projectService.list(params)
             def count = projectService.count()
-            def links = getLinks(count, params.activePage.toString())
-            respond projects, model:[projectCount: count, pageLinks: links]
+            def links = getLinks(count, active)
+
+            respond projects, model:[projectCount: count, pageLinks: links,
+                                     previousPage: getPreviousLink(active), nextPage: getNextLink(count, active)]
 
         } else { // perform search
             withForm {
                 def projects = projectService.findAllByNameIlike(params.name)
                 def count = projects.size()
-                def links = getLinks(count, params.activePage.toString())
-                render view:'projects', model: [projectList: projects, projectCount: count, pageLinks: links]
+                def links = getLinks(count, active)
+                render view:'projects', model: [projectList: projects, projectCount: count, pageLinks: links,
+                                                previousPage: getPreviousLink(active), nextPage: getNextLink(count, active)]
             }.invalidToken {
                 error()
             }
         }
     }
 
-    private List<String> getLinks(Long count, String activePage) {
+    private String getPreviousLink(int activePage) {
+        def num = activePage - 1
+        return num == 0 ? "" : "/projects?offset=${(num - 1) * 10}&max=10&activePage=${num}"
+    }
+
+    private String getNextLink(Long count, int activePage) {
+        def num = activePage + 1
+        def last = Math.ceil(count / 10) as Integer
+        return num >= last ? "" : "/projects?offset=${(activePage) * 10}&max=10&activePage=${num}"
+    }
+
+    private List<String> getLinks(Long count, int active) {
         def links = []
         if(count > 10) {
-            def num = Math.floor(count / 10) as Integer
-            if (count % 10 == 0) {
-                num--
-            }
+            def num = Math.ceil(count / 10) as Integer
             def max = num >= 5 ? 5 : num
-            def offset = (activePage as Integer) * 10
+            def offset
             def i = 1;
-            while(i <= max) {
-                links.add("/projects?offset=${offset}&max=10&activePage=${offset/10 + 1}")
-                offset = offset + 10
+            while(i < max) {
+                offset = active * 10
+                links.add("/projects?offset=${offset}&max=10&activePage=${active + 1}")
+                active++
                 i++
             }
         }
