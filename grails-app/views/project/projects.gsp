@@ -50,6 +50,9 @@
             <div class="pagination">
                 <g:paginate total="${projectCount ?: 0}" />
             </div>
+            <ul class="pagination">
+                <g:pagination total="${projectCount ?: 0}"/>
+            </ul>
         </div>
     </div>
 </div>
