@@ -57,9 +57,9 @@ class EnvironmentSpec extends Specification implements DomainUnitTest<Environmen
         domain.errors["name"].code == "blank"
     }
 
-    void "test name cannot exceed 255 characters"() {
-        when: "for a string of 256 characters"
-        String str = "a" * 256
+    void "test name cannot exceed 100 characters"() {
+        when: "for a string of 101 characters"
+        String str = "a" * 101
         domain.name = str
 
         then: "name validation fails"
@@ -67,9 +67,9 @@ class EnvironmentSpec extends Specification implements DomainUnitTest<Environmen
         domain.errors["name"].code == "maxSize.exceeded"
     }
 
-    void "test name validates with 255 characters"() {
-        when: "for a string of 255 characters"
-        String str = "a" * 255
+    void "test name validates with 100 characters"() {
+        when: "for a string of 100 characters"
+        String str = "a" * 100
         domain.name = str
 
         then: "name validation passes"

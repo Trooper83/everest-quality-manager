@@ -25,70 +25,21 @@ class ProjectController {
     @Secured("ROLE_READ_ONLY")
     def projects(Integer max) {
 
-        if(!params.activePage) {
-            params.activePage = "1"
-        }
-        if(!params.start) {
-            params.start = "1"
-        }
-
-        def active = params.activePage as int
-        def start = params.start as int
-
         if(!params.isSearch) { // load view
             params.max = Math.min(max ?: 10, 100)
             def projects = projectService.list(params)
             def count = projectService.count()
-            def links = getLinks(count, active)
-
-            respond projects, model:[projectCount: count, pageLinks: links, firstPage: getFirstLink(active),
-                                     previousPage: getPreviousLink(active), nextPage: getNextLink(count, active)]
+            respond projects, model:[projectCount: count]
 
         } else { // perform search
             withForm {
                 def projects = projectService.findAllByNameIlike(params.name)
                 def count = projects.size()
-                def links = getLinks(count, active)
-                render view:'projects', model: [projectList: projects, projectCount: count, pageLinks: links,
-                                                firstPage: getFirstLink(active), previousPage: getPreviousLink(active),
-                                                nextPage: getNextLink(count, active)]
+                render view:'projects', model: [projectList: projects, projectCount: count]
             }.invalidToken {
                 error()
             }
         }
-    }
-
-    //https://github.com/grails/grails-gsp/blob/5.3.x/grails-plugin-gsp/src/main/groovy/org/grails/plugins/web/taglib/UrlMappingTagLib.groovy
-    private String getFirstLink(int activePage) {
-        return activePage > 3 ? "/projects?offset=0&max=10&activePage=1" : ""
-    }
-
-    private String getPreviousLink(int activePage) {
-        def num = activePage - 1
-        return num == 0 ? "" : "/projects?offset=${(num - 1) * 10}&max=10&activePage=${num}"
-    }
-
-    private String getNextLink(Long count, int activePage) {
-        def num = activePage + 1
-        def last = Math.ceil(count / 10) as int
-        return num >= last ? "" : "/projects?offset=${(activePage) * 10}&max=10&activePage=${num}"
-    }
-
-    private List<String> getLinks(Long count, int active) {
-        def links = []
-        if(count > 10) {
-            def num = Math.ceil(count / 10) as int
-            def max = num >= 5 ? 5 : num
-            def offset
-            def i = 1;
-            while(i < max) {
-                offset = active * 10
-                links.add("/projects?offset=${offset}&max=10&activePage=${active + 1}")
-                active++
-                i++
-            }
-        }
-        return links
     }
 
     /**

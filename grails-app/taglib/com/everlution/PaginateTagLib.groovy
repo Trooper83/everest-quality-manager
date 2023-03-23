@@ -1,9 +1,9 @@
+package com.everlution
+
 import grails.artefact.TagLibrary
 import grails.gsp.TagLib
 import grails.util.TypeConvertingMap
 import groovy.transform.CompileStatic
-import org.grails.taglib.TagOutput
-import org.grails.taglib.encoder.OutputContextLookupHelper
 
 @TagLib
 @CompileStatic
@@ -36,7 +36,7 @@ class PaginateTagLib implements TagLibrary {
         def total = attrs.int('total') ?: 0
         def offset = attrs.int('offset') ?: params.int('offset') ?: 0
         def max = params.int('max')
-        def maxsteps = (attrs.int('maxsteps') ?: 10) //TODO: does this work?
+        def maxsteps = (attrs.int('maxsteps') ?: 10)
         if (!max) max = (attrs.int('max') ?: 10)
 
         Map linkParams = [:]
@@ -57,11 +57,9 @@ class PaginateTagLib implements TagLibrary {
 
         // display previous link when not on firststep
         if (currentstep > firststep) {
-            writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset - max}&max=10\">Previous</a></li>"
+            //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset - max}&max=${max}\">Previous</a></li>"
+            writer << createLink((offset - max), max, 'Previous')
         }
-
-        //TODO: need to add max variable for each link
-        //TODO: add private function to create links
 
         // display steps when steps are enabled and laststep is not firststep
         if (steps && laststep > firststep) {
@@ -84,14 +82,12 @@ class PaginateTagLib implements TagLibrary {
 
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
-                //linkParams.offset = 0
-                //writer << callLink((Map)linkTagAttrs.clone()) {firststep.toString()}
-                //writer << "<a href=\"/projects?offset=0&max=10\">${firststep.toString()}</a>"
-                writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=0&max=10\">${firststep.toString()}</a></li>"
+                //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=0&max=${max}\">${firststep.toString()}</a></li>"
+                writer << createLink(0, max, firststep.toString())
             }
             //show a gap if beginstep isn't immediately after firststep
-            if (beginstep > firststep+1) { //TODO: why doesn't this work?
-                writer << '<span class="step gap">..</span>'
+            if (beginstep > firststep+1) {
+                writer << "<li class=\"page-item disabled\"><span class=\"page-link\">...</span></li>"
             }
 
             // display paginate steps
@@ -100,37 +96,30 @@ class PaginateTagLib implements TagLibrary {
                     writer << "<li class=\"page-item active\"><span class=\"page-link\">${i}</span></li>"
                 }
                 else {
-                    //linkParams.offset = (i - 1) * max
-                    //writer << callLink((Map)linkTagAttrs.clone()) {i.toString()}
-                    //writer << "<a href=\"/projects?offset=${(i - 1) * max}&max=10\">${i.toString()}</a>"
-                    writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${(i - 1) * max}&max=10\">${i.toString()}</a></li>"
+                    //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${(i - 1) * max}&max=${max}\">${i.toString()}</a></li>"
+                    writer << createLink((i-1)*max, max, i.toString())
                 }
             }
 
             //show a gap if beginstep isn't immediately before firststep
-            if (endstep+1 < laststep) { //TODO: why doesn't this work?
-                writer << '<span class="step gap">..</span>'
+            if (endstep+1 < laststep) {
+                writer << "<li class=\"page-item disabled\"><span class=\"page-link\">...</span></li>"
             }
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
-                //linkParams.offset = (laststep - 1) * max
-                //writer << callLink((Map)linkTagAttrs.clone()) { laststep.toString() }
-                //writer << "<a href=\"/projects?offset=${(laststep - 1) * max}&max=10\">${laststep.toString()}</a>"
-                writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${(laststep - 1) * max}&max=10\">${laststep.toString()}</a></li>"
+                //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${(laststep - 1) * max}&max=${max}\">${laststep.toString()}</a></li>"
+                writer << createLink((laststep - 1), max, laststep.toString())
             }
         }
 
         // display next link when not on laststep
         if (currentstep < laststep) {
-            //linkTagAttrs.put('class', 'nextLink')
-            //linkParams.offset = offset + max
-            //writer << "<a href=\"/projects?offset=${offset + max}&max=10\">Next</a>"
-            writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset + max}&max=10\">Next</a></li>"
+            //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset + max}&max=${max}\">Next</a></li>"
+            writer << createLink((offset + max), max, 'Next')
         }
     }
 
-    private callLink(Map attrs, Object body) {
-        TagOutput.captureTagOutput(tagLibraryLookup, 'g', 'link', attrs, body,
-                OutputContextLookupHelper.lookupOutputContext())
+    private String createLink(int offset, int max, String linkText) {
+        return "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset}&max=${max}\">${linkText}</a></li>"
     }
 }
