@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="layout" content="main" />
-    <g:set var="entityName" value="${message(code: 'project.label', default: 'Project')}" />
+    <g:set var="entityName" value="Projects" />
     <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
@@ -47,7 +47,7 @@
                 </g:each>
                 </tbody>
             </table>
-            <ul class="pagination">
+            <ul class="pagination mb-5">
                 <g:pagination total="${projectCount ?: 0}"/>
             </ul>
         </div>

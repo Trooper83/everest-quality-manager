@@ -57,7 +57,6 @@ class PaginateTagLib implements TagLibrary {
 
         // display previous link when not on firststep
         if (currentstep > firststep) {
-            //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset - max}&max=${max}\">Previous</a></li>"
             writer << createLink((offset - max), max, 'Previous')
         }
 
@@ -81,8 +80,7 @@ class PaginateTagLib implements TagLibrary {
             }
 
             // display firststep link when beginstep is not firststep
-            if (beginstep > firststep) {
-                //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=0&max=${max}\">${firststep.toString()}</a></li>"
+            if (beginstep > firststep) {//writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=0&max=${max}\">${firststep.toString()}</a></li>"
                 writer << createLink(0, max, firststep.toString())
             }
             //show a gap if beginstep isn't immediately after firststep
@@ -96,7 +94,6 @@ class PaginateTagLib implements TagLibrary {
                     writer << "<li class=\"page-item active\"><span class=\"page-link\">${i}</span></li>"
                 }
                 else {
-                    //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${(i - 1) * max}&max=${max}\">${i.toString()}</a></li>"
                     writer << createLink((i-1)*max, max, i.toString())
                 }
             }
@@ -107,14 +104,12 @@ class PaginateTagLib implements TagLibrary {
             }
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
-                //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${(laststep - 1) * max}&max=${max}\">${laststep.toString()}</a></li>"
-                writer << createLink((laststep - 1), max, laststep.toString())
+                writer << createLink((laststep - 1) * max, max, laststep.toString())
             }
         }
 
         // display next link when not on laststep
         if (currentstep < laststep) {
-            //writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset + max}&max=${max}\">Next</a></li>"
             writer << createLink((offset + max), max, 'Next')
         }
     }
