@@ -65,7 +65,8 @@
                             </div>
                         </div>
                         <div class="col">
-                            <g:submitButton name="create" class="btn btn-primary" value="Create"/>
+                            <div class="dropdown-divider"></div>
+                            <g:submitButton name="create" class="btn btn-primary mt-2" value="Create"/>
                         </div>
                     </g:form>
                 </div>
