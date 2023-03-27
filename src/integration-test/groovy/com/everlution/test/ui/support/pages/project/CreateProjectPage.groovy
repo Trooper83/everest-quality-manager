@@ -29,8 +29,7 @@ class CreateProjectPage extends BasePage {
         environmentTagRemoveButton(required: false) { text -> environmentTag(text).find("[data-test-id='remove-tag-button']") }
         environmentTagSaveButton(required: false) { text -> environmentTag(text).find("[data-test-id='save-tag-button']") }
         environmentTags(required: false) { $("#environments li") }
-        errors { $("ul.errors>li") }
-        fieldLabels { $("fieldset label") }
+        errors { $("ul.alert-danger>li") }
         nameInput { $("#name") }
         tooltip(wait: true) { $("div.tooltip-inner") }
     }
@@ -51,22 +50,6 @@ class CreateProjectPage extends BasePage {
     void addEnvironmentTag(String name) {
         environmentInput << name
         addEnvironmentButton.click()
-    }
-
-    /**
-     * determines if the required field indication (asterisk) is
-     * displayed for the supplied fields
-     * @param fields - list of fields
-     * @return - true if all fields have the indicator, false if at least one does not
-     */
-    boolean areRequiredFieldIndicatorsDisplayed(List<String> fields) {
-        for(field in fields) {
-            def sel = $("label[for=${field}]>span.required-indicator")
-            if (!sel.displayed) {
-                return false
-            }
-        }
-        return true
     }
 
     /**
@@ -156,14 +139,6 @@ class CreateProjectPage extends BasePage {
         environmentTagEditButton(name).click()
         environmentTagInput(name).value(value)
         environmentTagSaveButton(name).click()
-    }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
     }
 
     /**

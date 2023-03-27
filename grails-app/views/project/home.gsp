@@ -10,7 +10,6 @@
     <div class="row">
         <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
         <main id="show-project" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
-            <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
             <div class="container-fluid mt-5">
                 <div class="card">
                     <div class="card-header mb-4 d-flex justify-content-between align-items-center">

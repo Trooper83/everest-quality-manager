@@ -30,8 +30,7 @@ class EditProjectPage extends BasePage {
         environmentTagRemoveButton(required: false) { text -> environmentTag(text).find("[data-test-id='remove-tag-button']") }
         environmentTagSaveButton(required: false) { text -> environmentTag(text).find("[data-test-id='save-tag-button']") }
         environmentTags(required: false) { $("#environments li") }
-        errorMessages { $("ul.errors") }
-        fieldLabels { $("fieldset label") }
+        errorMessages { $("ul.alert-danger") }
         nameInput { $("#name") }
         tooltip(wait: true) { $("div.tooltip-inner") }
         updateButton { $("[data-test-id=edit-update-button]") }

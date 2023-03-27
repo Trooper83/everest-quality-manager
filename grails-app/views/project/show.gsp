@@ -9,7 +9,12 @@
 <div class="container-fluid">
     <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
     <div role="main" class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center mt-3">
+            <div class="col-10">
+                <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
+            </div>
+        </div>
+            <div class="row justify-content-center">
             <div class="col-8">
                 <div class="card mt-5">
                     <div class="card-header">
@@ -18,7 +23,6 @@
                         </h1>
                     </div>
                     <div class="card-body">
-                        <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
                                 <div class="row">
@@ -37,7 +41,7 @@
                         </ul>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <div class="row align-items-center">
+                                <div class="row align-items-center" id="areas">
                                     <p id=areas-label class="col-4 font-weight-bold">Areas</p>
                                     <div class="col form-row mb-3">
                                         <g:each in="${project.areas}">
@@ -51,7 +55,7 @@
                         </ul>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <div class="row align-items-center">
+                                <div class="row align-items-center" id="environments">
                                     <p id=environments-label class="col-4 font-weight-bold">Environments</p>
                                     <div class="col form-row">
                                         <g:each in="${project.environments}">
@@ -70,7 +74,7 @@
                                         <g:link class="btn btn-primary" action="edit" resource="${this.project}" data-test-id="show-edit-link">
                                             <g:message code="default.button.edit.label" default="Edit" />
                                         </g:link>
-                                        <input class="btn" type="submit" data-test-id="home-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                                        <input class="btn" type="submit" data-test-id="show-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
                                     </div>
                                 </g:form>
                             </sec:ifAnyGranted>

@@ -3,7 +3,7 @@ import com.everlution.test.ui.support.pages.modules.TableModule
 
 class ListPage extends BasePage {
     static content = {
-        statusMessage { $("div.message") }
+        statusMessage { $("div.alert") }
         listTable { module TableModule }
     }
 }

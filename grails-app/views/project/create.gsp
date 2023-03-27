@@ -7,6 +7,11 @@
 </head>
 <body>
 <div id="create-project" class="container" role="main">
+    <div class="row mt-3">
+        <div class="col">
+            <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-8">
             <div class="card mt-5">
@@ -16,16 +21,13 @@
                     </h1>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
-                    </div>
                     <g:form class="col-12" resource="${this.project}" method="POST" useToken="true">
-                        <div class="form-group col-4">
-                            <label for="code">Code</label>
+                        <div class="form-group col-4 required">
+                            <label class="control-label" for="code">Code</label>
                             <g:textField class="form-control" name="code" value="${project.code}" maxLength="3"></g:textField>
                         </div>
-                        <div class="form-group col-10">
-                            <label for="name">Name</label>
+                        <div class="form-group col-10 required">
+                            <label class="control-label" for="name">Name</label>
                             <g:textField class="form-control" name="name" value="${project.name}" maxLength="100"></g:textField>
                         </div>
                         <div class="form-group col-10" id="areas">
