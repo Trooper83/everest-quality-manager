@@ -6,7 +6,7 @@ import geb.module.TextInput
 
 class ListProjectPage extends ListPage {
     static url = "/projects"
-    static at = { title == "Project List" }
+    static at = { title == "Projects List" }
 
     static content = {
         nameInput { $("#name").module(TextInput) }

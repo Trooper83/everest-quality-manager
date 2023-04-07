@@ -53,7 +53,7 @@ class CreateTestGroupSpec extends GebSpec {
         then: "at show page"
         def show = at ShowTestGroupPage
         verifyAll {
-            show.nameValue.text() == name
+            show.nameValue.text() == name + ' Details'
         }
     }
 }

@@ -6,37 +6,71 @@
     <title><g:message code="default.create.label" args="[entityName]" /></title>
 </head>
 <body>
-<a href="#create-project" class="skip" tabindex="-1">
-    <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
-</a>
-<div id="create-project" class="content scaffold-create" role="main">
-    <h1>
-        <g:message code="default.create.label" args="[entityName]"/>
-    </h1>
-    <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
-    <g:form resource="${this.project}" method="POST" useToken="true">
-        <fieldset class="form">
-            <f:all bean="project" except="areas, bugs, environments, testCases, testGroups"/>
-            <div class="fieldcontain" id="areas">
-                <label>Areas</label>
-                <g:field type="text" name="area" data-toggle="tooltip" trigger="manual" title="Area Name cannot be blank"/>
-                <g:field type="button" name="btnAddArea" value="Add" onclick="addAreaTag()"/>
-                <ul class="one-to-many"></ul>
+<div id="create-project" class="container" role="main">
+    <div class="row mt-3">
+        <div class="col">
+            <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h1>
+                        <g:message code="default.create.label" args="[entityName]"/>
+                    </h1>
+                </div>
+                <g:form class="col-12" resource="${this.project}" method="POST" useToken="true">
+                    <div class="card-body">
+                        <div class="col-4 required mb-3">
+                            <label class="form-label" for="code">Code</label>
+                            <g:textField class="form-control" name="code" value="${project.code}" maxLength="3"></g:textField>
+                        </div>
+                        <div class="form-group col-10 required mb-3">
+                            <label class="form-label" for="name">Name</label>
+                            <g:textField class="form-control" name="name" value="${project.name}" maxLength="100"></g:textField>
+                        </div>
+                        <div class="form-group col-8 mb-1" id="areas">
+                            <div class="form-row align-items-end">
+                                <label class="form-label" for="area">Areas</label>
+                                <div class="hstack gap-3">
+                                    <g:field class="form-control" maxLength="100" type="text" name="area" data-toggle="tooltip"
+                                             trigger="manual" title="Area Name cannot be blank"/>
+                                    <g:field class="btn btn-light border" type="button" name="btnAddArea" value="Add"
+                                             onclick="addTag('area')"/>
+                                </div>
+                            </div>
+                            <div class="row mb-3" id="areaRow">
+                                <div class="col-8">
+                                    <ul class="no-bullets list-inline"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-8 mb-1" id="environments">
+                            <div class="form-row align-items-end">
+                                <label class="form-label" for="environment">Environments</label>
+                                <div class="hstack gap-3">
+                                    <g:field class="form-control" maxLength="100" type="text" name="environment" data-toggle="tooltip"
+                                             trigger="manual" title="Environment Name cannot be blank"/>
+                                    <g:field class="btn btn-light border" type="button" name="btnAddEnv" value="Add"
+                                             onclick="addTag('environment')"/>
+                                </div>
+                            </div>
+                            <div class="row mb-3" id="environmentRow">
+                                <div class="col-8">
+                                    <ul class="no-bullets list-inline"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <g:submitButton name="create" class="btn btn-primary mt-2" value="Create"/>
+                    </div>
+                </g:form>
             </div>
-            <div class="fieldcontain" id="environments">
-                <label>Environments</label>
-                <g:field type="text" name="environment" data-toggle="tooltip" trigger="manual" title="Environment Name cannot be blank"/>
-                <g:field type="button" name="btnAddEnv" value="Add" onclick="addEnvironmentTag()"/>
-                <ul class="one-to-many"></ul>
-            </div>
-        </fieldset>
-        <fieldset class="buttons">
-            <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}"/>
-        </fieldset>
-    </g:form>
+        </div>
+    </div>
 </div>
-<asset:javascript src="createProjectArea.js"/>
-<asset:javascript src="createProjectEnvironment.js"/>
-<asset:javascript src="popper.min.js"/>
+<asset:javascript src="projectItems.js"/>
 </body>
 </html>

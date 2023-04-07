@@ -5,19 +5,18 @@ import com.everlution.test.ui.support.pages.modules.SideBarModule
 
 class ShowProjectPage extends BasePage {
     static url = "/show"
-    static at = { title == "Show Project" }
+    static at = { title == "Project Details" }
 
     static content = {
         areasList { $("#areas") }
         codeValue { $("#code") }
-        deleteLink(required: false) { $("[data-test-id=home-delete-link]") }
-        editLink(required: false) { $("[data-test-id=home-edit-link]") }
+        deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
+        editLink(required: false) { $("[data-test-id=show-edit-link]") }
         environmentsList { $("#environments") }
-        errorsMessage { $("ul.errors") }
-        fieldLabels { $("ol.property-list>li>span") }
+        errorsMessage { $("ul.alert-danger") }
         nameValue { $("#name") }
         sideBar { module SideBarModule }
-        statusMessage { $("div.message") }
+        statusMessage { $("div.alert-primary") }
     }
 
     /**
@@ -25,14 +24,6 @@ class ShowProjectPage extends BasePage {
      */
     void deleteProject() {
         withConfirm(true) { deleteLink.click() }
-    }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
     }
 
     /**
@@ -47,7 +38,7 @@ class ShowProjectPage extends BasePage {
      * @param name - name of the area to check
      */
     boolean isAreaDisplayed(String name) {
-        return areasList.find("div")*.text().contains(name)
+        return areasList.find("p")*.text().contains(name)
     }
 
     /**
@@ -55,6 +46,6 @@ class ShowProjectPage extends BasePage {
      * @param name - name of the env to check
      */
     boolean isEnvironmentDisplayed(String name) {
-        return environmentsList.find("div")*.text().contains(name)
+        return environmentsList.find("p")*.text().contains(name)
     }
 }

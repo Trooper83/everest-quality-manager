@@ -77,6 +77,6 @@ class EditTestGroupSpec extends GebSpec {
 
         then: "at show page with edited data"
         def showPage = at ShowTestGroupPage
-        showPage.nameValue.text() == "edited name"
+        showPage.nameValue.text() == "Edited Name Details"
     }
 }

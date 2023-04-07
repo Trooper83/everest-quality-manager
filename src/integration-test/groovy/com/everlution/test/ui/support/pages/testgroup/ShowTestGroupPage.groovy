@@ -4,7 +4,7 @@ import com.everlution.test.ui.support.pages.common.ShowPage
 import com.everlution.test.ui.support.pages.modules.TableModule
 
 class ShowTestGroupPage extends ShowPage {
-    static at = { title == "Show TestGroup" }
+    static at = { title == "TestGroup Details" }
 
     String convertToPath(Long projectId, Long groupId) {
         "/project/${projectId}/testGroup/show/${groupId}"
@@ -12,7 +12,6 @@ class ShowTestGroupPage extends ShowPage {
 
     static content = {
         nameValue { $("#name") }
-        projectValue { $("#project") }
         testCaseTable { module TableModule }
     }
 }

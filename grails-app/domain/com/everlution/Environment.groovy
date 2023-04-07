@@ -7,6 +7,6 @@ class Environment {
     static belongsTo = [Project]
 
     static constraints = {
-        name blank: false, maxSize: 255, nullable: false
+        name blank: false, maxSize: 100, nullable: false
     }
 }

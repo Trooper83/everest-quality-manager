@@ -5,7 +5,7 @@ import com.everlution.test.ui.support.pages.modules.StepTableModule
 
 class ShowTestCasePage extends ShowPage {
     static url = "/testCase/show"
-    static at = { title == "Show TestCase" }
+    static at = { title == "TestCase Details" }
 
     static content = {
         areaValue { $("#area") }

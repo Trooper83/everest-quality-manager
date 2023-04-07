@@ -28,12 +28,14 @@ class ProjectController {
         if(!params.isSearch) { // load view
             params.max = Math.min(max ?: 10, 100)
             def projects = projectService.list(params)
-            respond projects, model:[projectCount: projectService.count()]
+            def count = projectService.count()
+            respond projects, model:[projectCount: count]
 
         } else { // perform search
             withForm {
                 def projects = projectService.findAllByNameIlike(params.name)
-                render view:'projects', model: [projectList: projects, projectCount: projects.size()]
+                def count = projects.size()
+                render view:'projects', model: [projectList: projects, projectCount: count]
             }.invalidToken {
                 error()
             }

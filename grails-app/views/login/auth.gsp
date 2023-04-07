@@ -10,30 +10,37 @@
     <asset:link rel="icon" href="favicon.ico" type="image/x-ico"/>
 
     <asset:stylesheet src="application.css"/>
-    <asset:stylesheet src="signin.css"/>
 </head>
 
 <body>
-<div class="container">
-        <form action="${postUrl ?: '/login/authenticate'}" method="POST" id="loginForm" class="form-signin" autocomplete="off">
-            <g:if test='${flash.message}'>
-                <div class="alert alert-danger" role="alert">${flash.message}</div>
-            </g:if>
-            <h2 class="form-signin-heading"><g:message code='springSecurity.login.header'/></h2>
-            <label for="email" class="sr-only">Email address</label>
-            <input type="email" id="email" name="${usernameParameter ?: 'username'}" class="form-control"
-                   placeholder="Email address" required="" autofocus="">
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" name="${passwordParameter ?: 'password'}" class="form-control"
-                   placeholder="Password" required="">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="remember-me" name="${rememberMeParameter ?: 'remember-me'}"
-                           id="remember_me" <g:if test='${hasCookie}'>checked="checked"</g:if>> Remember me
-                </label>
-            </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit" id="submit">Sign in</button>
+<div class="container height-100">
+    <div class="row height-100 center">
+        <div class="col-4">
+        <form action="${postUrl ?: '/login/authenticate'}" method="POST" id="loginForm" autocomplete="off">
+                <g:if test='${flash.message}'>
+                    <div class="alert alert-danger" role="alert">${flash.message}</div>
+                </g:if>
+                <h2>Everest Quality Management Tool</h2>
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" name="${usernameParameter ?: 'username'}" class="form-control"
+                           placeholder="Email address" required="" autofocus="">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="${passwordParameter ?: 'password'}" class="form-control"
+                           placeholder="Password" required="">
+                </div>
+                <div class="form-check">
+                    <label>
+                        <input class="form-check-input" type="checkbox" value="remember-me" name="${rememberMeParameter ?: 'remember-me'}"
+                               id="remember_me" <g:if test='${hasCookie}'>checked="checked"</g:if>> Remember me
+                    </label>
+                </div>
+                <button class="btn btn-primary btn-block" type="submit" id="submit">Sign in</button>
         </form>
+        </div>
+    </div>
     </div>
 </div>
 </div>

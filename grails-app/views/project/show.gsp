@@ -1,48 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="main" />
     <g:set var="entityName" value="${message(code: 'project.label', default: 'Project')}" />
-    <title>Show Project</title>
+    <title>Project Details</title>
 </head>
 <body>
-<g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
-<div id="show-project" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
-    <h1>Show Project</h1>
-    <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
-    <ol class="property-list">
-        <li class="fieldcontain">
-            <span id="name-label" class="property-label">Name</span>
-            <div id="name" class="property-value" aria-labelledby="property-label">${project.name}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="code-label" class="property-label">Code</span>
-            <div id="code" class="property-value" aria-labelledby="code-label">${project.code}</div>
-        </li>
-        <li class="fieldcontain" id="areas">
-            <span id="areas-label" class="property-label">Areas</span>
-            <g:each in="${project.areas}">
-                <div class="property-value" aria-labelledby="areas-label">${it.name}</div>
-            </g:each>
-        </li>
-        <li class="fieldcontain" id="environments">
-            <span id="environments-label" class="property-label">Environments</span>
-            <g:each in="${project.environments}">
-                <div class="property-value" aria-labelledby="environments-label">${it.name}</div>
-            </g:each>
-        </li>
-    </ol>
-    <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
-        <g:form resource="${this.project}" method="DELETE" useToken="true">
-            <fieldset class="buttons">
-                <g:link class="edit" action="edit" resource="${this.project}" data-test-id="home-edit-link">
-                    <g:message code="default.button.edit.label" default="Edit" />
-                </g:link>
-                <input class="delete" type="submit" data-test-id="home-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
-            </fieldset>
-        </g:form>
-    </sec:ifAnyGranted>
+<div class="container">
+    <div class="row">
+        <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
+        <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
+            <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h1>
+                        <g:message code="default.show.label" args="[entityName]"/>
+                    </h1>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush border-bottom">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <p id="code-label" class="col-4 fw-bold">Code</p>
+                                <p class="col" id="code" aria-labelledby="code-label">${project.code}</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-group list-group-flush border-bottom">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <p id="name-label" class="col-4 fw-bold">Name</p>
+                                <p class="col" id="name" aria-labelledby="name-label">${project.name}</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-group list-group-flush border-bottom">
+                        <li class="list-group-item">
+                            <div class="row align-items-center" id="areas">
+                                <p id="areas-label" class="col-4 fw-bold">Areas</p>
+                                <div class="col form-row">
+                                    <g:each in="${project.areas}">
+                                        <p class="ml-1 badge text-bg-light border">${it.name}</p>
+                                    </g:each>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row align-items-center" id="environments">
+                                <p id="environments-label" class="col-4 fw-bold">Environments</p>
+                                <div class="col form-row">
+                                    <g:each in="${project.environments}">
+                                        <p class="ml-1 badge text-bg-light border">${it.name}</p>
+                                    </g:each>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
+                        <g:form resource="${this.project}" method="DELETE" useToken="true">
+                            <div class="col">
+                                <g:link class="btn btn-primary" action="edit" resource="${this.project}" data-test-id="show-edit-link">
+                                    <g:message code="default.button.edit.label" default="Edit" />
+                                </g:link>
+                                <input class="btn btn-secondary" type="submit" data-test-id="show-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                            </div>
+                        </g:form>
+                    </sec:ifAnyGranted>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
-<asset:javascript src="popper.min.js"/>
+</div>
+</div>
 </body>
 </html>

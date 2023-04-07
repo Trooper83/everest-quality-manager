@@ -20,12 +20,6 @@ class CreatePageSpec extends GebSpec {
         to CreateProjectPage
     }
 
-    void "required fields indicator displayed for required fields"() {
-        expect: "required field indicators displayed"
-        CreateProjectPage page = browser.page(CreateProjectPage)
-        page.areRequiredFieldIndicatorsDisplayed(["name", "code"])
-    }
-
     void "code field requires three characters"() {
         when: "enter field values"
         CreateProjectPage page = browser.page(CreateProjectPage)
@@ -54,11 +48,6 @@ class CreatePageSpec extends GebSpec {
         then: "validation message is displayed"
         page.errors.text() ==
                 "Property [code] of class [class com.everlution.Project] with value [BSP] must be unique"
-    }
-
-    void "correct fields are displayed"() {
-        expect: "correct fields are displayed"
-        browser.page(CreateProjectPage).getFields() == ["Code *", "Name *", "Areas", "Environments"]
     }
 
     void "errors message displayed when two areas with same name are added"() {

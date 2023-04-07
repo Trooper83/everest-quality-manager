@@ -40,8 +40,8 @@
             <div class="container">
                 <h1>Test Cycles</h1>
                 <sec:ifAnyGranted roles="ROLE_BASIC">
-                    <button id="addTestCycleBtn" type="button" class="btn btn-secondary mt-2 mb-3" data-toggle="modal"
-                            data-target="#testCycleModal">Add Test Cycle
+                    <button id="addTestCycleBtn" type="button" class="btn btn-secondary mt-2 mb-3" data-bs-toggle="modal"
+                            data-bs-target="#testCycleModal">Add Test Cycle
                     </button>
                 </sec:ifAnyGranted>
             <div class="accordion mb-3" id="testCycles">
@@ -127,7 +127,6 @@
                 </div>
             </div>
         </div>
-    <asset:javascript src="popper.min.js"/>
     <asset:javascript src="jquery-3.3.1.min.js"/>
     <script>
         $(document).ready(function() {

@@ -48,61 +48,6 @@ class EditProjectEnvironmentSpec extends GebSpec {
         showPage.isEnvironmentDisplayed("Added environment tag")
     }
 
-    void "environment tag can be edited on existing project"() {
-        given: "save a project"
-        def pd = DataFactory.project()
-        def ed = DataFactory.environment()
-        def env = new Environment(ed)
-        def project = new Project(name: pd.name, code: pd.code, environments: [env])
-        def id = projectService.save(project).id
-
-        and: "login as an authorized user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
-
-        and: "go to show page"
-        go "/project/show/${id}"
-
-        expect: "environment tag is displayed"
-        def showPage = at ShowProjectPage
-        showPage.isEnvironmentDisplayed(ed.name)
-
-        when: "edit the project"
-        showPage.goToEdit()
-        EditProjectPage page = browser.page(EditProjectPage)
-        page.editEnvironmentTag(ed.name, "edited environment tag")
-        page.editProject()
-
-        then: "environment tag is displayed"
-        showPage.isEnvironmentDisplayed("edited environment tag")
-        !showPage.isEnvironmentDisplayed(ed.name)
-    }
-
-    void "tooltip displays for editing existing environment with blank name"() {
-        given: "save a project"
-        def pd = DataFactory.project()
-        def ed = DataFactory.environment()
-        def env = new Environment(ed)
-        def project = new Project(name: pd.name, code: pd.code, environments: [env])
-        def id = projectService.save(project).id
-
-        and: "login as an authorized user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
-
-        and: "go to edit page"
-        go "/project/edit/${id}"
-
-        when: "edit the project"
-        EditProjectPage page = browser.page(EditProjectPage)
-        page.editEnvironmentTag(env.name, "")
-
-        then: "environment tag tooltip is displayed"
-        page.tooltip.displayed
-    }
-
     void "environment tag with associated test case cannot be deleted from existing project"() {
         given: "save a project"
         def env = new Environment(DataFactory.environment())

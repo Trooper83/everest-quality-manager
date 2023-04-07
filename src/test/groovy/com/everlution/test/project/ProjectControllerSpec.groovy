@@ -386,6 +386,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         given:
         controller.projectService = Mock(ProjectService) {
             1 * list(_) >> []
+            1 * count() >> 1
         }
 
         when:"the action is executed"
