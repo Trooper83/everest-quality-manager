@@ -33,7 +33,7 @@ class ListSpec extends GebSpec {
     void "verify list table headers order"() {
         expect: "correct headers are displayed"
         def page = browser.page(ListTestGroupPage)
-        page.listTable.getHeaders() == ["Name", "Project"]
+        page.listTable.getHeaders() == ["Name"]
     }
 
     void "clicking name column directs to show page"() {

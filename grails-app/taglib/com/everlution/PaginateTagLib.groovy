@@ -25,14 +25,30 @@ class PaginateTagLib implements TagLibrary {
      * @attr max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
      * @attr maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
      * @attr offset Used only if params.offset is empty
+     * @attr projectId id of the project
+     * @attr domain The domain of the item
      */
     Closure pagination = { Map attrsMap ->
         TypeConvertingMap attrs = (TypeConvertingMap)attrsMap
         def writer = out
         if (attrs.total == null) {
-            throwTagError("Tag [paginate] is missing required attribute [total]")
+            throwTagError("Tag [pagination] is missing required attribute [total]")
         }
 
+        def projectId = attrs.int('projectId')
+        def domainAttr = attrs.getProperty('domain')
+
+        if (!domainAttr) {
+            throwTagError("Tag [pagination requires [domain]")
+        }
+
+        def domain = domainAttr.toString()
+
+        if (domain != 'project' && !projectId) {
+            throwTagError("Tag [pagination] requires [projectId] for non-project domains")
+        }
+
+        projectId = projectId ?: -1
         def total = attrs.int('total') ?: 0
         def offset = attrs.int('offset') ?: params.int('offset') ?: 0
         def max = params.int('max')
@@ -57,7 +73,7 @@ class PaginateTagLib implements TagLibrary {
 
         // display previous link when not on firststep
         if (currentstep > firststep) {
-            writer << createLink((offset - max), max, 'Previous')
+            writer << createLink((offset - max), max, 'Previous', domain, projectId)
         }
 
         // display steps when steps are enabled and laststep is not firststep
@@ -80,8 +96,8 @@ class PaginateTagLib implements TagLibrary {
             }
 
             // display firststep link when beginstep is not firststep
-            if (beginstep > firststep) {//writer << "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=0&max=${max}\">${firststep.toString()}</a></li>"
-                writer << createLink(0, max, firststep.toString())
+            if (beginstep > firststep) {
+                writer << createLink(0, max, firststep.toString(), domain, projectId)
             }
             //show a gap if beginstep isn't immediately after firststep
             if (beginstep > firststep+1) {
@@ -94,7 +110,7 @@ class PaginateTagLib implements TagLibrary {
                     writer << "<li class=\"page-item active\"><span class=\"page-link\">${i}</span></li>"
                 }
                 else {
-                    writer << createLink((i-1)*max, max, i.toString())
+                    writer << createLink((i-1)*max, max, i.toString(), domain, projectId)
                 }
             }
 
@@ -104,17 +120,23 @@ class PaginateTagLib implements TagLibrary {
             }
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
-                writer << createLink((laststep - 1) * max, max, laststep.toString())
+                writer << createLink((laststep - 1) * max, max, laststep.toString(), domain, projectId)
             }
         }
 
         // display next link when not on laststep
         if (currentstep < laststep) {
-            writer << createLink((offset + max), max, 'Next')
+            writer << createLink((offset + max), max, 'Next', domain, projectId)
         }
     }
 
-    private String createLink(int offset, int max, String linkText) {
-        return "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset}&max=${max}\">${linkText}</a></li>"
+    private String createLink(int offset, int max, String linkText, String domain, int projectId) {
+        def link;
+        if (domain == 'project') {
+            link = "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset}&max=${max}\">${linkText}</a></li>";
+        } else {
+            link = "<li class=\"page-item\"><a class=\"page-link\" href=\"/project/${projectId}/${domain}s?offset=${offset}&max=${max}\">${linkText}</a></li>"
+        }
+        return link;
     }
 }

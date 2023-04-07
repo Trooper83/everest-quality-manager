@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>
-        <g:layoutTitle default="Grails"/>
+        <g:layoutTitle default="Everest"/>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <asset:link rel="icon" href="favicon.ico" type="image/x-ico"/>
@@ -14,17 +14,17 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-    <a class="navbar-brand" href="/projects">Everest</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+    <a class="navbar-brand ms-3" href="/projects">Everest</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
             aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" aria-expanded="false" style="height: 0.8px;" id="navbarContent">
-        <ul class="navbar-nav ml-auto mr-1">
+    <div class="collapse navbar-collapse justify-content-end me-3" aria-expanded="false" style="height: 0.8px;" id="navbarContent">
+        <ul class="navbar-nav">
             <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="adminDropDown" role="button" data-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" href="#" id="adminDropDown" role="button" data-bs-toggle="dropdown"
                        aria-expanded="false">Admin
                     </a>
                     <div class="dropdown-menu" id="adminDropDownMenu">
@@ -45,11 +45,11 @@
             </li>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="profileDropDown" href="#" role="button" data-toggle="dropdown"
+                <a class="nav-link dropdown-toggle" id="profileDropDown" href="#" role="button" data-bs-toggle="dropdown"
                    aria-expanded="false">
                     <asset:image src="icons/person-circle.svg" alt="User Profile" width="32" height="32"/>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropDown">
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropDown">
                     <g:link class="dropdown-item" elementId="profileLink" controller="user" action="profile">Profile</g:link>
                     <g:form controller="logout" method="POST">
                         <button data-test-id="main-logout-button" class="btn btn-link dropdown-item">Logout</button>
@@ -66,6 +66,5 @@
     <g:message code="spinner.alt" default="Loading&hellip;"/>
 </div>
 <asset:javascript src="application.js"/>
-<asset:javascript src="popper.min.js"/>
 </body>
 </html>

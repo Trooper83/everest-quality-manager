@@ -9,29 +9,23 @@ class CreateProjectPage extends BasePage {
     static content = {
         addAreaButton { $("#btnAddArea") }
         areaInput { $("#area") }
-        areaTag(required: false) { text -> $("#areas li", name: text) }
-        areaTagCancelButton { text -> areaTag(text).find("[data-test-id='cancel-tag-button']") }
-        areaTagEditButton(required: false) { text -> areaTag(text).find("[data-test-id='edit-tag-button']") }
-        areaTagInput { text -> areaTag(text).find("[data-test-id='tag-input']") }
-        areaTagOptionsButton { text -> areaTag(text).find("svg") }
-        areaTagRemoveButton(required: false) { text -> areaTag(text).find("[data-test-id='remove-tag-button']") }
-        areaTagSaveButton(required: false) { text -> areaTag(text).find("[data-test-id='save-tag-button']") }
-        areaTags(required: false) { $("#areas li") }
+        areaItem { name -> $("#areaRow li", name: name) }
+        areaTag(required: false) { text -> $("#areaRow p", text: text) }
+        areaTagInput { text -> areaItem(text).find("[data-test-id='tag-input']") }
+        areaTagRemoveButton { text -> areaTag(text).find("svg") }
+        areaTags(required: false) { $("#areaRow p") }
         codeInput { $("#code") }
         createButton { $("#create") }
         addEnvironmentButton { $("#btnAddEnv") }
+        environmentItem { name -> $("#environmentRow li", name: name) }
         environmentInput { $("#environment") }
-        environmentTag(required: false) { text -> $("#environments li", name: text) }
-        environmentTagCancelButton { text -> environmentTag(text).find("[data-test-id='cancel-tag-button']") }
-        environmentTagEditButton(required: false) { text -> environmentTag(text).find("[data-test-id='edit-tag-button']") }
-        environmentTagInput { text -> environmentTag(text).find("[data-test-id='tag-input']") }
-        environmentTagOptionsButton { text -> environmentTag(text).find("svg") }
-        environmentTagRemoveButton(required: false) { text -> environmentTag(text).find("[data-test-id='remove-tag-button']") }
-        environmentTagSaveButton(required: false) { text -> environmentTag(text).find("[data-test-id='save-tag-button']") }
-        environmentTags(required: false) { $("#environments li") }
+        environmentTag(required: false) { text -> $("#environmentRow p", text: text) }
+        environmentTagInput { text -> environmentItem(text).find("[data-test-id='tag-input']") }
+        environmentTagRemoveButton { text -> environmentTag(text).find("svg") }
+        environmentTags(required: false) { $("#environmentRow p") }
         errors { $("ul.alert-danger>li") }
         nameInput { $("#name") }
-        tooltip(wait: true) { $("div.tooltip-inner") }
+        tooltip(wait: true) { $("div[role=tooltip]") }
     }
 
     /**
@@ -53,22 +47,6 @@ class CreateProjectPage extends BasePage {
     }
 
     /**
-     * cancels area tag editing
-     * @param name
-     */
-    void cancelAreaTagEdit(String name) {
-        areaTagCancelButton(name).click()
-    }
-
-    /**
-     * cancels env tag editing
-     * @param name
-     */
-    void cancelEnvironmentTagEdit(String name) {
-        environmentTagCancelButton(name).click()
-    }
-
-    /**
      * fills in all fields for the create form but does not submit
      */
     void completeCreateForm(String name, String code) {
@@ -82,63 +60,6 @@ class CreateProjectPage extends BasePage {
     void createProject(String name, String code) {
         this.completeCreateForm(name, code)
         createButton.click()
-    }
-
-    /**
-     * displays the area tag edit fields
-     * @param name
-     */
-    void displayAreaTagEditFields(String name) {
-        areaTagOptionsButton(name).click()
-        areaTagEditButton(name).click()
-    }
-
-    /**
-     * displays the edit options
-     */
-    void displayAreaTagEditOptions(String name) {
-        areaTagOptionsButton(name).click()
-    }
-
-    /**
-     * displays the env tag edit fields
-     * @param name
-     */
-    void displayEnvironmentTagEditFields(String name) {
-        environmentTagOptionsButton(name).click()
-        environmentTagEditButton(name).click()
-    }
-
-    /**
-     * displays the env edit options
-     * @param name
-     */
-    void displayEnvironmentTagEditOptions(String name) {
-        environmentTagOptionsButton(name).click()
-    }
-
-    /**
-     * edits the value of an area tag
-     * @param name - name of the tag to edit
-     * @param value - the new value of the tag
-     */
-    void editAreaTag(String name, String value) {
-        areaTagOptionsButton(name).click()
-        areaTagEditButton(name).click()
-        areaTagInput(name).value(value)
-        areaTagSaveButton(name).click()
-    }
-
-    /**
-     * edits the value of an environment tag
-     * @param name - name of the tag to edit
-     * @param value - the new value of the tag
-     */
-    void editEnvironmentTag(String name, String value) {
-        environmentTagOptionsButton(name).click()
-        environmentTagEditButton(name).click()
-        environmentTagInput(name).value(value)
-        environmentTagSaveButton(name).click()
     }
 
     /**
@@ -201,7 +122,6 @@ class CreateProjectPage extends BasePage {
      * @param name - name of the tag to remove
      */
     void removeAreaTag(String name) {
-        areaTagOptionsButton(name).click()
         areaTagRemoveButton(name).click()
     }
 
@@ -210,7 +130,6 @@ class CreateProjectPage extends BasePage {
      * @param name - name of the tag to remove
      */
     void removeEnvironmentTag(String name) {
-        environmentTagOptionsButton(name).click()
         environmentTagRemoveButton(name).click()
     }
 

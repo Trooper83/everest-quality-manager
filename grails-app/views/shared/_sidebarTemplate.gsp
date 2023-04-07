@@ -1,4 +1,4 @@
-<nav id="sidebarMenu" class="col-md-2 d-none d-md-block bg-light sidebar">
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-none d-md-block bg-light sidebar">
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
             <sec:ifAnyGranted roles="ROLE_READ_ONLY">
@@ -9,7 +9,7 @@
                     <sec:ifAnyGranted roles="ROLE_BASIC">
                         <li class="text-center mt-2 mb-2">
                             <button id="dropdownCreateButton" type="button" class="btn btn-primary dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</button>
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Create</button>
                             <div class="dropdown-menu" aria-labelledby="dropdownCreateButton" id="dropdownCreateMenu">
                                 <g:link class="dropdown-item"
                                         uri="/project/${params.projectId}/bug/create">Bug</g:link>

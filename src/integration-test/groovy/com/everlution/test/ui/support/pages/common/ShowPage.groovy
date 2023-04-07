@@ -5,8 +5,7 @@ class ShowPage extends BasePage {
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
         errorsMessage { $(".errors") }
-        fieldLabels { $("ol.property-list>li>span") }
-        statusMessage { $("div.message") }
+        statusMessage { $("div.alert-primary") }
     }
 
     /**
@@ -14,14 +13,6 @@ class ShowPage extends BasePage {
      */
     void delete() {
         withConfirm(true) { deleteLink.click() }
-    }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
     }
 
     /**

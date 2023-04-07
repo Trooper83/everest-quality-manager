@@ -6,13 +6,12 @@
     <title>Project Home</title>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container">
     <div class="row">
         <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
-        <main id="show-project" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
-            <div class="container-fluid mt-5">
-                <div class="card">
-                    <div class="card-header mb-4 d-flex justify-content-between align-items-center">
+        <main class="col-md-9 col-lg-10 ms-sm-auto">
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title">Project Home</h3>
                         <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
                             <g:link role="button" action="show"
@@ -20,9 +19,9 @@
                                     elementId="adminButton">View</g:link>
                         </sec:ifAnyGranted>
                     </div>
-                    <div class="card-deck">
-                        <div class="col mb-4">
-                            <div class="card bg-light mb-3 h-100" style="max-width: 18rem;" id="testCaseCard">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 m-3">
+                        <div class="col">
+                            <div class="card bg-light h-100" style="max-width: 18rem;" id="testCaseCard">
                                 <div class="card-header bg-secondary"></div>
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -32,8 +31,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col mb-4">
-                            <div class="card bg-light mb-3 h-100" style="max-width: 18rem;" id="scenarioCard">
+                        <div class="col">
+                            <div class="card bg-light h-100" style="max-width: 18rem;" id="scenarioCard">
                                 <div class="card-header bg-secondary"></div>
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -43,8 +42,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col mb-4">
-                            <div class="card bg-light mb-3 h-100" style="max-width: 18rem;" id="bugCard">
+                        <div class="col">
+                            <div class="card bg-light h-100" style="max-width: 18rem;" id="bugCard">
                                 <div class="card-header bg-secondary"></div>
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -54,8 +53,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col mb-4">
-                            <div class="card bg-light mb-3 h-100" style="max-width: 18rem;" id="releasePlanCard">
+                        <div class="col">
+                            <div class="card bg-light h-100" style="max-width: 18rem;" id="releasePlanCard">
                                 <div class="card-header bg-secondary"></div>
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -76,6 +75,5 @@
         </main>
     </div>
 </div>
-<asset:javascript src="popper.min.js"/>
 </body>
 </html>
