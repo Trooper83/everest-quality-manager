@@ -24,7 +24,7 @@ class ProjectController {
      */
     @Secured("ROLE_READ_ONLY")
     def projects(Integer max) {
-
+        //TODO: mimic test groups
         if(!params.isSearch) { // load view
             params.max = Math.min(max ?: 10, 100)
             def projects = projectService.list(params)

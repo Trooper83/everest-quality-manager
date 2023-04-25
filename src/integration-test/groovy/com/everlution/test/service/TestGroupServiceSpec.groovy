@@ -146,11 +146,11 @@ class TestGroupServiceSpec extends Specification {
         setupData()
 
         when:
-        def groups = testGroupService.findAllByProject(project)
+        def groups = testGroupService.findAllByProject(project, [:])
 
         then:
-        groups.size() > 0
-        groups.every { it.project.id == project.id }
+        groups.results.size() > 0
+        groups.results.every { it.project.id == project.id }
     }
 
     void "find all by project with null project returns empty list"() {
@@ -158,10 +158,10 @@ class TestGroupServiceSpec extends Specification {
         setupData()
 
         when:
-        def groups = testGroupService.findAllByProject(null)
+        def groups = testGroupService.findAllByProject(null, [:])
 
         then:
-        groups.size() == 0
+        groups.results.size() == 0
         noExceptionThrown()
     }
 
@@ -170,7 +170,7 @@ class TestGroupServiceSpec extends Specification {
         setupData()
 
         expect:
-        def groups = testGroupService.findAllInProjectByName(project, "name")
-        groups.first().name == "name 1"
+        def groups = testGroupService.findAllInProjectByName(project, "name", [:])
+        groups.results.first().name == "name 1"
     }
 }

@@ -32,8 +32,10 @@ abstract class TestGroupService implements ITestGroupService {
      * @return - list of all groups with the project
      */
     @Transactional
-    List<TestGroup> findAllByProject(Project project) {
-        return TestGroup.findAllByProject(project)
+    SearchResult findAllByProject(Project project, Map params) {
+        Long c = TestGroup.countByProject(project)
+        List groups = TestGroup.findAllByProject(project, params)
+        return new SearchResult(groups, c)
     }
 
     /**
@@ -42,8 +44,10 @@ abstract class TestGroupService implements ITestGroupService {
      * @param name - the string to search
      */
     @Transactional
-    List<TestGroup> findAllInProjectByName(Project project, String s) {
-        return TestGroup.findAllByProjectAndNameIlike(project, "%${s}%")
+    SearchResult findAllInProjectByName(Project project, String s, Map params) {
+        Long c = TestGroup.countByProjectAndNameIlike(project, "%${s}%")
+        List groups = TestGroup.findAllByProjectAndNameIlike(project, "%${s}%", params)
+        return new SearchResult(groups, c)
     }
 
     /**

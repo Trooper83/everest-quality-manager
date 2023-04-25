@@ -24,9 +24,9 @@ class PaginateTagLib implements TagLibrary {
      * @attr total REQUIRED The total number of results to paginate
      * @attr max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
      * @attr maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
-     * @attr offset Used only if params.offset is empty
      * @attr projectId id of the project
      * @attr domain The domain of the item
+     * @attr isSearch Determines if the link should include isSearch parameter
      */
     Closure pagination = { Map attrsMap ->
         TypeConvertingMap attrs = (TypeConvertingMap)attrsMap
@@ -39,7 +39,7 @@ class PaginateTagLib implements TagLibrary {
         def domainAttr = attrs.getProperty('domain')
 
         if (!domainAttr) {
-            throwTagError("Tag [pagination requires [domain]")
+            throwTagError("Tag [pagination] requires [domain]")
         }
 
         def domain = domainAttr.toString()
@@ -50,20 +50,19 @@ class PaginateTagLib implements TagLibrary {
 
         projectId = projectId ?: -1
         def total = attrs.int('total') ?: 0
-        def offset = attrs.int('offset') ?: params.int('offset') ?: 0
+        def offset = params.int('offset') ?: 0
         def max = params.int('max')
         def maxsteps = (attrs.int('maxsteps') ?: 10)
         if (!max) max = (attrs.int('max') ?: 10)
 
         Map linkParams = [:]
-        if (attrs.params instanceof Map) linkParams.putAll((Map)attrs.params)
-        linkParams.offset = offset - max
         linkParams.max = max
         if (params.sort) linkParams.sort = params.sort
         if (params.order) linkParams.order = params.order
-
-        Map linkTagAttrs = [:]
-        linkTagAttrs.params = linkParams
+        if (params.isSearch) {
+            linkParams.isSearch = params.isSearch
+            linkParams.name = params.name
+        }
 
         // determine paging variables
         def steps = maxsteps > 0
@@ -73,7 +72,8 @@ class PaginateTagLib implements TagLibrary {
 
         // display previous link when not on firststep
         if (currentstep > firststep) {
-            writer << createLink((offset - max), max, 'Previous', domain, projectId)
+            linkParams.offset = offset - max
+            writer << createLink(linkParams, 'Previous', domain, projectId)
         }
 
         // display steps when steps are enabled and laststep is not firststep
@@ -97,7 +97,8 @@ class PaginateTagLib implements TagLibrary {
 
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
-                writer << createLink(0, max, firststep.toString(), domain, projectId)
+                linkParams.offset = 0
+                writer << createLink(linkParams, firststep.toString(), domain, projectId)
             }
             //show a gap if beginstep isn't immediately after firststep
             if (beginstep > firststep+1) {
@@ -110,7 +111,8 @@ class PaginateTagLib implements TagLibrary {
                     writer << "<li class=\"page-item active\"><span class=\"page-link\">${i}</span></li>"
                 }
                 else {
-                    writer << createLink((i-1)*max, max, i.toString(), domain, projectId)
+                    linkParams.offset = (i-1) * max
+                    writer << createLink(linkParams, i.toString(), domain, projectId)
                 }
             }
 
@@ -120,23 +122,38 @@ class PaginateTagLib implements TagLibrary {
             }
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
-                writer << createLink((laststep - 1) * max, max, laststep.toString(), domain, projectId)
+                linkParams.offset = (laststep - 1) * max
+                writer << createLink(linkParams, laststep.toString(), domain, projectId)
             }
         }
 
         // display next link when not on laststep
         if (currentstep < laststep) {
-            writer << createLink((offset + max), max, 'Next', domain, projectId)
+            linkParams.offset = offset + max
+            writer << createLink(linkParams, 'Next', domain, projectId)
         }
     }
 
-    private String createLink(int offset, int max, String linkText, String domain, int projectId) {
-        def link;
-        if (domain == 'project') {
-            link = "<li class=\"page-item\"><a class=\"page-link\" href=\"/projects?offset=${offset}&max=${max}\">${linkText}</a></li>";
-        } else {
-            link = "<li class=\"page-item\"><a class=\"page-link\" href=\"/project/${projectId}/${domain}s?offset=${offset}&max=${max}\">${linkText}</a></li>"
+    private String createLink(Map linkParams, String linkText, String domain, int projectId) {
+        def p = ""
+        def s = linkParams.size()
+        linkParams.eachWithIndex { key, value, i ->
+            if(i==0) {
+                p = "?"
+            }
+            p = p + "$key=$value"
+            if(i != s - 1) {
+                p = p + "&"
+            }
         }
-        return link;
+        def href
+        if (domain == 'project') {
+            href = "/projects"
+        } else {
+            href = "/project/${projectId}/${domain}s"
+        }
+        href = href + p
+        def link = "<li class=\"page-item\"><a class=\"page-link\" href=${href}>${linkText}</a></li>"
+        return link
     }
 }
