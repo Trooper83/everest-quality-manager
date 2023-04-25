@@ -2,6 +2,7 @@ package com.everlution.test.testgroup
 
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.SearchResult
 import com.everlution.TestGroup
 import com.everlution.TestGroupController
 import com.everlution.TestGroupService
@@ -24,17 +25,17 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
-    void "test groups action renders index view"() {
+    void "test groups action renders testGroups view"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * findAllByProject(_) >> []
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:
-        controller.testGroups(1)
+        controller.testGroups(1, 10)
 
         then:
         view == 'testGroups'
@@ -43,14 +44,14 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     void "test groups action returns the correct model"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * findAllByProject(_) >> [new TestGroup()]
+            1 * findAllByProject(_, params) >> new SearchResult([new TestGroup()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:"The index action is executed"
-        controller.testGroups(1)
+        controller.testGroups(1, 10)
 
         then:"The model is correct"
         model.testGroupList
@@ -68,32 +69,16 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:"The action is executed"
-        controller.testGroups(null)
+        controller.testGroups(null, 10)
 
         then:
         response.status == 404
     }
 
-    void "testGroups search responds 500 when no token present"() {
-        given:
-        def project = new Project(name: 'test')
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> project
-        }
-
-        when:"The action is executed"
-        params.isSearch = 'true'
-        params.name = 'test'
-        controller.testGroups(1)
-
-        then:
-        response.status == 500
-    }
-
     void "testGroups search returns the correct model"() {
         def project = new Project(name: 'test')
         controller.testGroupService = Mock(TestGroupService) {
-            1 * findAllInProjectByName(project, 'test') >> [new TestGroup()]
+            1 * findAllInProjectByName(project, 'test', params) >> new SearchResult([new TestGroup()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> project
@@ -101,14 +86,36 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
 
         when:"action is executed"
         params.isSearch = 'true'
-        setToken(params)
         params.name = 'test'
-        controller.testGroups(1)
+        controller.testGroups(1, 10)
 
         then:"model is correct"
         model.testGroupList != null
         model.testGroupCount != null
         model.project != null
+    }
+
+    void "testGroups action param max"(Integer max, int expected) {
+        given:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"the action is executed"
+        controller.testGroups(1, max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
     }
 
     void "create action returns create view"() {

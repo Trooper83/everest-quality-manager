@@ -17,26 +17,22 @@ class TestGroupController {
      * @return - list of groups
      */
     @Secured("ROLE_READ_ONLY")
-    def testGroups(Long projectId) {
+    def testGroups(Long projectId, Integer max) {
         def project = projectService.get(projectId)
         if (project == null) {
             notFound()
             return
         }
 
+        params.max = Math.min(max ?: 10, 100)
+        def testGroupResults
         if(!params.isSearch) { // load view
-            def testGroups = testGroupService.findAllByProject(project)
-            respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
+            testGroupResults = testGroupService.findAllByProject(project, params)
 
         } else { // perform search
-            withForm {
-                def testGroups = testGroupService.findAllInProjectByName(project, params.name)
-                respond testGroups, model: [testGroupCount: testGroups.size(), project: project], view: 'testGroups'
-            }.invalidToken {
-                error()
-            }
+            testGroupResults = testGroupService.findAllInProjectByName(project, params.name, params)
         }
-
+        respond testGroupResults.results, model: [testGroupCount: testGroupResults.count, project: project], view: 'testGroups'
     }
 
     /**

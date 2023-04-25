@@ -12,7 +12,7 @@
         <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
             <g:render template="/shared/messagesTemplate" bean="${testGroup}" var="entity"/>
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
-                    <g:form class="mt-3" i="/project/${project.id}/testGroups" params="['isSearch': 'true']" useToken="true">
+                    <g:form class="mt-3" action="search" uri="/project/${project.id}/testGroups" params="['isSearch': 'true']" useToken="true">
                         <div class="col-lg-4 hstack gap-3">
                             <g:textField class="form-control" name="name" autocomplete="off" placeholder="Test Group Name"
                                          value="${params.name}"/>
@@ -43,6 +43,5 @@
         </main>
     </div>
 </div>
-<asset:javascript src="popper.min.js"/>
 </body>
 </html>

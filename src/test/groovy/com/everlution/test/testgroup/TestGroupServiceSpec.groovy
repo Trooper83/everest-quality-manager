@@ -2,6 +2,7 @@ package com.everlution.test.testgroup
 
 import com.everlution.Person
 import com.everlution.Project
+import com.everlution.SearchResult
 import com.everlution.TestCase
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
@@ -179,10 +180,11 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         setupData()
 
         when:
-        def groups = service.findAllByProject(project)
+        def results = service.findAllByProject(project, [:])
 
         then:
-        groups instanceof List<TestGroup>
+        results instanceof SearchResult
+        results.count == 3
     }
 
     void "find all by project only returns groups with project"() {
@@ -195,21 +197,23 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         TestGroup.list().contains(tg)
 
         when:
-        def groups = service.findAllByProject(project)
+        def groups = service.findAllByProject(project, [:])
 
         then:
-        groups.every { it.project.id == project.id }
-        groups.size() > 0
-        !groups.contains(tg)
+        groups.results.every { it.project.id == project.id }
+        groups.count > 0
+        groups.count as int == groups.results.size()
+        !groups.results.contains(tg)
     }
 
     void "find all by project with null project id returns empty list"() {
         when:
-        def groups = service.findAllByProject(null)
+        def groups = service.findAllByProject(null, [:])
 
         then:
         noExceptionThrown()
-        groups.size() == 0
+        groups.results.size() == 0
+        groups.results.size() == groups.count as int
     }
 
     void "find all by name ilike returns test groups"(String q) {
@@ -217,8 +221,8 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         setupData()
 
         expect:
-        def tests = service.findAllInProjectByName(project, q)
-        tests.first().name == "test group 1"
+        def results = service.findAllInProjectByName(project, q, [:])
+        results.results.first().name == "test group 1"
 
         where:
         q << ['1', 'test group 1', 'oup 1', 'TEST GROUP 1']
@@ -234,12 +238,13 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         TestGroup.list().contains(tg)
 
         when:
-        def groups = service.findAllInProjectByName(project, 'test')
+        def groups = service.findAllInProjectByName(project, 'test', [:])
 
         then:
-        groups.every { it.project.id == project.id }
-        groups.size() > 0
-        !groups.contains(tg)
+        groups.results.every { it.project.id == project.id }
+        groups.results.size() > 0
+        groups.results.size() == groups.count as int
+        !groups.results.contains(tg)
     }
 
     void "find all in project by name with null project"() {
@@ -247,10 +252,11 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         setupData()
 
         when:
-        def groups = service.findAllInProjectByName(null, 'nothing')
+        def groups = service.findAllInProjectByName(null, 'nothing', [:])
 
         then:
-        groups.empty
+        groups.results.empty
+        groups.count == 0
         noExceptionThrown()
     }
 
@@ -259,8 +265,9 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         setupData()
 
         expect:
-        def groups = service.findAllInProjectByName(project, s)
-        groups.size() == size
+        def groups = service.findAllInProjectByName(project, s, [:])
+        groups.results.size() == size
+        groups.results.size() == groups.count as int
 
         where:
         s           | size
