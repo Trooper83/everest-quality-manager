@@ -120,8 +120,8 @@ class ProjectServiceSpec extends Specification implements ServiceUnitTest<Projec
         setupData()
 
         expect:
-        def projects = service.findAllByNameIlike(q)
-        projects.first().name == "First project"
+        def projects = service.findAllByNameIlike(q, [:])
+        projects.results.first().name == "First project"
 
         where:
         q << ['first', 'fi', 'irs', 't pro', 'FIRST']
@@ -132,8 +132,9 @@ class ProjectServiceSpec extends Specification implements ServiceUnitTest<Projec
         setupData()
 
         expect:
-        def projects = service.findAllByNameIlike(s)
-        projects.size() == size
+        def projects = service.findAllByNameIlike(s, [:])
+        projects.results.size() == size
+        projects.count == size
 
         where:
         s           | size

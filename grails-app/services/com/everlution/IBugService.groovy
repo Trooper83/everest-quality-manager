@@ -6,8 +6,6 @@ interface IBugService {
 
     void delete(Serializable id)
 
-    List<Bug> findAllByProject(Project project)
-
     Bug get(Serializable id)
 
     List<Bug> list(Map args)

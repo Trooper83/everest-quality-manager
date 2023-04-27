@@ -169,11 +169,11 @@ class BugServiceSpec extends Specification {
         setupData()
 
         when:
-        def bugs = bugService.findAllByProject(project)
+        def bugs = bugService.findAllByProject(project, [:])
 
         then:
-        bugs.size() > 0
-        bugs.every { it.project.id == project.id }
+        bugs.results.size() > 0
+        bugs.results.every { it.project.id == project.id }
     }
 
     void "find all bugs by project with null project returns empty list"() {
@@ -181,7 +181,7 @@ class BugServiceSpec extends Specification {
         setupData()
 
         when:
-        def bugs = bugService.findAllByProject(null)
+        def bugs = bugService.findAllByProject(null, [:]).results
 
         then:
         bugs.size() == 0
@@ -193,7 +193,7 @@ class BugServiceSpec extends Specification {
         def id = setupData()
 
         expect:
-        def bug = bugService.findAllInProjectByName(project, "again")
+        def bug = bugService.findAllInProjectByName(project, "again", [:]).results
         bug.first().name == "Name of the bug again"
     }
 }

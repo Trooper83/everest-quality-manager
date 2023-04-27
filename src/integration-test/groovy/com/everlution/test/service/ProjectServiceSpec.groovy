@@ -29,7 +29,6 @@ import javax.persistence.PersistenceException
 class ProjectServiceSpec extends Specification {
 
     AreaService areaService
-    BugService bugService
     EnvironmentService environmentService
     PersonService personService
     ProjectService projectService
@@ -351,7 +350,7 @@ class ProjectServiceSpec extends Specification {
         setupData()
 
         expect:
-        def project = projectService.findAllByNameIlike("service 1")
-        project.first().name == "Project service 1"
+        def project = projectService.findAllByNameIlike("service 1", [:])
+        project.results.first().name == "Project service 1"
     }
 }

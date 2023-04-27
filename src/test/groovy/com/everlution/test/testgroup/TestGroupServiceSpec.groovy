@@ -202,7 +202,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         groups.results.every { it.project.id == project.id }
         groups.count > 0
-        groups.count as int == groups.results.size()
+        groups.count == groups.results.size()
         !groups.results.contains(tg)
     }
 
@@ -213,7 +213,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         noExceptionThrown()
         groups.results.size() == 0
-        groups.results.size() == groups.count as int
+        groups.results.size() == groups.count
     }
 
     void "find all by name ilike returns test groups"(String q) {
@@ -243,7 +243,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         groups.results.every { it.project.id == project.id }
         groups.results.size() > 0
-        groups.results.size() == groups.count as int
+        groups.results.size() == groups.count
         !groups.results.contains(tg)
     }
 
@@ -267,7 +267,7 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         expect:
         def groups = service.findAllInProjectByName(project, s, [:])
         groups.results.size() == size
-        groups.results.size() == groups.count as int
+        groups.results.size() == groups.count
 
         where:
         s           | size

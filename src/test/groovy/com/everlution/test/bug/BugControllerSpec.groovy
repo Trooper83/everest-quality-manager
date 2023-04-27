@@ -5,6 +5,8 @@ import com.everlution.BugController
 import com.everlution.BugService
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.SearchResult
+import com.everlution.TestGroupService
 import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
@@ -28,17 +30,40 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
+    void "bugs action param max"(Integer max, int expected) {
+        given:
+        controller.bugService = Mock(BugService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"the action is executed"
+        controller.bugs(1, max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
+    }
+
     void "bugs action renders bugs view"() {
         given:
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(_) >> []
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when: "call bugs action"
-        controller.bugs(1)
+        controller.bugs(1, 10)
 
         then: "view is returned"
         view == 'bugs'
@@ -47,14 +72,14 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     void "bugs action returns the correct model"() {
         given:
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(_) >> [new Bug()]
+            1 * findAllByProject(_, params) >> new SearchResult([new Bug()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:"The action is executed"
-        controller.bugs(1)
+        controller.bugs(1, null)
 
         then:"The model is correct"
         model.bugList != null
@@ -65,39 +90,23 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
     void "bugs action returns not found with invalid project"() {
         given:
         controller.bugService = Mock(BugService) {
-            0 * findAllByProject(_) >> []
+            0 * findAllByProject(_, params) >> new SearchResult([], 0)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> null
         }
 
         when:"The action is executed"
-        controller.bugs(null)
+        controller.bugs(null, null)
 
         then:
         response.status == 404
     }
 
-    void "bugs search responds 500 when no token present"() {
-        given:
-        def project = new Project(name: 'test')
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> project
-        }
-
-        when:"The action is executed"
-        params.isSearch = 'true'
-        params.name = 'test'
-        controller.bugs(1)
-
-        then:
-        response.status == 500
-    }
-
     void "bugs search returns the correct model"() {
         def project = new Project(name: 'test')
         controller.bugService = Mock(BugService) {
-            1 * findAllInProjectByName(project, 'test') >> [new Bug()]
+            1 * findAllInProjectByName(project, 'test', params) >> new SearchResult([new Bug()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> project
@@ -107,7 +116,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
-        controller.bugs(1)
+        controller.bugs(1, 10)
 
         then:"model is correct"
         model.bugList != null

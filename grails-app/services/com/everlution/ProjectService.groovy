@@ -15,8 +15,10 @@ abstract class ProjectService implements IProjectService {
      * @param name - the string to search
      */
     @Transactional
-    List<Project> findAllByNameIlike(String s) {
-        return Project.findAllByNameIlike("%${s}%")
+    SearchResult findAllByNameIlike(String s, Map params) {
+        List projects = Project.findAllByNameIlike("%${s}%", params)
+        int c = Project.countByNameIlike("%${s}%")
+        return new SearchResult(projects, c)
     }
 
     /**
