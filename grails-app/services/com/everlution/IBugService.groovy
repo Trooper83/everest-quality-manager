@@ -8,6 +8,8 @@ interface IBugService {
 
     Bug get(Serializable id)
 
+    int countByProject(Project project)
+
     List<Bug> list(Map args)
 
     Bug read(Serializable id)

@@ -104,10 +104,10 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
 
     void "find all by project returns scenarios"() {
         when:
-        def scenarios = service.findAllByProject(project)
+        def scenarios = service.findAllByProject(project, [:])
 
         then:
-        scenarios instanceof List<Scenario>
+        scenarios.results instanceof List<Scenario>
     }
 
     void "find all by project only returns scenarios with project"() {
@@ -120,7 +120,7 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
         Scenario.list().contains(scn)
 
         when:
-        def scenarios = service.findAllByProject(project)
+        def scenarios = service.findAllByProject(project, [:]).results
 
         then:
         scenarios.size() > 0
@@ -130,17 +130,17 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
 
     void "find all by project with null project id returns empty list"() {
         when:
-        def scenarios = service.findAllByProject(null)
+        def scenarios = service.findAllByProject(null, [:])
 
         then:
         noExceptionThrown()
-        scenarios.size() == 0
+        scenarios.results.size() == 0
     }
 
     void "find all by name ilike returns scenarios"(String q) {
         expect:
-        def scenarios = service.findAllInProjectByName(project, q)
-        scenarios.first().name == "first scenario"
+        def scenarios = service.findAllInProjectByName(project, q, [:])
+        scenarios.results.first().name == "first scenario"
 
         where:
         q << ['first', 'fi', 'irs', 't sc', 'FIRST']
@@ -156,7 +156,7 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
         Scenario.list().contains(scn)
 
         when:
-        def scenarios = service.findAllInProjectByName(project, 'scenario')
+        def scenarios = service.findAllInProjectByName(project, 'scenario', [:]).results
 
         then:
         scenarios.every { it.project.id == project.id }
@@ -166,17 +166,19 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
 
     void "find all in project by name with null project"() {
         when:
-        def groups = service.findAllInProjectByName(null, 'scenario')
+        def groups = service.findAllInProjectByName(null, 'scenario', [:])
 
         then:
-        groups.empty
+        groups.results.empty
+        groups.count == 0
         noExceptionThrown()
     }
 
     void "find all by name ilike with string"(String s, int size) {
         expect:
-        def scenarios = service.findAllInProjectByName(project, s)
-        scenarios.size() == size
+        def scenarios = service.findAllInProjectByName(project, s, [:])
+        scenarios.results.size() == size
+        scenarios.count == size
 
         where:
         s           | size

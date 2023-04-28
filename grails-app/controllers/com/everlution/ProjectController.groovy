@@ -49,11 +49,11 @@ class ProjectController {
             notFound()
             return
         }
-        def bugCount = bugService.findAllByProject(project, params).count
-        def testCaseCount = testCaseService.findAllByProject(project).size()
-        def scenarioCount = scenarioService.findAllByProject(project).size()
-        def releasePlans = releasePlanService.findAllByProject(project)
-        def plans = getPlans(releasePlans)
+        def bugCount = bugService.countByProject(project)
+        def testCaseCount = testCaseService.countByProject(project)
+        def scenarioCount = scenarioService.countByProject(project)
+        def releasePlans = releasePlanService.findAllByProject(project, [:])
+        def plans = getPlans(releasePlans.results)
         respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
                 bugCount: bugCount, nextRelease: plans.nextRelease, previousRelease: plans.previousRelease]
     }

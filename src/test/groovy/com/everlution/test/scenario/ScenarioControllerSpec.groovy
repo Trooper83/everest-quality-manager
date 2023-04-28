@@ -5,6 +5,8 @@ import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioController
 import com.everlution.ScenarioService
+import com.everlution.SearchResult
+import com.everlution.TestGroupService
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -26,17 +28,40 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
+    void "scenarios action param max"(Integer max, int expected) {
+        given:
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"the action is executed"
+        controller.scenarios(1, max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
+    }
+
     void "scenarios action renders bugs view"() {
         given:
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(_) >> []
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when: "call action"
-        controller.scenarios(1)
+        controller.scenarios(1, null)
 
         then: "view is returned"
         view == 'scenarios'
@@ -45,14 +70,14 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
     void "scenarios action returns the correct model"() {
         given:
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(_) >> [new Scenario()]
+            1 * findAllByProject(_, params) >> new SearchResult([new Scenario()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:"action is executed"
-        controller.scenarios(1)
+        controller.scenarios(1, null)
 
         then:"model is correct"
         model.scenarioList
@@ -62,40 +87,21 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
     void "scenarios action returns not found with invalid project"() {
         given:
-        controller.scenarioService = Mock(ScenarioService) {
-            0 * findAllByProject(_) >> []
-        }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> null
         }
 
-        when:"The action is executed"
-        controller.scenarios()
+        when: "The action is executed"
+        controller.scenarios(null, null)
 
         then:
         response.status == 404
     }
 
-    void "scenarios search responds 500 when no token present"() {
-        given:
-        def project = new Project(name: 'test')
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> project
-        }
-
-        when:"The action is executed"
-        params.isSearch = 'true'
-        params.name = 'test'
-        controller.scenarios(1)
-
-        then:
-        response.status == 500
-    }
-
     void "scenarios search returns the correct model"() {
         def project = new Project(name: 'test')
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllInProjectByName(project, 'test') >> [new Scenario()]
+            1 * findAllInProjectByName(_, 'test', params) >> new SearchResult([new Scenario()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> project
@@ -105,7 +111,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
-        controller.scenarios(1)
+        controller.scenarios(1, null)
 
         then:"model is correct"
         model.scenarioList != null

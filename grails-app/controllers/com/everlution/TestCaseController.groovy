@@ -23,25 +23,23 @@ class TestCaseController {
      * @return - list of test cases
      */
     @Secured("ROLE_READ_ONLY")
-    def testCases(Long projectId) {
+    def testCases(Long projectId, Integer max) {
         def project = projectService.get(projectId)
         if (project == null) {
             notFound()
             return
         }
 
+        params.max = Math.min(max ?: 10, 100)
+        def searchResults
         if(!params.isSearch) { // load view
-            def testCases = testCaseService.findAllByProject(project)
-            respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
+            searchResults = testCaseService.findAllByProject(project, params)
 
         } else { // perform search
-            withForm {
-                def testCases = testCaseService.findAllInProjectByName(project, params.name)
-                respond testCases, model: [testCaseCount: testCases.size(), project: project], view: 'testCases'
-            }.invalidToken {
-                error()
-            }
+            searchResults = testCaseService.findAllInProjectByName(project, params.name, params)
+
         }
+        respond searchResults.results, model: [testCaseCount: searchResults.count, project: project], view: 'testCases'
     }
 
     /**

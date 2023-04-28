@@ -222,7 +222,7 @@ class TestCaseServiceSpec extends Specification {
                 executionMethod: "Automated", type: "UI", project: proj).save()
 
         when:
-        def tests = testCaseService.findAllByProject(project)
+        def tests = testCaseService.findAllByProject(project, [:]).results
 
         then:
         tests.size() > 0
@@ -235,10 +235,10 @@ class TestCaseServiceSpec extends Specification {
         setupData()
 
         when:
-        def tests = testCaseService.findAllByProject(null)
+        def tests = testCaseService.findAllByProject(null, [:])
 
         then:
-        tests.size() == 0
+        tests.results.size() == 0
         noExceptionThrown()
     }
 
@@ -247,7 +247,7 @@ class TestCaseServiceSpec extends Specification {
         setupData()
 
         expect:
-        def tests = testCaseService.findAllInProjectByName(project, "first")
-        tests.first().name == "first"
+        def tests = testCaseService.findAllInProjectByName(project, "first", [:])
+        tests.results.first().name == "first"
     }
 }

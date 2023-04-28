@@ -444,16 +444,16 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> []
+            1 * findAllByProject(project, params) >> new SearchResult([], 0)
         }
 
         when:"a domain instance is passed to the home action"
@@ -483,17 +483,17 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> [ new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
-                                               new ReleasePlan(status: 'Released', releaseDate: pastDate) ]
+            1 * findAllByProject(project, params) >> new SearchResult([ new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
+                                               new ReleasePlan(status: 'Released', releaseDate: pastDate) ], 2)
         }
 
         when:"A domain instance is passed to the home action"
@@ -515,16 +515,16 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> []
+            1 * findAllByProject(project, params) >> new SearchResult([], 0)
         }
 
         when:"A domain instance is passed to the home action"
@@ -541,19 +541,19 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         def plan = new ReleasePlan(plannedDate: futureDate, status: 'ToDo')
         def date = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
         def plan1 = new ReleasePlan(plannedDate: date, status: 'ToDo')
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> [plan, plan1]
+            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
         }
 
         when:"A domain instance is passed to the home action"
@@ -570,19 +570,19 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         def plan = new ReleasePlan(plannedDate: futureDate, status: 'Released')
         def date = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
         def plan1 = new ReleasePlan(plannedDate: date, status: 'Released')
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> [plan, plan1]
+            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
         }
 
         when:"A domain instance is passed to the home action"
@@ -599,16 +599,16 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> []
+            1 * findAllByProject(project, [:]) >> new SearchResult([], 0)
         }
 
         when:"A domain instance is passed to the home action"
@@ -625,19 +625,19 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         def plan = new ReleasePlan(releaseDate: pastDate, status: 'Released')
         def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
         def plan1 = new ReleasePlan(releaseDate: date, status: 'Released')
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> [plan, plan1]
+            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
         }
 
         when:"A domain instance is passed to the home action"
@@ -654,19 +654,19 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(project) >> []
+            1 * countByProject(project) >> 0
         }
         def plan = new ReleasePlan(releaseDate: pastDate, status: 'ToDo')
         def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
         def plan1 = new ReleasePlan(releaseDate: date, status: 'ToDo')
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project) >> [plan, plan1]
+            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
         }
 
         when:"A domain instance is passed to the home action"

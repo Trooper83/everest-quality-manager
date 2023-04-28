@@ -48,7 +48,7 @@ class ReleasePlanController {
      * @return - list of release plans
      */
     @Secured("ROLE_READ_ONLY")
-    def releasePlans(Long projectId) {
+    def releasePlans(Long projectId, Integer max) {
 
         def project = projectService.get(projectId)
         if (project == null) {
@@ -56,18 +56,15 @@ class ReleasePlanController {
             return
         }
 
+        params.max = Math.min(max ?: 10, 100)
+        def searchResults
         if(!params.isSearch) { // load view
-            def plans = releasePlanService.findAllByProject(project)
-            respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
+            searchResults = releasePlanService.findAllByProject(project, params)
 
         } else { // perform search
-            withForm {
-                def plans = releasePlanService.findAllInProjectByName(project, params.name)
-                respond plans, model: [releasePlanCount: plans.size(), project: project], view: 'releasePlans'
-            }.invalidToken {
-                error()
-            }
+            searchResults = releasePlanService.findAllInProjectByName(project, params.name, params)
         }
+        respond searchResults.results, model: [releasePlanCount: searchResults.count, project: project], view: 'releasePlans'
     }
 
     /**

@@ -136,10 +136,10 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     void "find all by project returns plans"() {
         when:
-        def plans = service.findAllByProject(project)
+        def plans = service.findAllByProject(project, [:])
 
         then:
-        plans instanceof List<ReleasePlan>
+        plans.results instanceof List<ReleasePlan>
     }
 
     void "find all by project only returns plans with project"() {
@@ -152,7 +152,7 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         ReleasePlan.list().contains(plan)
 
         when:
-        def plans = service.findAllByProject(project)
+        def plans = service.findAllByProject(project, [:]).results
 
         then:
         plans.every { it.project.id == project.id }
@@ -162,11 +162,12 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     void "find all by project with null project id returns empty list"() {
         when:
-        def plans = service.findAllByProject(null)
+        def plans = service.findAllByProject(null, [:])
 
         then:
         noExceptionThrown()
-        plans.size() == 0
+        plans.results.size() == 0
+        plans.count == 0
     }
 
     void "add test cycle saves test cycle"() {
@@ -186,8 +187,8 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     void "find all by name ilike returns plans"(String q) {
         expect:
-        def plans = service.findAllInProjectByName(project, q)
-        plans.first().name == "first plan"
+        def plans = service.findAllInProjectByName(project, q, [:])
+        plans.results.first().name == "first plan"
 
         where:
         q << ['first', 'fi', 'irs', 't pl', 'FIRST']
@@ -202,7 +203,7 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         ReleasePlan.list().contains(plan)
 
         when:
-        def plans = service.findAllInProjectByName(project, 'plan')
+        def plans = service.findAllInProjectByName(project, 'plan', [:]).results
 
         then:
         plans.every { it.project.id == project.id }
@@ -212,17 +213,19 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     void "find all in project by name with null project"() {
         when:
-        def plans = service.findAllInProjectByName(null, 'plan')
+        def plans = service.findAllInProjectByName(null, 'plan', [:])
 
         then:
-        plans.empty
+        plans.results.empty
+        plans.count == 0
         noExceptionThrown()
     }
 
     void "find all by name ilike with string"(String s, int size) {
         expect:
-        def plans = service.findAllInProjectByName(project, s)
-        plans.size() == size
+        def plans = service.findAllInProjectByName(project, s, [:])
+        plans.results.size() == size
+        plans.count == size
 
         where:
         s           | size

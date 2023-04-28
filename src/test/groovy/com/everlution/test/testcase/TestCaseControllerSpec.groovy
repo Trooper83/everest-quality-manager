@@ -2,9 +2,11 @@ package com.everlution.test.testcase
 
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.SearchResult
 import com.everlution.TestCase
 import com.everlution.TestCaseController
 import com.everlution.TestCaseService
+import com.everlution.TestGroupService
 import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
@@ -32,14 +34,14 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     void "test cases action renders index view"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(_) >> []
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:
-        controller.testCases(1)
+        controller.testCases(1, null)
 
         then:
         view == 'testCases'
@@ -48,14 +50,14 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     void "test cases action returns the correct model"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllByProject(_) >> [new TestCase()]
+            1 * findAllByProject(_, params) >>new SearchResult([new TestCase()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:"the index action is executed"
-        controller.testCases(1)
+        controller.testCases(1, null)
 
         then:"the model is correct"
         model.testCaseList
@@ -66,39 +68,23 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
     void "test cases action returns not found with invalid project"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
-            0 * findAllByProject(_) >> []
+            0 * findAllByProject(_, params) >> new SearchResult([], 0)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> null
         }
 
         when:"The action is executed"
-        controller.testCases()
+        controller.testCases(null, 10)
 
         then:
         response.status == 404
     }
 
-    void "tests search responds with 500 when no token present"() {
-        given:
-        def project = new Project(name: 'test')
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> project
-        }
-
-        when:"The action is executed"
-        params.isSearch = 'true'
-        params.name = 'test'
-        controller.testCases(1)
-
-        then:
-        response.status == 500
-    }
-
     void "test cases search returns the correct model"() {
         def project = new Project(name: 'test')
         controller.testCaseService = Mock(TestCaseService) {
-            1 * findAllInProjectByName(project, 'test') >> [new TestCase()]
+            1 * findAllInProjectByName(project, 'test', params) >> new SearchResult([new TestCase()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> project
@@ -108,12 +94,35 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         params.isSearch = 'true'
         setToken(params)
         params.name = 'test'
-        controller.testCases(1)
+        controller.testCases(1, 10)
 
         then:"model is correct"
         model.testCaseList != null
         model.testCaseCount != null
         model.project != null
+    }
+
+    void "testCases action param max"(Integer max, int expected) {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"the action is executed"
+        controller.testCases(1, max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
     }
 
     void "create action returns the correct view"() {

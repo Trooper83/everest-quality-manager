@@ -7,12 +7,24 @@ import grails.gorm.transactions.Transactional
 abstract class ScenarioService implements IScenarioService {
 
     /**
+     * finds all scenarios in the project
+     */
+    @Transactional
+    SearchResult findAllByProject(Project project, Map args) {
+        List<Scenario> scenarios = Scenario.findAllByProject(project, args)
+        int c = Scenario.countByProject(project)
+        return new SearchResult(scenarios, c)
+    }
+
+    /**
      * finds all scenarios in the project with a name
      * that contains the string
      * @param name - the string to search
      */
     @Transactional
-    List<Scenario> findAllInProjectByName(Project project, String s) {
-        return Scenario.findAllByProjectAndNameIlike(project, "%${s}%")
+    SearchResult findAllInProjectByName(Project project, String s, Map args) {
+        List<Scenario> scenarios = Scenario.findAllByProjectAndNameIlike(project, "%${s}%", args)
+        int c = Scenario.countByProjectAndNameIlike(project, "%${s}%")
+        return new SearchResult(scenarios, c)
     }
 }

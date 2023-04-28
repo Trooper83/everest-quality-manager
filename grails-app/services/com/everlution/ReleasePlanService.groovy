@@ -20,8 +20,10 @@ abstract class ReleasePlanService implements IReleasePlanService {
      * @param name - the string to search
      */
     @Transactional
-    List<ReleasePlan> findAllInProjectByName(Project project, String s) {
-        return ReleasePlan.findAllByProjectAndNameIlike(project, "%${s}%")
+    SearchResult findAllInProjectByName(Project project, String s, Map args) {
+        List<ReleasePlan> plans = ReleasePlan.findAllByProjectAndNameIlike(project, "%${s}%", args)
+        int c = ReleasePlan.countByProjectAndNameIlike(project, "%${s}%")
+        return new SearchResult(plans, c)
     }
 
     /**
@@ -30,8 +32,10 @@ abstract class ReleasePlanService implements IReleasePlanService {
      * @return - list of all plans with the project
      */
     @Transactional
-    List<ReleasePlan> findAllByProject(Project project) {
-        return ReleasePlan.findAllByProject(project)
+    SearchResult findAllByProject(Project project, Map args) {
+        List<ReleasePlan> plans = ReleasePlan.findAllByProject(project, args)
+        int c = ReleasePlan.countByProject(project)
+        return new SearchResult(plans, c)
     }
 
     /**

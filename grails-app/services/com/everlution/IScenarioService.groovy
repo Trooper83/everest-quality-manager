@@ -2,13 +2,13 @@ package com.everlution
 
 interface IScenarioService {
 
-    List<Scenario> findAllByProject(Project project)
-
     Scenario get(Serializable id)
 
     List<Scenario> list(Map args)
 
     Long count()
+
+    int countByProject(Project project)
 
     void delete(Serializable id)
 
