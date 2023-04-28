@@ -148,7 +148,7 @@ class ScenarioServiceSpec extends Specification {
                 executionMethod: "Automated", type: "API", project: proj).save()
 
         when:
-        def scenarios = scenarioService.findAllByProject(project)
+        def scenarios = scenarioService.findAllByProject(project, [:]).results
 
         then:
         scenarios.size() > 0
@@ -161,10 +161,10 @@ class ScenarioServiceSpec extends Specification {
         setupData()
 
         when:
-        def scenarios = scenarioService.findAllByProject(null)
+        def scenarios = scenarioService.findAllByProject(null, [:])
 
         then:
-        scenarios.size() == 0
+        scenarios.results.size() == 0
         noExceptionThrown()
     }
 
@@ -173,7 +173,7 @@ class ScenarioServiceSpec extends Specification {
         setupData()
 
         expect:
-        def scenarios = scenarioService.findAllInProjectByName(project, "first")
-        scenarios.first().name == "first"
+        def scenarios = scenarioService.findAllInProjectByName(project, "first", [:])
+        scenarios.results.first().name == "first"
     }
 }

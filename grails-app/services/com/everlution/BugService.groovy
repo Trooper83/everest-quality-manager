@@ -9,14 +9,23 @@ abstract class BugService implements IBugService {
 
     TestStepService testStepService
 
+    @Transactional
+    SearchResult findAllByProject(Project project, Map args) {
+        int c = Bug.countByProject(project)
+        List bugs = Bug.findAllByProject(project, args)
+        return new SearchResult(bugs, c)
+    }
+
     /**
      * finds all bugs in the project with a name
      * that contains the string
      * @param name - the string to search
      */
     @Transactional
-    List<Bug> findAllInProjectByName(Project project, String s) {
-        return Bug.findAllByProjectAndNameIlike(project, "%${s}%")
+    SearchResult findAllInProjectByName(Project project, String s, Map args) {
+        List<Bug> bugs = Bug.findAllByProjectAndNameIlike(project, "%${s}%", args)
+        int c = Bug.countByProjectAndNameIlike(project, "%${s}%")
+        return new SearchResult(bugs, c)
     }
 
     /**

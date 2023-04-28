@@ -10,13 +10,25 @@ abstract class TestCaseService implements ITestCaseService {
     TestStepService testStepService
 
     /**
+     * finds all test cases in a project with the name
+     */
+    @Transactional
+    SearchResult findAllByProject(Project project, Map args) {
+        int c = TestCase.countByProject(project)
+        List tests = TestCase.findAllByProject(project, args)
+        return new SearchResult(tests, c)
+    }
+
+    /**
      * finds all test cases in the project with a name
      * that contains the string
      * @param name - the string to search
      */
     @Transactional
-    List<TestCase> findAllInProjectByName(Project project, String s) {
-        return TestCase.findAllByProjectAndNameIlike(project, "%${s}%")
+    SearchResult findAllInProjectByName(Project project, String s, Map args) {
+        List tests = TestCase.findAllByProjectAndNameIlike(project, "%${s}%", args)
+        int c = TestCase.countByProjectAndNameIlike(project, "%${s}%")
+        return new SearchResult(tests, c)
     }
 
     /**

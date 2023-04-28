@@ -126,10 +126,10 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
 
     void "find all bugs by project returns bugs"() {
         when:
-        def bugs = service.findAllByProject(project)
+        def bugs = service.findAllByProject(project, [:])
 
         then:
-        bugs instanceof List<Bug>
+        bugs.results instanceof List<Bug>
     }
 
     void "find all bugs by project only returns bugs with project"() {
@@ -142,27 +142,28 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         Bug.list().contains(bug)
 
         when:
-        def bugs = service.findAllByProject(project)
+        def bugs = service.findAllByProject(project, [:])
 
         then:
-        bugs.every { it.project.id == project.id }
-        bugs.size() > 0
-        !bugs.contains(bug)
+        bugs.results.every { it.project.id == project.id }
+        bugs.results.size() > 0
+        bugs.results.size() == bugs.count
+        !bugs.results.contains(bug)
     }
 
     void "find all bugs by project with null project id returns empty list"() {
         when:
-        def bugs = service.findAllByProject(null)
+        def bugs = service.findAllByProject(null, [:])
 
         then:
         noExceptionThrown()
-        bugs.size() == 0
+        bugs.results.size() == 0
     }
 
     void "find all by name ilike returns bugs"(String q) {
         expect:
-        def bugs = service.findAllInProjectByName(project, q)
-        bugs.first().name == "first bug"
+        def bugs = service.findAllInProjectByName(project, q, [:])
+        bugs.results.first().name == "first bug"
 
         where:
         q << ['first', 'fi', 'irs', 't bu', 'FIRST']
@@ -170,17 +171,19 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
 
     void "find all in project by name with null project"() {
         when:
-        def bugs = service.findAllInProjectByName(null, 'bug')
+        def bugs = service.findAllInProjectByName(null, 'bug', [:])
 
         then:
-        bugs.empty
+        bugs.results.empty
+        bugs.count == 0
         noExceptionThrown()
     }
 
     void "find all by name ilike with string"(String s, int size) {
         expect:
-        def bugs = service.findAllInProjectByName(project, s)
-        bugs.size() == size
+        def bugs = service.findAllInProjectByName(project, s, [:])
+        bugs.results.size() == size
+        bugs.count == size
 
         where:
         s           | size
@@ -200,11 +203,11 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         Bug.list().contains(bug)
 
         when:
-        def bugs = service.findAllInProjectByName(project, 'bug')
+        def bugs = service.findAllInProjectByName(project, 'bug', [:])
 
         then:
-        bugs.every { it.project.id == project.id }
-        bugs.size() > 0
-        !bugs.contains(bug)
+        bugs.results.every { it.project.id == project.id }
+        bugs.results.size() > 0
+        !bugs.results.contains(bug)
     }
 }

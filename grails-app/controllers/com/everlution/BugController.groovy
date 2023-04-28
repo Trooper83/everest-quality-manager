@@ -22,7 +22,7 @@ class BugController {
      * @return - list of bugs
      */
     @Secured("ROLE_READ_ONLY")
-    def bugs(Long projectId) {
+    def bugs(Long projectId, Integer max) {
 
         def project = projectService.get(projectId)
         if (project == null) {
@@ -30,18 +30,16 @@ class BugController {
             return
         }
 
+        params.max = Math.min(max ?: 10, 100)
+        def searchResult
         if(!params.isSearch) { // load view
-            def bugs = bugService.findAllByProject(project)
-            respond bugs, model: [bugCount: bugs.size(), project: project], view: 'bugs'
+            searchResult = bugService.findAllByProject(project, params)
+
 
         } else { // perform search
-            withForm {
-                def bugs = bugService.findAllInProjectByName(project, params.name)
-                respond bugs, model: [bugCount: bugs.size(), project: project], view:'bugs'
-            }.invalidToken {
-                error()
-            }
+            searchResult = bugService.findAllInProjectByName(project, params.name, params)
         }
+        respond searchResult.results, model: [bugCount: searchResult.count, project: project], view: 'bugs'
     }
 
     /**

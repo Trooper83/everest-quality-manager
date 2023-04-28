@@ -5,7 +5,9 @@ import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanController
 import com.everlution.ReleasePlanService
+import com.everlution.SearchResult
 import com.everlution.TestCycle
+import com.everlution.TestGroupService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -26,17 +28,40 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
+    void "releasePlans action param max"(Integer max, int expected) {
+        given:
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"the action is executed"
+        controller.releasePlans(1, max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
+    }
+
     void "release plans action renders correct view"() {
         given:
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(_) >> []
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:
-        controller.releasePlans(1)
+        controller.releasePlans(1, null)
 
         then:
         view == 'releasePlans'
@@ -45,14 +70,14 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
     void "release plans action returns the correct model"() {
         given:
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(_) >> [new ReleasePlan()]
+            1 * findAllByProject(_, params) >> new SearchResult([new ReleasePlan()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> new Project()
         }
 
         when:"The index action is executed"
-        controller.releasePlans(1)
+        controller.releasePlans(1, 10)
 
         then:"The model is correct"
         model.releasePlanList
@@ -67,32 +92,16 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         }
 
         when:"The action is executed"
-        controller.releasePlans(null)
+        controller.releasePlans(null, null)
 
         then:
         response.status == 404
     }
 
-    void "release plans search responds 500 when no token present"() {
-        given:
-        def project = new Project(name: 'test')
-        controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> project
-        }
-
-        when:"The action is executed"
-        params.isSearch = 'true'
-        params.name = 'test'
-        controller.releasePlans(1)
-
-        then:
-        response.status == 500
-    }
-
     void "release plans search returns the correct model"() {
         def project = new Project(name: 'test')
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllInProjectByName(project, 'test') >> [new ReleasePlan()]
+            1 * findAllInProjectByName(project, 'test', params) >> new SearchResult([new ReleasePlan()], 1)
         }
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> project
@@ -102,7 +111,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         setToken(params)
         params.isSearch = 'true'
         params.name = 'test'
-        controller.releasePlans(1)
+        controller.releasePlans(1, 10)
 
         then:"model is correct"
         model.releasePlanList != null

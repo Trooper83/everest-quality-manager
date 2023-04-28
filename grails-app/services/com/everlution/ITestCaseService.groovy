@@ -2,13 +2,13 @@ package com.everlution
 
 interface ITestCaseService {
 
-    List<TestCase> findAllByProject(Project project)
-
     TestCase get(Serializable id)
 
     List<TestCase> list(Map args)
 
     Long count()
+
+    int countByProject(Project project)
 
     void delete(Serializable id)
 

@@ -24,21 +24,15 @@ class ProjectController {
      */
     @Secured("ROLE_READ_ONLY")
     def projects(Integer max) {
-        //TODO: mimic test groups
+        params.max = Math.min(max ?: 10, 100)
         if(!params.isSearch) { // load view
-            params.max = Math.min(max ?: 10, 100)
             def projects = projectService.list(params)
             def count = projectService.count()
             respond projects, model:[projectCount: count]
 
         } else { // perform search
-            withForm {
-                def projects = projectService.findAllByNameIlike(params.name)
-                def count = projects.size()
-                render view:'projects', model: [projectList: projects, projectCount: count]
-            }.invalidToken {
-                error()
-            }
+            def results = projectService.findAllByNameIlike(params.name, params)
+            render view:'projects', model: [projectList: results.results, projectCount: results.count]
         }
     }
 
@@ -55,11 +49,11 @@ class ProjectController {
             notFound()
             return
         }
-        def bugCount = bugService.findAllByProject(project).size()
-        def testCaseCount = testCaseService.findAllByProject(project).size()
-        def scenarioCount = scenarioService.findAllByProject(project).size()
-        def releasePlans = releasePlanService.findAllByProject(project)
-        def plans = getPlans(releasePlans)
+        def bugCount = bugService.countByProject(project)
+        def testCaseCount = testCaseService.countByProject(project)
+        def scenarioCount = scenarioService.countByProject(project)
+        def releasePlans = releasePlanService.findAllByProject(project, [:])
+        def plans = getPlans(releasePlans.results)
         respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
                 bugCount: bugCount, nextRelease: plans.nextRelease, previousRelease: plans.previousRelease]
     }

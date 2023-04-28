@@ -19,26 +19,22 @@ class ScenarioController {
      * @return - list of scenarios
      */
     @Secured("ROLE_READ_ONLY")
-    def scenarios(Long projectId) {
+    def scenarios(Long projectId, Integer max) {
         def project = projectService.get(projectId)
         if (project == null) {
             notFound()
             return
         }
 
+        params.max = Math.min(max ?: 10, 100)
+        def searchResults
         if(!params.isSearch) { // load view
-            def scenarios = scenarioService.findAllByProject(project)
-            respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
+            searchResults = scenarioService.findAllByProject(project, params)
 
         } else { // perform search
-            withForm {
-                def scenarios = scenarioService.findAllInProjectByName(project, params.name)
-                respond scenarios, model: [scenarioCount: scenarios.size(), project: project], view: 'scenarios'
-            }.invalidToken {
-                error()
-            }
+            searchResults = scenarioService.findAllInProjectByName(project, params.name, params)
         }
-
+        respond searchResults.results, model: [scenarioCount: searchResults.count, project: project], view: 'scenarios'
     }
 
     /**

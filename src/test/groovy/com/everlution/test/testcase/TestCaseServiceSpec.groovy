@@ -162,10 +162,10 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
 
     void "find all by project returns test cases"() {
         when:
-        def tests = service.findAllByProject(project)
+        def tests = service.findAllByProject(project, [:])
 
         then:
-        tests instanceof List<TestCase>
+        tests.results instanceof List<TestCase>
     }
 
     void "find all by project only returns test cases with project"() {
@@ -178,7 +178,7 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         TestCase.list().contains(tc)
 
         when:
-        def tests = service.findAllByProject(project)
+        def tests = service.findAllByProject(project, [:]).results
 
         then:
         tests.every { it.project.id == project.id }
@@ -187,11 +187,11 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
 
     void "find all by project with null project id returns empty list"() {
         when:
-        def tests = service.findAllByProject(null)
+        def tests = service.findAllByProject(null, [:])
 
         then:
         noExceptionThrown()
-        tests.size() == 0
+        tests.results.size() == 0
     }
 
     void "find all by name ilike returns test case"(String q) {
@@ -199,8 +199,8 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         setupData()
 
         expect:
-        def tests = service.findAllInProjectByName(project, q)
-        tests.first().name == "first test"
+        def tests = service.findAllInProjectByName(project, q, [:])
+        tests.results.first().name == "first test"
 
         where:
         q << ['first', 'fi', 'irs', 't te', 'FIRST']
@@ -217,12 +217,12 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         TestCase.list().contains(tc)
 
         when:
-        def tests = service.findAllInProjectByName(project, 'test')
+        def tests = service.findAllInProjectByName(project, 'test', [:])
 
         then:
-        tests.every { it.project.id == project.id }
-        tests.size() > 0
-        !tests.contains(tc)
+        tests.results.every { it.project.id == project.id }
+        tests.results.size() > 0
+        !tests.results.contains(tc)
     }
 
     void "find all in project by name with null project"() {
@@ -230,10 +230,10 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         setupData()
 
         when:
-        def groups = service.findAllInProjectByName(null, 'test')
+        def groups = service.findAllInProjectByName(null, 'test', [:])
 
         then:
-        groups.empty
+        groups.results.empty
         noExceptionThrown()
     }
 
@@ -242,8 +242,9 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         setupData()
 
         expect:
-        def tests = service.findAllInProjectByName(project, s)
-        tests.size() == size
+        def tests = service.findAllInProjectByName(project, s, [:])
+        tests.results.size() == size
+        tests.count == size
 
         where:
         s           | size

@@ -2,11 +2,11 @@ package com.everlution
 
 class SearchResult {
 
-    SearchResult(List results, Long count) {
+    SearchResult(List results, int count) {
         this.results = results
         this.count = count
     }
 
     List results
-    Long count
+    int count
 }

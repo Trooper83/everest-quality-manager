@@ -121,7 +121,7 @@ class ReleasePlanServiceSpec extends Specification {
 
         when:
         def project = projectService.list(max: 1).first()
-        def plans = releasePlanService.findAllByProject(project)
+        def plans = releasePlanService.findAllByProject(project, [:]).results
 
         then:
         plans.size() > 0
@@ -133,10 +133,11 @@ class ReleasePlanServiceSpec extends Specification {
         setupData()
 
         when:
-        def plans = releasePlanService.findAllByProject(null)
+        def plans = releasePlanService.findAllByProject(null, [:])
 
         then:
-        plans.size() == 0
+        plans.results.size() == 0
+        plans.count == 0
         noExceptionThrown()
     }
 
@@ -180,7 +181,7 @@ class ReleasePlanServiceSpec extends Specification {
         setupData()
 
         expect:
-        def plan = releasePlanService.findAllInProjectByName(project, "124")
-        plan.first().name == "name124"
+        def plan = releasePlanService.findAllInProjectByName(project, "124", [:])
+        plan.results.first().name == "name124"
     }
 }
