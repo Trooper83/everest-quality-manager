@@ -21,23 +21,23 @@
                     <div class="alert alert-danger" role="alert">${flash.message}</div>
                 </g:if>
                 <h2>Everest Quality Management Tool</h2>
-                <div class="form-group">
+                <div class="form-group mt-3">
                     <label for="email">Email address</label>
                     <input type="email" id="email" name="${usernameParameter ?: 'username'}" class="form-control"
                            placeholder="Email address" required="" autofocus="">
                 </div>
-                <div class="form-group">
+                <div class="form-group mt-3">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="${passwordParameter ?: 'password'}" class="form-control"
                            placeholder="Password" required="">
                 </div>
-                <div class="form-check">
+                <div class="form-check mt-3">
                     <label>
                         <input class="form-check-input" type="checkbox" value="remember-me" name="${rememberMeParameter ?: 'remember-me'}"
                                id="remember_me" <g:if test='${hasCookie}'>checked="checked"</g:if>> Remember me
                     </label>
                 </div>
-                <button class="btn btn-primary btn-block" type="submit" id="submit">Sign in</button>
+                <button class="btn btn-primary btn-block mt-3" type="submit" id="submit">Sign in</button>
         </form>
         </div>
     </div>
