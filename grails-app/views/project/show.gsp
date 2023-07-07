@@ -12,10 +12,20 @@
         <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
             <g:render template="/shared/messagesTemplate" bean="${project}" var="entity"/>
             <div class="card mt-3">
-                <div class="card-header">
+                <div class="card-header hstack">
                     <h1>
                         <g:message code="default.show.label" args="[entityName]"/>
                     </h1>
+                    <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
+                        <g:form class="ms-auto" resource="${this.project}" method="DELETE" useToken="true">
+                            <div class="col">
+                                <g:link class="btn btn-primary" action="edit" resource="${this.project}" data-test-id="show-edit-link">
+                                    <g:message code="default.button.edit.label" default="Edit" />
+                                </g:link>
+                                <input class="btn btn-secondary" type="submit" data-test-id="show-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                            </div>
+                        </g:form>
+                    </sec:ifAnyGranted>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush border-bottom">
@@ -60,16 +70,6 @@
                     </ul>
                 </div>
                 <div class="card-footer">
-                    <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
-                        <g:form resource="${this.project}" method="DELETE" useToken="true">
-                            <div class="col">
-                                <g:link class="btn btn-primary" action="edit" resource="${this.project}" data-test-id="show-edit-link">
-                                    <g:message code="default.button.edit.label" default="Edit" />
-                                </g:link>
-                                <input class="btn btn-secondary" type="submit" data-test-id="show-delete-link" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
-                            </div>
-                        </g:form>
-                    </sec:ifAnyGranted>
                 </div>
             </div>
         </main>

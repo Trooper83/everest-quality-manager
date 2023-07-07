@@ -4,7 +4,7 @@ import com.everlution.test.ui.support.pages.common.ShowPage
 
 class ShowScenarioPage extends ShowPage {
     static url = "/scenario/show"
-    static at = { title == "Show Scenario" }
+    static at = { title == "Scenario Details" }
 
     static content = {
         areaValue { $("#area") }
@@ -18,7 +18,6 @@ class ShowScenarioPage extends ShowPage {
         nameValue { $("#name") }
         platformValue { $("#platform") }
         projectValue { $("#project") }
-        statusMessage { $("div.message") }
         typeValue { $ ("#type") }
     }
 
@@ -34,6 +33,6 @@ class ShowScenarioPage extends ShowPage {
      * @param names - name of the environment to check
      */
     boolean areEnvironmentsDisplayed(List<String> names) {
-        return environmentsList.find("div")*.text().containsAll(names)
+        return environmentsList.find("div > div > p")*.text().containsAll(names)
     }
 }

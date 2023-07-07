@@ -53,6 +53,5 @@
     </main>
     </div>
 </div>
-<asset:javascript src="popper.min.js"/>
 </body>
 </html>

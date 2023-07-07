@@ -34,6 +34,6 @@
             </g:form>
         </main>
     </div>
-    <asset:javascript src="popper.min.js"/>
+</div>
 </body>
 </html>
