@@ -14,7 +14,7 @@
             <g:form resource="${this.scenario}" method="PUT"
                     uri="/project/${scenario.project.id}/scenario/update/${scenario.id}" useToken="true">
                 <g:hiddenField name="version" value="${this.scenario?.version}" />
-                <div class="card mt-3">
+                <div class="card mt-3 mb-5">
                     <div class="card-header">
                         <h1>
                             <g:message code="default.edit.label" args="[entityName]"/>
@@ -72,9 +72,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <fieldset class="buttons">
-                            <g:submitButton name="update" class="btn btn-primary" value="${message(code: 'default.button.update.label', default: 'Update')}" />
-                        </fieldset>
+                        <g:submitButton data-test-id="edit-update-button" name="update" class="btn btn-primary" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                     </div>
                 </div>
             </g:form>

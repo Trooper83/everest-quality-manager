@@ -12,7 +12,7 @@
         <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
             <g:render template="/shared/messagesTemplate" bean="${scenario}" var="entity"/>
             <g:form resource="${this.scenario}" method="POST" uri="/project/${project.id}/scenario/save" useToken="true">
-                <div class="card mt-3">
+                <div class="card mt-3 mb-5">
                     <div class="card-header">
                         <h1>
                             <g:message code="default.create.label" args="[entityName]"/>
@@ -71,9 +71,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <fieldset class="buttons">
-                            <g:submitButton name="create" class="btn btn-primary" value="${message(code: 'default.button.create.label', default: 'Create')}" />
-                        </fieldset>
+                        <g:submitButton name="create" class="btn btn-primary" value="${message(code: 'default.button.create.label', default: 'Create')}" />
                     </div>
                 </div>
             </g:form>

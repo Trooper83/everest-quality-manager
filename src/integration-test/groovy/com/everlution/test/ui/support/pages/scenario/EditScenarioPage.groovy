@@ -53,6 +53,10 @@ class EditScenarioPage extends EditPage {
      * clicks the update button
      */
     void editScenario() {
+        //Need to scroll button into view
+        Thread.sleep(500)
+        driver.executeScript("window.scrollBy(0,document.body.scrollHeight)")
+        Thread.sleep(500)
         updateButton.click()
     }
 
@@ -69,6 +73,10 @@ class EditScenarioPage extends EditPage {
         typeSelect().selected = type
         platformSelect().selected = platform
         gherkinTextArea = gherkin
+        //Need to scroll button into view
+        Thread.sleep(500)
+        driver.executeScript("window.scrollBy(0,document.body.scrollHeight)")
+        Thread.sleep(500)
         updateButton.click()
     }
 }

@@ -4,6 +4,9 @@ import com.everlution.test.ui.support.pages.common.CreatePage
 import com.github.javafaker.Faker
 import geb.module.MultipleSelect
 import geb.module.Select
+import org.openqa.selenium.JavascriptExecutor
+import org.openqa.selenium.Keys
+import org.openqa.selenium.support.ui.ExpectedConditions
 
 class CreateScenarioPage extends CreatePage {
     static url = "/scenario/create"
@@ -54,6 +57,10 @@ class CreateScenarioPage extends CreatePage {
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
         gherkinTextArea = faker.lorem().sentence(5)
+        //Need to scroll button into view
+        Thread.sleep(500)
+        driver.executeScript("window.scrollBy(0,document.body.scrollHeight)")
+        Thread.sleep(500)
         createButton.click()
     }
 
@@ -67,9 +74,13 @@ class CreateScenarioPage extends CreatePage {
         executionMethodSelect().selected = method
         typeSelect().selected = type
         areaSelect().selected = area
-        environmentsSelect().selected = environments
         platformSelect().selected = platform
         gherkinTextArea = gherkin
+        environmentsSelect().selected = environments
+        //Need to scroll button into view
+        Thread.sleep(500)
+        driver.executeScript("window.scrollBy(0,document.body.scrollHeight)")
+        Thread.sleep(500)
         createButton.click()
     }
 }
