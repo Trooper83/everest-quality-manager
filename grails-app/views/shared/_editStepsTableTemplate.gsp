@@ -1,32 +1,19 @@
-<fieldset>
-    <table>
-        <thead>
-        <tr>
-            <th></th>
-            <th>Action</th>
-            <th>Result</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody id="stepsTableContent">
-        <g:each status="i" var="step" in="${entity.steps}">
-            <tr>
-                <td><g:hiddenField name="stepsIndex[${i}]" class="iHidden" /></td>
-                <td><g:field type="text" name="steps[${i}].action" value="${step.action}" /></td>
-                <td><g:field type="text" name="steps[${i}].result" value="${step.result}" /></td>
-                <td>
-                    <g:if test="${i == entity.steps.size() - 1}">
-                        <input type="button" value="Remove" onclick="removeEntryRow(this, ${step.id})" />
-                    </g:if>
-                    <g:else>
-                        <input type="button" value="Remove" style="display: none;" onclick="removeEntryRow(this, ${step.id})" />
-                    </g:else>
-                </td>
-            </tr>
-        </g:each>
-        </tbody>
-    </table>
-    <input id="btnAddRow" type="button" value="Add" onclick="addEntryRow()" accesskey="n"/>
-    <asset:image src="icons/info.svg" alt="info" width="15" height="15"
-                 data-toggle="tooltip" data-placement="top" title="ALT+n to add a new row"/>
-</fieldset>
+<g:each status="i" var="step" in="${entity.steps}">
+    <div class="row align-items-center mt-3">
+        <g:hiddenField name="stepsIndex[${i}]" class="iHidden" />
+        <div class="col-5">
+            <g:textArea class="form-control" type="text" name="steps[${i}].action" value="${step.action}" />
+        </div>
+        <div class="col-5">
+            <g:textArea class="form-control" type="text" name="steps[${i}].result" value="${step.result}" />
+        </div>
+        <div class="col-2">
+            <g:if test="${i == entity.steps.size() - 1}">
+                <input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeEntryRow(this, ${step.id})" />
+            </g:if>
+            <g:else>
+                <input class="btn btn-link btn-sm" type="button" value="Remove" style="display: none;" onclick="removeEntryRow(this, ${step.id})" />
+            </g:else>
+        </div>
+    </div>
+</g:each>

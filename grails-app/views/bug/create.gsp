@@ -60,22 +60,20 @@
                     </div>
                     <div class="card-body">
                         <div class="row border-bottom">
-                            <p class="col-6">Action</p>
-                            <p class="col-6">Result</p>
+                            <p class="col-5">Action</p>
+                            <p class="col-5">Result</p>
                         </div>
-                        <table class="table align-middle">
-                            <tbody id="stepsTableContent">
-                            </tbody>
-                        </table>
+                        <div id="stepsTableContent">
+                        </div>
                         <input class="btn btn-secondary btn-sm mt-3" id="btnAddRow" type="button" value="Add Step" onclick="addEntryRow()" accesskey="n"/>
                         <asset:image src="icons/info.svg" alt="info" width="15" height="15"
                                      data-toggle="tooltip" data-placement="top" title="ALT+n to add a new row"/>
                         <div class="row mb-3 mt-3">
-                            <div class="col-6 required mt-3">
+                            <div class="col-5 required mt-3">
                                 <label class="form-label" for="expected">Expected</label>
                                 <g:textArea class="form-control" name="expected" value="${bug.expected}" maxLength="500"></g:textArea>
                             </div>
-                            <div class="col-6 required mt-3">
+                            <div class="col-5 required mt-3">
                                 <label class="form-label" for="actual">Actual</label>
                                 <g:textArea class="form-control" name="actual" value="${bug.actual}" maxLength="500"></g:textArea>
                             </div>
