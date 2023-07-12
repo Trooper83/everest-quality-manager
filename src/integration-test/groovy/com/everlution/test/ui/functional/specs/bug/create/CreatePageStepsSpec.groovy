@@ -30,28 +30,30 @@ class CreatePageStepsSpec extends GebSpec {
     void "add test step row"() {
         expect: "row count is 0"
         def page = browser.page(CreateBugPage)
-        page.stepsTable.getRowCount() == 0
+        page.stepsTable.getStepsCount() == 0
 
         when: "add a test step row"
+        page.scrollToBottom()
         page.stepsTable.addRow()
 
         then: "row count is 1"
-        page.stepsTable.getRowCount() == 1
+        page.stepsTable.getStepsCount() == 1
     }
 
     void "remove test step row"() {
         setup: "add a row"
         def page = browser.page(CreateBugPage)
+        page.scrollToBottom()
         page.stepsTable.addRow()
 
         expect: "row count is 1"
-        page.stepsTable.getRowCount() == 1
+        page.stepsTable.getStepsCount() == 1
 
         when: "remove the first row"
         page.stepsTable.removeRow(0)
 
         then: "row count is 0"
-        page.stepsTable.getRowCount() == 0
+        page.stepsTable.getStepsCount() == 0
     }
 
     void "null action and result message"() {
@@ -73,29 +75,30 @@ class CreatePageStepsSpec extends GebSpec {
     void "remove button only displayed for last step"() {
         setup: "add a row"
         def page = browser.page(CreateBugPage)
+        page.scrollToBottom()
         page.stepsTable.addRow()
 
         expect:
-        page.stepsTable.getRow(0).find('input[value=Remove]').displayed
+        page.stepsTable.getStep(0).find('input[value=Remove]').displayed
 
         when:
         page.stepsTable.addRow()
 
         then:
-        !page.stepsTable.getRow(0).find('input[value=Remove]').displayed
-        page.stepsTable.getRow(1).find('input[value=Remove]').displayed
+        !page.stepsTable.getStep(0).find('input[value=Remove]').displayed
+        page.stepsTable.getStep(1).find('input[value=Remove]').displayed
     }
 
     void "alt+n adds new step row with action input focused"() {
         expect:
         def page = browser.page(CreateBugPage)
-        page.stepsTable.getRowCount() == 0
+        page.stepsTable.getStepsCount() == 0
 
         when: "add a row"
         page.stepsTable.addRowHotKey()
 
         then:
-        page.stepsTable.getRowCount() == 1
-        page.stepsTable.getRow(0).find('input[name="steps[0].action"]').focused
+        page.stepsTable.getStepsCount() == 1
+        page.stepsTable.getStep(0).find('textarea[name="steps[0].action"]').focused
     }
 }

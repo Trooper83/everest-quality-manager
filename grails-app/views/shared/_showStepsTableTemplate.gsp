@@ -1,4 +1,4 @@
-<ul class="list-group list-group-flush">
+<ul class="list-group list-group-flush" id="steps">
     <g:each in="${entity.steps}">
         <li class="list-group-item border-0">
             <div class="row">

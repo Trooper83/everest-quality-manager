@@ -52,7 +52,7 @@
                             <label class="form-label" for="environments">Environments</label>
                             <g:select class="form-select" multiple="true" name="environments" from="${bug.project.environments}"
                                       optionKey="id" optionValue="name" value="${bug.environments}"
-                                      noSelection="${['':'Select Environments...']}"
+                                      noSelection="${['':'No Environment...']}"
                                       multiple="true"
                             />
                         </div>

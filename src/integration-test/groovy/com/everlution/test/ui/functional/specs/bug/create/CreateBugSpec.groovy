@@ -5,7 +5,6 @@ import com.everlution.Environment
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
@@ -94,7 +93,7 @@ class CreateBugSpec extends GebSpec {
             showPage.platformValue.text() == "Web"
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
-            showPage.stepsTable.isRowDisplayed(action, result)
+            showPage.isStepsRowDisplayed(action, result)
             showPage.actualValue.text() == actual
             showPage.expectedValue.text() == expected
         }

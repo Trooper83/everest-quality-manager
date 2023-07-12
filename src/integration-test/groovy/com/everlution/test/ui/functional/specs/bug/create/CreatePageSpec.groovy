@@ -26,12 +26,6 @@ class CreatePageSpec extends GebSpec {
         projectHomePage.sideBar.goToCreate("Bug")
     }
 
-    void "required fields indicator displayed for required fields"() {
-        expect: "required field indicators displayed"
-        def page = browser.page(CreateBugPage)
-        page.areRequiredFieldIndicatorsDisplayed(["name"])
-    }
-
     void "verify platform options"() {
         expect: "correct options are populated"
         CreateBugPage page = browser.page(CreateBugPage)

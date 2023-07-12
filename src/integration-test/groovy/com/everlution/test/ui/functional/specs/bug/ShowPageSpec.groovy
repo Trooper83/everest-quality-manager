@@ -1,6 +1,5 @@
 package com.everlution.test.ui.functional.specs.bug
 
-import com.everlution.BugService
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
@@ -14,8 +13,6 @@ import grails.testing.mixin.integration.Integration
 
 @Integration
 class ShowPageSpec extends GebSpec {
-
-    BugService bugService
 
     void "status message displayed after bug created"() {
         given: "login as a basic user"

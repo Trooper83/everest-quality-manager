@@ -54,6 +54,12 @@
                                 <p class="col" id="area" aria-labelledby="area-label">${bug.area?.name}</p>
                             </div>
                         </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="platform-label" class="col-4 fw-bold">Platform</p>
+                                <p class="col" id="platform" aria-labelledby="platform-label">${bug.platform}</p>
+                            </div>
+                        </li>
                         <li class="list-group-item">
                             <div class="row align-items-center" id="environments">
                                 <p id="environments-label" class="col-4 fw-bold">Environments</p>

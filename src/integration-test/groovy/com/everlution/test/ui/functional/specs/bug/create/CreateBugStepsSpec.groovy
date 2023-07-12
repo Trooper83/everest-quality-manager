@@ -43,6 +43,6 @@ class CreateBugStepsSpec extends GebSpec {
 
         then: "at show page"
         def showPage = at ShowBugPage
-        showPage.stepsTable.getRowCount() == 1
+        showPage.getStepsCount() == 1
     }
 }

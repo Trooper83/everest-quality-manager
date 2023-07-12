@@ -2,7 +2,6 @@ package com.everlution.test.ui.support.pages.common
 
 class EditPage extends BasePage {
     static content = {
-        fieldLabels { $("fieldset label") }
         updateButton { $("[data-test-id=edit-update-button]") }
     }
 
@@ -26,6 +25,7 @@ class EditPage extends BasePage {
      * clicks the update button
      */
     void edit() {
+        scrollToBottom()
         updateButton.click()
     }
 
