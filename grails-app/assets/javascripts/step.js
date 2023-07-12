@@ -1,24 +1,24 @@
 function getEntryRow() {
-    const row = $('<tr />');
+    const row = $('<div class="row align-items-center mt-3"/>');
 
     const index = $('#stepsTableContent input.iHidden').length;
     const removed = $('#stepsTableContent input[data-test-id=step-removed-input]').length;
     const itemIndex = index + removed;
 
-    const hidden = $('<td><input type="hidden" name="stepsIndex[' + itemIndex + ']" class="iHidden" value="" id="steps[' + itemIndex + ']"/></td>');
-    const action = $('<td><input type="text" name="steps[' + itemIndex + '].action" value="" id="steps[' + itemIndex + '].action"/></td>');
-    const result = $('<td><input type="text" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></td>');
-    const button = $('<td><input type="button" value="Remove" onclick="removeEntryRow(this)" /></td>');
+    const hidden = $('<input type="hidden" name="stepsIndex[' + itemIndex + ']" class="iHidden" value="" id="steps[' + itemIndex + ']"/>');
+    const action = $('<div class="col-5"><textarea class="form-control" type="text" maxLenght="500" name="steps[' + itemIndex + '].action" value="" id="steps[' + itemIndex + '].action"/></div>');
+    const result = $('<div class="col-5"><textarea class="form-control" type="text" maxLenght="500" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></div>');
+    const button = $('<div class="col-2"><input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeEntryRow(this)" /></div>');
 
     row.append(hidden, action, result, button);
     return row;
 }
 
 function addEntryRow() {
-    let button = $('tr input[type=button]').last().hide();
+    $('#stepsTableContent div').find('input[value=Remove]').last().hide();
     let row = getEntryRow();
     $('#stepsTableContent').append(row);
-    $('tr').last().find('input[name$=action]').focus();
+    $('#stepsTableContent div').find('textarea[name$=action]').last().focus();
 }
 
 function removeEntryRow(element, id) {
@@ -29,5 +29,5 @@ function removeEntryRow(element, id) {
     } else {
        $(element).parent().parent().remove();
     }
-    let button = $('tr input[type=button]').last().show();
+    $('#stepsTableContent div').find('input[value=Remove]').last().show();
 }

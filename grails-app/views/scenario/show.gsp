@@ -90,8 +90,6 @@
                         </li>
                     </ul>
                 </div>
-                <div class="card-footer">
-                </div>
             </div>
         </main>
     </div>

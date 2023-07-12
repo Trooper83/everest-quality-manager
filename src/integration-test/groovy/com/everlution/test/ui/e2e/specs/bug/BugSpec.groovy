@@ -50,7 +50,7 @@ class BugSpec extends GebSpec {
             showPage.platformValue.text() == "Web"
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env, env1])
-            showPage.stepsTable.isRowDisplayed(action, result)
+            showPage.stepsTable.isStepsRowDisplayed(action, result)
             showPage.expectedValue.text() == expected
             showPage.actualValue.text() == actual
         }

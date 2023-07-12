@@ -16,7 +16,7 @@ class CreateBugPage extends BasePage {
         createButton { $("#create") }
         descriptionInput { $("#description") }
         environmentsOptions { $("#environments>option") }
-        errorsMessage { $("ul.errors") }
+        errorsMessage { $(".alert-danger") }
         expectedInput { $("#expected") }
         fieldLabels { $("fieldset label") }
         homeLink { $("[data-test-id=create-home-link]") }
@@ -42,22 +42,6 @@ class CreateBugPage extends BasePage {
     }
 
     /**
-     * determines if the required field indication (asterisk) is
-     * displayed for the supplied fields
-     * @param fields - list of fields
-     * @return - true if all fields have the indicator, false if at least one does not
-     */
-    boolean areRequiredFieldIndicatorsDisplayed(List<String> fields) {
-        for(field in fields) {
-            def sel = $("label[for=${field}]>span.required-indicator")
-            if (!sel.displayed) {
-                return false
-            }
-        }
-        return true
-    }
-
-    /**
      * adds a generic bug
      */
     void createBug() {
@@ -66,6 +50,7 @@ class CreateBugPage extends BasePage {
         descriptionInput = faker.zelda().character()
         actualInput = faker.beer().name()
         expectedInput = faker.beer().name()
+        scrollToBottom()
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
@@ -80,6 +65,7 @@ class CreateBugPage extends BasePage {
         areaSelect().selected = area
         platformSelect().selected = platform
         environmentsSelect().selected = environment
+        scrollToBottom()
         stepsTable.addStep(action, result)
         expectedInput = expected
         actualInput = actual
@@ -94,6 +80,7 @@ class CreateBugPage extends BasePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
+        scrollToBottom()
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         actualInput = faker.beer().name()
         expectedInput = faker.beer().name()

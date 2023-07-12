@@ -1,11 +1,14 @@
 package com.everlution.test.ui.support.pages.modules
 
+import geb.Module
+import geb.navigator.Navigator
 import org.openqa.selenium.Keys
 
-class StepTableModule extends TableModule {
+class StepTableModule extends Module {
 
     static content = {
         addRowButton { $("#btnAddRow") }
+        stepRows(required: false) { $('#stepsTableContent div.row') }
     }
 
     /**
@@ -15,9 +18,9 @@ class StepTableModule extends TableModule {
      */
     void addStep(String action, String result) {
         addRow()
-        int index = getRowCount() - 1
-        $("input[name='steps[${index}].action']").value(action)
-        $("input[name='steps[${index}].result']").value(result)
+        int index = getStepsCount() - 1
+        $("textarea[name='steps[${index}].action']").value(action)
+        $("textarea[name='steps[${index}].result']").value(result)
     }
 
     /**
@@ -41,9 +44,24 @@ class StepTableModule extends TableModule {
      * @param result - the updated result value
      */
     void editTestStep(int index, String action, String result) {
-        def data = getRow(index).find("td>input")
-        data[1].value(action)
-        data[2].value(result)
+        def data = getStep(index).find("textarea")
+        data[0].value(action)
+        data[1].value(result)
+    }
+
+    Navigator getStep(int index) {
+        Navigator step = stepRows[index]
+        if (step.isEmpty()) {
+            throw new IllegalArgumentException("Step at index ${index} not found")
+        }
+        return step
+    }
+
+    /**
+     * gets the number of steps
+     */
+    int getStepsCount() {
+        return stepRows.size()
     }
 
     /**
@@ -54,8 +72,8 @@ class StepTableModule extends TableModule {
      * false if a row with the action and result is not found
      */
     boolean isRowDisplayed(String action, String result) {
-        for(row in tableRows) {
-            def data = row.find("td")
+        for(row in stepRows) {
+            def data = row.find("textarea")
             if(data[0].text() == action & data[1].text() == result) {
                 return true
             }
@@ -68,6 +86,6 @@ class StepTableModule extends TableModule {
      * @param index - the zero-based index of the row to remove
      */
     void removeRow(int index) {
-        getRow(index).find("input[value=Remove]").click()
+        getStep(index).find("input[value=Remove]").click()
     }
 }

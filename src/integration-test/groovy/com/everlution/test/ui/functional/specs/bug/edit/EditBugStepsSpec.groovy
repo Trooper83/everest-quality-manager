@@ -45,13 +45,14 @@ class EditBugStepsSpec extends GebSpec {
 
         when: "edit the bug"
         EditBugPage page = browser.page(EditBugPage)
+        page.scrollToBottom()
         page.stepsTable.addStep("added step", "added result")
         page.edit()
 
         then: "at show page"
         def show = at ShowBugPage
-        show.stepsTable.isRowDisplayed("added step", "added result")
-        show.stepsTable.getRowCount() == 2
+        show.isStepsRowDisplayed("added step", "added result")
+        show.getStepsCount() == 2
     }
 
     void "step can be updated on existing bug"() {
@@ -74,7 +75,7 @@ class EditBugStepsSpec extends GebSpec {
 
         then: "at show page with edited step"
         def showPage = at ShowBugPage
-        showPage.stepsTable.isRowDisplayed("edited action", "edited result")
+        showPage.isStepsRowDisplayed("edited action", "edited result")
     }
 
     void "step can be deleted from existing bug"() {
@@ -93,12 +94,13 @@ class EditBugStepsSpec extends GebSpec {
 
         when: "edit the bug"
         def page = browser.page(EditBugPage)
+        page.scrollToBottom()
         page.stepsTable.removeRow(0)
         page.edit()
 
         then: "at show page with edited step"
         def showPage = at ShowBugPage
-        !showPage.stepsTable.isRowDisplayed("bug action", "bug result")
-        showPage.stepsTable.getRowCount() == 0
+        !showPage.isStepsRowDisplayed("bug action", "bug result")
+        showPage.getStepsCount() == 0
     }
 }

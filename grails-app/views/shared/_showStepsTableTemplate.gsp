@@ -1,18 +1,10 @@
-<fieldset>
-    <table>
-        <thead>
-        <tr>
-            <th>Action</th>
-            <th>Result</th>
-        </tr>
-        </thead>
-        <tbody>
-        <g:each in="${entity.steps}">
-            <tr>
-                <td>${it.action}</td>
-                <td>${it.result}</td>
-            </tr>
-        </g:each>
-        </tbody>
-    </table>
-</fieldset>
+<ul class="list-group list-group-flush" id="steps">
+    <g:each in="${entity.steps}">
+        <li class="list-group-item border-0">
+            <div class="row">
+                <p class="col-6">${it.action}</p>
+                <p class="col-6">${it.result}</p>
+            </div>
+        </li>
+    </g:each>
+</ul>

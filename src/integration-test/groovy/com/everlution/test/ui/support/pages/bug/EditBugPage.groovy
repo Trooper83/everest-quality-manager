@@ -57,6 +57,7 @@ class EditBugPage extends EditPage {
         statusSelect().selected = "Closed"
         expectedInput = expected
         actualInput = actual
+        scrollToBottom()
         updateButton.click()
     }
 }
