@@ -6,72 +6,113 @@
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
-<g:render template="/shared/sidebarTemplate" model="['name':testCase.project.name, 'code':testCase.project.code]"/>
-<a href="#show-testCase" class="skip" tabindex="-1">
-    <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
-</a>
-<div id="show-testCase" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
-    <h1>
-        <g:message code="default.show.label" args="[entityName]"/>
-    </h1>
-    <g:render template="/shared/messagesTemplate" bean="${testCase}" var="entity"/>
-    <ol class="property-list testCase">
-        <li class="fieldcontain">
-            <span id="person-label" class="property-label">Created By</span>
-            <div class="property-value" id="person">${testCase.person.email}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="area-label" class="property-label">Area</span>
-            <div class="property-value" id="area">${testCase.area?.name}</div>
-        </li>
-        <li class="fieldcontain" id="environments">
-            <span id="environments-label" class="property-label">Environments</span>
-            <g:each in="${testCase?.environments}">
-                <div class="property-value" aria-labelledby="environments-label">${it.name}</div>
-            </g:each>
-        </li>
-        <li class="fieldcontain" id="testGroups">
-            <span id="testGroups-label" class="property-label">Test Groups</span>
-            <g:each in="${testCase?.testGroups}">
-                <div class="property-value" aria-labelledby="testGroups-label">${it.name}</div>
-            </g:each>
-        </li>
-        <li class="fieldcontain">
-            <span id="name-label" class="property-label">Name</span>
-            <div class="property-value" id="name">${testCase.name}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="description-label" class="property-label">Description</span>
-            <div class="property-value" id="description">${testCase.description}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="executionMethod-label" class="property-label">Execution Method</span>
-            <div class="property-value" id="executionMethod">${testCase.executionMethod}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="type-label" class="property-label">Type</span>
-            <div class="property-value" id="type">${testCase.type}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="platform-label" class="property-label">Platform</span>
-            <div class="property-value" id="platform">${testCase.platform}</div>
-        </li>
-    </ol>
-    <g:render template="/shared/showStepsTableTemplate" bean="${testCase}" var="entity"/>
-    <sec:ifAnyGranted roles="ROLE_BASIC">
-        <g:form resource="${this.testCase}" method="DELETE" useToken="true"
-                uri="/project/${testCase.project.id}/testCase/delete/${testCase.id}">
-            <fieldset class="buttons">
-                <g:link class="edit" uri="/project/${testCase.project.id}/testCase/edit/${testCase.id}" data-test-id="show-edit-link">
-                    <g:message code="default.button.edit.label" default="Edit"/>
-                </g:link>
-                <input class="delete" type="submit" data-test-id="show-delete-link"
-                       value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                       onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
-            </fieldset>
-        </g:form>
-    </sec:ifAnyGranted>
+<div class="container">
+    <div class="row">
+        <g:render template="/shared/sidebarTemplate" model="['name':testCase.project.name, 'code':testCase.project.code]"/>
+        <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
+            <g:render template="/shared/messagesTemplate" bean="${testCase}" var="entity"/>
+            <div class="card mt-3">
+                <div class="card-header hstack gap-1">
+                    <h1 class="me-auto">
+                        <g:message code="default.show.label" args="[entityName]"/>
+                    </h1>
+                    <sec:ifAnyGranted roles="ROLE_BASIC">
+                        <g:form resource="${this.testCase}" method="DELETE" useToken="true"
+                                uri="/project/${this.testCase.project.id}/testCase/delete/${this.testCase.id}">
+                            <g:link class="btn btn-primary" uri="/project/${this.testCase.project.id}/testCase/edit/${this.testCase.id}" data-test-id="show-edit-link">
+                                <g:message code="default.button.edit.label" default="Edit"/>
+                            </g:link>
+                            <input class="btn btn-secondary" type="submit" data-test-id="show-delete-link"
+                                   value="${message(code: 'default.button.delete.label', default: 'Delete')}"
+                                   onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+                        </g:form>
+                    </sec:ifAnyGranted>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="person-label" class="col-4 fw-bold">Created By</p>
+                                <p class="col" id="person" aria-labelledby="person-label">${testCase.person.email}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="name-label" class="col-4 fw-bold">Name</p>
+                                <p class="col" id="name" aria-labelledby="name-label">${testCase.name}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="description-label" class="col-4 fw-bold">Description</p>
+                                <p class="col" id="description" aria-labelledby="description-label">${testCase.description}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="area-label" class="col-4 fw-bold">Area</p>
+                                <p class="col" id="area" aria-labelledby="area-label">${testCase.area?.name}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="platform-label" class="col-4 fw-bold">Platform</p>
+                                <p class="col" id="platform" aria-labelledby="platform-label">${testCase.platform}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="type-label" class="col-4 fw-bold">Type</p>
+                                <p class="col" id="type" aria-labelledby="type-label">${testCase.type}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="executionMethod-label" class="col-4 fw-bold">Execution Method</p>
+                                <p class="col" id="executionMethod" aria-labelledby="executionMethod-label">${testCase.executionMethod}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row align-items-center" id="environments">
+                                <p id="environments-label" class="col-4 fw-bold">Environments</p>
+                                <div class="col form-row">
+                                    <g:each in="${testCase.environments}">
+                                        <p>${it.name}</p>
+                                    </g:each>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row align-items-center" id="testGroups">
+                                <p id="testGroups-label" class="col-4 fw-bold">Test Groups</p>
+                                <div class="col form-row">
+                                    <g:each in="${testCase.testGroups}">
+                                        <p>${it.name}</p>
+                                    </g:each>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mt-3 mb-5">
+                <div class="card-header">
+                    <h1 class="me-auto">Steps</h1>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col-6 fw-bold">Action</p>
+                                <p class="col-6 fw-bold">Result</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <g:render template="/shared/showStepsTableTemplate" bean="${testCase}" var="entity"/>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
-<asset:javascript src="popper.min.js"/>
 </body>
 </html>
