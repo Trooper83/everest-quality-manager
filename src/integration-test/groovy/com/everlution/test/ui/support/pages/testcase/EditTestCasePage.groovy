@@ -14,9 +14,6 @@ class EditTestCasePage extends BasePage {
         descriptionInput { $("#description") }
         environmentsOptions { $("#environments>option") }
         executionMethodOptions { $("#executionMethod>option") }
-        fieldLabels { $("fieldset label") }
-        homeLink { $("[data-test-id=edit-home-link]") }
-        listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
         platformOptions { $("#platform>option") }
         projectNameField { $("[data-test-id=edit-project-name]") }
@@ -55,22 +52,6 @@ class EditTestCasePage extends BasePage {
     }
 
     /**
-     * determines if the required field indication (asterisk) is
-     * displayed for the supplied fields
-     * @param fields - list of fields
-     * @return - true if all fields have the indicator, false if at least one does not
-     */
-    boolean areRequiredFieldIndicatorsDisplayed(List<String> fields) {
-        for(field in fields) {
-            def sel = $("label[for=${field}]>span.required-indicator")
-            if (!sel.displayed) {
-                return false
-            }
-        }
-        return true
-    }
-
-    /**
      * fills in all data but does not submit the form
      */
     void completeEditForm(String name, String description, String area, List<String> environments, String method,
@@ -89,6 +70,7 @@ class EditTestCasePage extends BasePage {
      * clicks the update button
      */
     void editTestCase() {
+        scrollToBottom()
         updateButton.click()
     }
 
@@ -98,28 +80,7 @@ class EditTestCasePage extends BasePage {
     void editTestCase(String name, String description, String area, List<String> environments, String method,
                       String type, String platform, List<String> testGroups) {
         completeEditForm(name, description, area, environments, method, type, platform, testGroups)
+        scrollToBottom()
         updateButton.click()
-    }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
     }
 }

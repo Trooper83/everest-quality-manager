@@ -45,13 +45,14 @@ class EditPageStepsSpec extends GebSpec {
 
         expect: "row count is 1"
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.stepsTable.getRowCount() == 1
+        page.scrollToBottom()
+        page.stepsTable.getStepsCount() == 1
 
         when: "add a test step row"
         page.stepsTable.addRow()
 
         then: "row count is 2"
-        page.stepsTable.getRowCount() == 2
+        page.stepsTable.getStepsCount() == 2
     }
 
     void "remove test step row"() {
@@ -72,16 +73,17 @@ class EditPageStepsSpec extends GebSpec {
 
         and: "add a row"
         EditTestCasePage page = browser.page(EditTestCasePage)
+        page.scrollToBottom()
         page.stepsTable.addRowHotKey()
 
         expect: "row count is 2"
-        page.stepsTable.getRowCount() == 2
+        page.stepsTable.getStepsCount() == 2
 
         when: "remove the second row"
         page.stepsTable.removeRow(1)
 
         then: "row count is 1"
-        page.stepsTable.getRowCount() == 1
+        page.stepsTable.getStepsCount() == 1
     }
 
     void "removing step adds hidden input"() {
@@ -105,6 +107,7 @@ class EditPageStepsSpec extends GebSpec {
 
         when: "remove step"
         EditTestCasePage page = browser.page(EditTestCasePage)
+        page.scrollToBottom()
         page.stepsTable.removeRow(0)
 
         then: "hidden input added"
@@ -128,16 +131,17 @@ class EditPageStepsSpec extends GebSpec {
 
         and:
         def page = browser.page(EditTestCasePage)
+        page.scrollToBottom()
         page.stepsTable.addRow()
 
         expect:
-        page.stepsTable.getRow(0).find('input[value=Remove]').displayed
+        page.stepsTable.getStep(0).find('input[value=Remove]').displayed
 
         when:
         page.stepsTable.addRow()
 
         then:
-        !page.stepsTable.getRow(0).find('input[value=Remove]').displayed
-        page.stepsTable.getRow(1).find('input[value=Remove]').displayed
+        !page.stepsTable.getStep(0).find('input[value=Remove]').displayed
+        page.stepsTable.getStep(1).find('input[value=Remove]').displayed
     }
 }

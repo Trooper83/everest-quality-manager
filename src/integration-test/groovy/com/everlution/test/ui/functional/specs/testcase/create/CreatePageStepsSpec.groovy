@@ -26,34 +26,37 @@ class CreatePageStepsSpec extends GebSpec {
     void "add test step row"() {
         expect: "row count is 0"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.testStepTable.getRowCount() == 0
+        page.scrollToBottom()
+        page.testStepTable.getStepsCount() == 0
 
         when: "add a test step row"
         page.testStepTable.addRow()
 
         then: "row count is 1"
-        page.testStepTable.getRowCount() == 1
+        page.testStepTable.getStepsCount() == 1
     }
 
     void "remove test step row"() {
         setup: "add a row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
+        page.scrollToBottom()
         page.testStepTable.addRow()
 
         expect: "row count is 1"
-        page.testStepTable.getRowCount() == 1
+        page.testStepTable.getStepsCount() == 1
 
         when: "remove the first row"
         page.testStepTable.removeRow(0)
 
         then: "row count is 1"
-        page.testStepTable.getRowCount() == 0
+        page.testStepTable.getStepsCount() == 0
     }
 
     void "null action and result message"() {
         setup:
         def createPage = browser.page(CreateTestCasePage)
         createPage.completeCreateForm()
+        createPage.scrollToBottom()
         createPage.testStepTable.addStep("", "")
         createPage.createButton.click()
 
@@ -65,29 +68,30 @@ class CreatePageStepsSpec extends GebSpec {
     void "remove button only displayed for last step"() {
         setup: "add a row"
         def page = browser.page(CreateTestCasePage)
+        page.scrollToBottom()
         page.testStepTable.addRow()
 
         expect:
-        page.testStepTable.getRow(0).find('input[value=Remove]').displayed
+        page.testStepTable.getStep(0).find('input[value=Remove]').displayed
 
         when:
         page.testStepTable.addRow()
 
         then:
-        !page.testStepTable.getRow(0).find('input[value=Remove]').displayed
-        page.testStepTable.getRow(1).find('input[value=Remove]').displayed
+        !page.testStepTable.getStep(0).find('input[value=Remove]').displayed
+        page.testStepTable.getStep(1).find('input[value=Remove]').displayed
     }
 
     void "alt+n hotkey adds new row with action in focus"() {
         expect:
         def page = browser.page(CreateTestCasePage)
-        page.testStepTable.getRowCount() == 0
+        page.testStepTable.getStepsCount() == 0
 
         when:
         page.testStepTable.addRowHotKey()
 
         then:
-        page.testStepTable.getRowCount() == 1
-        page.testStepTable.getRow(0).find('input[name="steps[0].action"]').focused
+        page.testStepTable.getStepsCount() == 1
+        page.testStepTable.getStep(0).find('textarea[name="steps[0].action"]').focused
     }
 }

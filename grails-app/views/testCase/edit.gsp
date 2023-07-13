@@ -67,15 +67,15 @@
                                 <g:select class="form-select" multiple="true" name="environments"
                                           from="${testCase.project.environments}"
                                           optionKey="id" optionValue="name"
-                                          noSelection="${['':'No Environments...']}"
-                                          multiple="true"
+                                          noSelection="${['':'No Environment...']}"
+                                          multiple="true" value="${testCase.environments}"
                                 />
                             </div>
                             <div class="col-4">
                                 <label class="form-label" for="testGroups">Test Groups</label>
                                 <g:select name="testGroups" from="${testCase.project.testGroups}"
-                                          optionKey="id" optionValue="name"
-                                          noSelection="${['':'No Test Groups...']}"
+                                          optionKey="id" optionValue="name" value="${testCase.testGroups}"
+                                          noSelection="${['':'No Test Group...']}"
                                           multiple="true" class="form-select"
                                 />
                             </div>

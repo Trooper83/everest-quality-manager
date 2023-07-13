@@ -39,6 +39,6 @@ class CreateTestCaseStepsSpec extends GebSpec {
         then: "at show page"
         at ShowTestCasePage
         def showPage = browser.page(ShowTestCasePage)
-        showPage.testStepTable.getRowCount() == 1
+        showPage.getStepsCount() == 1
     }
 }

@@ -4,7 +4,7 @@ class ShowPage extends BasePage {
     static content = {
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
-        errorsMessage { $(".errors") }
+        errorsMessage { $(".alert-danger") }
         statusMessage { $("div.alert-primary") }
     }
 
