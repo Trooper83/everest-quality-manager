@@ -91,6 +91,7 @@ class EditPageAreaSpec extends GebSpec {
         page.areaSelect().selectedText == ""
 
         when: "add empty steps"
+        page.scrollToBottom()
         page.stepsTable.addStep("", "")
 
         and: "submit"

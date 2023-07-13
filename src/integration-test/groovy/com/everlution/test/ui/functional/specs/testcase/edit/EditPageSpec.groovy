@@ -31,18 +31,12 @@ class EditPageSpec extends GebSpec {
         browser.page(ShowTestCasePage).goToEdit()
     }
 
-    void "required fields indicator displayed for required fields"() {
-        expect: "required field indicators displayed"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.areRequiredFieldIndicatorsDisplayed(["name"])
-    }
-
     void "verify method and type field options"() {
         expect: "correct options populate for executionMethod and type"
         EditTestCasePage page = browser.page(EditTestCasePage)
         verifyAll {
             page.executionMethodOptions*.text() == ["", "Automated", "Manual"]
-            page.typeOptions*.text() == ["", "UI", "API"]
+            page.typeOptions*.text() == ["", "API", "UI"]
         }
     }
 

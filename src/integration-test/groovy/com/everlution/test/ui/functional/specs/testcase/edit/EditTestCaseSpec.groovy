@@ -79,12 +79,13 @@ class EditTestCaseSpec extends GebSpec {
 
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
+        page.scrollToBottom()
         page.stepsTable.addStep("added action", "added result")
         page.editTestCase()
 
         then: "at show view with added step"
         ShowTestCasePage showPage = at ShowTestCasePage
-        showPage.testStepTable.isRowDisplayed("added action", "added result")
+        showPage.isStepsRowDisplayed("added action", "added result")
     }
 
     void "step can be edited on existing test case"() {
@@ -110,7 +111,7 @@ class EditTestCaseSpec extends GebSpec {
 
         then: "at show view with edited step values"
         ShowTestCasePage showPage = at ShowTestCasePage
-        showPage.testStepTable.isRowDisplayed("edited action", "edited result")
+        showPage.isStepsRowDisplayed("edited action", "edited result")
     }
 
     void "step can be deleted from existing test case"() {
@@ -133,7 +134,8 @@ class EditTestCaseSpec extends GebSpec {
         expect:
         step.id != null
         EditTestCasePage page = browser.page(EditTestCasePage)
-        page.stepsTable.getRowCount() == 1
+        page.scrollToBottom()
+        page.stepsTable.getStepsCount() == 1
 
         when: "edit the test case"
         page.stepsTable.removeRow(0)
@@ -141,8 +143,8 @@ class EditTestCaseSpec extends GebSpec {
 
         then: "at show view with edited step values"
         ShowTestCasePage showPage = at ShowTestCasePage
-        showPage.testStepTable.getRowCount() == 0
-        !showPage.testStepTable.isRowDisplayed("action", "result")
+        showPage.getStepsCount() == 0
+        !showPage.isStepsRowDisplayed("action", "result")
     }
 
     void "all edit from data saved"() {

@@ -23,18 +23,12 @@ class CreatePageSpec extends GebSpec {
         go "/project/${project.id}/testCase/create"
     }
 
-    void "required fields indicator displayed for required fields"() {
-        expect: "required field indicators displayed"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.areRequiredFieldIndicatorsDisplayed(["name"])
-    }
-
     void "verify method and type field options"() {
         expect: "correct options populate for executionMethod and type"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         verifyAll {
             page.executionMethodOptions*.text() == ["", "Automated", "Manual"]
-            page.typeOptions*.text() == ["", "UI", "API"]
+            page.typeOptions*.text() == ["", "API", "UI"]
         }
 
         and: "default values are blank"

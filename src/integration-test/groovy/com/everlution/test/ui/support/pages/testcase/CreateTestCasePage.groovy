@@ -15,9 +15,8 @@ class CreateTestCasePage extends CreatePage {
         createButton { $("#create") }
         descriptionInput { $("#description") }
         environmentsOptions { $("#environments>option") }
-        errorsMessage { $("ul.errors") }
+        errorsMessage { $(".alert-danger") }
         executionMethodOptions { $("#executionMethod>option") }
-        fieldLabels { $("fieldset label") }
         nameInput { $("#name") }
         platformOptions { $("#platform>option") }
         testGroupsOptions { $("#testGroups>option") }
@@ -59,6 +58,7 @@ class CreateTestCasePage extends CreatePage {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
+        scrollToBottom()
         testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
@@ -76,6 +76,7 @@ class CreateTestCasePage extends CreatePage {
         areaSelect().selected = area
         environmentsSelect().selected = environments
         testGroupsSelect().selected = testGroups
+        scrollToBottom()
         createButton.click()
     }
 
@@ -86,6 +87,7 @@ class CreateTestCasePage extends CreatePage {
     void completeCreateForm() {
         nameInput = "fake test case"
         descriptionInput = "fake description"
+        scrollToBottom()
         testStepTable.addStep("step action", "step result")
     }
 }

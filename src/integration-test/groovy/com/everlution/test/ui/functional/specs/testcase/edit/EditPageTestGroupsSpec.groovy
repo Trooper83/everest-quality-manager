@@ -95,6 +95,7 @@ class EditPageTestGroupsSpec extends GebSpec {
         page.testGroupsSelect().selectedText == ["No Test Group..."]
 
         when: "add empty steps"
+        page.scrollToBottom()
         page.stepsTable.addStep("", "")
 
         and: "submit"

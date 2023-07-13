@@ -93,6 +93,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         page.environmentsSelect().selectedText == ["No Environment..."]
 
         when: "add empty steps"
+        page.scrollToBottom()
         page.stepsTable.addStep("", "")
 
         and: "submit"
