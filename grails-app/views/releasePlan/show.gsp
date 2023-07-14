@@ -69,7 +69,7 @@
                 <div class="card-header hstack">
                     <h1 class="me-auto">Test Cycles</h1>
                     <sec:ifAnyGranted roles="ROLE_BASIC">
-                        <button id="addTestCycleBtn" type="button" class="btn btn-secondary"
+                        <button id="addTestCycleBtn" type="button" class="btn btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#testCycleModal">Add Test Cycle
                         </button>
@@ -162,7 +162,7 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                 data-test-id="modal-cancel-button">Cancel
                         </button>
-                        <g:submitButton data-test-id="modal-submit-button" class="btn btn-secondary"
+                        <g:submitButton data-test-id="modal-submit-button" class="btn btn-primary"
                                         name="submit" value="Add Test Cycle"
                         />
                     </div>
