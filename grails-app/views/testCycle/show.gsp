@@ -99,7 +99,7 @@
                         resource="${this.testCycle}" useToken="true">
                     <div class="row justify-content-center">
                         <div class="col-8 mb-3">
-                            <label class="form-label" for="environ">Environment</label>
+                            <label class="form-label" for="testGroups">Test Groups</label>
                             <g:select
                                     name="testGroups" from="${testGroups}" class="form-select"
                                     optionKey="id" optionValue="name" multiple="true"

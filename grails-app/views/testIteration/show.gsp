@@ -1,46 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="main" />
-    <g:set var="entityName" value="${message(code: 'testIteration.label', default: 'TestIteration')}" />
+    <meta name="layout" content="main"/>
+    <g:set var="entityName" value="${message(code: 'testIteration.label', default: 'TestIteration')}"/>
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
-<g:render template="/shared/sidebarTemplate"
-          model="['name':testIteration.testCycle.releasePlan.project.name, 'code':testIteration.testCycle.releasePlan.project.code]"/>
-<a href="#show-testIteration" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-<div id="show-testIteration" class="content scaffold-show col-md-9 ml-sm-auto col-lg-10 px-md-4" role="main">
-    <h1><g:message code="default.show.label" args="[entityName]" /></h1>
-    <g:render template="/shared/messagesTemplate" bean="${testIteration}" var="entity"/>
-    <ol class="property-list testIteration">
-        <li class="fieldcontain">
-            <span id="name-label" class="property-label">Name</span>
-            <div class="property-value" aria-labelledby="name-label">${testIteration.name}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="testCase-label" class="property-label">Test Case</span>
-            <g:link class="property-value" elementId="testCase"
-                    uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCase/show/${testIteration.testCase.id}">
-                ${testIteration.testCase.name}</g:link>
-        </li>
-        <li class="fieldcontain">
-            <span id="testCycle-label" class="property-label">Test Cycle</span>
-            <g:link class="property-value" elementId="testCycle"
-                    uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCycle/show/${testIteration.testCycle.id}">
-                ${testIteration.testCycle.name}</g:link>
-        </li>
-        <li class="fieldcontain">
-            <span id="notes-label" class="property-label">Notes</span>
-            <div class="property-value" aria-labelledby="notes-label">${testIteration.notes}</div>
-        </li>
-        <li class="fieldcontain">
-            <span id="result-label" class="property-label">Result</span>
-            <div class="property-value" aria-labelledby="result-label">${testIteration.result}</div>
-        </li>
-    <g:link class="btn btn-secondary" role="button"
-            uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testIteration/execute/${this.testIteration.id}">Execute</g:link>
-    </ol>
-        <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>
+<div class="container">
+    <div class="row">
+        <g:render template="/shared/sidebarTemplate"
+                  model="['name':testIteration.testCycle.releasePlan.project.name, 'code':testIteration.testCycle.releasePlan.project.code]"/>
+        <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
+            <g:render template="/shared/messagesTemplate" bean="${testIteration}" var="entity"/>
+            <div class="card mt-3">
+                <div class="card-header hstack gap-1">
+                    <h1 class="me-auto">
+                        <g:message code="default.show.label" args="[entityName]"/>
+                    </h1>
+                    <sec:ifAnyGranted roles="ROLE_BASIC">
+                        <g:link class="btn btn-secondary btn-sm" role="button"
+                                uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testIteration/execute/${this.testIteration.id}">
+                            Execute
+                        </g:link>
+                    </sec:ifAnyGranted>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Name</p>
+                                <p class="col" id="name">${testIteration.name}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Test Case</p>
+                                <p class="col" id="testCase">
+                                    <g:link class="property-value" elementId="testCase"
+                                            uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCase/show/${testIteration.testCase.id}">
+                                        ${testIteration.testCase.name}
+                                    </g:link>
+                                </p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Test Cycle</p>
+                                <p class="col" id="testCycle">
+                                    <g:link class="property-value" elementId="testCycle"
+                                            uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCycle/show/${testIteration.testCycle.id}">
+                                        ${testIteration.testCycle.name}
+                                    </g:link>
+                                </p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Notes</p>
+                                <p class="col" id="notes">${testIteration.notes}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Result</p>
+                                <p class="col" id="result">${testIteration.result}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mt-3 mb-5">
+                <div class="card-header">
+                    <h1 class="me-auto">Steps</h1>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col-6 fw-bold">Action</p>
+                                <p class="col-6 fw-bold">Result</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
 </div>
 </body>
 </html>
