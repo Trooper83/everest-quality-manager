@@ -14,26 +14,24 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-8">
-                <g:form controller="user" action="save" useToken="true" autocomplete="off">
-                    <div class="card mt-3">
+            <div class="col-lg-5 col-md-8">
+                <g:form controller="user" action="save" useToken="true">
+                    <div class="card mt-3 mb-5">
                         <div class="card-header">
                             <h1>
                                 <g:message code='default.create.label' args='[entityName]'/>
                             </h1>
                         </div>
                         <div class="card-body">
-                            <div class="col-8">
-                                <div class="required mb-3">
-                                    <label class="form-label" for="email">Email</label>
-                                    <g:textField class="form-control" name="email" autocomplete="off"/>
-                                </div>
-                                <div class="required mb-3">
-                                    <label class="form-label" for="password">Password</label>
-                                    <g:passwordField class="form-control" name="password"
-                                                     autocomplete="new-password"
-                                    />
-                                </div>
+                            <div class="required mb-3">
+                                <label class="form-label" for="email">Email</label>
+                                <g:textField type='text' class="form-control" name='email' autocomplete='off'/>
+                            </div>
+                            <div class="required mb-3">
+                                <label class="form-label" for="password">Password</label>
+                                <g:passwordField class="form-control" name="password"
+                                                 autocomplete="new-password"
+                                />
                             </div>
                             <div class="mt-3 mb-3">
                                 <h1>Status</h1>
