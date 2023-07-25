@@ -4,11 +4,11 @@ import com.everlution.test.ui.support.pages.common.ShowPage
 
 class ShowTestIterationPage extends ShowPage {
     static url = "/testIteration/show"
-    static at = { title == "Show TestIteration" }
+    static at = { title == "TestIteration Details" }
 
     static content = {
-        notesValue { $("div[aria-labelledBy=notes-label]") }
-        resultValue { $("div[aria-labelledBy=result-label]") }
+        notesValue { $("#notes") }
+        resultValue { $("#result") }
         testCaseLink { $("#testCase") }
         testCycleLink { $("#testCycle") }
     }

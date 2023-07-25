@@ -29,7 +29,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p class="col-4 fw-bold">Test Case</p>
-                                <p class="col" id="testCase">
+                                <p class="col">
                                     <g:link class="property-value" elementId="testCase"
                                             uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCase/show/${testIteration.testCase.id}">
                                         ${testIteration.testCase.name}
@@ -40,7 +40,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p class="col-4 fw-bold">Test Cycle</p>
-                                <p class="col" id="testCycle">
+                                <p class="col">
                                     <g:link class="property-value" elementId="testCycle"
                                             uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testCycle/show/${testIteration.testCycle.id}">
                                         ${testIteration.testCycle.name}

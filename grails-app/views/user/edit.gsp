@@ -26,9 +26,7 @@
 						<div class="card-body">
 							<div class="required mb-3">
 								<label class="form-label" for="email">Email</label>
-								<g:textField class="form-control" name="email" value="${user.email}"
-											 disabled="disabled"
-								/>
+								<input type="email" class="form-control" id="email" name="email" value="${user.email}"/>
 							</div>
 							<div class="required mb-3">
 								<label class="form-label" for="password">Password</label>
@@ -76,7 +74,7 @@
 							</g:each>
 						</div>
 						<div class="card-footer">
-							<g:submitButton name="update" class="btn btn-primary"
+							<g:submitButton name="updateButton" class="btn btn-primary"
 											value="${message(code: 'default.button.update.label', default: 'Update')}"/>
 						</div>
 					</div>

@@ -25,7 +25,7 @@
                         <div class="card-body">
                             <div class="required mb-3">
                                 <label class="form-label" for="email">Email</label>
-                                <g:textField type='text' class="form-control" name='email' autocomplete='off'/>
+                                <input type='email' class="form-control" id='email' name='email' autocomplete='off'/>
                             </div>
                             <div class="required mb-3">
                                 <label class="form-label" for="password">Password</label>
@@ -37,19 +37,19 @@
                                 <h1>Status</h1>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="enabled">
+                                <g:checkBox class="form-check-input" type="checkbox" name="enabled" checked="true"/>
                                 <label class="form-check-label" for="enabled">Enabled</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="passwordExpired">
+                                <g:checkBox class="form-check-input" type="checkbox" name="passwordExpired"/>
                                 <label class="form-check-label" for="passwordExpired">Password Expired</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="accountLocked">
+                                <g:checkBox class="form-check-input" type="checkbox" name="accountLocked"/>
                                 <label class="form-check-label" for="accountLocked">Account Locked</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="accountExpired">
+                                <g:checkBox class="form-check-input" type="checkbox" name="accountExpired"/>
                                 <label class="form-check-label" for="accountExpired">Account Expired</label>
                             </div>
                             <div class="mt-3 mb-3">
