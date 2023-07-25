@@ -44,7 +44,13 @@ class PaginateTagLib implements TagLibrary {
 
         def domain = domainAttr.toString()
 
-        if (domain != 'project' && !projectId) {
+        def projectOrUserDomain = true
+
+        if (domain != 'project' & domain != 'user') {
+            projectOrUserDomain = false
+        }
+
+        if (!projectOrUserDomain && !projectId) {
             throwTagError("Tag [pagination] requires [projectId] for non-project domains")
         }
 
@@ -149,6 +155,8 @@ class PaginateTagLib implements TagLibrary {
         def href
         if (domain == 'project') {
             href = "/projects"
+        } else if (domain == 'user') {
+            href = '/user/search'
         } else {
             href = "/project/${projectId}/${domain}s"
         }

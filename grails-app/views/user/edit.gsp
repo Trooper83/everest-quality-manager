@@ -5,24 +5,85 @@
 	<title><g:message code="default.edit.label" args="[entityName]" /></title>
 </head>
 <body>
-<div id="edit-user" class="content scaffold-edit" role="main">
-	<h1><g:message code="default.edit.label" args="[entityName]" /></h1>
-	<g:render template="/shared/messagesTemplate" bean="${user}" var="entity"/>
-	<g:form controller="user" action="update" focus="email" useToken="true">
-		<g:hiddenField name="id" value="${user.id}" />
-		<f:all bean="user" />
-		<div class="fieldcontain"><h3>Roles</h3></div>
-		<g:each var='entry' in='${roleMap}'>
-			<div class="fieldcontain">
-				<g:set var='roleName' value='${uiPropertiesStrategy.getProperty(entry.key, "authority")}'/>
-				<label>${roleName}</label>
-				<g:checkBox name='${roleName}' value='${entry.value}'/>
+<div class="container">
+	<main class="mt-3">
+		<div class="row justify-content-center">
+			<div class="col-lg-5 col-md-10">
+				<g:render template="/shared/messagesTemplate" bean="${user}" var="entity"/>
 			</div>
-		</g:each>
-		<fieldset class="buttons">
-			<input class="save" type="submit" data-test-id="edit-update-button" value="${message(code: 'default.button.update.label', default: 'Update')}" />
-		</fieldset>
-	</g:form>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-lg-5 col-md-8">
+				<g:form controller="user" action="update" useToken="true">
+					<g:hiddenField name="id" value="${user.id}" />
+					<g:hiddenField name="version" value="${this.user?.version}"/>
+					<div class="card mt-3 mb-5">
+						<div class="card-header">
+							<h1>
+								<g:message code='default.edit.label' args='[entityName]'/>
+							</h1>
+						</div>
+						<div class="card-body">
+							<div class="required mb-3">
+								<label class="form-label" for="email">Email</label>
+								<g:textField class="form-control" name="email" value="${user.email}"
+											 disabled="disabled"
+								/>
+							</div>
+							<div class="required mb-3">
+								<label class="form-label" for="password">Password</label>
+								<g:passwordField class="form-control" name="password" value="${user.password}"/>
+							</div>
+							<div class="mt-3 mb-3">
+								<h1>Status</h1>
+							</div>
+							<div class="form-check">
+								<g:checkBox class="form-check-input" type="checkbox" name='enabled'
+											value="${user.enabled}"
+								/>
+								<label class="form-check-label" for="enabled">Enabled</label>
+							</div>
+							<div class="form-check">
+								<g:checkBox class="form-check-input" type="checkbox" name='passwordExpired'
+											value="${user.passwordExpired}"
+								/>
+								<label class="form-check-label" for="passwordExpired">Password Expired</label>
+							</div>
+							<div class="form-check">
+								<g:checkBox class="form-check-input" type="checkbox" name='accountLocked'
+											value="${user.accountLocked}"
+								/>
+								<label class="form-check-label" for="accountLocked">Account Locked</label>
+							</div>
+							<div class="form-check">
+								<g:checkBox class="form-check-input" type="checkbox" name='accountExpired'
+											value="${user.accountExpired}"
+								/>
+								<label class="form-check-label" for="accountExpired">Account Expired</label>
+							</div>
+							<div class="mt-3 mb-3">
+								<h1>Roles</h1>
+							</div>
+							<g:each var='role' in='${roleMap}'>
+								<div class="form-check">
+									<g:set var='roleName'
+										   value='${uiPropertiesStrategy.getProperty(role.key, "authority")}'/>
+									<g:checkBox class="form-check-input" type="checkbox" name='${roleName}'
+												value="${role.value}"
+									/>
+									<label class="form-check-label">${roleName}</label>
+								</div>
+							</g:each>
+						</div>
+						<div class="card-footer">
+							<g:submitButton name="update" class="btn btn-primary"
+											value="${message(code: 'default.button.update.label', default: 'Update')}"/>
+						</div>
+					</div>
+				</g:form>
+			</div>
+		</div>
+	</main>
 </div>
 </body>
 </html>
