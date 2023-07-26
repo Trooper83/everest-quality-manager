@@ -33,7 +33,8 @@ class EditUserSpec extends GebSpec {
 
         when:
         EditUserPage page = browser.page(EditUserPage)
-        page.editPerson("user0000@email.com", null,
+        def person1 = DataFactory.person()
+        page.editPerson(person1.email, null,
                 [UserStatuses.ACCOUNT_LOCKED.status, UserStatuses.ENABLED.status],
                 [SecurityRoles.ROLE_APP_ADMIN.role])
 
@@ -42,6 +43,6 @@ class EditUserSpec extends GebSpec {
         edit.areRolesSelected([SecurityRoles.ROLE_BASIC.role, SecurityRoles.ROLE_APP_ADMIN.role])
         edit.areStatusesSelected([UserStatuses.ACCOUNT_LOCKED.status])
         !edit.areStatusesSelected([UserStatuses.ENABLED.status])
-        edit.emailInput.text == "user0000@email.com"
+        edit.emailInput.text == person1.email
     }
 }

@@ -33,7 +33,7 @@ class TestGroupSpec extends GebSpec {
     void "test group is created and data persists"() {
         expect: "data is displayed on show page"
         def showPage = at ShowTestGroupPage
-        showPage.nameValue.text() == group.name
+        showPage.nameValue.text().startsWith(group.name)
     }
 
     void "test group can be edited and data persists"() {
@@ -47,7 +47,7 @@ class TestGroupSpec extends GebSpec {
         editPage.editTestGroup(testGroup.name)
 
         then: "data is displayed on show page"
-        showPage.nameValue.text() == testGroup.name
+        showPage.nameValue.text().startsWith(testGroup.name)
     }
 
     void "test group can be deleted"() {

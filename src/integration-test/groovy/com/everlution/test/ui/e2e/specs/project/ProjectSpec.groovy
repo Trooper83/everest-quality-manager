@@ -66,6 +66,7 @@ class ProjectSpec extends GebSpec {
         page.editProject(edited.name, edited.code, [ad.name], [env.name])
 
         then: "at home page and data displayed"
+        println('testing')
         def showPage = at ShowProjectPage
         verifyAll {
             showPage.nameValue.text() == edited.name
