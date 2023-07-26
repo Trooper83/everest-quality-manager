@@ -28,7 +28,7 @@ environments {
         baseUrl = "http://localhost:8080"
         driver = {
             ChromeOptions o = new ChromeOptions()
-            o.addArguments('headless')
+            //o.addArguments('headless')
             new ChromeDriver(o)
         }
     }

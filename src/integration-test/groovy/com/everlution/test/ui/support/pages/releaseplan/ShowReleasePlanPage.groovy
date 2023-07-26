@@ -146,6 +146,7 @@ class ShowReleasePlanPage extends ShowPage {
         scrollToBottom()
         testCycleButtons[index].click()
         waitFor { testCycleViewLink[index].displayed }
+        scrollToBottom()
         testCycleViewLink[index].click()
     }
 
