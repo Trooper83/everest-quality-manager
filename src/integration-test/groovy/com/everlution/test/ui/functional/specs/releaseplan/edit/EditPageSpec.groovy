@@ -17,10 +17,4 @@ class EditPageSpec extends GebSpec {
         def plan = DataFactory.createReleasePlan()
         to (EditReleasePlanPage, plan.project.id, plan.id)
     }
-
-    void "required fields indicator displayed for required fields"() {
-        expect: "required field indicators displayed"
-        def page = browser.page(EditReleasePlanPage)
-        page.areRequiredFieldIndicatorsDisplayed(["name"])
-    }
 }

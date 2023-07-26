@@ -5,7 +5,7 @@ import com.everlution.test.ui.support.pages.common.ShowPage
 import geb.module.Select
 
 class ShowReleasePlanPage extends ShowPage {
-    static at = { title == "Show ReleasePlan" }
+    static at = { title == "ReleasePlan Details" }
 
     static String convertToPath(Long projectId, Long id) {
         "project/${projectId}/releasePlan/show/${id}"
@@ -143,6 +143,7 @@ class ShowReleasePlanPage extends ShowPage {
      * @param index
      */
     void goToTestCycle(int index) {
+        scrollToBottom()
         testCycleButtons[index].click()
         waitFor { testCycleViewLink[index].displayed }
         testCycleViewLink[index].click()

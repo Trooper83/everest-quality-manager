@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <g:submitButton name="Update" data-test-id="edit-update-button" class="btn btn-primary"
+                        <g:submitButton name="update" class="btn btn-primary"
                                         value="${message(code: 'default.button.update.label', default: 'Update')}" />
                     </div>
                 </div>

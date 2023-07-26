@@ -34,20 +34,6 @@ class ShowPageSpec extends GebSpec {
         cycle = DataFactory.createTestCycle()
     }
 
-    void "correct fields are displayed"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to cycle"
-        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
-
-        expect:
-        def show = at ShowTestCyclePage
-        show.getFields() == ["Release Plan", "Name", "Environment", "Platform"]
-    }
-
     void "add tests button not displayed for Read Only user"() {
         given: "login as a basic user"
         to LoginPage

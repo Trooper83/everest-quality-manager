@@ -8,13 +8,12 @@ class ExecuteTestIterationPage extends BasePage {
     static at = { title == "Execute Test" }
 
     static content = {
-        fieldLabels { $("ol.property-list>li>span") }
         notesTextArea { $("#notes") }
         resultOptions { $("#result>option") }
-        statusMessage { $("div.message") }
+        statusMessage { $(".alert-primary") }
         testCaseLink { $("#testCase") }
         testCycleLink { $("#testCycle") }
-        updateButton { $("[data-test-id=edit-update-button]") }
+        completeButton { $("#complete") }
     }
 
     Select resultSelect() {
@@ -49,6 +48,7 @@ class ExecuteTestIterationPage extends BasePage {
     void setResult(String result, String notes) {
         resultSelect().selected = result
         notesTextArea << notes
-        updateButton.click()
+        scrollToBottom()
+        completeButton.click()
     }
 }

@@ -47,12 +47,4 @@ class CreateReleasePlanPage extends CreatePage {
         releaseDateYearSelect.selected = releaseDateList[2]
         createButton.click()
     }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getModalFields() {
-        return fieldLabels*.text()
-    }
 }

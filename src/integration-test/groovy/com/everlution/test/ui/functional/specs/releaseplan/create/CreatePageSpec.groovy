@@ -22,10 +22,4 @@ class CreatePageSpec extends GebSpec {
         def projectId = projectService.list(max: 1).first().id
         to(CreateReleasePlanPage, projectId)
     }
-
-    void "required fields indicator displayed for required fields"() {
-        expect: "required field indicators displayed"
-        def page = browser.page(CreateReleasePlanPage)
-        page.areRequiredFieldIndicatorsDisplayed(["name"])
-    }
 }

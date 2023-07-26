@@ -5,7 +5,7 @@ import com.everlution.test.ui.support.pages.modules.TableModule
 import geb.module.MultipleSelect
 
 class ShowTestCyclePage extends ShowPage {
-    static at = { title == "Show TestCycle" }
+    static at = { title == "TestCycle Details" }
 
     static String convertToPath(Long projectId, Long id) {
         "/project/${projectId}/testCycle/show/${id}"

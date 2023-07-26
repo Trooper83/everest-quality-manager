@@ -11,9 +11,9 @@ class EditUserPage extends BasePage {
     static at = { title == "Edit User" }
 
     static content = {
-        updateButton { $("[data-test-id=edit-update-button]") }
+        updateButton { $("#updateButton") }
         emailInput { $("#email").module(EmailInput) }
-        errorMessage { $("ul.errors") }
+        errorMessage { $(".alert-danger") }
         passwordInput { $("#password").module(PasswordInput) }
         rolesTabButton { $("[aria-controls='tab-roles']") }
     }
@@ -57,6 +57,7 @@ class EditUserPage extends BasePage {
         }
         editStatuses(statuses)
         editRoles(roles)
+        scrollToBottom()
         updateButton.click()
     }
 

@@ -6,14 +6,14 @@ import geb.module.TextInput
 
 class ProfilePage extends BasePage {
     static url = "/user/profile"
-    static at = { title == "Profile" }
+    static at = { title == "User Profile" }
 
     static content = {
         confirmPasswordInput { $("#confirmPassword").module(PasswordInput) }
         emailInput { $("#email").module(TextInput) }
-        errorMessage { $("ul.errors") }
+        errorMessage { $(".alert-danger") }
         passwordInput { $("#password").module(PasswordInput) }
-        statusMessage { $("div.message") }
+        statusMessage { $(".alert-primary") }
         updateButton { $("#updateButton") }
     }
 

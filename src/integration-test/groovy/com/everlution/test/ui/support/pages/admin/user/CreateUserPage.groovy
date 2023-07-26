@@ -13,7 +13,7 @@ class CreateUserPage extends BasePage {
     static content = {
         createButton { $("#create") }
         emailInput { $("#email").module(EmailInput) }
-        errorMessage { $("ul.errors") }
+        errorMessage { $(".alert-danger") }
         passwordInput { $("#password").module(PasswordInput) }
         statusMessage { $("div.message") }
         rolesTabButton { $("[aria-controls='tab-roles']") }
@@ -32,6 +32,7 @@ class CreateUserPage extends BasePage {
         roles.each {
             $("#${it}").module(Checkbox).check()
         }
+        scrollToBottom()
         createButton.click()
     }
 }

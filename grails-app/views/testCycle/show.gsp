@@ -33,7 +33,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p class="col-4 fw-bold">Release Plan</p>
-                                <p class="col" id="releasePlan">
+                                <p class="col">
                                     <g:link class="property-value" elementId="releasePlan"
                                             uri="/project/${this.testCycle.releasePlan.project.id}/releasePlan/show/${testCycle.releasePlan.id}">
                                         ${testCycle.releasePlan.name}</g:link>
