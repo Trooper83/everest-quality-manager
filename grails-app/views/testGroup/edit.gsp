@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <input class="btn btn-primary" type="submit" data-test-id="edit-update-button"
+                        <input class="btn btn-primary" type="submit" id="update"
                                value="${message(code: 'default.button.update.label', default: 'Update')}" />
                     </div>
                 </div>
