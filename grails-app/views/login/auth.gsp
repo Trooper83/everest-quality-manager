@@ -7,7 +7,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title><g:message code='springSecurity.login.title'/></title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <asset:link rel="icon" href="favicon.ico" type="image/x-ico"/>
 
     <asset:stylesheet src="application.css"/>
 </head>
@@ -20,7 +19,7 @@
                 <g:if test='${flash.message}'>
                     <div class="alert alert-danger" role="alert">${flash.message}</div>
                 </g:if>
-                <h2>Everest Quality Management Tool</h2>
+                <h2>Everest Quality Manager</h2>
                 <div class="form-group mt-3">
                     <label for="email">Email address</label>
                     <input type="email" id="email" name="${usernameParameter ?: 'username'}" class="form-control"

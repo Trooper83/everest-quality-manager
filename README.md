@@ -22,3 +22,11 @@ grails -Dgrails.env={env} dbm-update
 # sync db / record changes have been executed
 grails -Dgrails.env={env} dbm-changelog-sync
 ```
+
+## Local Development
+1. Install jdk
+2. Install grails
+3. Download code from repo
+
+### Upgrading Gradle
+To upgrade the gradle version locally modify the version number in the url of `./gradle/wrapper/gradle-wrapper.properties`
