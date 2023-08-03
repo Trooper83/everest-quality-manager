@@ -176,3 +176,11 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+    model_db:
+        dataSource:
+            dbCreate: create
+            url: jdbc:postgresql://localhost:5432/everest_model
+            driverClassName: org.postgresql.Driver
+            username: "everest_admin"
+            password: "!I-Am-Invincible#2022!"
+            dialect: org.hibernate.dialect.PostgreSQLDialect
