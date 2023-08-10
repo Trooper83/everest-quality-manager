@@ -128,9 +128,9 @@ environments:
         dataSource:
             dbCreate: none
             driverClassName: org.postgresql.Driver
-            url: jdbc:postgresql://localhost:5432/everest_int
-            username: "everest_admin"
-            password: "!I-Am-Invincible#2022!"
+            url: ${EVEREST_DB_URL_INT}
+            username: ${EVEREST_DB_USER_INT}
+            password: ${EVEREST_DB_PASSWORD_INT}
             dialect: org.hibernate.dialect.PostgreSQLDialect
             properties:
                 jmxEnabled: true
@@ -154,9 +154,9 @@ environments:
         dataSource:
             dbCreate: none
             driverClassName: org.postgresql.Driver
-            url: jdbc:postgresql://localhost:5432/everest
-            username: "everest_admin"
-            password: "!I-Am-Invincible#2022!" #TODO: update once live
+            url: ${EVEREST_DB_URL}
+            username: ${EVEREST_DB_USER}
+            password: ${EVEREST_DB_PASSWORD}
             dialect: org.hibernate.dialect.PostgreSQLDialect
             properties:
                 jmxEnabled: true
