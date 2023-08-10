@@ -71,3 +71,27 @@ To upgrade the gradle version locally modify the version number in the url of `.
 2. Generate script
 3. Modify script if needed
 4. Execute script against target db
+
+---------
+## Docker
+
+### Building Image
+- Execute following command from project root
+```bash
+docker build -t everest .
+```
+
+### Running Container
+- Execute the following command
+```bash 
+docker run -p 3333:8080 -e EVEREST_DB_URL -e EVEREST_DB_USER -e EVEREST_DB_PASSWORD everest
+```
+
+### Zip/Unzip Image
+
+```bash
+docker save --output everest-app.tar everest
+ 
+docker load --input everest-app.tar
+```
+ 

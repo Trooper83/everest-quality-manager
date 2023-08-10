@@ -15,10 +15,10 @@ class BootStrap {
                 seedTestData()
             }
             integrated {
-                // intentionally blank
+                // intentionally left blank
             }
             production {
-                // intentionally blank
+                // intentionally left blank
             }
             model_db {
                 initDB()
