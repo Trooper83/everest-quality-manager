@@ -5,8 +5,6 @@ import org.grails.orm.hibernate.HibernateDatastore
 
 class BootStrap {
 
-    HibernateDatastore hibernateDatastore
-
     def init = { servletContext ->
         environments {
             test {
@@ -18,8 +16,10 @@ class BootStrap {
                 seedTestData()
             }
             integrated {
+                // intentionally left blank
             }
             production {
+                // intentionally left blank
             }
             model_db {
                 initDB()
