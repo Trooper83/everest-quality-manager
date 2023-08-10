@@ -1,7 +1,6 @@
 package com.everlution
 
 import grails.gorm.transactions.Transactional
-import org.grails.orm.hibernate.HibernateDatastore
 
 class BootStrap {
 
