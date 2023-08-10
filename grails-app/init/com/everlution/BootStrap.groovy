@@ -1,8 +1,11 @@
 package com.everlution
 
 import grails.gorm.transactions.Transactional
+import org.grails.orm.hibernate.HibernateDatastore
 
 class BootStrap {
+
+    HibernateDatastore hibernateDatastore
 
     def init = { servletContext ->
         environments {
@@ -15,10 +18,10 @@ class BootStrap {
                 seedTestData()
             }
             integrated {
-                // intentionally blank
+                setDataSourceProperties()
             }
             production {
-                // intentionally blank
+                setDataSourceProperties()
             }
             model_db {
                 initDB()
@@ -27,6 +30,13 @@ class BootStrap {
     }
 
     def destroy = {
+    }
+
+    @Transactional
+    private void setDataSourceProperties() {
+        hibernateDatastore.getConnectionSources().getDefaultConnectionSource().getSettings().dataSource.setUrl(System.getenv('EVEREST_DB_URL'))
+        hibernateDatastore.getConnectionSources().getDefaultConnectionSource().getSettings().dataSource.setUsername(System.getenv('EVEREST_DB_USER'))
+        hibernateDatastore.getConnectionSources().getDefaultConnectionSource().getSettings().dataSource.setPassword(System.getenv('EVEREST_DB_PASSWORD'))
     }
 
     @Transactional

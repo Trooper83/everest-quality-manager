@@ -130,7 +130,7 @@ environments:
             driverClassName: org.postgresql.Driver
             url: jdbc:postgresql://localhost:5432/everest_int
             username: "everest_admin"
-            password: "!I-Am-Invincible#2022!" #TODO: update once live
+            password: "!I-Am-Invincible#2022!"
             dialect: org.hibernate.dialect.PostgreSQLDialect
             properties:
                 jmxEnabled: true
