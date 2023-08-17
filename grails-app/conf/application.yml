@@ -124,6 +124,14 @@ environments:
             username: sa
             password: ''
             dialect: org.hibernate.dialect.H2Dialect
+    local:
+        dataSource:
+            dbCreate: create
+            url: jdbc:postgresql://localhost:5432/everest_local
+            driverClassName: org.postgresql.Driver
+            username: "everest_admin"
+            password: "!I-Am-Invincible#2022!"
+            dialect: org.hibernate.dialect.PostgreSQLDialect
     integrated:
         dataSource:
             dbCreate: none

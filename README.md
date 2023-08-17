@@ -64,13 +64,16 @@ To upgrade the gradle version locally modify the version number in the url of `.
 3. Change `root` password
 4. Create user `everest_admin` with all permissions
 5. Create database named `everest`
-6. Restore the database using the model_db file
+6. Restore the database using the `model_db` file
 
 ### Updating Database
-1. Use PG Schema Diff tool to compare source db (model_db) -> target (db to update)
-2. Generate script
-3. Modify script if needed
-4. Execute script against target db
+1. Create and test changes with `local` environment
+2. Use PG Schema Diff tool to compare source db (local) -> target (model)
+3. Generate script
+4. Modify script if needed
+5. Execute script against target db
+6. Run `model_db` environment to update model schema
+7. Save `model_db` backup file
 
 ---------
 ## Docker
