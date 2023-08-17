@@ -34,6 +34,12 @@
                         </li>
                         <li class="list-group-item border-bottom">
                             <div class="row">
+                                <p class="col-4 fw-bold">Executed By</p>
+                                <p class="col" id="executedBy">${testIteration.person?.email}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
                                 <p class="col-4 fw-bold">Test Case</p>
                                 <p class="col">
                                     <g:link class="property-value" elementId="testCase"

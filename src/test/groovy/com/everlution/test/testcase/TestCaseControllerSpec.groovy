@@ -1,5 +1,6 @@
 package com.everlution.test.testcase
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
@@ -231,6 +232,36 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         then:"a redirect is issued to the show action"
         response.redirectedUrl == '/project/1/testCase/show/1'
         controller.flash.message == "default.created.message"
+    }
+
+    void "save action sets person property"() {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * save(_ as TestCase)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person(email: "testing@testing.com")
+        }
+
+        response.reset()
+        setToken(params)
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        def testCase = new TestCase(params)
+        def project = new Project()
+        project.id = 1
+        testCase.id = 1
+        testCase.project = project
+
+        expect:
+        testCase.person == null
+
+        when:"the save action is executed with a valid instance"
+        controller.save(testCase)
+
+        then:"person is added to testcase"
+        testCase.person.email == "testing@testing.com"
     }
 
     void "test the save action with an invalid instance"() {

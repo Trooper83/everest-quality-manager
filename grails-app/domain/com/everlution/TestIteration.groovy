@@ -4,6 +4,7 @@ class TestIteration {
 
     String name
     String notes
+    Person person
     String result
     TestCase testCase
     TestCycle testCycle
@@ -20,6 +21,7 @@ class TestIteration {
     static constraints = {
         name blank: false, maxSize: 255, nullable: false
         notes blank: true, maxSize: 1000, nullable: true
+        person nullable: true
         result blank: false, nullable: false, inList: ["ToDo", "Pass", "Fail"]
         steps nullable: false
         testCase nullable: false
