@@ -27,7 +27,7 @@ class CreatePageSpec extends GebSpec {
 
         then: "validation message is displayed"
         page.errors.text() ==
-                "Property [code] of class [class com.everlution.Project] with value [TT] is less than the minimum size of [3]"
+                "Property [code] with value [TT] is less than the minimum size of [3]"
     }
 
     void "name field unique message displayed"() {
@@ -37,7 +37,7 @@ class CreatePageSpec extends GebSpec {
 
         then: "validation message is displayed"
         page.errors.text() ==
-                "Property [name] of class [class com.everlution.Project] with value [Bootstrap project] must be unique"
+                "Property [name] with value [Bootstrap project] must be unique"
     }
 
     void "code field unique message displayed"() {
@@ -47,7 +47,7 @@ class CreatePageSpec extends GebSpec {
 
         then: "validation message is displayed"
         page.errors.text() ==
-                "Property [code] of class [class com.everlution.Project] with value [BSP] must be unique"
+                "Property [code] with value [BSP] must be unique"
     }
 
     void "errors message displayed when two areas with same name are added"() {
@@ -62,7 +62,7 @@ class CreatePageSpec extends GebSpec {
 
         then: "message displayed"
         page.errors.text() ==
-                "Property [areas] of class [class com.everlution.Project] with value [[com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
+                "Property [areas] with value [[com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
     }
 
     void "errors message displayed when two envs with same name are added"() {
@@ -77,6 +77,6 @@ class CreatePageSpec extends GebSpec {
 
         then: "message displayed"
         page.errors.text() ==
-                "Property [environments] of class [class com.everlution.Project] with value [[com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
+                "Property [environments] with value [[com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
     }
 }

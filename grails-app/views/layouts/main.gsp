@@ -53,6 +53,8 @@
                     <g:form controller="logout" method="POST">
                         <button data-test-id="main-logout-button" class="btn btn-link dropdown-item">Logout</button>
                     </g:form>
+                    <div class="dropdown-divider"></div>
+                    <p class="dropdown-item">version: <g:meta name="info.app.version"/></p>
                 </div>
             </li>
         </ul>

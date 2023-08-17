@@ -26,7 +26,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Person</th>
+                            <th>Created By</th>
                             <th>Project</th>
                             <th>Platform</th>
                             <th>Type</th>

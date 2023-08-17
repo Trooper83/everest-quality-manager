@@ -184,7 +184,7 @@ class ProfileSpec extends GebSpec {
 
         then:
         page.errorMessage.text() ==
-                "Property [password] of class [class com.everlution.Person] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
+                "Property [password] with value [password] does not match the required pattern [^.*(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#\$%^&]).*\$]"
     }
 
     void "user error message displayed for too short password"() {
@@ -206,6 +206,6 @@ class ProfileSpec extends GebSpec {
         page.updatePassword("passwor")
 
         then:
-        page.errorMessage.displayed
+        page.errorMessage.size() == 2
     }
 }

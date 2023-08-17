@@ -23,7 +23,7 @@ class CreateProjectPage extends BasePage {
         environmentTagInput { text -> environmentItem(text).find("[data-test-id='tag-input']") }
         environmentTagRemoveButton { text -> environmentTag(text).find("svg") }
         environmentTags(required: false) { $("#environmentRow p") }
-        errors { $("ul.alert-danger>li") }
+        errors { $("div.alert-danger") }
         nameInput { $("#name") }
         tooltip(wait: true) { $("div[role=tooltip]") }
     }

@@ -34,7 +34,7 @@ class EditPageSpec extends GebSpec {
 
         then: "message displayed"
         page.errorMessages.text() ==
-                "Property [areas] of class [class com.everlution.Project] with value [[com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
+                "Property [areas] with value [[com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
     }
 
     void "error message displayed when adding two envs with the same name to project"() {
@@ -46,6 +46,6 @@ class EditPageSpec extends GebSpec {
 
         then: "message displayed"
         page.errorMessages.text() ==
-                "Property [environments] of class [class com.everlution.Project] with value [[com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
+                "Property [environments] with value [[com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
     }
 }

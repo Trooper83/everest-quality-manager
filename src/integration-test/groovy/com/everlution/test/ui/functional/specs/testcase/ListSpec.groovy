@@ -37,7 +37,7 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListTestCasePage page = browser.page(ListTestCasePage)
-        page.listTable.getHeaders() == ["Name", "Description", "Person", "Project", "Platform", "Type"]
+        page.listTable.getHeaders() == ["Name", "Description", "Created By", "Project", "Platform", "Type"]
     }
 
     void "clicking name column directs to show page"() {
