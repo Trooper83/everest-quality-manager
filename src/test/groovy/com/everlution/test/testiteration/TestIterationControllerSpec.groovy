@@ -6,6 +6,7 @@ import com.everlution.TestCycle
 import com.everlution.TestIteration
 import com.everlution.TestIterationController
 import com.everlution.TestIterationService
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -178,6 +179,10 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
             1 * save(_ as TestIteration)
         }
 
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
+
         when:"The save action is executed with a valid instance"
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
@@ -216,6 +221,10 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
                 throw new ValidationException("Invalid instance", testIteration.errors)
             }
             1 * read(_) >> iteration
+        }
+
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
         }
 
         when:"The save action is executed with an invalid instance"

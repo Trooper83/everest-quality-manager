@@ -1,5 +1,6 @@
 package com.everlution
 
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 
@@ -9,6 +10,7 @@ import static org.springframework.http.HttpStatus.OK
 
 class TestIterationController {
 
+    SpringSecurityService springSecurityService
     TestIterationService testIterationService
 
     static allowedMethods = [update: "PUT"]
@@ -51,6 +53,8 @@ class TestIterationController {
                 return
             }
 
+            def person = springSecurityService.getCurrentUser() as Person
+            testIteration.person = person
             try {
                 testIterationService.save(testIteration)
             } catch (ValidationException ignored) {

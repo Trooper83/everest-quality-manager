@@ -25,6 +25,15 @@ environments {
 
     // run via “./gradlew -Dgeb.env=integrated iT”
     integrated {
+        baseUrl = "https://www.everestquality.com"
+        driver = {
+            ChromeOptions o = new ChromeOptions()
+            //o.addArguments('headless')
+            new ChromeDriver(o)
+        }
+    }
+    // run via “./gradlew -Dgeb.env=local iT”
+    local {
         baseUrl = "http://localhost:8080"
         driver = {
             ChromeOptions o = new ChromeOptions()

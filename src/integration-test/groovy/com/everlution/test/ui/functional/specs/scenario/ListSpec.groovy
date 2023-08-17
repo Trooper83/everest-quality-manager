@@ -33,7 +33,7 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListScenarioPage page = browser.page(ListScenarioPage)
-        page.listTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Type"]
+        page.listTable.getHeaders() == ["Name", "Description", "Created By", "Platform", "Type"]
     }
 
     void "clicking name column directs to show page"() {

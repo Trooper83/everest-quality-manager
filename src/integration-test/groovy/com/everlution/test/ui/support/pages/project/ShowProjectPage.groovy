@@ -13,7 +13,7 @@ class ShowProjectPage extends BasePage {
         deleteLink(required: false) { $("[data-test-id=show-delete-link]") }
         editLink(required: false) { $("[data-test-id=show-edit-link]") }
         environmentsList { $("#environments") }
-        errorsMessage { $("ul.alert-danger") }
+        errorsMessage { $(".alert-danger") }
         nameValue { $("#name") }
         sideBar { module SideBarModule }
         statusMessage { $("div.alert-primary") }

@@ -13,8 +13,6 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ListSpec extends GebSpec {
 
-    ProjectService projectService
-
     void "verify list table headers order"() {
         given: "login as read only user"
         to LoginPage
@@ -33,7 +31,7 @@ class ListSpec extends GebSpec {
         def page = at ListBugPage
 
         then: "correct headers are displayed"
-        page.listTable.getHeaders() == ["Name", "Description", "Person", "Platform", "Status"]
+        page.listTable.getHeaders() == ["Name", "Description", "Created By", "Platform", "Status"]
     }
 
     void "delete message displays after bug deleted"() {

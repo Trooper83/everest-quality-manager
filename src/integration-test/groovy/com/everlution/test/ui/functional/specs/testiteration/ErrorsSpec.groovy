@@ -71,8 +71,8 @@ class ErrorsSpec extends GebSpec {
         go "/project/${project.id}/testCycle/show/${testCycle.id}"
 
         when:
-        def show = at ShowTestCyclePage
-        show.testsTable.clickCell("", 0)
+        def iterationId = testCycle.testIterations.first().id
+        go "/project/${project.id}/testIteration/execute/${iterationId}"
 
         then: "unauthorized message is displayed"
         DeniedPage page = at DeniedPage

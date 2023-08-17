@@ -203,4 +203,12 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         then: "validation passes"
         domain.validate(["notes"])
     }
+
+    void "person can be null"() {
+        when:
+        domain.person = null
+
+        then:
+        domain.validate(["person"])
+    }
 }

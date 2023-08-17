@@ -1,5 +1,6 @@
 package com.everlution.test.scenario
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Scenario
@@ -209,6 +210,36 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         then:"redirect is issued to the show action"
         response.redirectedUrl == '/project/1/scenario/show/1'
         controller.flash.message == "default.created.message"
+    }
+
+    void "save sets person property"() {
+        given:
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * save(_ as Scenario)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person(email: "testing@testing.com")
+        }
+
+        response.reset()
+        setToken(params)
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        def scenario = new Scenario(params)
+        def project = new Project()
+        scenario.id = 1
+        project.id = 1
+        scenario.project = project
+
+        expect:
+        scenario.person == null
+
+        when:"the save action is executed with a valid instance"
+        controller.save(scenario)
+
+        then:"redirect is issued to the show action"
+        scenario.person.email == "testing@testing.com"
     }
 
     void "save action with an invalid instance"() {

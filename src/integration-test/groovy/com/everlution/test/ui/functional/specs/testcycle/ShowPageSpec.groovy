@@ -8,6 +8,7 @@ import com.everlution.ReleasePlanService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestCycle
+import com.everlution.TestCycleService
 import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
@@ -29,6 +30,7 @@ class ShowPageSpec extends GebSpec {
     ProjectService projectService
     ReleasePlanService releasePlanService
     TestCaseService testCaseService
+    TestCycleService testCycleService
 
     def setup() {
         cycle = DataFactory.createTestCycle()
@@ -60,6 +62,77 @@ class ShowPageSpec extends GebSpec {
         expect:
         def show = at ShowTestCyclePage
         show.addTestsButton.displayed
+
+        where:
+        username                        | password
+        Credentials.BASIC.email         | Credentials.BASIC.password
+        Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
+        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
+        Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
+    }
+
+    void "execute button not displayed for Read Only user"() {
+        given:
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+        def tc = DataFactory.testCase()
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+        ArrayList<TestCase> tcList = [testCase]
+        testCycleService.addTestIterations(testCycle, tcList)
+
+        when:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, testCycle.id)
+
+        then:
+        def show = at ShowTestCyclePage
+        show.testsTable.rowCount > 0
+        !show.testsTable.isValueInColumn("", "Execute")
+    }
+
+    void "execute button displayed for authorized users"(String username, String password) {
+        given:
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+        def tc = DataFactory.testCase()
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+        ArrayList<TestCase> tcList = [testCase]
+        testCycleService.addTestIterations(testCycle, tcList)
+
+        when:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(username, password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, cycle.releasePlan.project.id, testCycle.id)
+
+        then:
+        def show = at ShowTestCyclePage
+        show.testsTable.rowCount > 0
+        show.testsTable.isValueInColumn("", "Execute")
 
         where:
         username                        | password
@@ -365,7 +438,7 @@ class ShowPageSpec extends GebSpec {
         show.addTestsByGroup(group.name)
 
         then:
-        show.testsTable.getHeaders() == ["Id", "Name", "Result", ""]
+        show.testsTable.getHeaders() == ["Id", "Name", "Result", "Executed By", ""]
     }
 
     void "success message displays when tests added"() {

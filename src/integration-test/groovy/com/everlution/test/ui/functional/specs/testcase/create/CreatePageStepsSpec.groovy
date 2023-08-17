@@ -61,8 +61,9 @@ class CreatePageStepsSpec extends GebSpec {
         createPage.createButton.click()
 
         expect:
-        createPage.errorsMessage.text() ==
-                "Property [action] of class [class com.everlution.Step] with value [null] does not pass custom validation\nProperty [result] of class [class com.everlution.Step] with value [null] does not pass custom validation"
+        createPage.errorsMessage*.text() ==
+                ["Property [action] with value [null] does not pass custom validation",
+                "Property [result] with value [null] does not pass custom validation"]
     }
 
     void "remove button only displayed for last step"() {

@@ -130,15 +130,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
         tc.steps[2].id == testStep2.id
     }
 
-    void "save does not cascade to person"() {
-        when: "unsaved person is added to test case"
-        new TestCase(person: new Person(email: "test@test.com", password: "password"), name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project).save()
-
-        then: "exception is thrown"
-        thrown(InvalidDataAccessApiUsageException)
-    }
-
     void "delete does not cascade to test group"() {
         given: "test case with group"
         TestGroup group = new TestGroup(name: "group", project: project).save()

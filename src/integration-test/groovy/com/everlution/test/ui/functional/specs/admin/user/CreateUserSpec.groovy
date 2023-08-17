@@ -57,7 +57,7 @@ class CreateUserSpec extends GebSpec {
         page.createPerson(Credentials.BASIC.email, Credentials.BASIC.password, [], [])
 
         then:
-        page.errorMessage.text() == "Property [email] of class [class com.everlution.Person] with value [basic@basic.com] must be unique"
+        page.errorMessage.text() == "Property [email] with value [basic@basic.com] must be unique"
     }
 
     void "user attributes are persisted and displayed on edit view"() {

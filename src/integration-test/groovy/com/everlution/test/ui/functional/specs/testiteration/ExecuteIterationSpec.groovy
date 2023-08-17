@@ -69,5 +69,6 @@ class ExecuteIterationSpec extends GebSpec {
         show.statusMessage.text() ==~ /Test Iteration \S+ updated/
         show.resultValue.text() == "Pass"
         show.notesValue.text() == "Some notes"
+        show.executedByValue.text() == Credentials.BASIC.email
     }
 }

@@ -7,6 +7,7 @@ class ShowTestIterationPage extends ShowPage {
     static at = { title == "TestIteration Details" }
 
     static content = {
+        executedByValue { $("#executedBy") }
         notesValue { $("#notes") }
         resultValue { $("#result") }
         testCaseLink { $("#testCase") }

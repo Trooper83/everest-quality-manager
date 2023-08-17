@@ -63,6 +63,7 @@
                             <th>Id</th>
                             <th>Name</th>
                             <th>Result</th>
+                            <th>Executed By</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -72,7 +73,12 @@
                                 <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/show/${iteration.id}">${iteration.id}</g:link></td>
                                 <td>${iteration.name}</td>
                                 <td>${iteration.result}</td>
-                                <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/execute/${iteration.id}">Execute</g:link></td>
+                                <td>${iteration.person?.email}</td>
+                                <td>
+                                    <sec:ifAnyGranted roles="ROLE_BASIC">
+                                        <g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/execute/${iteration.id}">Execute</g:link>
+                                    </sec:ifAnyGranted>
+                                </td>
                             </tr>
                         </g:each>
                         </tbody>

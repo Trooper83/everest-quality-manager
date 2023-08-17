@@ -69,11 +69,11 @@
                         <asset:image src="icons/info.svg" alt="info" width="15" height="15"
                                      data-toggle="tooltip" data-placement="top" title="ALT+n to add a new row"/>
                         <div class="row mb-3 mt-3">
-                            <div class="col-5 required mt-3">
+                            <div class="col-5 mt-3">
                                 <label class="form-label" for="expected">Expected</label>
                                 <g:textArea class="form-control" name="expected" value="${bug.expected}" maxLength="500"></g:textArea>
                             </div>
-                            <div class="col-5 required mt-3">
+                            <div class="col-5 mt-3">
                                 <label class="form-label" for="actual">Actual</label>
                                 <g:textArea class="form-control" name="actual" value="${bug.actual}" maxLength="500"></g:textArea>
                             </div>

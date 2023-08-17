@@ -14,6 +14,10 @@ class BootStrap {
                 seedTestUsers()
                 seedTestData()
             }
+            local {
+                seedTestUsers()
+                seedTestData()
+            }
             integrated {
                 // intentionally left blank
             }
