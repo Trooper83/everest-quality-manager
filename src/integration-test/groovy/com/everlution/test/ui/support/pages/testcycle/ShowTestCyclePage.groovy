@@ -90,4 +90,8 @@ class ShowTestCyclePage extends ShowPage {
     void goToReleasePlan() {
         releasePlanLink.click()
     }
+
+    void isExecuteButtonDisplayed() {
+
+    }
 }
