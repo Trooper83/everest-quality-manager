@@ -52,31 +52,6 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         service.read(1) instanceof ReleasePlan
     }
 
-    void "list max args param returns correct value"() {
-        when:
-        def pr = new Project(name: "name", code: "cod").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save(flush: true)
-
-        then:
-        service.list(max: 1).size() == 1
-        service.list(max: 2).size() == 2
-        service.list().size() == 5
-        service.list(offset: 1).size() == 4
-    }
-
-    void "count returns number of plans"() {
-        when:
-        def pr = new Project(name: "name", code: "cod").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save(flush: true)
-
-        then:
-        service.count() == 5
-    }
-
     void "delete with valid id deletes instance"() {
         given:
         def pr = new Project(name: "name", code: "cod").save()

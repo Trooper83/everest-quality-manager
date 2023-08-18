@@ -4,9 +4,13 @@ class Step {
 
     String action
     Date dateCreated
+    Collection linkedSteps
+    String name
+    Person person
+    Project project
     String result
 
-    static belongsTo = [Bug, TestCase]
+    static hasMany = [ linkedSteps: Step ]
 
     static constraints = {
         action blank: true, maxSize: 500, nullable: true, validator: {
@@ -15,6 +19,10 @@ class Step {
                     return false
             }
         }
+        linkedSteps nullable: true
+        name blank: true, maxSize: 255, nullable: true
+        person nullable: false
+        project nullable: false
         result blank: true, maxSize: 500, nullable: true, validator: {
             val, Step obj ->
                 if(val == null && obj.action == null) {

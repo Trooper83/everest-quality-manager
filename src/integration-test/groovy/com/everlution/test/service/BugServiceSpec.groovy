@@ -4,9 +4,8 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Person
 import com.everlution.Project
-import com.everlution.ProjectService
 import com.everlution.Step
-import com.everlution.TestStepService
+import com.everlution.StepService
 import com.everlution.command.RemovedItems
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
@@ -20,7 +19,7 @@ class BugServiceSpec extends Specification {
 
     BugService bugService
     SessionFactory sessionFactory
-    TestStepService testStepService
+    StepService testStepService
 
     Project project
 

@@ -3,12 +3,11 @@ package com.everlution
 import grails.gorm.services.Service
 
 @Service(Step)
-interface TestStepService {
+interface StepService {
 
     Step get(Serializable id)
 
-    Long count()
-
     void delete(Serializable id)
 
+    Step save(Step step)
 }

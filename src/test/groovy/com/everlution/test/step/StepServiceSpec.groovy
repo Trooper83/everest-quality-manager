@@ -1,12 +1,14 @@
 package com.everlution.test.step
 
 import com.everlution.Step
-import com.everlution.TestStepService
+import com.everlution.StepService
+import com.everlution.TestCase
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
+import grails.validation.ValidationException
 import spock.lang.Specification
 
-class StepServiceSpec extends Specification implements ServiceUnitTest<TestStepService>, DataTest {
+class StepServiceSpec extends Specification implements ServiceUnitTest<StepService>, DataTest {
 
     def setupSpec() {
         mockDomain(Step)
@@ -30,13 +32,6 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<TestStepS
         service.get(999999) == null
     }
 
-    void "count returns number of steps"() {
-        setupData()
-
-        expect:
-        service.count() == 3
-    }
-
     void "delete with valid id deletes instance"() {
         given:
         def s = new Step(action: "action", result: "result").save(flush: true)
@@ -50,5 +45,27 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<TestStepS
 
         then:
         service.get(s.id) == null
+    }
+
+    void "save with valid object returns instance"() {
+        given:
+        def step = new Step(action: 'action', result: 'result')
+
+        when:
+        def saved = service.save(step)
+
+        then:
+        saved instanceof Step
+    }
+
+    void "save with invalid object throws validation exception"() {
+        given:
+        def step = new Step()
+
+        when:
+        service.save(step)
+
+        then:
+        thrown(ValidationException)
     }
 }

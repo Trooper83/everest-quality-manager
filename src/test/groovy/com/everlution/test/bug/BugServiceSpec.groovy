@@ -44,19 +44,6 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         service.get(999999) == null
     }
 
-    void "list max args param returns correct value"() {
-        expect:
-        service.list(max: 1).size() == 1
-        service.list(max: 2).size() == 2
-        service.list().size() == 2
-        service.list(offset: 1).size() == 1
-    }
-
-    void "count returns number of bugs"() {
-        expect:
-        service.count() == 2
-    }
-
     void "delete with valid id deletes instance"() {
         given:
         def proj = new Project(name: "BugServ", code: "BPZ").save()

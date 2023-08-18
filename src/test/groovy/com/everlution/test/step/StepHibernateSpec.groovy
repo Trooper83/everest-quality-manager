@@ -66,4 +66,24 @@ class StepHibernateSpec extends HibernateSpec {
         def b = Bug.findById(bug.id)
         b.steps.size() == 0
     }
+
+    void "linkedStep can be removed from step"() {
+        expect:
+        false
+    }
+
+    void "linkedStep can be added to step"() {
+        expect:
+        false
+    }
+
+    void "deleting step does not delete linkedStep"() {
+        expect:
+        false
+    }
+
+    void "deleting linkedStep does not delete step"() {
+        expect:
+        false
+    }
 }

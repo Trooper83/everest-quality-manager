@@ -130,4 +130,63 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         then: "result validation passes"
         domain.validate(["result"])
     }
+
+    void "linkedSteps can be null"() {
+        when:
+        domain.linkedSteps == null
+
+        then:
+        domain.validate(["linkedSteps"])
+    }
+
+    void "project cannot be null"() {
+        when:
+        domain.project == null
+
+        then:
+        !domain.validate(["project"])
+    }
+
+    void "name can be null"() {
+        when:
+        domain.name = null
+
+        then:
+        domain.validate(["name"])
+    }
+
+    void "name can be blank"() {
+        when:
+        domain.name = ""
+
+        then:
+        domain.validate(["name"])
+    }
+
+    void "name cannot exceed 255 characters"() {
+        when: "for a string of 256 characters"
+        String str = "a" * 256
+        domain.name = str
+
+        then: "validation fails"
+        !domain.validate(["name"])
+        domain.errors["name"].code == "maxSize.exceeded"
+    }
+
+    void "name validates with 255 characters"() {
+        when: "for a string of 255 characters"
+        String str = "a" * 255
+        domain.name = str
+
+        then: "validation passes"
+        domain.validate(["name"])
+    }
+
+    void "person cannot be null"() {
+        when:
+        domain.person = null
+
+        then:
+        !domain.validate(["person"])
+    }
 }
