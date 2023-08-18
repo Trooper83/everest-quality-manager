@@ -8,7 +8,7 @@ import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
-import com.everlution.StepService
+import com.everlution.IStepService
 import com.everlution.command.RemovedItems
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
@@ -24,7 +24,7 @@ class TestCaseServiceSpec extends Specification {
     ProjectService projectService
     TestCaseService testCaseService
     TestGroupService testGroupService
-    StepService testStepService
+    IStepService testStepService
     SessionFactory sessionFactory
 
     @Shared Project project

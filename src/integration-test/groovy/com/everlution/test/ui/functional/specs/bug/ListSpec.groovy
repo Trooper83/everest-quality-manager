@@ -1,6 +1,5 @@
 package com.everlution.test.ui.functional.specs.bug
 
-import com.everlution.ProjectService
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage

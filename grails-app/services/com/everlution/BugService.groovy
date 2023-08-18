@@ -7,7 +7,7 @@ import grails.gorm.transactions.Transactional
 @Service(Bug)
 abstract class BugService implements IBugService {
 
-    StepService stepService
+    IStepService stepService
 
     @Transactional
     SearchResult findAllByProject(Project project, Map args) {
