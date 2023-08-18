@@ -1,5 +1,6 @@
 package com.everlution.test.ui.e2e.specs.testcase
 
+import com.everlution.Step
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -31,7 +32,7 @@ class TestCaseSpec extends GebSpec {
 
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform)
+                tc.type, platform, [new Step(action: 'Login to app', result: 'You are logged into the app')])
     }
 
     void "test case is created and data persists"() {
@@ -46,6 +47,7 @@ class TestCaseSpec extends GebSpec {
             showPage.platformValue.text() == platform
             showPage.areEnvironmentsDisplayed([env])
             showPage.areTestGroupsDisplayed(['Regression'])
+            showPage.isStepsRowDisplayed('Login to app', 'You are logged into the app')
         }
     }
 

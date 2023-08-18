@@ -72,7 +72,7 @@ class CreateTestCaseSpec extends GebSpec {
         def tcd = DataFactory.testCase()
         createPage.createTestCase(
                 tcd.name, tcd.description, area.name, [env.name, env1.name], [group.name, group1.name],
-                "Automated", "UI", "Web")
+                "Automated", "UI", "Web", [])
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage

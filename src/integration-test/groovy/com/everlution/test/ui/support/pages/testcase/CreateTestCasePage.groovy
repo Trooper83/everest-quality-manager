@@ -1,5 +1,6 @@
 package com.everlution.test.ui.support.pages.testcase
 
+import com.everlution.Step
 import com.everlution.test.ui.support.pages.common.CreatePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
@@ -67,7 +68,7 @@ class CreateTestCasePage extends CreatePage {
      * creates a test case with the supplied data
      */
     void createTestCase(String name, String description, String area, List<String> environments,
-                        List<String> testGroups, String method, String type, String platform) {
+                        List<String> testGroups, String method, String type, String platform, List<Step> steps) {
         nameInput = name
         descriptionInput = description
         executionMethodSelect().selected = method
@@ -76,6 +77,10 @@ class CreateTestCasePage extends CreatePage {
         areaSelect().selected = area
         environmentsSelect().selected = environments
         testGroupsSelect().selected = testGroups
+        scrollToBottom()
+        steps.each { it ->
+            testStepTable.addStep(it.action, it.result)
+        }
         scrollToBottom()
         createButton.click()
     }
