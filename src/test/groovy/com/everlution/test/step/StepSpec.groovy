@@ -1,5 +1,7 @@
 package com.everlution.test.step
 
+import com.everlution.Person
+import com.everlution.Project
 import com.everlution.Step
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
@@ -11,7 +13,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
     void "test instances are persisted"() {
         setup:
-        new Step(action: "First Test step", result: "test").save()
+        new Step(action: "First Test step", result: "test", person: new Person(), project: new Project()).save()
 
         expect:
         Step.count() == 1

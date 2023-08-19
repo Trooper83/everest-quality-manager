@@ -12,6 +12,10 @@ class Step {
 
     static hasMany = [ linkedSteps: Step ]
 
+    static mapping = {
+        linkedSteps cascade: "none"
+    }
+
     static constraints = {
         action blank: true, maxSize: 500, nullable: true, validator: {
             val, Step obj ->
