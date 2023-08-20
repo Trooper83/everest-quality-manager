@@ -11,8 +11,8 @@ abstract class StepService implements IStepService {
      */
     @Transactional
     SearchResult findAllByProject(Project project, Map args) {
-        int c = Step.countByProject(project)
-        List steps = Step.findAllByProject(project, args)
+        int c = Step.countByProjectAndIsBuilderStep(project, true)
+        List steps = Step.findAllByProjectAndIsBuilderStep(project, true, args)
         return new SearchResult(steps, c)
     }
 
@@ -23,8 +23,8 @@ abstract class StepService implements IStepService {
      */
     @Transactional
     SearchResult findAllInProjectByName(Project project, String s, Map args) {
-        List steps = Step.findAllByProjectAndNameIlike(project, "%${s}%", args)
-        int c = Step.countByProjectAndNameIlike(project, "%${s}%")
+        List steps = Step.findAllByProjectAndNameIlikeAndIsBuilderStep(project, "%${s}%", true, args)
+        int c = Step.countByProjectAndNameIlikeAndIsBuilderStep(project, "%${s}%", true)
         return new SearchResult(steps, c)
     }
 }

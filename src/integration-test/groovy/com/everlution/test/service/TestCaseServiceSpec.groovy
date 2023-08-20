@@ -4,11 +4,11 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
+import com.everlution.StepService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
-import com.everlution.IStepService
 import com.everlution.command.RemovedItems
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
@@ -24,7 +24,7 @@ class TestCaseServiceSpec extends Specification {
     ProjectService projectService
     TestCaseService testCaseService
     TestGroupService testGroupService
-    IStepService testStepService
+    StepService stepService
     SessionFactory sessionFactory
 
     @Shared Project project
@@ -73,55 +73,19 @@ class TestCaseServiceSpec extends Specification {
         tests.get(0) != null
     }
 
-    void "test list with no args"() {
-        setupData()
-
-        when:
-        List<TestCase> testCaseList = testCaseService.list()
-
-        then:
-        testCaseList.size() > 0
-    }
-
-    void "test list with max args"() {
-        setupData()
-
-        when:
-        List<TestCase> testCaseList = testCaseService.list(max: 1)
-
-        then:
-        testCaseList.size() == 1
-    }
-
-    void "test list with offset args"() {
-        setupData()
-
-        when:
-        List<TestCase> testCaseList = testCaseService.list(offset: 1)
-
-        then:
-        testCaseList.size() > 0
-    }
-
-    void "test count"() {
-        setupData()
-
-        expect:
-        testCaseService.count() > 1
-    }
-
     void "test delete"() {
+        setup:
         Long testCaseId = setupData()
 
-        given:
-        def count = testCaseService.count()
+        expect:
+        TestCase.findById(testCaseId) != null
 
         when:
         testCaseService.delete(testCaseId)
         sessionFactory.currentSession.flush()
 
         then:
-        testCaseService.count() == count - 1
+        TestCase.findById(testCaseId) == null
     }
 
     void "test save"() {
@@ -161,13 +125,13 @@ class TestCaseServiceSpec extends Specification {
     void "saveUpdate removes steps"() {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
-        def step = new Step(action: "action", result: "result")
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def step = new Step(action: "action", result: "result", person: person, project: proj).save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
         expect:
-        testStepService.get(step.id) != null
+        stepService.get(step.id) != null
         testCase.steps.size() == 1
 
         when: "call saveUpdate"

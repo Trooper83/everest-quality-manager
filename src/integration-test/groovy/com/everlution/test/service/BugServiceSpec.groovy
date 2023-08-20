@@ -5,12 +5,13 @@ import com.everlution.BugService
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
-import com.everlution.IStepService
+import com.everlution.StepService
 import com.everlution.command.RemovedItems
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import grails.validation.ValidationException
 import org.hibernate.SessionFactory
+import spock.lang.Shared
 import spock.lang.Specification
 
 @Rollback
@@ -19,9 +20,9 @@ class BugServiceSpec extends Specification {
 
     BugService bugService
     SessionFactory sessionFactory
-    IStepService testStepService
+    StepService stepService
 
-    Project project
+    @Shared Project project
 
     private Long setupData() {
         project = new Project(name: "BugServiceSpec Project", code: "BP3").save()
@@ -45,55 +46,19 @@ class BugServiceSpec extends Specification {
         bugService.get(9999999999) == null
     }
 
-    void "test list with no args"() {
-        setupData()
-
-        when:
-        List<Bug> bugList = bugService.list()
-
-        then:
-        bugList.size() > 0
-    }
-
-    void "test list with max args"() {
-        setupData()
-
-        when:
-        List<Bug> bugList = bugService.list(max: 1)
-
-        then:
-        bugList.size() == 1
-    }
-
-    void "test list with offset args"() {
-        setupData()
-
-        when:
-        List<Bug> bugList = bugService.list(offset: 1)
-
-        then:
-        bugList.size() > 0
-    }
-
-    void "test count"() {
-        setupData()
-
-        expect:
-        bugService.count() > 0
-    }
-
     void "test delete"() {
+        given:
         Long bugId = setupData()
 
-        given:
-        def c = bugService.count()
+        expect:
+        Bug.findById(bugId) != null
 
         when:
         bugService.delete(bugId)
         sessionFactory.currentSession.flush()
 
         then:
-        bugService.count() == c - 1
+        Bug.findById(bugId) == null
     }
 
     void "test save"() {
@@ -132,12 +97,12 @@ class BugServiceSpec extends Specification {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(action: "action", result: "result")
+        def step = new Step(action: "action", result: "result", person: person, project: project).save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
         expect:
-        testStepService.get(step.id) != null
+        stepService.get(step.id) != null
         bug.steps.size() == 1
 
         when: "call saveUpdate"

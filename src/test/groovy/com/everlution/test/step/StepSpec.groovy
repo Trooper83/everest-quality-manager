@@ -157,6 +157,15 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.validate(["name"])
     }
 
+    void "name cannot be null for builderStep"() {
+        when:
+        domain.name = null
+        domain.isBuilderStep = true
+
+        then:
+        !domain.validate(["name"])
+    }
+
     void "name can be blank"() {
         when:
         domain.name = ""
@@ -190,5 +199,10 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
         then:
         !domain.validate(["person"])
+    }
+
+    void "isBuilderStep defaults to false"() {
+        expect:
+        !domain.isBuilderStep
     }
 }

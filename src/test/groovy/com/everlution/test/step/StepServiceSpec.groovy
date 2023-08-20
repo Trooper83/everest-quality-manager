@@ -22,8 +22,10 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
     private void setupData() {
         project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
         person = new Person(email: "email@test.com", password: "!Password2022").save()
-        new Step(name: 'first name', action: "action", result: "result", person: person, project: project).save()
-        new Step(name: 'second name', action: "action", result: "result", person: person, project: project).save()
+        new Step(name: 'first name', action: "action", result: "result", person: person, project: project,
+                    isBuilderStep: true).save()
+        new Step(name: 'second name', action: "action", result: "result", person: person, project: project,
+                    isBuilderStep: true).save()
         new Step(action: "action", result: "result", person: person, project: project).save(flush: true)
     }
 
@@ -76,14 +78,6 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         thrown(ValidationException)
     }
 
-    void "find all by project returns steps"() {
-        when:
-        def tests = service.findAllByProject(project, [:])
-
-        then:
-        tests.results instanceof List<Step>
-    }
-
     void "find all by project only returns steps with project"() {
         given:
         setupData()
@@ -91,11 +85,13 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         def step = new Step(person: person, action: 'action', result: 'result', project: proj).save(flush: true)
 
         when:
-        def steps = service.findAllByProject(project, [:]).results
+        def steps = service.findAllByProject(project, [:])
 
         then:
-        steps.every { it.project.id == project.id }
-        !steps.contains(step)
+        steps.count == 2
+        steps.results.every { it.project.id == project.id }
+        steps.results.every { it.isBuilderStep == true }
+        !steps.results.contains(step)
     }
 
     void "find all by project with null project id returns empty list"() {
@@ -104,6 +100,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
 
         then:
         noExceptionThrown()
+        steps.count == 0
         steps.results.size() == 0
     }
 
@@ -130,7 +127,9 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
 
         then:
         steps.results.every { it.project.id == project.id }
-        steps.results.size() > 0
+        steps.results.every { it.isBuilderStep == true }
+        steps.results.size() == 1
+        steps.count == 1
         !steps.results.contains(step)
     }
 
@@ -143,6 +142,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
 
         then:
         steps.results.empty
+        steps.count == 0
         noExceptionThrown()
     }
 

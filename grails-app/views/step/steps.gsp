@@ -25,7 +25,6 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Id</th>
                             <th>Name</th>
                             <th>Action</th>
                             <th>Result</th>
@@ -35,8 +34,7 @@
                         <tbody>
                         <g:each var="step" in="${stepList}">
                             <tr>
-                                <td><g:link uri="/project/${project.id}/step/show/${step.id}">${step.id}</g:link></td>
-                                <td>${step.name}</td>
+                                <td><g:link uri="/project/${project.id}/step/show/${step.id}">${step.name}</g:link></td>
                                 <td>${step.action}</td>
                                 <td>${step.result}</td>
                                 <td>${step.person.email}</td>

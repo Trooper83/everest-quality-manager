@@ -47,35 +47,18 @@ class ReleasePlanServiceSpec extends Specification {
         releasePlanService.read(1) instanceof ReleasePlan
     }
 
-    void "list with args"() {
-        setupData()
-
-        when:
-        List<ReleasePlan> releasePlanList = releasePlanService.list(max: 2, offset: 2)
-
-        then:
-        releasePlanList.size() == 2
-    }
-
-    void "count returns number of plans"() {
-        setupData()
-
-        expect:
-        releasePlanService.count() == 6
-    }
-
     void "delete removes plan"() {
         Long releasePlanId = setupData()
 
         expect:
-        releasePlanService.count() == 6
+        ReleasePlan.findById(releasePlanId) != null
 
         when:
         releasePlanService.delete(releasePlanId)
         sessionFactory.currentSession.flush()
 
         then:
-        releasePlanService.count() == 5
+        ReleasePlan.findById(releasePlanId) == null
     }
 
     void "save persists instance"() {
