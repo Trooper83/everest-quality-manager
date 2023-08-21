@@ -1,16 +1,21 @@
 package com.everlution.test.ui.functional.specs.bug
 
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
+import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
 class ListSpec extends GebSpec {
+
+    ProjectService projectService
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -81,5 +86,23 @@ class ListSpec extends GebSpec {
         then:
         bugsPage.listTable.rowCount > 0
         bugsPage.nameInput.text == 'bug'
+    }
+
+    void "clicking name column directs to show page"() {
+        given: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list page"
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/bugs"
+
+        when: "click first scenario in list"
+        def listPage = browser.page(ListBugPage)
+        listPage.listTable.clickCell("Name", 0)
+
+        then: "at show page"
+        at ShowBugPage
     }
 }

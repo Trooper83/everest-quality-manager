@@ -95,9 +95,17 @@ class BootStrap {
         Step testStep2 = new Step(action: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
         Step testStep3 = new Step(action: "do something123", result: "something happened123", project: project, person: person).save(failOnError: true)
         Step testStep4 = new Step(action: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
+        def grandParent = new Step(action: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "grand parent").save(failOnError: true)
+        def parent = new Step(action: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "parent", linkedSteps: [grandParent]).save(failOnError: true)
+        def uncle = new Step(action: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "uncle", linkedSteps: [grandParent]).save(failOnError: true)
         new Step(action: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "child", linkedSteps: [uncle, parent]).save(failOnError: true)
+        new Step(action: "do something123", result: "something happened123", project: project,
                 person: person, isBuilderStep: true, name: "builder step 1").save(failOnError: true)
-        new Step(action: "do something123", result: "something happened123", project: project1,
+        new Step(action: "do something123", result: "something happened123", project: project,
                 person: person, isBuilderStep: true, name: "builder step 2").save(failOnError: true)
         def group = new TestGroup(name: "Bootstrapped test group", project: project).save(failOnError: true)
         def group1 = new TestGroup(name: "Bootstrapped test group1", project: project).save(failOnError: true)

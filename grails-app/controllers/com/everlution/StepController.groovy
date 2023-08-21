@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.*
 class StepController {
 
     ProjectService projectService
-    IStepService stepService
+    StepService stepService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -40,7 +40,9 @@ class StepController {
 
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
-        respond stepService.get(id)
+        def step = stepService.get(id)
+        def path = step.linkedSteps
+        respond step, model: [path: path], view: 'show'
     }
 
     def create() {
@@ -95,6 +97,7 @@ class StepController {
         }
     }
 
+    //TODO: What are the implications of this???
     def delete(Long id) {
         if (id == null) {
             notFound()
