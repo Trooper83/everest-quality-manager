@@ -6,5 +6,7 @@ interface IStepService {
 
     void delete(Serializable id)
 
+    Step read(Serializable id)
+
     Step save(Step step)
 }

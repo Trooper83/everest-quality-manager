@@ -90,22 +90,28 @@ class BootStrap {
         def env1 = new Environment(name: "bootstrap environment12")
         def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env]).save()
         def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1]).save()
-        Step testStep = new Step(action: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
-        Step testStep1 = new Step(action: "do something12", result: "something happened12", project: project, person: person).save(failOnError: true)
-        Step testStep2 = new Step(action: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
-        Step testStep3 = new Step(action: "do something123", result: "something happened123", project: project, person: person).save(failOnError: true)
-        Step testStep4 = new Step(action: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
-        def grandParent = new Step(action: "do something123", result: "something happened123", project: project1,
-                person: person, isBuilderStep: true, name: "grand parent").save(failOnError: true)
-        def parent = new Step(action: "do something123", result: "something happened123", project: project1,
-                person: person, isBuilderStep: true, name: "parent", linkedSteps: [grandParent]).save(failOnError: true)
-        def uncle = new Step(action: "do something123", result: "something happened123", project: project1,
-                person: person, isBuilderStep: true, name: "uncle", linkedSteps: [grandParent]).save(failOnError: true)
-        new Step(action: "do something123", result: "something happened123", project: project1,
-                person: person, isBuilderStep: true, name: "child", linkedSteps: [uncle, parent]).save(failOnError: true)
-        new Step(action: "do something123", result: "something happened123", project: project,
+        Step testStep = new Step(act: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
+        Step testStep1 = new Step(act: "do something12", result: "something happened12", project: project, person: person).save(failOnError: true)
+        Step testStep2 = new Step(act: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
+        Step testStep3 = new Step(act: "do something123", result: "something happened123", project: project, person: person).save(failOnError: true)
+        Step testStep4 = new Step(act: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
+        def grandParent = new Step(act: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "this is the grand parent step that has spawned all of them").save(failOnError: true)
+        def parent = new Step(act: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "this is the parent step that is a child to the grand parent").save(failOnError: true)
+        def uncle = new Step(act: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "this is the uncle step that is child to the grand parent").save(failOnError: true)
+        def child = new Step(act: "do something123", result: "something happened123", project: project1,
+                person: person, isBuilderStep: true, name: "this is the ultimate child step").save(failOnError: true)
+
+        new StepLink(parent: parent, child: child, project: project1).save()
+        new StepLink(parent: uncle, child: child, project: project1).save()
+        new StepLink(parent: grandParent, child: parent, project: project1).save()
+        new StepLink(parent: grandParent, child: uncle, project: project1).save()
+
+        new Step(act: "do something123", result: "something happened123", project: project,
                 person: person, isBuilderStep: true, name: "builder step 1").save(failOnError: true)
-        new Step(action: "do something123", result: "something happened123", project: project,
+        new Step(act: "do something123", result: "something happened123", project: project,
                 person: person, isBuilderStep: true, name: "builder step 2").save(failOnError: true)
         def group = new TestGroup(name: "Bootstrapped test group", project: project).save(failOnError: true)
         def group1 = new TestGroup(name: "Bootstrapped test group1", project: project).save(failOnError: true)
@@ -127,12 +133,12 @@ class BootStrap {
         testCase1.addToTestGroups(group2)
         testCase2.addToTestGroups(group)
         testCase3.addToTestGroups(group2)
-        def bugStep = new Step(action: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
-        def bugStep1 = new Step(action: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
-        def bugStep2 = new Step(action: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
-        def bugStep3 = new Step(action: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
-        def bugStep4 = new Step(action: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
-        def bugStep5 = new Step(action: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
+        def bugStep = new Step(act: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
+        def bugStep1 = new Step(act: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
+        def bugStep2 = new Step(act: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
+        def bugStep3 = new Step(act: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
+        def bugStep4 = new Step(act: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
+        def bugStep5 = new Step(act: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
         new Bug(person: person, name: "seeded bug 1", description: "description of the bug",
                 project: project1, steps: [bugStep], area: area1, status: "Open",
                 actual: "actual", expected: "expected").save(failOnError: true)

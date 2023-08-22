@@ -97,7 +97,7 @@ class BugServiceSpec extends Specification {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(action: "action", result: "result", person: person, project: project).save()
+        def step = new Step(act: "action", result: "result", person: person, project: project).save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 

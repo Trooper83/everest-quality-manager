@@ -13,7 +13,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
     void "test instances are persisted"() {
         setup:
-        new Step(action: "First Test step", result: "test", person: new Person(), project: new Project()).save()
+        new Step(act: "First Test step", result: "test", person: new Person(), project: new Project()).save()
 
         expect:
         Step.count() == 1
@@ -37,13 +37,13 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
     void "test we get a new domain"() {
         expect:
         domain != null
-        domain.action == null
+        domain.act == null
         System.identityHashCode(domain) != id
     }
 
     void "action can be null when result is not"() {
         when:
-        domain.action = null
+        domain.act = null
         domain.result = "test"
 
         then:
@@ -52,7 +52,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
     void "test action can be blank"() {
         when:
-        domain.action = ""
+        domain.act = ""
 
         then:
         domain.validate(["action"])
@@ -60,7 +60,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
     void "validation fails if action and result are null"() {
         when:
-        domain.action = null
+        domain.act = null
         domain.result = null
 
         then:
@@ -71,7 +71,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
     void "test action cannot exceed 500 characters"() {
         when: "for a string of 501 characters"
         String str = "a" * 501
-        domain.action = str
+        domain.act = str
 
         then: "action validation fails"
         !domain.validate(["action"])
@@ -81,7 +81,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
     void "test action validates with 500 characters"() {
         when: "for a string of 500 characters"
         String str = "a" * 500
-        domain.action = str
+        domain.act = str
 
         then: "action validation passes"
         domain.validate(["action"])
@@ -90,7 +90,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
     void "validation fails if result and action are null"() {
         when:
         domain.result = null
-        domain.action = null
+        domain.act = null
 
         then:
         !domain.validate(["result"])
@@ -100,7 +100,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
     void "result can be null when action is not"() {
         when:
         domain.result = null
-        domain.action = "test"
+        domain.act = "test"
 
         then:
         domain.validate(["result"])
@@ -131,14 +131,6 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
         then: "result validation passes"
         domain.validate(["result"])
-    }
-
-    void "linkedSteps can be null"() {
-        when:
-        domain.linkedSteps == null
-
-        then:
-        domain.validate(["linkedSteps"])
     }
 
     void "project cannot be null"() {
@@ -204,5 +196,13 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
     void "isBuilderStep defaults to false"() {
         expect:
         !domain.isBuilderStep
+    }
+
+    void "links can be null"() {
+        when:
+        domain.links = null
+
+        then:
+        domain.validate(["links"])
     }
 }

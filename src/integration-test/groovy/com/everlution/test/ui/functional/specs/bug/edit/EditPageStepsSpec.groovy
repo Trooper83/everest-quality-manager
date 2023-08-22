@@ -98,7 +98,7 @@ class EditPageStepsSpec extends GebSpec {
     void "removing step adds hidden input"() {
         given: "valid bug with step"
         Project project = projectService.list(max: 1).first()
-        Step step = new Step(action: "step123", result: "result123")
+        Step step = new Step(act: "step123", result: "result123")
         def person = personService.list(max: 1).first()
         Bug bug = new Bug(person: person,name: "first", description: "desc1",
                 project: project, steps: [step], status: "Open", actual: "actual", expected: "expected")

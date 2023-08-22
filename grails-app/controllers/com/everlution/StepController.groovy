@@ -1,5 +1,6 @@
 package com.everlution
 
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -7,7 +8,9 @@ import static org.springframework.http.HttpStatus.*
 class StepController {
 
     ProjectService projectService
+    SpringSecurityService springSecurityService
     StepService stepService
+    StepLinkService stepLinkService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -38,90 +41,166 @@ class StepController {
         respond searchResult.results, model: [stepCount: searchResult.count, project: project], view: 'steps'
     }
 
+    /**
+     * displays the show view
+     * /step/show/${id}
+     * @param id - id of the item
+     * @return - the item to show
+     */
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         def step = stepService.get(id)
-        def path = step.linkedSteps
-        respond step, model: [path: path], view: 'show'
+        def parents = stepLinkService.findAllByProjectAndChild(step.project, step)
+        def children = stepLinkService.findAllByProjectAndParent(step.project, step)
+        respond step, model: [parents: parents, children: children], view: 'show'
     }
 
-    def create() {
-        respond new Step(params)
+    /**
+     * displays the create view
+     * /step/create
+     */
+    @Secured("ROLE_BASIC")
+    def create(Long projectId) {
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        respond new Step(params), model: [project: project], view: 'create'
     }
 
+    /**
+     * saves a new instance
+     * @param step - the step to save
+     */
+    @Secured("ROLE_BASIC")
     def save(Step step) {
-        if (step == null) {
-            notFound()
-            return
-        }
-
-        try {
-            stepService.save(step)
-        } catch (ValidationException e) {
-            respond step.errors, view:'create'
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'step.label', default: 'Step'), step.id])
-                redirect step
+        withForm {
+            if (step == null) {
+                notFound()
+                return
             }
-            '*' { respond step, [status: CREATED] }
+
+            step.person = springSecurityService.getCurrentUser() as Person
+
+            try {
+                stepService.save(step)
+            } catch (ValidationException ignored) {
+                def project = projectService.read(step.project.id)
+                respond step.errors, view:'create', model: [ project: project ]
+                return
+            }
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.created.message', args: [message(code: 'step.label', default: 'Step'), step.id])
+                    redirect uri: "/project/${step.project.id}/step/show/${step.id}"
+                }
+                '*' { respond step, [status: CREATED] }
+            }
         }
     }
 
+    /**
+     * displays the edit view
+     * /step/edit/${id}
+     * @param id - id of the item
+     */
+    @Secured("ROLE_BASIC")
     def edit(Long id) {
-        respond stepService.get(id)
+        respond stepService.get(id), view: "edit"
     }
 
-    def update(Step step) {
-        if (step == null) {
+    /**
+     * updates an items data
+     * @param step - item to update
+     */
+    @Secured("ROLE_BASIC")
+    def update(Step step, Long projectId) {
+        withForm {
+            if (step == null || projectId == null) {
+                notFound()
+                return
+            }
+            def stepProjectId = step.project.id
+            if (projectId != stepProjectId) {
+                notFound()
+                return
+            }
+
+            try {
+                stepService.save(step)
+            } catch (ValidationException e) {
+                def s = stepService.read(step.id)
+                s.errors = e.errors
+                render view: 'edit', model: [step: s]
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.updated.message',
+                            args: [message(code: 'step.label', default: 'Step'), step.id])
+                    redirect uri: "/project/${step.project.id}/step/show/${step.id}"
+                }
+                '*'{ respond step, [status: OK] }
+            }
+        }.invalidToken {
+            error()
+        }
+    }
+
+    /**
+     * deletes an instance
+     * @param id - id of the instance to delete
+     */
+    //TODO: need to remove links once that is implemented
+    @Secured("ROLE_BASIC")
+    def delete(Long id, Long projectId) {
+        withForm {
+            if (id == null || projectId == null) {
+                notFound()
+                return
+            }
+        }
+        def step = stepService.read(id)
+        if (step.project.id != projectId) {
             notFound()
             return
         }
 
         try {
-            stepService.save(step)
-        } catch (ValidationException e) {
-            respond step.errors, view:'edit'
+            stepService.delete(id) //TODO: need to remove StepLinks
+        } catch (Exception ignored) {
+            flash.error = "An issue occurred when attempting to delete the Step"
+            //TODO: come up with a better message and add it to i18n file, should we catch specific exception??
+            redirect uri: "/project/${step.project.id}/step/show/${step.id}"
             return
         }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'step.label', default: 'Step'), step.id])
-                redirect step
-            }
-            '*'{ respond step, [status: OK] }
-        }
-    }
-
-    //TODO: What are the implications of this???
-    def delete(Long id) {
-        if (id == null) {
-            notFound()
-            return
-        }
-
-        stepService.delete(id)
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'step.label', default: 'Step'), id])
-                redirect action:"index", method:"GET"
+                redirect uri: "/project/${projectId}/steps"
             }
             '*'{ render status: NO_CONTENT }
         }
     }
 
+    /**
+     * displays view when notFound (404)
+     */
     protected void notFound() {
         request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'step.label', default: 'Step'), params.id])
-                redirect action: "index", method: "GET"
-            }
             '*'{ render status: NOT_FOUND }
+        }
+    }
+
+    /**
+     * displays error view (500)
+     */
+    protected void error() {
+        request.withFormat {
+            '*'{ render status: INTERNAL_SERVER_ERROR }
         }
     }
 }

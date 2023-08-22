@@ -1,5 +1,6 @@
 package com.everlution.test.service
 
+import com.everlution.Bug
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
@@ -24,11 +25,11 @@ class StepServiceSpec extends Specification {
     private Long setupData() {
         person = new Person(email: "testing@testing321.com", password: "!Password#2022").save()
         project = new Project(name: "testing project", code: "tpt").save()
-        new Step(name: 'first name', action: "action", result: "result", person: person, project: project,
+        new Step(name: 'first name', act: "action", result: "result", person: person, project: project,
                 isBuilderStep: true).save()
-        new Step(name: 'second name', action: "action", result: "result", person: person, project: project,
+        new Step(name: 'second name', act: "action", result: "result", person: person, project: project,
                 isBuilderStep: true).save()
-        def step = new Step(action: "action1", result: "result1", person: person, project: project).save()
+        def step = new Step(act: "action1", result: "result1", person: person, project: project).save()
         step.id
     }
 
@@ -63,7 +64,7 @@ class StepServiceSpec extends Specification {
         setupData()
 
         when:
-        Step step = new Step(action: "action", result: "result", person: person, project: project)
+        Step step = new Step(act: "action", result: "result", person: person, project: project)
         stepService.save(step)
 
         then:
@@ -75,7 +76,7 @@ class StepServiceSpec extends Specification {
         setupData()
 
         when:
-        Step step = new Step(action: "action", result: "result")
+        Step step = new Step(act: "action", result: "result")
         stepService.save(step)
 
         then:
@@ -86,7 +87,7 @@ class StepServiceSpec extends Specification {
         given:
         setupData()
         def proj = new Project(name: "StepServiceSpec Project1223", code: "BP8").save()
-        def step = new Step(person: person, action: 'action', result: 'result', project: proj).save(flush: true)
+        def step = new Step(person: person, act: 'action', result: 'result', project: proj).save(flush: true)
 
         when:
         def steps = stepService.findAllByProject(project, [:])
@@ -124,7 +125,7 @@ class StepServiceSpec extends Specification {
         given:
         setupData()
         def proj = new Project(name: "TestService Spec Project1223", code: "BP8").save()
-        def step = new Step(person: person, action: 'ation', result: 'result', project: proj).save(flush: true)
+        def step = new Step(person: person, act: 'ation', result: 'result', project: proj).save(flush: true)
 
         when:
         def steps = stepService.findAllInProjectByName(project, 'first', [:])
@@ -165,5 +166,18 @@ class StepServiceSpec extends Specification {
         ''          | 2
         'not found' | 0
         'name'      | 2
+    }
+
+    void "read returns instance"() {
+        setup:
+        def id = setupData()
+
+        expect:
+        stepService.read(id) instanceof Step
+    }
+
+    void "read returns null for not found id"() {
+        expect:
+        stepService.read(999999999) == null
     }
 }

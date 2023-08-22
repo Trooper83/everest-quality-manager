@@ -79,7 +79,7 @@ class CreateTestCasePage extends CreatePage {
         testGroupsSelect().selected = testGroups
         scrollToBottom()
         steps.each { it ->
-            testStepTable.addStep(it.action, it.result)
+            testStepTable.addStep(it.act, it.result)
         }
         scrollToBottom()
         createButton.click()

@@ -1,5 +1,6 @@
 package com.everlution.test.step
 
+import com.everlution.Bug
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
@@ -22,11 +23,11 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
     private void setupData() {
         project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
         person = new Person(email: "email@test.com", password: "!Password2022").save()
-        new Step(name: 'first name', action: "action", result: "result", person: person, project: project,
+        new Step(name: 'first name', act: "action", result: "result", person: person, project: project,
                     isBuilderStep: true).save()
-        new Step(name: 'second name', action: "action", result: "result", person: person, project: project,
+        new Step(name: 'second name', act: "action", result: "result", person: person, project: project,
                     isBuilderStep: true).save()
-        new Step(action: "action", result: "result", person: person, project: project).save(flush: true)
+        new Step(act: "action", result: "result", person: person, project: project).save(flush: true)
     }
 
     void "get with valid id returns instance"() {
@@ -43,7 +44,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
 
     void "delete with valid id deletes instance"() {
         given:
-        def s = new Step(action: "action", result: "result", person: person, project: project).save(flush: true)
+        def s = new Step(act: "action", result: "result", person: person, project: project).save(flush: true)
 
         expect:
         service.get(s.id) != null
@@ -58,7 +59,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
 
     void "save with valid object returns instance"() {
         given:
-        def step = new Step(action: 'action', result: 'result', person: person, project: project)
+        def step = new Step(act: 'action', result: 'result', person: person, project: project)
 
         when:
         def saved = service.save(step)
@@ -82,7 +83,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         given:
         setupData()
         def proj = new Project(name: "StepServiceSpec Project1223", code: "BP8").save()
-        def step = new Step(person: person, action: 'action', result: 'result', project: proj).save(flush: true)
+        def step = new Step(person: person, act: 'action', result: 'result', project: proj).save(flush: true)
 
         when:
         def steps = service.findAllByProject(project, [:])
@@ -120,7 +121,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         given:
         setupData()
         def proj = new Project(name: "TestService Spec Project1223", code: "BP8").save()
-        def step = new Step(person: person, action: 'ation', result: 'result', project: proj).save(flush: true)
+        def step = new Step(person: person, act: 'ation', result: 'result', project: proj).save(flush: true)
 
         when:
         def steps = service.findAllInProjectByName(project, 'first', [:])
@@ -161,5 +162,15 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         ''          | 2
         'not found' | 0
         'name'      | 2
+    }
+
+    void "read returns instance"() {
+        expect: "valid instance"
+        service.read(1) instanceof Step
+    }
+
+    void "read with invalid id returns null"() {
+        expect: "invalid instance"
+        service.read(99999999) == null
     }
 }

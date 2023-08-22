@@ -42,20 +42,16 @@
                                 <p class="col" id="name" aria-labelledby="name-label">${step.name}</p>
                             </div>
                         </li>
-                    </ul>
-                    <ul class="list-group list-group-flush mt-3">
                         <li class="list-group-item border-bottom">
                             <div class="row">
-                                <p class="col-6 fw-bold">Action</p>
-                                <p class="col-6 fw-bold">Result</p>
+                                <p id="action-label" class="col-4 fw-bold">Action</p>
+                                <p id="act" class="col" aria-labelledby="action-label">${step.act}</p>
                             </div>
                         </li>
-                    </ul>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
+                        <li class="list-group-item border-bottom">
                             <div class="row">
-                                <p id="action" class="col-6">${step.action}</p>
-                                <p id="result" class="col-6">${step.result}</p>
+                                <p id="result-label" class="col-4 fw-bold">Result</p>
+                                <p id="result" class="col" aria-labelledby="result-label">${step.result}</p>
                             </div>
                         </li>
                     </ul>
@@ -63,12 +59,37 @@
             </div>
             <div class="card mt-3">
                 <div class="card-header">
-                    <h1>Step Path</h1>
+                    <h1>Related Steps</h1>
                 </div>
                 <div class="card-body">
-                    <g:each in="${step.linkedSteps}">
-                        <p>${it.name}</p>
-                    </g:each>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-bottom-0">
+                            <div class="row" id="parents">
+                                <p class="fw-bold border-bottom">Parents</p>
+                                <g:if test="${parents.size() == 0}">
+                                    <p>No parent steps found</p>
+                                </g:if>
+                                <g:each in="${parents}">
+                                    <div class="row mt-1">
+                                        <p class="col-6">${it.parent.name}</p>
+                                    </div>
+                                </g:each>
+                            </div>
+                        </li>
+                        <li class="list-group-item mt-3">
+                            <div class="row" id="children">
+                                <p class="fw-bold border-bottom">Children</p>
+                                <g:if test="${children.size() == 0}">
+                                    <p>No child steps found</p>
+                                </g:if>
+                                <g:each in="${children}">
+                                    <div class="row">
+                                        <p class="col-6">${it.child.name}</p>
+                                    </div>
+                                </g:each>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </main>

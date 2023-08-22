@@ -126,7 +126,7 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(action: "action", result: "result", person: person, project: proj).save()
+        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 

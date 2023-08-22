@@ -66,8 +66,8 @@ class BugHibernateSpec extends HibernateSpec {
 
     void "test save bug with steps cascades"() {
         given: "unsaved bug and test steps"
-        Step testStep = new Step(action: "do something", result: "something happened", person: person, project: project)
-        Step testStep1 = new Step(action: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
+        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project)
         Bug bug = new Bug(person: person, name: "test", description: "desc",
                steps: [testStep, testStep1], project: project, status: "Open",
                 actual: "actual", expected: "expected")
@@ -86,7 +86,7 @@ class BugHibernateSpec extends HibernateSpec {
 
     void "test update case with steps"() {
         given: "valid bug instance"
-        Step testStep = new Step(action: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
         Bug bug = new Bug(person: person, name: "test", description: "desc",
                 steps: [testStep], project: project, status: "Open",
                 actual: "actual", expected: "expected").save()
@@ -97,13 +97,13 @@ class BugHibernateSpec extends HibernateSpec {
 
         then: "updated steps are retrieved on the step instance"
         def step = Step.findById(testStep.id)
-        step.action == "edited action"
+        step.act == "edited action"
         step.result == "edited result"
     }
 
     void "test delete bug does not cascade to steps"() {
         given: "valid domain instances"
-        Step testStep = new Step(action: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
         Bug bug = new Bug(person: person, name: "test", description: "desc",
                 project: project, status: "Open",
                 actual: "actual", expected: "expected").addToSteps(testStep)
@@ -123,9 +123,9 @@ class BugHibernateSpec extends HibernateSpec {
 
     void "test steps order persists"() {
         given: "save a bug"
-        Step testStep = new Step(action: "do something", result: "something happened123", person: person, project: project)
-        Step testStep1 = new Step(action: "I did something", result: "something happened231", person: person, project: project)
-        Step testStep2 = new Step(action: "something happened", result: "something happened321", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened123", person: person, project: project)
+        Step testStep1 = new Step(act: "I did something", result: "something happened231", person: person, project: project)
+        Step testStep2 = new Step(act: "something happened", result: "something happened321", person: person, project: project)
         Bug bug = new Bug(person: person, name: "test", description: "desc",
                 project: project, steps: [testStep, testStep1, testStep2], status: "Open",
                 actual: "actual", expected: "expected")

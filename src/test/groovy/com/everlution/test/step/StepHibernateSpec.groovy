@@ -18,23 +18,9 @@ class StepHibernateSpec extends HibernateSpec {
 
     void "test date created auto generated"() {
         when:
-        Step testStep = new Step(action: "do something", result: "something happened", person: person, project: project).save()
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
 
         then:
         testStep.dateCreated != null
-    }
-
-    void "deleting step does not delete linkedStep"() {
-        given:
-        Step linkedStep = new Step(action: "do something", result: "something happened", person: person, project: project).save()
-        def step = new Step(action: "do something", result: "something happened", person: person, project: project,
-                linkedSteps: [linkedStep]).save(flush: true)
-
-        when:
-        step.delete(flush: true)
-
-        then:
-        Step.findById(step.id) == null
-        linkedStep.id != null
     }
 }

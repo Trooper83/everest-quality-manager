@@ -32,7 +32,7 @@ class TestCaseSpec extends GebSpec {
 
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(action: 'Login to app', result: 'You are logged into the app')])
+                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
     }
 
     void "test case is created and data persists"() {

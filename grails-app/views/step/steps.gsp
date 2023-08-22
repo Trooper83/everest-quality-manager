@@ -35,7 +35,7 @@
                         <g:each var="step" in="${stepList}">
                             <tr>
                                 <td><g:link uri="/project/${project.id}/step/show/${step.id}">${step.name}</g:link></td>
-                                <td>${step.action}</td>
+                                <td>${step.act}</td>
                                 <td>${step.result}</td>
                                 <td>${step.person.email}</td>
                             </tr>
