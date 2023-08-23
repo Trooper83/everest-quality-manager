@@ -47,13 +47,13 @@ class IterationStepHibernateSpec extends HibernateSpec {
         def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [step], testCycle: testCycle).save()
 
         expect:
-        IterationStep.findById(step.id).act == "test"
+        IterationStep.findById(step.id).action == "test"
 
         when:
         iteration.steps.first().action = "edited"
 
         then:
-        IterationStep.findById(step.id).act == "edited"
+        IterationStep.findById(step.id).action == "edited"
     }
 
     void "delete test iteration deletes step"() {

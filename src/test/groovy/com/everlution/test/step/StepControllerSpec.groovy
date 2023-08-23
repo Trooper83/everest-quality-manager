@@ -1,12 +1,18 @@
 package com.everlution.test.step
 
+import com.everlution.Bug
+import com.everlution.BugService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
 import com.everlution.Step
 import com.everlution.StepController
+import com.everlution.StepLinkService
 import com.everlution.StepService
+import com.everlution.command.RemovedItems
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.web.controllers.ControllerUnitTest
+import grails.validation.ValidationException
 import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.Specification
 
@@ -16,6 +22,13 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
     }
 
     def cleanup() {
+    }
+
+    def populateValidParams(params) {
+        assert params != null
+
+        params.act = 'this is the act'
+        params.result = 'this is the result'
     }
 
     def setToken(params) {
@@ -116,5 +129,488 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         model.stepList != null
         model.stepCount != null
         model.project != null
+    }
+
+    void "create action returns the correct view"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"the create action is executed"
+        controller.create(1)
+
+        then:"the view is correctly created"
+        view == "create"
+    }
+
+    void "create action returns the correct model"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The create action is executed"
+        controller.create()
+
+        then:"The model is correctly populated with step and projects"
+        model.step instanceof Step
+        model.project instanceof Project
+    }
+
+    void "create action throws not found when project is null"() {
+        given: "mock project service"
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
+        }
+
+        when:"The create action is executed"
+        controller.create(null)
+
+        then:"not found"
+        response.status == 404
+    }
+
+    void "save action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+        populateValidParams(params)
+        def step = new Step(params)
+
+        when:
+        controller.save(step)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "DELETE", "PUT", "PATCH"]
+    }
+
+    void "save action with a null instance"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        setToken(params)
+        controller.save(null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "save responds with 500 when no token present"() {
+        when:"Save is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        controller.save(null)
+
+        then:"A 500 error is returned"
+        response.status == 500
+    }
+
+    void "save action correctly persists"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
+
+        when:"The save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        setToken(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+
+        controller.save(step)
+
+        then:"A redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/step/show/1'
+        controller.flash.message == "default.created.message"
+    }
+
+    void "save action with an invalid instance"() {
+        given: "mock services"
+        def p = new Project()
+        p.id = 1
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step) >> { Step step ->
+                throw new ValidationException("Invalid instance", step.errors)
+            }
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> p
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
+
+        when:"The save action is executed with an invalid instance"
+        setToken(params)
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        def step = new Step()
+        step.project = p
+        controller.save(step)
+
+        then:"The create view is rendered again with the correct model"
+        model.step instanceof Step
+        model.project == p
+        view == 'create'
+    }
+
+    void "show action renders show view"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * get(2) >> new Step()
+        }
+
+        controller.stepLinkService = Mock(StepLinkService) {
+            1 * getRelatedSteps(_) >> [:]
+        }
+
+        when:"a domain instance is passed to the show action"
+        controller.show(2)
+
+        then:
+        view == "show"
+    }
+
+    void "show action with a null id"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * get(null) >> null
+        }
+
+        controller.stepLinkService = Mock(StepLinkService) {
+            1 * getRelatedSteps(_) >> [:]
+        }
+
+        when:"The show action is executed with a null domain"
+        controller.show(null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "show action with a valid id"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * get(2) >> new Step()
+        }
+
+        controller.stepLinkService = Mock(StepLinkService) {
+            1 * getRelatedSteps(_) >> [:]
+        }
+
+        when:"A domain instance is passed to the show action"
+        controller.show(2)
+
+        then:"A model is populated containing the domain instance"
+        model.step instanceof Step
+    }
+
+    void "show action returns correct model"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * get(2) >> new Step()
+        }
+
+        controller.stepLinkService = Mock(StepLinkService) {
+            1 * getRelatedSteps(_) >> [:]
+        }
+
+        when:"A domain instance is passed to the show action"
+        controller.show(2)
+
+        then:"A model is populated containing the domain instance and relations"
+        model.step instanceof Step
+        model.containsKey('relations')
+    }
+
+    void "edit action with a null id"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * get(null) >> null
+        }
+
+        when:"The show action is executed with a null domain"
+        controller.edit(null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "edit action with a valid id"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * get(2) >> new Step()
+        }
+
+        when:"A domain instance is passed to the show action"
+        controller.edit(2)
+
+        then:"A model is populated containing the domain instance"
+        model.step instanceof Step
+    }
+
+    void "edit action renders edit view"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * get(2) >> new Step()
+        }
+
+        when:"a domain instance is passed to the show action"
+        controller.edit(2)
+
+        then:
+        view == "edit"
+    }
+
+    void "update action method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+        populateValidParams(params)
+        def step = new Step(params)
+
+        when:
+        controller.update(step, null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "DELETE", "POST", "PATCH"]
+    }
+
+    void "update action with a null step instance returns 404"() {
+        when:"update is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        controller.update(null, 1)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update responds with 500 when no token present"() {
+        when:"update is called for a domain instance that doesn't exist"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(null, 1)
+
+        then:
+        response.status == 500
+    }
+
+    void "update action with a valid step instance and null projectId param returns 404"() {
+        when:
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        controller.update(new Step(), null)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "update action with a projectId param not matching step projectId returns 404"() {
+        when:
+        def step = new Step()
+        def project = new Project()
+        project.id = 999
+        step.project = project
+        setToken(params)
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        controller.update(step, 1)
+
+        then:"A 404 error is returned"
+        response.status == 404
+    }
+
+    void "test the update action correctly persists"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step)
+        }
+
+        when:"The save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+
+        controller.update(step, 1)
+
+        then:"A redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/step/show/1'
+        controller.flash.message == "default.updated.message"
+    }
+
+    void "update action with an invalid instance"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step) >> { Step step ->
+                throw new ValidationException("Invalid instance", step.errors)
+            }
+            1 * read(_) >> {
+                Mock(Step)
+            }
+        }
+
+        when:"update action is executed with an invalid instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+        controller.update(step, 1)
+
+        then:"The edit view is rendered again with the correct model"
+        model.step instanceof Step
+        view == '/step/edit'
+    }
+
+    void "test the delete action method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.delete(1, 1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "PUT", "POST", "PATCH"]
+    }
+
+    void "delete action with a null instance"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        setToken(params)
+        controller.delete(null, 1)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
+    void "delete responds with 500 when no token present"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(null, 1)
+
+        then:"A 500 is returned"
+        response.status == 500
+    }
+
+    void "delete action with a null project"() {
+        when:"The delete action is called for a null instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        setToken(params)
+        controller.delete(1, null)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
+    void "delete action returns 404 with step project not matching params project"() {
+        given:
+        params.projectId = 999
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 2
+        project.id = 1
+        step.project = project
+
+        controller.stepService = Mock(StepService) {
+            1 * read(2) >> step
+        }
+
+        when:"The domain instance is passed to the delete action"
+        setToken(params)
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 999)
+
+        then:"A 404 is returned"
+        response.status == 404
+    }
+
+    void "delete action with an instance"() {
+        given:
+        params.projectId = 1
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 2
+        project.id = 1
+        step.project = project
+
+        controller.stepService = Mock(StepService) {
+            1 * delete(2)
+            1 * read(2) >> step
+        }
+
+        when:"The domain instance is passed to the delete action"
+        setToken(params)
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 1)
+
+        then:"The user is redirected to index"
+        response.redirectedUrl == '/project/1/steps'
+        flash.message == "default.deleted.message"
+    }
+
+    void "delete redirects when exception thrown"() {
+        given:
+        params.projectId = 1
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 2
+        project.id = 1
+        step.project = project
+
+        controller.stepService = Mock(StepService) {
+            1 * delete(2) >> {
+                throw new Exception("Invalid instance", new Throwable("message"))
+            }
+            1 * read(2) >> step
+        }
+
+        when:"The domain instance is passed to the delete action"
+        setToken(params)
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'DELETE'
+        controller.delete(2, 1)
+
+        then:"The user is redirected to index"
+        response.redirectedUrl == '/project/1/step/show/2'
+        flash.error == "An issue occurred when attempting to delete the Step"
     }
 }

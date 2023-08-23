@@ -84,7 +84,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
                 executionMethod: "Automated", type: "UI", steps: [testStep], project: project).save()
 
         when: "update steps"
-        testCase.steps[0].action = "edited action"
+        testCase.steps[0].act = "edited action"
         testCase.steps[0].result = "edited result"
 
         then: "updated steps are retrieved on the step instance"

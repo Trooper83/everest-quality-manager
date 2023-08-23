@@ -28,10 +28,10 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.hashCode() == id
 
         when:
-        domain.action = "Test case name"
+        domain.act = "Test case name"
 
         then:
-        domain.action == "Test case name"
+        domain.act == "Test case name"
     }
 
     void "test we get a new domain"() {
@@ -64,8 +64,8 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.result = null
 
         then:
-        !domain.validate(["action"])
-        domain.errors["action"].code == "validator.invalid"
+        !domain.validate(["act"])
+        domain.errors["act"].code == "validator.invalid"
     }
 
     void "test action cannot exceed 500 characters"() {
@@ -74,8 +74,8 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.act = str
 
         then: "action validation fails"
-        !domain.validate(["action"])
-        domain.errors["action"].code == "maxSize.exceeded"
+        !domain.validate(["act"])
+        domain.errors["act"].code == "maxSize.exceeded"
     }
 
     void "test action validates with 500 characters"() {
@@ -84,7 +84,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.act = str
 
         then: "action validation passes"
-        domain.validate(["action"])
+        domain.validate(["act"])
     }
 
     void "validation fails if result and action are null"() {
@@ -196,13 +196,5 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
     void "isBuilderStep defaults to false"() {
         expect:
         !domain.isBuilderStep
-    }
-
-    void "links can be null"() {
-        when:
-        domain.links = null
-
-        then:
-        domain.validate(["links"])
     }
 }

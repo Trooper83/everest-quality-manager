@@ -1,4 +1,4 @@
-package com.everlution.test.step
+package com.everlution.test.steplink
 
 import com.everlution.Person
 import com.everlution.Project

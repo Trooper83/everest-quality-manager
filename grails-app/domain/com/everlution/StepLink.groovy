@@ -9,7 +9,7 @@ class StepLink {
 
     static constraints = {
         linkedStep nullable: false
-        relation nullable: false, blank: false, inList: ["CHILD_PARENT", "PARENT_CHILD", "SIBLING"]
+        relation nullable: false, blank: false, inList: ["Is Child of", "Is Parent of", "Is Sibling of"]
         owner nullable: false
         project nullable: false
     }

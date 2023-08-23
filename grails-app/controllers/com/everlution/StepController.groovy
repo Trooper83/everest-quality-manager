@@ -96,6 +96,8 @@ class StepController {
                 }
                 '*' { respond step, [status: CREATED] }
             }
+        }.invalidToken {
+            error()
         }
     }
 
@@ -152,7 +154,6 @@ class StepController {
      * deletes an instance
      * @param id - id of the instance to delete
      */
-    //TODO: need to remove links once that is implemented
     @Secured("ROLE_BASIC")
     def delete(Long id, Long projectId) {
         withForm {
@@ -160,28 +161,31 @@ class StepController {
                 notFound()
                 return
             }
-        }
-        def step = stepService.read(id)
-        if (step.project.id != projectId) {
-            notFound()
-            return
-        }
 
-        try {
-            stepService.delete(id) //TODO: need to remove StepLinks
-        } catch (Exception ignored) {
-            flash.error = "An issue occurred when attempting to delete the Step"
-            //TODO: come up with a better message and add it to i18n file, should we catch specific exception??
-            redirect uri: "/project/${step.project.id}/step/show/${step.id}"
-            return
-        }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'step.label', default: 'Step'), id])
-                redirect uri: "/project/${projectId}/steps"
+            def step = stepService.read(id)
+            if (step.project.id != projectId) {
+                notFound()
+                return
             }
-            '*'{ render status: NO_CONTENT }
+
+            try {
+                stepService.delete(id) //TODO: need to remove StepLinks
+            } catch (Exception ignored) {
+                flash.error = "An issue occurred when attempting to delete the Step"
+                //TODO: come up with a better message and add it to i18n file, should we catch specific exception??
+                redirect uri: "/project/${step.project.id}/step/show/${step.id}"
+                return
+            }
+
+            request.withFormat {
+                form multipartForm {
+                    flash.message = message(code: 'default.deleted.message', args: [message(code: 'step.label', default: 'Step'), id])
+                    redirect uri: "/project/${projectId}/steps"
+                }
+                '*' { render status: NO_CONTENT }
+            }
+        }.invalidToken {
+            error()
         }
     }
 

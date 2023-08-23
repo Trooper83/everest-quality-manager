@@ -1,4 +1,4 @@
-package com.everlution.test.step
+package com.everlution.test.steplink
 
 import com.everlution.Project
 import com.everlution.Step
@@ -26,7 +26,7 @@ class StepLinkSpec extends Specification implements DomainUnitTest<StepLink> {
 
     void "test instances are persisted"() {
         setup:
-        new StepLink(linkedStep: new Step(), owner: new Step(), project: new Project(), relation: 'SIBLING').save()
+        new StepLink(linkedStep: new Step(), owner: new Step(), project: new Project(), relation: 'Is Sibling of').save()
 
         expect:
         StepLink.count() == 1
@@ -56,7 +56,7 @@ class StepLinkSpec extends Specification implements DomainUnitTest<StepLink> {
         domain.validate(["relation"])
 
         where:
-        option << ['SIBLING', 'PARENT_CHILD', 'CHILD_PARENT']
+        option << ['Is Sibling of', 'Is Parent of', 'Is Child of']
     }
 
     void "relation does not validate with option not in list"() {

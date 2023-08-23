@@ -1,6 +1,5 @@
 package com.everlution.test.step
 
-import com.everlution.Bug
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
@@ -165,6 +164,9 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
     }
 
     void "read returns instance"() {
+        setup:
+        setupData()
+
         expect: "valid instance"
         service.read(1) instanceof Step
     }

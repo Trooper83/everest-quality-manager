@@ -92,7 +92,7 @@ class BugHibernateSpec extends HibernateSpec {
                 actual: "actual", expected: "expected").save()
 
         when: "update steps"
-        bug.steps[0].action = "edited action"
+        bug.steps[0].act = "edited action"
         bug.steps[0].result = "edited result"
 
         then: "updated steps are retrieved on the step instance"
