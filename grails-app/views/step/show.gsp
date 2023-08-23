@@ -66,12 +66,12 @@
                         <li class="list-group-item border-bottom-0">
                             <div class="row" id="parents">
                                 <p class="fw-bold border-bottom">Parents</p>
-                                <g:if test="${parents.size() == 0}">
+                                <g:if test="${relations.parents.size() == 0}">
                                     <p>No parent steps found</p>
                                 </g:if>
-                                <g:each in="${parents}">
+                                <g:each in="${relations.parents}">
                                     <div class="row mt-1">
-                                        <p class="col-6">${it.parent.name}</p>
+                                        <p class="col-6">${it.linkedStep.name}</p>
                                     </div>
                                 </g:each>
                             </div>
@@ -79,12 +79,25 @@
                         <li class="list-group-item mt-3">
                             <div class="row" id="children">
                                 <p class="fw-bold border-bottom">Children</p>
-                                <g:if test="${children.size() == 0}">
+                                <g:if test="${relations.children.size() == 0}">
                                     <p>No child steps found</p>
                                 </g:if>
-                                <g:each in="${children}">
+                                <g:each in="${relations.children}">
                                     <div class="row">
-                                        <p class="col-6">${it.child.name}</p>
+                                        <p class="col-6">${it.linkedStep.name}</p>
+                                    </div>
+                                </g:each>
+                            </div>
+                        </li>
+                        <li class="list-group-item mt-3">
+                            <div class="row" id="siblings">
+                                <p class="fw-bold border-bottom">Siblings</p>
+                                <g:if test="${relations.siblings.size() == 0}">
+                                    <p>No sibling steps found</p>
+                                </g:if>
+                                <g:each in="${relations.siblings}">
+                                    <div class="row">
+                                        <p class="col-6">${it.linkedStep.name}</p>
                                     </div>
                                 </g:each>
                             </div>

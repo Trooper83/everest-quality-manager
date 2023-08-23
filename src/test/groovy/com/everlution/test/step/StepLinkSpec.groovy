@@ -8,25 +8,25 @@ import spock.lang.Specification
 
 class StepLinkSpec extends Specification implements DomainUnitTest<StepLink> {
 
-    void "child cannot be null"() {
+    void "linkedStep cannot be null"() {
         when:
-        domain.child == null
+        domain.linkedStep = null
 
         then:
-        !domain.validate(["child"])
+        !domain.validate(["linkedStep"])
     }
 
-    void "parent cannot be null"() {
+    void "owner cannot be null"() {
         when:
-        domain.parent == null
+        domain.owner = null
 
         then:
-        !domain.validate(["parent"])
+        !domain.validate(["owner"])
     }
 
     void "test instances are persisted"() {
         setup:
-        new StepLink(child: new Step(), parent: new Step(), project: new Project()).save()
+        new StepLink(linkedStep: new Step(), owner: new Step(), project: new Project(), relation: 'SIBLING').save()
 
         expect:
         StepLink.count() == 1
@@ -34,9 +34,36 @@ class StepLinkSpec extends Specification implements DomainUnitTest<StepLink> {
 
     void "project cannot be null"() {
         when:
-        domain.project == null
+        domain.project = null
 
         then:
         !domain.validate(["project"])
+    }
+
+    void "relation cannot be null"() {
+        when:
+        domain.relation = null
+
+        then:
+        !domain.validate(["relation"])
+    }
+
+    void "relation validates with option in list"(String option) {
+        when:
+        domain.relation = option
+
+        then:
+        domain.validate(["relation"])
+
+        where:
+        option << ['SIBLING', 'PARENT_CHILD', 'CHILD_PARENT']
+    }
+
+    void "relation does not validate with option not in list"() {
+        when:
+        domain.relation = 'test'
+
+        then:
+        !domain.validate(['relation'])
     }
 }

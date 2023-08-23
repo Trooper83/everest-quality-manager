@@ -50,9 +50,8 @@ class StepController {
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         def step = stepService.get(id)
-        def parents = stepLinkService.findAllByProjectAndChild(step.project, step)
-        def children = stepLinkService.findAllByProjectAndParent(step.project, step)
-        respond step, model: [parents: parents, children: children], view: 'show'
+        def relations = stepLinkService.getRelatedSteps(step)
+        respond step, model: [relations: relations], view: 'show'
     }
 
     /**

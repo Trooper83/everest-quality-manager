@@ -37,11 +37,11 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
                 isBuilderStep: true).save()
         def gParent = new Step(name: "fourth name", act: "action", result: "result", person: person, project: project).save()
         def ggParent = new Step(name: "fifth name", act: "action", result: "result", person: person, project: project).save()
-        new StepLink(parent: parent, child: child, project: project).save()
-        new StepLink(parent: uncle, child: child, project: project).save()
-        new StepLink(parent: gParent, child: uncle, project: project).save()
-        new StepLink(parent: gParent, child: parent, project: project).save()
-        new StepLink(parent: ggParent, child: gParent, project: project).save(flush: true)
+        new StepLink(owner: parent, linkedStep: child, project: project).save()
+        new StepLink(owner: uncle, linkedStep: child, project: project).save()
+        new StepLink(owner: gParent, linkedStep: uncle, project: project).save()
+        new StepLink(owner: gParent, linkedStep: parent, project: project).save()
+        new StepLink(owner: ggParent, linkedStep: gParent, project: project).save(flush: true)
     }
 
     void "test something"() {

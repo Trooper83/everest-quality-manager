@@ -104,10 +104,16 @@ class BootStrap {
         def child = new Step(act: "do something123", result: "something happened123", project: project1,
                 person: person, isBuilderStep: true, name: "this is the ultimate child step").save(failOnError: true)
 
-        new StepLink(parent: parent, child: child, project: project1).save()
-        new StepLink(parent: uncle, child: child, project: project1).save()
-        new StepLink(parent: grandParent, child: parent, project: project1).save()
-        new StepLink(parent: grandParent, child: uncle, project: project1).save()
+        new StepLink(owner: parent, linkedStep: child, project: project1, relation: 'PARENT_CHILD').save()
+        new StepLink(owner: child, linkedStep: parent, project: project1, relation: 'CHILD_PARENT').save()
+        new StepLink(owner: uncle, linkedStep: child, project: project1, relation: 'PARENT_CHILD').save()
+        new StepLink(owner: child, linkedStep: uncle, project: project1, relation: 'CHILD_PARENT').save()
+        new StepLink(owner: grandParent, linkedStep: parent, project: project1, relation: 'PARENT_CHILD').save()
+        new StepLink(owner: parent, linkedStep: grandParent, project: project1, relation: 'CHILD_PARENT').save()
+        new StepLink(owner: grandParent, linkedStep: uncle, project: project1, relation: 'PARENT_CHILD').save()
+        new StepLink(owner: uncle, linkedStep: grandParent, project: project1, relation: 'CHILD_PARENT').save()
+        new StepLink(owner: uncle, linkedStep: parent, project: project1, relation: 'SIBLING').save()
+        new StepLink(owner: parent, linkedStep: uncle, project: project1, relation: 'SIBLING').save()
 
         new Step(act: "do something123", result: "something happened123", project: project,
                 person: person, isBuilderStep: true, name: "builder step 1").save(failOnError: true)
