@@ -50,7 +50,7 @@ class StepController {
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         def step = stepService.get(id)
-        def relations = stepLinkService.getRelatedSteps(step)
+        def relations = stepLinkService.getStepLinksByType(step)
         respond step, model: [relations: relations], view: 'show'
     }
 

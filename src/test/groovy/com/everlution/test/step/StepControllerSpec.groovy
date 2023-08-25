@@ -1,7 +1,6 @@
 package com.everlution.test.step
 
-import com.everlution.Bug
-import com.everlution.BugService
+
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
@@ -9,7 +8,6 @@ import com.everlution.Step
 import com.everlution.StepController
 import com.everlution.StepLinkService
 import com.everlution.StepService
-import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -273,7 +271,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         }
 
         controller.stepLinkService = Mock(StepLinkService) {
-            1 * getRelatedSteps(_) >> [:]
+            1 * getStepLinksByType(_) >> [:]
         }
 
         when:"a domain instance is passed to the show action"
@@ -290,7 +288,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         }
 
         controller.stepLinkService = Mock(StepLinkService) {
-            1 * getRelatedSteps(_) >> [:]
+            1 * getStepLinksByType(_) >> [:]
         }
 
         when:"The show action is executed with a null domain"
@@ -307,7 +305,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         }
 
         controller.stepLinkService = Mock(StepLinkService) {
-            1 * getRelatedSteps(_) >> [:]
+            1 * getStepLinksByType(_) >> [:]
         }
 
         when:"A domain instance is passed to the show action"
@@ -324,7 +322,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         }
 
         controller.stepLinkService = Mock(StepLinkService) {
-            1 * getRelatedSteps(_) >> [:]
+            1 * getStepLinksByType(_) >> [:]
         }
 
         when:"A domain instance is passed to the show action"

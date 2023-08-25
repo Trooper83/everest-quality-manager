@@ -6,6 +6,22 @@ import grails.gorm.transactions.Transactional
 @Service(Step)
 abstract class StepService implements IStepService {
 
+    StepLinkService stepLinkService
+
+    /**
+     * deletes a step, if any linked steps exist it deletes them first
+     * @param id
+     */
+    @Transactional
+    void delete(Serializable id) {
+        def step = get(id)
+        def links = stepLinkService.getStepLinks(step)
+        links.each {
+            stepLinkService.delete(it.id)
+        }
+        step.delete()
+    }
+
     /**
      * finds all steps in a project
      */

@@ -81,7 +81,7 @@ class StepLinkServiceSpec extends Specification {
         setupData()
 
         when:
-        def map = stepLinkService.getRelatedSteps(parent)
+        def map = stepLinkService.getStepLinksByType(parent)
 
         then:
         map.children.size() == 1

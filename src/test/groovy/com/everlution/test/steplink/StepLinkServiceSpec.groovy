@@ -95,7 +95,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         setupData()
 
         when:
-        def map = service.getRelatedSteps(parent)
+        def map = service.getStepLinksByType(parent)
 
         then:
         map.children.size() == 1
@@ -108,7 +108,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         setupData()
 
         when:
-        def map = service.getRelatedSteps(null)
+        def map = service.getStepLinksByType(null)
 
         then:
         noExceptionThrown()
@@ -120,7 +120,41 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         setupData()
 
         when:
-        def map = service.getRelatedSteps(null)
+        def map = service.getStepLinksByType(null)
+
+        then:
+        noExceptionThrown()
+    }
+
+    void "get step links returns all items"() {
+        setup:
+        setupData()
+
+        when:
+        def l = service.getStepLinks(parent)
+
+        then:
+        l.size() == 5
+    }
+
+    void "get step links returns empty map when step is null"() {
+        setup:
+        setupData()
+
+        when:
+        def l = service.getStepLinks(null)
+
+        then:
+        noExceptionThrown()
+        l.isEmpty()
+    }
+
+    void "get step links does not throw exception when step is null"() {
+        setup:
+        setupData()
+
+        when:
+        def l = service.getStepLinks(null)
 
         then:
         noExceptionThrown()
