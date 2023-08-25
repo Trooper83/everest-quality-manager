@@ -169,10 +169,9 @@ class StepController {
             }
 
             try {
-                stepService.delete(id) //TODO: need to remove StepLinks
+                stepService.delete(id)
             } catch (Exception ignored) {
                 flash.error = "An issue occurred when attempting to delete the Step"
-                //TODO: come up with a better message and add it to i18n file, should we catch specific exception??
                 redirect uri: "/project/${step.project.id}/step/show/${step.id}"
                 return
             }
