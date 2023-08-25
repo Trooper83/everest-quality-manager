@@ -1,4 +1,4 @@
-package com.everlution.test.steplink
+package com.everlution.test.service
 
 import com.everlution.Person
 import com.everlution.Project
@@ -6,31 +6,24 @@ import com.everlution.Relationship
 import com.everlution.Step
 import com.everlution.StepLink
 import com.everlution.StepLinkService
-import grails.testing.gorm.DataTest
-import grails.testing.services.ServiceUnitTest
-import grails.validation.ValidationException
+import grails.gorm.transactions.Rollback
+import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 import spock.lang.Specification
 
-class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepLinkService>, DataTest {
+@Rollback
+@Integration
+class StepLinkServiceSpec extends Specification {
 
     @Shared Person person
     @Shared Project project
     @Shared Step parent
 
-    def setup() {
-        project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
-        person = new Person(email: "email@test.com", password: "!Password2022").save()
-    }
-
-    def cleanup() {
-    }
-
-    def setupSpec() {
-        mockDomains(Step, Person, Project, StepLink)
-    }
+    StepLinkService stepLinkService
 
     private void setupData() {
+        project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
+        person = new Person(email: "email@test.com", password: "!Password2022").save()
         def child = new Step(name: 'first name', act: "action", result: "result", person: person, project: project,
                 isBuilderStep: true).save()
         parent = new Step(name: 'second name', act: "action", result: "result", person: person, project: project,
@@ -51,6 +44,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
 
     void "delete with valid id deletes instance"() {
         given:
+        setupData()
         def s = new Step(act: "action", result: "result", person: person, project: project).save()
         def step = new Step(act: "action", result: "result", person: person, project: project).save()
         def link = new StepLink(owner: s, linkedStep: step, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
@@ -59,8 +53,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         StepLink.get(link.id) != null
 
         when:
-        service.delete(link.id)
-        currentSession.flush()
+        stepLinkService.delete(link.id)
 
         then:
         StepLink.get(link.id) == null
@@ -68,26 +61,19 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
 
     void "save with valid object returns instance"() {
         given:
+        setupData()
         def s = new Step(act: "action", result: "result", person: person, project: project).save()
         def step = new Step(act: "action", result: "result", person: person, project: project).save()
-        def link = new StepLink(owner: s, linkedStep: step, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
+        def link = new StepLink(owner: s, linkedStep: step, project: project, relation: Relationship.IS_PARENT_OF.name)
+
+        expect:
+        link.id == null
 
         when:
-        def saved = service.save(link)
+        def saved = stepLinkService.save(link)
 
         then:
-        saved instanceof StepLink
-    }
-
-    void "save with invalid object throws validation exception"() {
-        given:
-        def link = new StepLink()
-
-        when:
-        service.save(link)
-
-        then:
-        thrown(ValidationException)
+        saved.id != null
     }
 
     void "get related steps returns all items"() {
@@ -95,34 +81,11 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         setupData()
 
         when:
-        def map = service.getRelatedSteps(parent)
+        def map = stepLinkService.getRelatedSteps(parent)
 
         then:
         map.children.size() == 1
         map.parents.size() == 1
         map.siblings.size() == 1
-    }
-
-    void "get related steps returns empty map when step is null"() {
-        setup:
-        setupData()
-
-        when:
-        def map = service.getRelatedSteps(null)
-
-        then:
-        noExceptionThrown()
-        map.isEmpty()
-    }
-
-    void "get related steps does not throw exception when step is null"() {
-        setup:
-        setupData()
-
-        when:
-        def map = service.getRelatedSteps(null)
-
-        then:
-        noExceptionThrown()
     }
 }

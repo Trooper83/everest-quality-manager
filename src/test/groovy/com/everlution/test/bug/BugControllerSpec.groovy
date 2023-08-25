@@ -3,9 +3,11 @@ package com.everlution.test.bug
 import com.everlution.Bug
 import com.everlution.BugController
 import com.everlution.BugService
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
+import com.everlution.Step
 import com.everlution.TestGroupService
 import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
@@ -229,6 +231,39 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         controller.flash.message == "default.created.message"
     }
 
+    void "save action with steps correctly sets step person and project"() {
+        given:
+        controller.bugService = Mock(BugService) {
+            1 * save(_ as Bug)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person()
+        }
+
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        setToken(params)
+        def bug = new Bug(params)
+        def project = new Project()
+        bug.id = 1
+        project.id = 1
+        bug.project = project
+        bug.steps = [new Step()]
+
+        expect:
+        bug.steps[0].person == null
+        bug.steps[0].project == null
+
+        when:
+        controller.save(bug)
+
+        then:
+        bug.steps[0].person != null
+        bug.steps[0].project != null
+    }
+
     void "save action with an invalid instance"() {
         given: "mock services"
         def p = new Project()
@@ -423,6 +458,39 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/bug/show/1'
         controller.flash.message == "default.updated.message"
+    }
+
+    void "update action correctly sets step person and project"() {
+        given:
+        controller.bugService = Mock(BugService) {
+            1 * saveUpdate(_ as Bug, _ as RemovedItems)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person()
+        }
+
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        populateValidParams(params)
+        def bug = new Bug(params)
+        def project = new Project()
+        bug.id = 1
+        project.id = 1
+        bug.project = project
+        bug.steps = [new Step()]
+
+        expect:
+        bug.steps[0].person == null
+        bug.steps[0].project == null
+
+        when:
+        controller.update(bug, new RemovedItems(), 1)
+
+        then:
+        bug.steps[0].person != null
+        bug.steps[0].project != null
     }
 
     void "update action with an invalid instance"() {

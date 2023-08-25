@@ -1,6 +1,5 @@
 package com.everlution.test.service
 
-import com.everlution.Bug
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
