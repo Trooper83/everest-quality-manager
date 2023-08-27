@@ -10,6 +10,11 @@ class Step {
     Project project
     String result
 
+    static mapping = {
+        person cascade: "none"
+        project cascade: "none"
+    }
+
     static constraints = {
         act blank: true, maxSize: 500, nullable: true, validator: {
             val, Step obj ->

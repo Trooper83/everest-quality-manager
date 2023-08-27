@@ -33,7 +33,7 @@ class EditBugStepsSpec extends GebSpec {
     void "step can be added to existing bug"() {
         setup: "create bug"
         def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open",
-                steps: [new Step(act: "bug action", result: "bug result")], actual: "actual", expected: "expected")
+                steps: [new Step(act: "bug action", result: "bug result", person: person, project: project)], actual: "actual", expected: "expected")
         def id = bugService.save(bug).id
 
         and: "login as a basic user"
@@ -58,7 +58,7 @@ class EditBugStepsSpec extends GebSpec {
     void "step can be updated on existing bug"() {
         setup: "create bug"
         def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open",
-                steps: [new Step(act: "bug action", result: "bug result")], actual: "actual", expected: "expected")
+                steps: [new Step(act: "bug action", result: "bug result", person: person, project: project)], actual: "actual", expected: "expected")
         def id = bugService.save(bug).id
 
         and: "login as a basic user"
@@ -80,7 +80,7 @@ class EditBugStepsSpec extends GebSpec {
 
     void "step can be deleted from existing bug"() {
         setup: "create bug"
-        def step = new Step(act: "bug action", result: "bug result")
+        def step = new Step(act: "bug action", result: "bug result", person: person, project: project)
         def bug = new Bug(person: person, name: "name of bug", project: project, status: "Open",
                 steps: [step], actual: "actual", expected: "expected")
         def id = bugService.save(bug).id

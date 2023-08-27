@@ -68,7 +68,7 @@ class CreatePageStepsSpec extends GebSpec {
 
         then:
         createPage.errorsMessage*.text() ==
-                ["Property [action] with value [null] does not pass custom validation",
+                ["Property [act] with value [null] does not pass custom validation",
                 "Property [result] with value [null] does not pass custom validation"]
     }
 

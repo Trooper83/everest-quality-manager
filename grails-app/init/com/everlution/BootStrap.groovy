@@ -83,13 +83,13 @@ class BootStrap {
 
     @Transactional
     void seedTestData() {
-        def person = new Person(email: "test@bootstrapped.com", password: "!Password#2022").save()
+        def person = new Person(email: "test@bootstrapped.com", password: "!Password#2022").save(failOnError: true)
         def area = new Area(name: "bootstrap area")
         def area1 = new Area(name: "bootstrap area 12")
         def env = new Environment(name: "bootstrap environment")
         def env1 = new Environment(name: "bootstrap environment12")
-        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env]).save()
-        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1]).save()
+        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env]).save(failOnError: true)
+        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1]).save(failOnError: true)
         Step testStep = new Step(act: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
         Step testStep1 = new Step(act: "do something12", result: "something happened12", project: project, person: person).save(failOnError: true)
         Step testStep2 = new Step(act: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)

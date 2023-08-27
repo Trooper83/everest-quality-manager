@@ -90,7 +90,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         thrown(ValidationException)
     }
 
-    void "get related steps returns all items"() {
+    void "get step links by type returns all items"() {
         setup:
         setupData()
 
@@ -103,7 +103,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         map.siblings.size() == 1
     }
 
-    void "get related steps returns empty map when step is null"() {
+    void "get step links by type returns empty map when step is null"() {
         setup:
         setupData()
 
@@ -115,7 +115,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
         map.isEmpty()
     }
 
-    void "get related steps does not throw exception when step is null"() {
+    void "get step links by type does not throw exception when step is null"() {
         setup:
         setupData()
 
