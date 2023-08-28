@@ -19,7 +19,7 @@ class StepTableModule extends Module {
     void addStep(String action, String result) {
         addRow()
         int index = getStepsCount() - 1
-        $("textarea[name='steps[${index}].action']").value(action)
+        $("textarea[name='steps[${index}].act']").value(action)
         $("textarea[name='steps[${index}].result']").value(result)
     }
 

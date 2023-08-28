@@ -2,7 +2,7 @@
     <div class="row align-items-center mt-3">
         <g:hiddenField name="stepsIndex[${i}]" class="iHidden" />
         <div class="col-5">
-            <g:textArea class="form-control" type="text" name="steps[${i}].action" value="${step.act}" />
+            <g:textArea class="form-control" type="text" name="steps[${i}].act" value="${step.act}" />
         </div>
         <div class="col-5">
             <g:textArea class="form-control" type="text" name="steps[${i}].result" value="${step.result}" />

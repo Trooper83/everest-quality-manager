@@ -1,11 +1,15 @@
 package com.everlution.test.ui.functional.specs.step
 
+import com.everlution.PersonService
 import com.everlution.ProjectService
+import com.everlution.Step
+import com.everlution.StepService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
+import com.everlution.test.ui.support.pages.step.EditStepPage
 import com.everlution.test.ui.support.pages.step.ListStepPage
 import com.everlution.test.ui.support.pages.step.ShowStepPage
 import geb.spock.GebSpec
@@ -14,7 +18,9 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ListSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
+    StepService stepService
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -103,7 +109,26 @@ class ListSpec extends GebSpec {
     }
 
     void "delete message displays after scenario deleted"() {
-        expect:
-        false
+        given:
+        def project = projectService.list(max: 1).first()
+        def person = personService.list(max: 1).first()
+        def step = new Step(name: 'testing', person: person, project: project, act: 'action', result: 'result',
+                isBuilderStep: true)
+        def id = stepService.save(step).id
+
+        and: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to list page"
+        go "/project/${project.id}/step/show/${id}"
+
+        when:
+        browser.page(ShowStepPage).delete()
+
+        then: "at show page"
+        def steps = at ListStepPage
+        steps.statusMessage.displayed
     }
 }

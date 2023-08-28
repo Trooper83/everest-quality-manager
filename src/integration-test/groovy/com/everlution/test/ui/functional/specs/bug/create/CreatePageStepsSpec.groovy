@@ -99,6 +99,6 @@ class CreatePageStepsSpec extends GebSpec {
 
         then:
         page.stepsTable.getStepsCount() == 1
-        page.stepsTable.getStep(0).find('textarea[name="steps[0].action"]').focused
+        page.stepsTable.getStep(0).find('textarea[name="steps[0].act"]').focused
     }
 }

@@ -30,7 +30,7 @@ class EditPageStepsSpec extends GebSpec {
     void "add test step row"() {
         given: "test case"
         Project project = projectService.list(max: 1).first()
-        Step testStep = new Step(act: "step1", result: "result1")
+        Step testStep = new Step(act: "step1", result: "result1", person: person, project: project)
         TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
@@ -58,7 +58,7 @@ class EditPageStepsSpec extends GebSpec {
     void "remove test step row"() {
         given: "test case"
         Project project = projectService.list(max: 1).first()
-        Step testStep = new Step(act: "step123", result: "result123")
+        Step testStep = new Step(act: "step123", result: "result123", person: person, project: project)
         TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
@@ -89,7 +89,7 @@ class EditPageStepsSpec extends GebSpec {
     void "removing step adds hidden input"() {
         given: "test case"
         Project project = projectService.list(max: 1).first()
-        Step testStep = new Step(act: "step123", result: "result123")
+        Step testStep = new Step(act: "step123", result: "result123", project: project, person: person)
         TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project, steps: [testStep])
         def id = testCaseService.save(testCase).id
