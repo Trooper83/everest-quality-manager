@@ -7,7 +7,7 @@ import grails.gorm.transactions.Transactional
 @Service(Bug)
 abstract class BugService implements IBugService {
 
-    TestStepService testStepService
+    IStepService stepService
 
     @Transactional
     SearchResult findAllByProject(Project project, Map args) {
@@ -37,7 +37,7 @@ abstract class BugService implements IBugService {
     @Transactional
     Bug saveUpdate(Bug bug, RemovedItems removedItems) {
         for(id in removedItems.stepIds) {
-            def step = testStepService.get(id)
+            def step = stepService.get(id)
             bug.removeFromSteps(step)
         }
         return save(bug)

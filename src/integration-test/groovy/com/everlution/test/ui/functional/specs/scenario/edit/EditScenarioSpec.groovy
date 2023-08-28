@@ -10,7 +10,10 @@ import com.everlution.ScenarioService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
+import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.scenario.EditScenarioPage
+import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
@@ -23,17 +26,16 @@ class EditScenarioSpec extends GebSpec {
     ScenarioService scenarioService
 
     void "authorized users can edit scenario"(String username, String password) {
-        given: "create test case"
-        Project project = projectService.list(max: 1).first()
-        def id = scenarioService.list(max: 1).first().id
-
-        and: "login as a basic user"
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)
 
         and: "go to edit page"
-        go "/project/${project.id}/scenario/edit/${id}"
+        browser.page(ListProjectPage).projectTable.clickCell("Name", 0)
+        browser.page(ProjectHomePage).sideBar.goToProjectDomain("Scenarios")
+        browser.page(ListScenarioPage).listTable.clickCell("Name", 0)
+        browser.page(ShowScenarioPage).goToEdit()
 
         when: "edit the test case"
         EditScenarioPage page = browser.page(EditScenarioPage)

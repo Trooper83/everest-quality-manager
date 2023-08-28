@@ -6,8 +6,8 @@ function getEntryRow() {
     const itemIndex = index + removed;
 
     const hidden = $('<input type="hidden" name="stepsIndex[' + itemIndex + ']" class="iHidden" value="" id="steps[' + itemIndex + ']"/>');
-    const action = $('<div class="col-5"><textarea class="form-control" type="text" maxLenght="500" name="steps[' + itemIndex + '].action" value="" id="steps[' + itemIndex + '].action"/></div>');
-    const result = $('<div class="col-5"><textarea class="form-control" type="text" maxLenght="500" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></div>');
+    const action = $('<div class="col-5"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].act" value="" id="steps[' + itemIndex + '].act"/></div>');
+    const result = $('<div class="col-5"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></div>');
     const button = $('<div class="col-2"><input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeEntryRow(this)" /></div>');
 
     row.append(hidden, action, result, button);
@@ -18,7 +18,7 @@ function addEntryRow() {
     $('#stepsTableContent div').find('input[value=Remove]').last().hide();
     let row = getEntryRow();
     $('#stepsTableContent').append(row);
-    $('#stepsTableContent div').find('textarea[name$=action]').last().focus();
+    $('#stepsTableContent div').find('textarea[name$=act]').last().focus();
 }
 
 function removeEntryRow(element, id) {

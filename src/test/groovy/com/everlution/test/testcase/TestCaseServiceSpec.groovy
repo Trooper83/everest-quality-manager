@@ -53,23 +53,6 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         service.get(999999) == null
     }
 
-    void "list max args param returns correct value"() {
-        setupData()
-
-        expect:
-        service.list(max: 1).size() == 1
-        service.list(max: 2).size() == 2
-        service.list().size() == 3
-        service.list(offset: 1).size() == 2
-    }
-
-    void "count returns number"() {
-        setupData()
-
-        expect:
-        service.count() == 3
-    }
-
     void "delete with valid id deletes instance"() {
         given:
         def tc = new TestCase(person: person, name: "test", description: "desc",

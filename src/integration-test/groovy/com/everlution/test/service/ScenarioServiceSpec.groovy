@@ -54,55 +54,19 @@ class ScenarioServiceSpec extends Specification {
         scenarioService.get(9999999999) == null
     }
 
-    void "test list with no args"() {
-        setupData()
-
-        when:
-        List<Scenario> scenarioList = scenarioService.list()
-
-        then:
-        scenarioList.size() > 0
-    }
-
-    void "test list with max args"() {
-        setupData()
-
-        when:
-        List<Scenario> scenarioList = scenarioService.list(max: 1)
-
-        then:
-        scenarioList.size() == 1
-    }
-
-    void "test list with offset args"() {
-        setupData()
-
-        when:
-        List<Scenario> scenarioList = scenarioService.list(offset: 1)
-
-        then:
-        scenarioList.size() > 0
-    }
-
-    void "test count"() {
-        setupData()
-
-        expect:
-        scenarioService.count() > 1
-    }
-
     void "test delete"() {
+        setup:
         Long scenarioId = setupData()
 
-        given:
-        def count = scenarioService.count()
+        expect:
+        Scenario.findById(scenarioId) != null
 
         when:
         scenarioService.delete(scenarioId)
         sessionFactory.currentSession.flush()
 
         then:
-        scenarioService.count() == count - 1
+        Scenario.findById(scenarioId) == null
     }
 
     void "test save"() {

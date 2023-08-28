@@ -4,10 +4,6 @@ interface IScenarioService {
 
     Scenario get(Serializable id)
 
-    List<Scenario> list(Map args)
-
-    Long count()
-
     int countByProject(Project project)
 
     void delete(Serializable id)

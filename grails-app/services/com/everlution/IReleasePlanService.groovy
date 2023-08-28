@@ -4,10 +4,6 @@ interface IReleasePlanService {
 
     ReleasePlan get(Serializable id)
 
-    List<ReleasePlan> list(Map args)
-
-    Long count()
-
     void delete(Serializable id)
 
     ReleasePlan read(Serializable id)

@@ -68,35 +68,18 @@ class TestGroupServiceSpec extends Specification {
         groups.size() == 3
     }
 
-    void "test list"() {
-        setupData()
-
-        when:
-        List<TestGroup> testGroupList = testGroupService.list(max: 2, offset: 2)
-
-        then:
-        testGroupList.size() == 2
-    }
-
-    void "test count"() {
-        setupData()
-
-        expect:
-        testGroupService.count() > 0
-    }
-
     void "test delete"() {
         Long testGroupId = setupData()
 
         expect:
-        testGroupService.count() == 8
+        TestGroup.findById(testGroupId) != null
 
         when:
         testGroupService.delete(testGroupId)
         sessionFactory.currentSession.flush()
 
         then:
-        testGroupService.count() == 7
+        TestGroup.findById(testGroupId) == null
     }
 
     void "test save"() {

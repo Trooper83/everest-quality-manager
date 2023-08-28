@@ -93,7 +93,7 @@ class EditTestCaseSpec extends GebSpec {
         Project project = projectService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project,
-                steps: [new Step(action: "changelog entry", result: "changelog entry")])
+                steps: [new Step(act: "changelog entry", result: "changelog entry", person: person, project: project)])
         def id = testCaseService.save(testCase).id
 
         and: "login as a basic user"
@@ -117,7 +117,7 @@ class EditTestCaseSpec extends GebSpec {
     void "step can be deleted from existing test case"() {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
-        def step = new Step(action: "action", result: "result")
+        def step = new Step(act: "action", result: "result", project: project, person: person)
         TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project,
                 steps: [step])

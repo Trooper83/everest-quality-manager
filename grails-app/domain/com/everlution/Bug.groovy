@@ -22,6 +22,7 @@ class Bug {
         environments cascade: "none"
         person cascade: "none"
         project cascade: "none"
+        steps cascade: "save-update"
     }
 
     static constraints = {
@@ -54,5 +55,6 @@ class Bug {
             ids.containsAll(envIds)
         }
         status blank: false, nullable: false, inList: ["Open", "Closed"]
+        steps nullable: true
     }
 }

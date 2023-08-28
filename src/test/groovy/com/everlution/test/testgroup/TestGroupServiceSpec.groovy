@@ -62,29 +62,6 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         service.read(11111111111) == null
     }
 
-    void "list max args param returns correct value"() {
-        when:
-        new TestGroup(name: "name", project: project).save()
-        new TestGroup(name: "name1", project: project).save()
-        new TestGroup(name: "name2", project: project).save(flush: true)
-
-        then:
-        service.list(max: 1).size() == 1
-        service.list(max: 2).size() == 2
-        service.list().size() == 3
-        service.list(offset: 1).size() == 2
-    }
-
-    void "count returns number of groups"() {
-        when:
-        new TestGroup(name: "name", project: project).save()
-        new TestGroup(name: "name1", project: project).save()
-        new TestGroup(name: "name2", project: project).save(flush: true)
-
-        then:
-        service.count() == 3
-    }
-
     void "delete with valid id deletes instance"() {
         given:
         def id = new TestGroup(name: "name2", project: project).save(flush: true).id

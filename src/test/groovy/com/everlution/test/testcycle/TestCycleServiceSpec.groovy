@@ -11,7 +11,6 @@ import com.everlution.TestCycleService
 import com.everlution.TestIteration
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
-import grails.validation.ValidationException
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -72,8 +71,8 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
 
     void "add test iterations populates property on instance"() {
         given:
-        def step = new Step(action: "action", result: "result")
-        def step1 = new Step(action: "action1", result: "result1")
+        def step = new Step(act: "action", result: "result")
+        def step1 = new Step(act: "action1", result: "result1")
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project, steps: [step, step1]).save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan).save(flush: true)
@@ -91,8 +90,8 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.first().result == "ToDo"
         tc.testIterations.first().testCase == testCase
         tc.testIterations.first().steps.size() == testCase.steps.size()
-        tc.testIterations.first().steps[0].action == testCase.steps[0].action
-        tc.testIterations.first().steps[1].action == testCase.steps[1].action
+        tc.testIterations.first().steps[0].action == testCase.steps[0].act
+        tc.testIterations.first().steps[1].action == testCase.steps[1].act
         tc.testIterations.first().steps[0].result == testCase.steps[0].result
         tc.testIterations.first().steps[1].result == testCase.steps[1].result
     }

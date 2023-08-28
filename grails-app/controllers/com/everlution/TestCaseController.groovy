@@ -82,6 +82,10 @@ class TestCaseController {
 
             Person person = springSecurityService.getCurrentUser() as Person
             testCase.person = person
+            testCase.steps.each {
+                it.project = testCase.project
+                it.person = person
+            }
             try {
                 testCaseService.save(testCase)
             } catch (ValidationException ignored) {
@@ -129,6 +133,13 @@ class TestCaseController {
             if (projectId != testProjectId) {
                 notFound()
                 return
+            }
+
+            testCase.steps.each {
+                it.project = testCase.project
+                if (it.person == null) {
+                    it.person = springSecurityService.getCurrentUser() as Person
+                }
             }
 
             try {

@@ -15,7 +15,6 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.Shared
 
 @Integration
 class EditPageStepsSpec extends GebSpec {
@@ -23,11 +22,6 @@ class EditPageStepsSpec extends GebSpec {
     BugService bugService
     PersonService personService
     ProjectService projectService
-    @Shared int id
-
-    def setup() {
-        id = bugService.list(max:1).first().id
-    }
 
     void "add test step row"() {
         given: "login as a basic user"
@@ -98,8 +92,8 @@ class EditPageStepsSpec extends GebSpec {
     void "removing step adds hidden input"() {
         given: "valid bug with step"
         Project project = projectService.list(max: 1).first()
-        Step step = new Step(action: "step123", result: "result123")
         def person = personService.list(max: 1).first()
+        Step step = new Step(act: "step123", result: "result123", person: person, project: project)
         Bug bug = new Bug(person: person,name: "first", description: "desc1",
                 project: project, steps: [step], status: "Open", actual: "actual", expected: "expected")
         def id = bugService.save(bug).id

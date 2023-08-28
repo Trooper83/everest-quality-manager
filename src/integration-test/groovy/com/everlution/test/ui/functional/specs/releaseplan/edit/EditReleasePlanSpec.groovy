@@ -22,10 +22,7 @@ class EditReleasePlanSpec extends GebSpec {
     ReleasePlanService releasePlanService
 
     void "authorized users can edit plan"(String username, String password) {
-        setup: "get instance"
-        def id = releasePlanService.list(max: 1).first().id
-
-        and: "login as a basic user"
+        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(username, password)

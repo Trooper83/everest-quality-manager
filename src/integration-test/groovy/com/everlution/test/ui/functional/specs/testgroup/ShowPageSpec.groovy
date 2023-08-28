@@ -6,7 +6,6 @@ import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestGroup
-import com.everlution.TestGroupService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -19,7 +18,6 @@ import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.Shared
 
 @Integration
 class ShowPageSpec extends GebSpec {
@@ -27,13 +25,6 @@ class ShowPageSpec extends GebSpec {
     PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
-    TestGroupService testGroupService
-
-    @Shared Long id
-
-    def setup() {
-        id = testGroupService.list(max: 1).first().id
-    }
 
     void "create message displays after group created"() {
         given: "login as a basic user"

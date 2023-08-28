@@ -7,7 +7,7 @@ import grails.gorm.transactions.Transactional
 @Service(TestCase)
 abstract class TestCaseService implements ITestCaseService {
 
-    TestStepService testStepService
+    IStepService stepService
 
     /**
      * finds all test cases in a project with the name
@@ -48,7 +48,7 @@ abstract class TestCaseService implements ITestCaseService {
     @Transactional
     TestCase saveUpdate(TestCase testCase, RemovedItems removedItems) {
         for(id in removedItems.stepIds) {
-            def step = testStepService.get(id)
+            def step = stepService.get(id)
             testCase.removeFromSteps(step)
         }
         return save(testCase)

@@ -105,6 +105,16 @@ class DataFactory {
     }
 
     /**
+     * creates fake data to populate a step
+     */
+    static Map<String, String> step() {
+        def name = faker.lorem().sentence(5)
+        def action = faker.lorem().sentence(9)
+        def result = faker.lorem().sentence(9)
+        return [name: name, action: action, result: result]
+    }
+
+    /**
      * creates fake data to populate a testCase instance
      */
     static Map<String, String> testCase() {

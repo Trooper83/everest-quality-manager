@@ -68,7 +68,7 @@ class CreatePageStepsSpec extends GebSpec {
 
         then:
         createPage.errorsMessage*.text() ==
-                ["Property [action] with value [null] does not pass custom validation",
+                ["Property [act] with value [null] does not pass custom validation",
                 "Property [result] with value [null] does not pass custom validation"]
     }
 
@@ -99,6 +99,6 @@ class CreatePageStepsSpec extends GebSpec {
 
         then:
         page.stepsTable.getStepsCount() == 1
-        page.stepsTable.getStep(0).find('textarea[name="steps[0].action"]').focused
+        page.stepsTable.getStep(0).find('textarea[name="steps[0].act"]').focused
     }
 }

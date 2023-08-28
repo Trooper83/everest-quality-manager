@@ -1,8 +1,6 @@
 package com.everlution.test.ui.functional.specs.scenario.edit
 
-import com.everlution.ScenarioService
 import com.everlution.test.ui.support.data.Credentials
-
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -11,17 +9,11 @@ import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
-import spock.lang.Shared
 
 @Integration
 class EditPageSpec extends GebSpec {
 
-    ScenarioService scenarioService
-    @Shared int id
-
     def setup() {
-        id = scenarioService.list(max:1).first().id
-
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)

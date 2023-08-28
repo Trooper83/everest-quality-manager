@@ -45,19 +45,6 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
         service.get(999999) == null
     }
 
-    void "list max args param returns correct value"() {
-        expect:
-        service.list(max: 1).size() == 1
-        service.list(max: 2).size() == 2
-        service.list().size() == 3
-        service.list(offset: 1).size() == 2
-    }
-
-    void "count returns number of scenarios"() {
-        expect:
-        service.count() == 3
-    }
-
     void "delete with valid id deletes instance"() {
         given:
         def project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()

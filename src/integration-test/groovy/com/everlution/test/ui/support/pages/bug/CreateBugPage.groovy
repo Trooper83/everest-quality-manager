@@ -85,26 +85,4 @@ class CreateBugPage extends BasePage {
         actualInput = faker.beer().name()
         expectedInput = faker.beer().name()
     }
-
-    /**
-     * Gets the labels for all fields displayed on the page
-     * @return - a list of field names
-     */
-    List<String> getFields() {
-        return fieldLabels*.text()
-    }
-
-    /**
-     * clicks the home link
-     */
-    void goToHome() {
-        homeLink.click()
-    }
-
-    /**
-     * clicks the list link
-     */
-    void goToList() {
-        listLink.click()
-    }
 }
