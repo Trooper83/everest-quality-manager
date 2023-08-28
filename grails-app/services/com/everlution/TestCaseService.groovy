@@ -7,7 +7,7 @@ import grails.gorm.transactions.Transactional
 @Service(TestCase)
 abstract class TestCaseService implements ITestCaseService {
 
-    IStepService stepService
+    StepService stepService
 
     /**
      * finds all test cases in a project with the name
