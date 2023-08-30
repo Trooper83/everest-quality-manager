@@ -12,7 +12,7 @@ class StepController {
     StepService stepService
     StepLinkService stepLinkService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", getStep: "GET"]
 
     /**
      * lists all steps or perform search
@@ -186,6 +186,18 @@ class StepController {
         }.invalidToken {
             error()
         }
+    }
+
+    @Secured("ROLE_BASIC")
+    def getSteps(Long projectId, String q) {
+        //TODO: do we need to escape the q???
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        def searchResult = stepService.findAllInProjectByName(project, q, params)
+        respond searchResult.results, formats: ['json']
     }
 
     /**
