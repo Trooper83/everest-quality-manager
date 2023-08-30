@@ -239,13 +239,13 @@ div.date-picker select:-moz-focusring {
   min-width: 350px;
   list-style: none;
   overflow-block: scroll;
-  background-color: #f0f8ff;
+  background-color: #fff;
   color: #000000;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: .25rem;
 }
 
 .search-item {

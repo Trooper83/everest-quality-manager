@@ -190,12 +190,13 @@ class StepController {
 
     @Secured("ROLE_BASIC")
     def getSteps(Long projectId, String q) {
-        //TODO: do we need to escape the q???
+
         def project = projectService.get(projectId)
         if (project == null) {
             notFound()
             return
         }
+        params.max = 7
         def searchResult = stepService.findAllInProjectByName(project, q, params)
         respond searchResult.results, formats: ['json']
     }
