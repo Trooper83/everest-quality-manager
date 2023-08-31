@@ -32,4 +32,19 @@ class CreateStepPageSpec extends GebSpec {
         then:
         createPage.errorsMessage.displayed
     }
+
+    void "steps are retrieved when validation fails"() {
+        expect: //verify steps can be fetched with the correct url
+        false
+    }
+
+    void "tooltips display when they should"() {
+        expect: //TODO: this should be multiple tests
+        false
+    }
+
+    void "results fetched only when three characters typed"() {
+        expect:
+        false //could this be done by inspecting the network?
+    }
 }

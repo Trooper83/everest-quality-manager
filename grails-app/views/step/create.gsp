@@ -40,17 +40,20 @@
                         <h1>Linked Steps</h1>
                     </div>
                     <div class="card-body">
-                        <div class="row align-items-end">
+                        <div class="row align-items-end mb-3">
                             <div class="col-2">
-                                <label class="form-label" for="relation">Link Type</label>
+                                <label class="form-label" for="relation">Relationship</label>
                                 <g:select class="form-select" name="relation"
                                           from="${['Is Child of', 'Is Parent of', 'Is Sibling of']}"
-                                          noSelection="${['':'']}"
+                                          noSelection="${['':'']}" data-toggle="tooltip"
+                                          trigger="manual" title="Field cannot be blank"
                                 />
                             </div>
                             <div class="col-6">
                                 <label class="form-label" for="linkedSteps">Step</label>
-                                <g:textField class="form-control" name="linkedSteps" type="text" placeholder="Name" autocomplete="off"/>
+                                <g:textField class="form-control" name="linkedSteps" type="text" placeholder="Name"
+                                             autocomplete="off" data-toggle="tooltip"
+                                             trigger="manual" title="Field cannot be blank"/>
                                 <ul class="search" id="search-results" style="position:absolute;"></ul>
                             </div>
                             <div class="col-1">
@@ -58,7 +61,7 @@
                                          onclick="addLink(this)"/>
                             </div>
                         </div>
-                        <div class="row" id="stepLinks">
+                        <div class="row mb-3" id="stepLinks">
 
                         </div>
                     </div>
