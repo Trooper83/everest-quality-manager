@@ -8,6 +8,7 @@ import com.everlution.Step
 import com.everlution.StepController
 import com.everlution.StepLinkService
 import com.everlution.StepService
+import com.everlution.command.LinksCmd
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -176,7 +177,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         def step = new Step(params)
 
         when:
-        controller.save(step)
+        controller.save(step, new LinksCmd())
 
         then:
         response.status == 405
@@ -190,7 +191,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         setToken(params)
-        controller.save(null)
+        controller.save(null, new LinksCmd())
 
         then:"A 404 error is returned"
         response.status == 404
@@ -200,7 +201,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
-        controller.save(null)
+        controller.save(null, new LinksCmd())
 
         then:"A 500 error is returned"
         response.status == 500
@@ -227,7 +228,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         project.id = 1
         step.project = project
 
-        controller.save(step)
+        controller.save(step, new LinksCmd())
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/step/show/1'
@@ -256,7 +257,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         request.method = 'POST'
         def step = new Step()
         step.project = p
-        controller.save(step)
+        controller.save(step, new LinksCmd())
 
         then:"The create view is rendered again with the correct model"
         model.step instanceof Step

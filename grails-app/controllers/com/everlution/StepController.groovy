@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.LinksCmd
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
@@ -73,7 +74,7 @@ class StepController {
      * @param step - the step to save
      */
     @Secured("ROLE_BASIC")
-    def save(Step step) {
+    def save(Step step, LinksCmd links) {
         withForm {
             if (step == null) {
                 notFound()

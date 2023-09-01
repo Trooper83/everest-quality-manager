@@ -30,9 +30,6 @@ const endpoint = setEndpoint();
 
 function displayMatchedResults() {
 
-    /*if (!window.location.href.endsWith('getSteps')) {
-        setEndpoint();
-    }*/
     const url = `${endpoint}?q=${this.value}`;
     let encoded = encodeURI(url);
 
@@ -83,19 +80,40 @@ function addLink(element) {
     } else if (stepName.length == 0) {
         showTooltip('linkedSteps');
     } else {
-        const parent = document.getElementById('stepLinks');
-        const inp = document.createElement('input');
+
+        const i = document.getElementById('stepLinks').children.length;
+
+        const ele = document.createElement('p');
         const text = document.createTextNode(stepName);
-        inp.appendChild(text);
-        inp.setAttribute('data-id', stepId);
-        inp.setAttribute('value', stepId);
-        inp.setAttribute('id', 'link[0]'); //TODO: get this value dynamically and set input to hidden
-        inp.setAttribute('name', 'link[0]');
-        inp.setAttribute('type', 'text');
-        parent.appendChild(inp);
+        ele.appendChild(text);
+
+        const idInp = document.createElement('input');
+        idInp.setAttribute('value', stepId);
+        idInp.setAttribute('id', `links[${i}].id`);
+        idInp.setAttribute('name', `links[${i}].id`);
+        idInp.setAttribute('type', 'text');
+        idInp.setAttribute('style', 'display:none;');
+
+        const relationInp = document.createElement('input');
+        relationInp.setAttribute('value', relation);
+        relationInp.setAttribute('id', `links[${i}].relation`);
+        relationInp.setAttribute('name', `links[${i}].relation`);
+        relationInp.setAttribute('type', 'text');
+        relationInp.setAttribute('style', 'display:none;');
+
+        ele.appendChild(idInp);
+        ele.appendChild(relationInp);
+
+        const parent = document.getElementById('stepLinks');
+        parent.appendChild(ele);
+
         searchInput.value = "";
         document.getElementById('relation').value = "";
     }
+}
+
+function removeLink() {
+  //TODO: need to remove elements and hide the parent to keep the index correct
 }
 
 function showTooltip(id) {
