@@ -269,10 +269,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         given:
         controller.stepService = Mock(StepService) {
             1 * get(2) >> new Step()
-        }
-
-        controller.stepLinkService = Mock(LinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"a domain instance is passed to the show action"
@@ -286,10 +283,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         given:
         controller.stepService = Mock(StepService) {
             1 * get(null) >> null
-        }
-
-        controller.stepLinkService = Mock(LinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"The show action is executed with a null domain"
@@ -303,10 +297,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         given:
         controller.stepService = Mock(StepService) {
             1 * get(2) >> new Step()
-        }
-
-        controller.stepLinkService = Mock(LinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"A domain instance is passed to the show action"
@@ -320,10 +311,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         given:
         controller.stepService = Mock(StepService) {
             1 * get(2) >> new Step()
-        }
-
-        controller.stepLinkService = Mock(LinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"A domain instance is passed to the show action"
@@ -611,5 +599,28 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         then:"The user is redirected to index"
         response.redirectedUrl == '/project/1/step/show/2'
         flash.error == "An issue occurred when attempting to delete the Step"
+    }
+
+    void "get steps returns 404 when project is null"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
+        }
+
+        when:
+        controller.getSteps(null, "")
+
+        then:
+        response.status == 404
+    }
+
+    void "get steps returns max 7 steps"() {
+        expect:
+        false
+    }
+
+    void "get steps returns results in json format"() {
+        expect:
+        false
     }
 }

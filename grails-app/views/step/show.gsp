@@ -71,7 +71,7 @@
                                 </g:if>
                                 <g:each in="${relations.parents}">
                                     <div class="row mt-1">
-                                        <p class="col-6">${it.linkedStep.name}</p>
+                                        <p class="col-6">${it.name}</p>
                                     </div>
                                 </g:each>
                             </div>
@@ -84,7 +84,7 @@
                                 </g:if>
                                 <g:each in="${relations.children}">
                                     <div class="row">
-                                        <p class="col-6">${it.linkedStep.name}</p>
+                                        <p class="col-6">${it.name}</p>
                                     </div>
                                 </g:each>
                             </div>
@@ -97,7 +97,7 @@
                                 </g:if>
                                 <g:each in="${relations.siblings}">
                                     <div class="row">
-                                        <p class="col-6">${it.linkedStep.name}</p>
+                                        <p class="col-6">${it.name}</p>
                                     </div>
                                 </g:each>
                             </div>

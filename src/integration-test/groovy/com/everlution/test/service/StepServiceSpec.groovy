@@ -1,7 +1,9 @@
 package com.everlution.test.service
 
+import com.everlution.Link
 import com.everlution.Person
 import com.everlution.Project
+import com.everlution.Relationship
 import com.everlution.Step
 import com.everlution.StepService
 import grails.testing.mixin.integration.Integration
@@ -21,15 +23,16 @@ class StepServiceSpec extends Specification {
     @Shared Project project
     @Shared Person person
 
-    private Long setupData() {
+    private Step setupData() {
         person = new Person(email: "testing@testing321.com", password: "!Password#2022").save()
         project = new Project(name: "testing project", code: "tpt").save()
         new Step(name: 'first name', act: "action", result: "result", person: person, project: project,
                 isBuilderStep: true).save()
-        new Step(name: 'second name', act: "action", result: "result", person: person, project: project,
+        def linked = new Step(name: 'second name', act: "action", result: "result", person: person, project: project,
                 isBuilderStep: true).save()
         def step = new Step(act: "action1", result: "result1", person: person, project: project).save()
-        step.id
+        new Link(ownerId: step.id, linkedId: linked.id, project: project, relation: Relationship.IS_SIBLING_OF.name).save()
+        step
     }
 
     void "get returns step"() {
@@ -45,7 +48,7 @@ class StepServiceSpec extends Specification {
     }
 
     void "delete removes step"() {
-        Long stepId = setupData()
+        Long stepId = setupData().id
 
         expect:
         Step.findById(stepId) != null
@@ -169,7 +172,7 @@ class StepServiceSpec extends Specification {
 
     void "read returns instance"() {
         setup:
-        def id = setupData()
+        def id = setupData().id
 
         expect:
         stepService.read(id) instanceof Step
@@ -178,5 +181,16 @@ class StepServiceSpec extends Specification {
     void "read returns null for not found id"() {
         expect:
         stepService.read(999999999) == null
+    }
+
+    void "get steps by relation returns steps"() {
+        setup:
+        def step = setupData()
+
+        when:
+        def steps = stepService.getLinkedStepsByRelation(step)
+
+        then:
+        steps.siblings.size() == 1
     }
 }

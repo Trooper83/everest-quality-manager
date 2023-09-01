@@ -90,71 +90,58 @@ class LinkServiceSpec extends Specification implements ServiceUnitTest<LinkServi
         thrown(ValidationException)
     }
 
-    void "get step links by type returns all items"() {
+    void "get links returns all items"() {
         setup:
         setupData()
 
         when:
-        def map = service.getStepLinksByType(parent)
-
-        then:
-        map.children.size() == 1
-        map.parents.size() == 1
-        map.siblings.size() == 1
-    }
-
-    void "get step links by type returns empty map when step is null"() {
-        setup:
-        setupData()
-
-        when:
-        def map = service.getStepLinksByType(null)
-
-        then:
-        noExceptionThrown()
-        map.isEmpty()
-    }
-
-    void "get step links by type does not throw exception when step is null"() {
-        setup:
-        setupData()
-
-        when:
-        def map = service.getStepLinksByType(null)
-
-        then:
-        noExceptionThrown()
-    }
-
-    void "get step links returns all items"() {
-        setup:
-        setupData()
-
-        when:
-        def l = service.getStepLinks(parent)
+        def l = service.getLinks(parent.id, project)
 
         then:
         l.size() == 5
     }
 
-    void "get step links returns empty map when step is null"() {
+    void "get links returns empty map when id is null"() {
         setup:
         setupData()
 
         when:
-        def l = service.getStepLinks(null)
+        def l = service.getLinks(null, new Project())
 
         then:
         noExceptionThrown()
         l.isEmpty()
     }
 
-    void "get step links does not throw exception when step is null"() {
+    void "get links does not throw exception when id is null"() {
         setup:
         setupData()
 
         when:
-        def l = service.getStepLinks(null)
+        service.getLinks(null, new Project())
+
+        then:
+        noExceptionThrown()
+    }
+
+    void "get links returns empty map when project is null"() {
+        setup:
+        setupData()
+
+        when:
+        def l = service.getLinks(1, null)
+
+        then:
+        noExceptionThrown()
+        l.isEmpty()
+    }
+
+    void "get links does not throw exception when project is null"() {
+        setup:
+        setupData()
+
+        when:
+        service.getLinks(1, null)
 
         then:
         noExceptionThrown()

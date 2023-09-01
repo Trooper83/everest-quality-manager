@@ -199,4 +199,74 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         Step.get(testStep.id) == null
         Link.get(link.id) == null
     }
+
+    void "get linked steps by relation returns empty map when step null"() {
+        given:
+        setupData()
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
+
+        when:
+        def map = service.getLinkedStepsByRelation(null)
+
+        then:
+        map.children.empty
+        map.parents.empty
+        map.siblings.empty
+    }
+
+    void "get linked steps by relation returns all items"() {
+        given:
+        setupData()
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
+
+        when:
+        def map = service.getLinkedStepsByRelation(testStep)
+
+        then:
+        map.children.size() == 1
+        map.parents.size() == 1
+        map.siblings.size() == 1
+    }
+
+    void "get linked steps by relation does not return step passed in"() {
+        given:
+        setupData()
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        Step testStep1 = new Step(name: "should be returned", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save()
+        new Link(ownerId: testStep1.id, linkedId: testStep.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: testStep1.id, linkedId: testStep.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: testStep1.id, linkedId: testStep.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
+
+        when:
+        def map = service.getLinkedStepsByRelation(testStep)
+
+        then:
+        map.children.size() == 1
+        !map.children.contains(testStep)
+        map.parents.size() == 1
+        !map.parents.contains(testStep)
+        map.siblings.size() == 1
+        !map.siblings.contains(testStep)
+    }
 }

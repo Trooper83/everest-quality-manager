@@ -11,7 +11,6 @@ class StepController {
     ProjectService projectService
     SpringSecurityService springSecurityService
     StepService stepService
-    LinkService stepLinkService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", getStep: "GET"]
 
@@ -51,7 +50,7 @@ class StepController {
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         def step = stepService.get(id)
-        def relations = stepLinkService.getStepLinksByType(step)
+        def relations = stepService.getLinkedStepsByRelation(step)
         respond step, model: [relations: relations], view: 'show'
     }
 
