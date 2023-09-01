@@ -89,8 +89,8 @@ function addLink(element) {
 
         const idInp = document.createElement('input');
         idInp.setAttribute('value', stepId);
-        idInp.setAttribute('id', `links[${i}].id`);
-        idInp.setAttribute('name', `links[${i}].id`);
+        idInp.setAttribute('id', `links[${i}].linkedStep`);
+        idInp.setAttribute('name', `links[${i}].linkedStep`);
         idInp.setAttribute('type', 'text');
         idInp.setAttribute('style', 'display:none;');
 

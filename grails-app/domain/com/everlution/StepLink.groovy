@@ -1,6 +1,6 @@
 package com.everlution
 
-class StepLink { //TODO: rename this to be generic Link, Relationship etc...
+class StepLink {
 
     Step linkedStep
     Step owner
