@@ -6,7 +6,7 @@ import com.everlution.ProjectService
 import com.everlution.SearchResult
 import com.everlution.Step
 import com.everlution.StepController
-import com.everlution.StepLinkService
+import com.everlution.LinkService
 import com.everlution.StepService
 import com.everlution.command.LinksCmd
 import grails.plugin.springsecurity.SpringSecurityService
@@ -271,7 +271,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
             1 * get(2) >> new Step()
         }
 
-        controller.stepLinkService = Mock(StepLinkService) {
+        controller.stepLinkService = Mock(LinkService) {
             1 * getStepLinksByType(_) >> [:]
         }
 
@@ -288,7 +288,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
             1 * get(null) >> null
         }
 
-        controller.stepLinkService = Mock(StepLinkService) {
+        controller.stepLinkService = Mock(LinkService) {
             1 * getStepLinksByType(_) >> [:]
         }
 
@@ -305,7 +305,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
             1 * get(2) >> new Step()
         }
 
-        controller.stepLinkService = Mock(StepLinkService) {
+        controller.stepLinkService = Mock(LinkService) {
             1 * getStepLinksByType(_) >> [:]
         }
 
@@ -322,7 +322,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
             1 * get(2) >> new Step()
         }
 
-        controller.stepLinkService = Mock(StepLinkService) {
+        controller.stepLinkService = Mock(LinkService) {
             1 * getStepLinksByType(_) >> [:]
         }
 

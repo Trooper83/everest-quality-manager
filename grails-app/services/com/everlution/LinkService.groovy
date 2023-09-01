@@ -1,10 +1,9 @@
 package com.everlution
 
 import grails.gorm.services.Service
-import grails.gorm.transactions.Transactional
 
-@Service(StepLink)
-abstract class StepLinkService implements IStepLinkService {
+@Service(Link)
+abstract class LinkService implements ILinkService {
 
    /* StepService stepService
 
@@ -36,16 +35,16 @@ abstract class StepLinkService implements IStepLinkService {
      * @param step - the step to find relations for
      * @return a map containing all related steps
      */
-    List<StepLink> getStepLinks(Step step) {
+    List<Link> getStepLinks(Step step) {
         if (!step) {
             return []
         }
-        def c = StepLink.createCriteria()
+        def c = Link.createCriteria()
         def links = c {
             eq("project", step.project)
             or {
-                eq("owner", step)
-                eq("linkedStep", step)
+                eq("ownerId", step.id)
+                eq("linkedId", step.id)
             }
         }
         return links
@@ -56,14 +55,14 @@ abstract class StepLinkService implements IStepLinkService {
      * @param step - the step to find relations for
      * @return a map containing all related steps by type
      */
-    Map<String, List<StepLink>> getStepLinksByType(Step step) {
+    Map<String, List<Link>> getStepLinksByType(Step step) {
         if (!step) {
             return [:]
         }
         //TODO: could we just use one query to get all by owner and then filter the collection?
-        List<StepLink> children = StepLink.findAllByProjectAndRelationAndOwner(step.project, Relationship.IS_PARENT_OF.name, step)
-        List<StepLink> parents = StepLink.findAllByProjectAndRelationAndOwner(step.project, Relationship.IS_CHILD_OF.name, step)
-        List<StepLink> siblings = StepLink.findAllByProjectAndRelationAndOwner(step.project, Relationship.IS_SIBLING_OF.name, step)
+        List<Link> children = Link.findAllByProjectAndRelationAndOwnerId(step.project, Relationship.IS_PARENT_OF.name, step.id)
+        List<Link> parents = Link.findAllByProjectAndRelationAndOwnerId(step.project, Relationship.IS_CHILD_OF.name, step.id)
+        List<Link> siblings = Link.findAllByProjectAndRelationAndOwnerId(step.project, Relationship.IS_SIBLING_OF.name, step.id)
         return ['children':children, 'parents': parents, 'siblings':siblings]
     }
 }

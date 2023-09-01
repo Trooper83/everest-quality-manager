@@ -6,7 +6,7 @@ import grails.gorm.transactions.Transactional
 @Service(Step)
 abstract class StepService implements IStepService {
 
-    StepLinkService stepLinkService
+    LinkService stepLinkService
 
     /**
      * deletes a step, if any linked steps exist it deletes them first

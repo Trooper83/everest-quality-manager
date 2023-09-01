@@ -4,7 +4,7 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Relationship
 import com.everlution.Step
-import com.everlution.StepLink
+import com.everlution.Link
 import com.everlution.StepService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -15,7 +15,7 @@ import spock.lang.Specification
 class StepServiceSpec extends Specification implements ServiceUnitTest<StepService>, DataTest {
 
     def setupSpec() {
-        mockDomains(Step, Person, Project, StepLink)
+        mockDomains(Step, Person, Project, Link)
     }
 
     @Shared Person person
@@ -183,7 +183,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         setupData()
         Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
         Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        def link = new StepLink(owner: testStep, linkedStep: testStep1, project: project,
+        def link = new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
                 relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
 
         expect:
@@ -197,6 +197,6 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         then:
         Step.get(testStep1.id) != null
         Step.get(testStep.id) == null
-        StepLink.get(link.id) == null
+        Link.get(link.id) == null
     }
 }

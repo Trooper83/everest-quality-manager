@@ -11,7 +11,7 @@ class StepController {
     ProjectService projectService
     SpringSecurityService springSecurityService
     StepService stepService
-    StepLinkService stepLinkService
+    LinkService stepLinkService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", getStep: "GET"]
 
@@ -189,7 +189,7 @@ class StepController {
         }
     }
 
-    @Secured("ROLE_BASIC")
+    @Secured("ROLE_BASIC") //TODO: need to add tests
     def getSteps(Long projectId, String q) {
 
         def project = projectService.get(projectId)

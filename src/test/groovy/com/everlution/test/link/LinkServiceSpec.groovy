@@ -1,18 +1,18 @@
-package com.everlution.test.steplink
+package com.everlution.test.link
 
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Relationship
 import com.everlution.Step
-import com.everlution.StepLink
-import com.everlution.StepLinkService
+import com.everlution.Link
+import com.everlution.LinkService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException
 import spock.lang.Shared
 import spock.lang.Specification
 
-class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepLinkService>, DataTest {
+class LinkServiceSpec extends Specification implements ServiceUnitTest<LinkService>, DataTest {
 
     @Shared Person person
     @Shared Project project
@@ -27,7 +27,7 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
     }
 
     def setupSpec() {
-        mockDomains(Step, Person, Project, StepLink)
+        mockDomains(Step, Person, Project, Link)
     }
 
     private void setupData() {
@@ -39,49 +39,49 @@ class StepLinkServiceSpec extends Specification implements ServiceUnitTest<StepL
                 isBuilderStep: true).save()
         def gParent = new Step(name: "fourth name", act: "action", result: "result", person: person, project: project).save()
         def ggParent = new Step(name: "fifth name", act: "action", result: "result", person: person, project: project).save()
-        new StepLink(owner: parent, linkedStep: child, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: child, linkedStep: parent, project: project, relation: Relationship.IS_CHILD_OF.name).save()
-        new StepLink(owner: parent, linkedStep: uncle, project: project, relation: Relationship.IS_SIBLING_OF.name).save()
-        new StepLink(owner: uncle, linkedStep: child, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: gParent, linkedStep: uncle, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: gParent, linkedStep: parent, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: parent, linkedStep: gParent, project: project, relation: Relationship.IS_CHILD_OF.name).save()
-        new StepLink(owner: ggParent, linkedStep: gParent, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
+        new Link(ownerId: parent.id, linkedId: child.id, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: child.id, linkedId: parent.id, project: project, relation: Relationship.IS_CHILD_OF.name).save()
+        new Link(ownerId: parent.id, linkedId: uncle.id, project: project, relation: Relationship.IS_SIBLING_OF.name).save()
+        new Link(ownerId: uncle.id, linkedId: child.id, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: gParent.id, linkedId: uncle.id, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: gParent.id, linkedId: parent.id, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: parent.id, linkedId: gParent.id, project: project, relation: Relationship.IS_CHILD_OF.name).save()
+        new Link(ownerId: ggParent.id, linkedId: gParent.id, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
     }
 
     void "delete with valid id deletes instance"() {
         given:
         def s = new Step(act: "action", result: "result", person: person, project: project).save()
         def step = new Step(act: "action", result: "result", person: person, project: project).save()
-        def link = new StepLink(owner: s, linkedStep: step, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
+        def link = new Link(ownerId: s.id, linkedId: step.id, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
 
         expect:
-        StepLink.get(link.id) != null
+        Link.get(link.id) != null
 
         when:
         service.delete(link.id)
         currentSession.flush()
 
         then:
-        StepLink.get(link.id) == null
+        Link.get(link.id) == null
     }
 
     void "save with valid object returns instance"() {
         given:
         def s = new Step(act: "action", result: "result", person: person, project: project).save()
         def step = new Step(act: "action", result: "result", person: person, project: project).save()
-        def link = new StepLink(owner: s, linkedStep: step, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
+        def link = new Link(ownerId: s.id, linkedId: step.id, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
 
         when:
         def saved = service.save(link)
 
         then:
-        saved instanceof StepLink
+        saved instanceof Link
     }
 
     void "save with invalid object throws validation exception"() {
         given:
-        def link = new StepLink()
+        def link = new Link()
 
         when:
         service.save(link)

@@ -4,8 +4,8 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Relationship
 import com.everlution.Step
-import com.everlution.StepLink
-import com.everlution.StepLinkService
+import com.everlution.Link
+import com.everlution.LinkService
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
@@ -19,7 +19,7 @@ class StepLinkServiceSpec extends Specification {
     @Shared Project project
     @Shared Step parent
 
-    StepLinkService stepLinkService
+    LinkService stepLinkService
 
     private void setupData() {
         project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
@@ -32,14 +32,14 @@ class StepLinkServiceSpec extends Specification {
                 isBuilderStep: true).save()
         def gParent = new Step(name: "fourth name", act: "action", result: "result", person: person, project: project).save()
         def ggParent = new Step(name: "fifth name", act: "action", result: "result", person: person, project: project).save()
-        new StepLink(owner: parent, linkedStep: child, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: child, linkedStep: parent, project: project, relation: Relationship.IS_CHILD_OF.name).save()
-        new StepLink(owner: parent, linkedStep: uncle, project: project, relation: Relationship.IS_SIBLING_OF.name).save()
-        new StepLink(owner: uncle, linkedStep: child, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: gParent, linkedStep: uncle, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: gParent, linkedStep: parent, project: project, relation: Relationship.IS_PARENT_OF.name).save()
-        new StepLink(owner: parent, linkedStep: gParent, project: project, relation: Relationship.IS_CHILD_OF.name).save()
-        new StepLink(owner: ggParent, linkedStep: gParent, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
+        new Link(ownerId: parent, linkedId: child, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: child, linkedId: parent, project: project, relation: Relationship.IS_CHILD_OF.name).save()
+        new Link(ownerId: parent, linkedId: uncle, project: project, relation: Relationship.IS_SIBLING_OF.name).save()
+        new Link(ownerId: uncle, linkedId: child, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: gParent, linkedId: uncle, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: gParent, linkedId: parent, project: project, relation: Relationship.IS_PARENT_OF.name).save()
+        new Link(ownerId: parent, linkedId: gParent, project: project, relation: Relationship.IS_CHILD_OF.name).save()
+        new Link(ownerId: ggParent, linkedId: gParent, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
     }
 
     void "delete with valid id deletes instance"() {
@@ -47,16 +47,16 @@ class StepLinkServiceSpec extends Specification {
         setupData()
         def s = new Step(act: "action", result: "result", person: person, project: project).save()
         def step = new Step(act: "action", result: "result", person: person, project: project).save()
-        def link = new StepLink(owner: s, linkedStep: step, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
+        def link = new Link(ownerId: s, linkedId: step, project: project, relation: Relationship.IS_PARENT_OF.name).save(flush: true)
 
         expect:
-        StepLink.get(link.id) != null
+        Link.get(link.id) != null
 
         when:
         stepLinkService.delete(link.id)
 
         then:
-        StepLink.get(link.id) == null
+        Link.get(link.id) == null
     }
 
     void "save with valid object returns instance"() {
@@ -64,7 +64,7 @@ class StepLinkServiceSpec extends Specification {
         setupData()
         def s = new Step(act: "action", result: "result", person: person, project: project).save()
         def step = new Step(act: "action", result: "result", person: person, project: project).save()
-        def link = new StepLink(owner: s, linkedStep: step, project: project, relation: Relationship.IS_PARENT_OF.name)
+        def link = new Link(ownerId: s, linkedId: step, project: project, relation: Relationship.IS_PARENT_OF.name)
 
         expect:
         link.id == null

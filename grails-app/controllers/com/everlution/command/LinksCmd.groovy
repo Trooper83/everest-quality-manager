@@ -1,11 +1,11 @@
 package com.everlution.command
 
-import com.everlution.StepLink
+import com.everlution.Link
 import grails.validation.Validateable
 
 class LinksCmd implements Validateable {
 
-    List<StepLink> links
+    List<Link> links
 
     static boolean defaultNullable() {
         true

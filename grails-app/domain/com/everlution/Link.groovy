@@ -1,17 +1,17 @@
 package com.everlution
 
-class StepLink {
+class Link {
 
-    Step linkedStep
-    Step owner
+    Long linkedId
+    Long ownerId
     Project project
     String relation
 
     static constraints = {
-        linkedStep nullable: false
+        linkedId nullable: false
         relation nullable: false, blank: false, inList: [Relationship.IS_CHILD_OF.name, Relationship.IS_PARENT_OF.name,
                                                          Relationship.IS_SIBLING_OF.name]
-        owner nullable: false
+        ownerId nullable: false
         project nullable: false
     }
 }
