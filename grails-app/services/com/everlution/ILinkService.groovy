@@ -4,6 +4,5 @@ interface ILinkService {
 
     void delete(Serializable id)
 
-    Link save(Link stepLink)
-
+    Link save(Link link)
 }

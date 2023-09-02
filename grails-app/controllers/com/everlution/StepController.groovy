@@ -8,11 +8,12 @@ import static org.springframework.http.HttpStatus.*
 
 class StepController {
 
+    LinkService linkService
     ProjectService projectService
     SpringSecurityService springSecurityService
     StepService stepService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", getStep: "GET"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", search: "GET"]
 
     /**
      * lists all steps or perform search
@@ -33,7 +34,6 @@ class StepController {
         def searchResult
         if(!params.isSearch) { // load view
             searchResult = stepService.findAllByProject(project, params)
-
 
         } else { // perform search
             searchResult = stepService.findAllInProjectByName(project, params.name, params)
@@ -88,6 +88,15 @@ class StepController {
                 def project = projectService.read(step.project.id)
                 respond step.errors, view:'create', model: [ project: project ]
                 return
+            }
+            try {
+                links.links.each { link ->
+                    link.project = step.project
+                    link.ownerId = step.id
+                    linkService.createSave(link)
+                }
+            } catch (ValidationException ignored) {
+                flash.error = "An error occurred attempting to link steps"
             }
             request.withFormat {
                 form multipartForm {
@@ -188,8 +197,11 @@ class StepController {
         }
     }
 
-    @Secured("ROLE_BASIC") //TODO: need to add tests
-    def getSteps(Long projectId, String q) {
+    /**
+     * searches for steps by name
+     */
+    @Secured("ROLE_BASIC")
+    def search(Long projectId, String q) {
 
         def project = projectService.get(projectId)
         if (project == null) {

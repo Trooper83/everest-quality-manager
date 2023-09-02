@@ -75,6 +75,6 @@
         </main>
     </div>
 </div>
-<asset:javascript src="stepSuggestions.js"/>
+<asset:javascript src="searchSteps.js"/>
 </body>
 </html>

@@ -6,7 +6,6 @@ import com.everlution.ProjectService
 import com.everlution.SearchResult
 import com.everlution.Step
 import com.everlution.StepController
-import com.everlution.LinkService
 import com.everlution.StepService
 import com.everlution.command.LinksCmd
 import grails.plugin.springsecurity.SpringSecurityService
@@ -601,26 +600,30 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         flash.error == "An issue occurred when attempting to delete the Step"
     }
 
-    void "get steps returns 404 when project is null"() {
+    void "search returns 404 when project is null"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * get(_) >> null
         }
 
         when:
-        controller.getSteps(null, "")
+        controller.search(null, "")
 
         then:
         response.status == 404
     }
 
-    void "get steps returns max 7 steps"() {
-        expect:
-        false
-    }
+    void "search returns 405 for not allowed methods"(String httpMethod) {
+        given:
+        request.method = httpMethod
 
-    void "get steps returns results in json format"() {
-        expect:
-        false
+        when:
+        controller.search(1, "")
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["PUT", "POST", "PATCH", "DELETE"]
     }
 }

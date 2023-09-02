@@ -86,4 +86,21 @@ class linkServiceSpec extends Specification {
         then:
         l.size() == 5
     }
+
+    void "create save saves links"() {
+        given:
+        setupData()
+        def s = new Step(act: "action", result: "result", person: person, project: project).save()
+        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def link = new Link(ownerId: s.id, linkedId: step.id, project: project, relation: Relationship.IS_PARENT_OF.name)
+
+        expect:
+        link.id == null
+
+        when:
+        def saved = linkService.createSave(link)
+
+        then:
+        saved.id != null
+    }
 }

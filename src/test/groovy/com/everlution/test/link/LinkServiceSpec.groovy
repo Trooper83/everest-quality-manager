@@ -146,4 +146,67 @@ class LinkServiceSpec extends Specification implements ServiceUnitTest<LinkServi
         then:
         noExceptionThrown()
     }
+
+    void "create save adds bi-directional sibling links"() {
+        given:
+        setupData()
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        Step testStep1 = new Step(name: "should be returned", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        def link = new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name)
+
+        when:
+        service.createSave(link)
+
+        then:
+        def links = service.getLinks(testStep.id, project)
+        links.size() == 2
+        links.get(1).ownerId == testStep1.id
+        links.get(1).linkedId == testStep.id
+        links.get(1).relation == Relationship.IS_SIBLING_OF.name
+    }
+
+    void "create save adds bi-directional parental links"() {
+        given:
+        setupData()
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        Step testStep1 = new Step(name: "should be returned", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        def link = new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name)
+
+        when:
+        service.createSave(link)
+
+        then:
+        def links = service.getLinks(testStep.id, project)
+        links.size() == 2
+        links.get(1).ownerId == testStep1.id
+        links.get(1).linkedId == testStep.id
+        links.get(1).relation == Relationship.IS_CHILD_OF.name
+    }
+
+    void "create save adds bi-directional children links"() {
+        given:
+        setupData()
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        Step testStep1 = new Step(name: "should be returned", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        def link = new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name)
+
+        when:
+        service.createSave(link)
+
+        then:
+        def links = service.getLinks(testStep.id, project)
+        links.size() == 2
+        links.get(1).ownerId == testStep1.id
+        links.get(1).linkedId == testStep.id
+        links.get(1).relation == Relationship.IS_PARENT_OF.name
+    }
 }

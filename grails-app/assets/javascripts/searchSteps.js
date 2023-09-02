@@ -23,7 +23,7 @@ function setEndpoint() {
     const url = window.location.href;
     const last = url.lastIndexOf('/');
     let sub = url.substring(0, last);
-    return sub + '/getSteps';
+    return sub + '/search';
 }
 
 const endpoint = setEndpoint();
@@ -89,8 +89,8 @@ function addLink(element) {
 
         const idInp = document.createElement('input');
         idInp.setAttribute('value', stepId);
-        idInp.setAttribute('id', `links[${i}].linkedStep`);
-        idInp.setAttribute('name', `links[${i}].linkedStep`);
+        idInp.setAttribute('id', `links[${i}].linkedId`);
+        idInp.setAttribute('name', `links[${i}].linkedId`);
         idInp.setAttribute('type', 'text');
         idInp.setAttribute('style', 'display:none;');
 
