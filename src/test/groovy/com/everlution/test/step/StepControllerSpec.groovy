@@ -626,4 +626,9 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         where:
         httpMethod << ["PUT", "POST", "PATCH", "DELETE"]
     }
+
+    void "search removes null items from links list"() {
+        expect:
+        false
+    }
 }

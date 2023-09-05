@@ -40,6 +40,7 @@
                         <h1>Linked Steps</h1>
                     </div>
                     <div class="card-body">
+                        <div class="mb-2" id="validate"></div>
                         <div class="row align-items-end mb-3">
                             <div class="col-2">
                                 <label class="form-label" for="relation">Relationship</label>
@@ -50,20 +51,18 @@
                                 />
                             </div>
                             <div class="col-6">
-                                <label class="form-label" for="linkedSteps">Step</label>
-                                <g:textField class="form-control" name="linkedSteps" type="text" placeholder="Name"
+                                <label class="form-label" for="search">Step</label>
+                                <g:textField class="form-control" name="search" type="text" placeholder="Name"
                                              autocomplete="off" data-toggle="tooltip"
                                              trigger="manual" title="Field cannot be blank"/>
-                                <ul class="search" id="search-results" style="position:absolute;"></ul>
+                                <ul class="search col-6" id="search-results" style="position:absolute; z-index:999;"></ul>
                             </div>
                             <div class="col-1">
                                 <g:field class="btn btn-light border" type="button" name="btnAddLink" value="Add"
-                                         onclick="addLink(this)"/>
+                                         onclick="addLinkItem(this)"/>
                             </div>
                         </div>
-                        <div class="row mb-3" id="stepLinks">
-
-                        </div>
+                        <div class="row row-cols-md-3 row-cols-sm-2 mb-3" id="linkedSteps"></div>
                     </div>
                     <div class="card-footer">
                         <fieldset class="buttons">

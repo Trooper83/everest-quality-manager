@@ -71,4 +71,14 @@ class CreateStepSpec extends GebSpec {
             showPage.resultValue.text() == step.result
         }
     }
+
+    void "creating step with linked steps persists links"() {
+        expect:
+        false
+    }
+
+    void "links removed before submission are not created"() {
+        expect:
+        false
+    }
 }

@@ -101,6 +101,6 @@ class linkServiceSpec extends Specification {
         def saved = linkService.createSave(link)
 
         then:
-        saved.id != null
+        link.id != null
     }
 }

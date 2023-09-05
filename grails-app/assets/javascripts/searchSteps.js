@@ -1,16 +1,19 @@
-const searchInput = document.querySelector('#linkedSteps');
-const card = document.querySelector("#search-results");
+const searchElement = document.querySelector('#search');
+const searchResults = document.querySelector("#search-results");
 
-searchInput.addEventListener("change", displayMatchedResults);
-searchInput.addEventListener("keyup", displayMatchedResults);
+searchElement.addEventListener("change", displayMatchedResults);
+searchElement.addEventListener("keyup", displayMatchedResults);
 
 document.addEventListener("click", function (e) {
     closeAllLists(e.target);
 });
 
+/**
+* close any open result dropdown lists
+*/
 function closeAllLists(elmnt) {
-    var parent = document.getElementById("search-results");
-    if (elmnt != searchInput) {
+    const parent = document.getElementById("search-results");
+    if (elmnt != searchElement) {
         while (parent.hasChildNodes()) {
             parent.firstChild.remove()
         }
@@ -19,6 +22,9 @@ function closeAllLists(elmnt) {
 
 const suggestions = [];
 
+/**
+* sets the endpoint
+*/
 function setEndpoint() {
     const url = window.location.href;
     const last = url.lastIndexOf('/');
@@ -28,6 +34,9 @@ function setEndpoint() {
 
 const endpoint = setEndpoint();
 
+/**
+* fetch results from the server and display them
+*/
 function displayMatchedResults() {
 
     const url = `${endpoint}?q=${this.value}`;
@@ -50,72 +59,113 @@ function displayMatchedResults() {
             }).join("");
 
         if (searchTerm === "") {
-            card.innerHTML = "";
+            searchResults.innerHTML = "";
         } else {
-            card.innerHTML = htmlToDisplay;
+            searchResults.innerHTML = htmlToDisplay;
         }
         suggestions.length = 0;
 
         const searchItems = document.getElementsByClassName('search-item');
         for (const item of searchItems) {
             item.addEventListener("click", function(e) {
-                searchInput.value = item.innerText;
-                searchInput.setAttribute('data-id', item.getAttribute('data-id'));
+                searchElement.value = item.innerText;
+                searchElement.setAttribute('data-id', item.getAttribute('data-id'));
             });
         }
     }
 }
 
-function addLink(element) {
+/**
+* add a linked item to the dom
+*/
+function addLinkItem(element) {
 
     const relation = document.getElementById('relation').value;
-    const stepName = document.getElementById('linkedSteps').value;
-    const stepId = document.getElementById('linkedSteps').getAttribute('data-id');
+    const searchInput = document.getElementById('search');
+    const stepName = searchInput.value;
+    const stepId = searchInput.getAttribute('data-id');
 
     if (relation.length == 0 && stepName.length == 0) {
         showTooltip('relation');
-        showTooltip('linkedSteps');
+        showTooltip('search');
     } else if (relation.length == 0) {
         showTooltip('relation');
     } else if (stepName.length == 0) {
-        showTooltip('linkedSteps');
+        showTooltip('search');
+    } else if (!searchInput.getAttribute('data-id')) {
+        if (document.getElementById('validate').children.length == 0) {
+            const ele = document.createElement('div');
+            ele.setAttribute('class', 'text-danger');
+            ele.appendChild(document.createTextNode('A step from the Name field options must be selected'));
+            document.getElementById('validate').appendChild(ele);
+        }
     } else {
 
-        const i = document.getElementById('stepLinks').children.length;
+        const validationChildren = document.getElementById('validate').children;
+        if (validationChildren.length > 0) {
+            validationChildren[0].remove();
+        }
 
-        const ele = document.createElement('p');
-        const text = document.createTextNode(stepName);
-        ele.appendChild(text);
+        const i = document.getElementById('linkedSteps').children.length;
 
-        const idInp = document.createElement('input');
-        idInp.setAttribute('value', stepId);
-        idInp.setAttribute('id', `links[${i}].linkedId`);
-        idInp.setAttribute('name', `links[${i}].linkedId`);
-        idInp.setAttribute('type', 'text');
-        idInp.setAttribute('style', 'display:none;');
+        const col = document.createElement('div');
+        col.setAttribute('class', 'col');
+        const card = document.createElement('div');
+        card.setAttribute('class', 'card mb-3');
+        col.appendChild(card);
+        const body = document.createElement('div');
+        body.setAttribute('class', 'card-body');
+        card.appendChild(body);
 
-        const relationInp = document.createElement('input');
-        relationInp.setAttribute('value', relation);
-        relationInp.setAttribute('id', `links[${i}].relation`);
-        relationInp.setAttribute('name', `links[${i}].relation`);
-        relationInp.setAttribute('type', 'text');
-        relationInp.setAttribute('style', 'display:none;');
+        body.appendChild(createCardText('Name', stepName));
+        body.appendChild(createCardText('Relation', relation));
 
-        ele.appendChild(idInp);
-        ele.appendChild(relationInp);
+        body.appendChild(createHiddenInput('linkedId', stepId, i));
+        body.appendChild(createHiddenInput('relation', relation, i));
 
-        const parent = document.getElementById('stepLinks');
-        parent.appendChild(ele);
+        const parent = document.getElementById('linkedSteps');
+        parent.appendChild(col);
 
         searchInput.value = "";
+        searchInput.removeAttribute('data-id');
         document.getElementById('relation').value = "";
     }
+}
+
+/**
+* create the text for a linked item's card
+*/
+function createCardText(type, text) {
+    const ele = document.createElement('p');
+    ele.setAttribute('class', 'mb-2')
+    const title = document.createElement('strong');
+    title.appendChild(document.createTextNode(`${type}: `));
+    ele.appendChild(title);
+    ele.appendChild(document.createTextNode(text));
+    return ele;
+}
+
+/**
+* create a hidden input for a linked item
+* this will be the data that is submitted via the form
+*/
+function createHiddenInput(type, value, index) {
+    const inp = document.createElement('input');
+    inp.setAttribute('value', value);
+    inp.setAttribute('id', `links[${index}].${type}`);
+    inp.setAttribute('name', `links[${index}].${type}`);
+    inp.setAttribute('type', 'text');
+    inp.setAttribute('style', 'display:none;');
+    return inp;
 }
 
 function removeLink() {
   //TODO: need to remove elements and hide the parent to keep the index correct
 }
 
+/**
+* show a tooltip and dispose after 2 seconds
+*/
 function showTooltip(id) {
     let element = $(`#${id}`);
     element.tooltip('show');

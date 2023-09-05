@@ -90,6 +90,7 @@ class StepController {
                 return
             }
             try {
+                links.links.removeAll( l -> l == null)
                 links.links.each { link ->
                     link.project = step.project
                     link.ownerId = step.id

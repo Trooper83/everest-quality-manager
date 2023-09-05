@@ -47,4 +47,39 @@ class CreateStepPageSpec extends GebSpec {
         expect:
         false //could this be done by inspecting the network?
     }
+
+    void "validation message displayed when name not selected from list"() {
+        expect:
+        false
+    }
+
+    void "validation message removed when linkd added"() {
+        expect:
+        false
+    }
+
+    void "data-id removed from search input once linked step added"() {
+        expect:
+        false
+    }
+
+    void "relation field reset when linked step added"() {
+        expect:
+        false
+    }
+
+    void "step name search field reset when linked step added"() {
+        expect:
+        false
+    }
+
+    void "linked steps display"() {
+        expect:
+        false
+    }
+
+    void "added linked step can be removed"() {
+        expect:
+        false
+    }
 }
