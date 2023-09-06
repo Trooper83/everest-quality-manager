@@ -55,10 +55,10 @@
                                 <g:textField class="form-control" name="search" type="text" placeholder="Name"
                                              autocomplete="off" data-toggle="tooltip"
                                              trigger="manual" title="Field cannot be blank"/>
-                                <ul class="search col-6" id="search-results" style="position:absolute; z-index:999;"></ul>
+                                <ul class="search-results-menu col-6" id="search-results" style="position:absolute; z-index:999;"></ul>
                             </div>
                             <div class="col-1">
-                                <g:field class="btn btn-light border" type="button" name="btnAddLink" value="Add"
+                                <g:field class="btn btn-light border" type="button" name="btnAdd" value="Add"
                                          onclick="addLinkItem(this)"/>
                             </div>
                         </div>

@@ -1,5 +1,9 @@
 package com.everlution.test.ui.functional.specs.step.create
 
+import com.everlution.Project
+import com.everlution.ProjectService
+import com.everlution.Step
+import com.everlution.StepService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -7,25 +11,27 @@ import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.step.CreateStepPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class CreateStepPageSpec extends GebSpec {
 
-    void "error message displays when name null"() {
-        given:
+    ProjectService projectService
+    StepService stepService
+
+    @Shared
+    Project project
+
+    def setup() {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+        project = projectService.list(max: 1).first()
+        to (CreateStepPage, project.id)
+    }
 
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the create page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToCreate("Step")
-
-        when: "create bug"
+    void "error message displays when name blank"() {
+        when: "create"
         def createPage = browser.page(CreateStepPage)
         createPage.createStep("action", "", "result")
 
@@ -33,9 +39,27 @@ class CreateStepPageSpec extends GebSpec {
         createPage.errorsMessage.displayed
     }
 
+    void "error message displays when action and result are blank"() {
+        when: "create"
+        def createPage = browser.page(CreateStepPage)
+        createPage.createStep("", "test", "")
+
+        then:
+        createPage.errorsMessage.size() == 2
+    }
+
     void "steps are retrieved when validation fails"() {
-        expect: //verify steps can be fetched with the correct url
-        false
+        setup:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def createPage = browser.page(CreateStepPage)
+        createPage.createStep("test", "", "")
+
+        when:
+        createPage.scrollToBottom()
+        createPage.linkModule.addLink(step.name, 'Is Child of')
+
+        then:
+        createPage.linkModule.isLinkDisplayed(step.name)
     }
 
     void "tooltips display when they should"() {
@@ -53,7 +77,7 @@ class CreateStepPageSpec extends GebSpec {
         false
     }
 
-    void "validation message removed when linkd added"() {
+    void "validation message removed when link added"() {
         expect:
         false
     }

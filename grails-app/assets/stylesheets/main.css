@@ -163,107 +163,37 @@ div.date-picker select:-moz-focusring {
   t
 }
 
-/* typeahead block */
-.tt-query,
-.tt-hint {
-  width: 396px;
-  height: 30px;
-  padding: 8px 12px;
-  font-size: 24px;
-  line-height: 30px;
-  border: 2px solid #ccc;
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  outline: none;
-}
-
-.typeahead {
-  background-color: #fff;
-}
-
-.typeahead:focus {
-  border: 2px solid #0097cf;
-}
-
-.tt-query {
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.tt-hint {
-  color: #999
-}
-
-.tt-menu {
-  width: 422px;
-  margin: 12px 0;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-
-.tt-suggestion {
-  padding: 3px 20px;
-  font-size: 18px;
-  line-height: 24px;
-}
-
-.tt-suggestion:hover {
-  cursor: pointer;
-  color: #fff;
-  background-color: #0097cf;
-}
-
-.tt-suggestion.tt-cursor {
-  color: #fff;
-  background-color: #0097cf;
-
-}
-
-.tt-suggestion p {
-  margin: 0;
-}
-/* end typeahead */
-
-.search {
+.search-results-menu {
   max-height: 80vh;
-  min-width: 350px;
+  min-width: 250px;
   list-style: none;
   overflow-block: scroll;
   background-color: #fff;
   color: #000000;
-  border-radius: 10px;
+  border-right-style: solid;
+  border-left-style: solid;
+  border-width: 1px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: .25rem;
 }
 
-.search-item {
+.search-results-menu-item {
   width: 100%;
   position: relative;
-  padding: 1.5rem;
-  border-radius: 15px;
+  padding: .125rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.search-item::after {
-  content: "";
-  width: 100%;
-  height: 1px;
-  background-color: saddlebrown;
-  position: absolute;
-  left: 0;
-  bottom: 0;
+.search-results-menu-item:last-child {
+  border-bottom-style: solid;
+  border-width: 1px;
+}
+
+.search-results-menu-item:first-child {
+  border-top-style: solid;
+  border-width: 1px;
 }

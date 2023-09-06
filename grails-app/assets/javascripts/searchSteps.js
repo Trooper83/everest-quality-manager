@@ -54,7 +54,7 @@ function displayMatchedResults() {
             .map((step) => {
                 const regex = RegExp(searchTerm, "gi");
                 const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
-                const html = `<li class='search-item' data-id='${step.id}'><span class='name'>${stepName}</span></li>`;
+                const html = `<li class='search-results-menu-item' data-id='${step.id}'><span class='name'>${stepName}</span></li>`;
                 return html;
             }).join("");
 
@@ -65,7 +65,7 @@ function displayMatchedResults() {
         }
         suggestions.length = 0;
 
-        const searchItems = document.getElementsByClassName('search-item');
+        const searchItems = document.getElementsByClassName('search-results-menu-item');
         for (const item of searchItems) {
             item.addEventListener("click", function(e) {
                 searchElement.value = item.innerText;
@@ -115,6 +115,7 @@ function addLinkItem(element) {
         col.appendChild(card);
         const body = document.createElement('div');
         body.setAttribute('class', 'card-body');
+        body.appendChild(buildCloseButton());
         card.appendChild(body);
 
         body.appendChild(createCardText('Name', stepName));
@@ -122,7 +123,6 @@ function addLinkItem(element) {
 
         body.appendChild(createHiddenInput('linkedId', stepId, i));
         body.appendChild(createHiddenInput('relation', relation, i));
-
         const parent = document.getElementById('linkedSteps');
         parent.appendChild(col);
 
@@ -130,6 +130,22 @@ function addLinkItem(element) {
         searchInput.removeAttribute('data-id');
         document.getElementById('relation').value = "";
     }
+}
+
+function buildCloseButton() {
+    const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const iconPath = document.createElementNS('http://www.w3.org/2000/svg','path');
+
+    iconSvg.setAttribute('onclick', 'removeLink(this)');
+    iconSvg.setAttribute('style', 'cursor:pointer');
+    iconSvg.setAttribute('width', '20');
+    iconSvg.setAttribute('height', '20');
+    iconSvg.setAttribute('fill', 'currentColor');
+    iconSvg.setAttribute('class', 'bi bi-x position-absolute top-0 end-0 mt-1');
+    iconSvg.setAttribute('viewBox', '0 0 20 20');
+    iconPath.setAttribute('d', 'M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z');
+    iconSvg.appendChild(iconPath);
+    return iconSvg;
 }
 
 /**
@@ -159,8 +175,12 @@ function createHiddenInput(type, value, index) {
     return inp;
 }
 
-function removeLink() {
-  //TODO: need to remove elements and hide the parent to keep the index correct
+/**
+* removes a linked step
+*/
+function removeLink(element) {
+    element.parentElement.parentElement.parentElement.setAttribute('style', 'display:none;')
+    element.parentElement.parentElement.remove();
 }
 
 /**

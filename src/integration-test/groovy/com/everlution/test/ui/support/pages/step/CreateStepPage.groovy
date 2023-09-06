@@ -2,16 +2,20 @@ package com.everlution.test.ui.support.pages.step
 
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.pages.common.CreatePage
+import com.everlution.test.ui.support.pages.modules.LinkModule
 
 class CreateStepPage extends CreatePage {
 
-    static url = "/step/create"
     static at = { title == "Create Step" }
+    static String convertToPath(Long projectId) {
+        "/project/${projectId}/step/create"
+    }
 
     static content = {
         actionInput { $("#act") }
         resultInput { $("#result") }
         nameInput { $("#name") }
+        linkModule { module LinkModule }
     }
 
     /**
@@ -22,6 +26,7 @@ class CreateStepPage extends CreatePage {
         nameInput = step.name
         actionInput = step.action
         resultInput = step.result
+        scrollToBottom()
         createButton.click()
     }
 
@@ -32,6 +37,7 @@ class CreateStepPage extends CreatePage {
         nameInput = name
         actionInput = action
         resultInput = result
+        scrollToBottom()
         createButton.click()
     }
 }

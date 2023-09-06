@@ -13,7 +13,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreateStepSpec extends GebSpec {
 
-    void "authorized users can create bug"(String username, String password) {
+    void "authorized users can create step"(String username, String password) {
         given: "login as an authorized user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -73,11 +73,6 @@ class CreateStepSpec extends GebSpec {
     }
 
     void "creating step with linked steps persists links"() {
-        expect:
-        false
-    }
-
-    void "links removed before submission are not created"() {
         expect:
         false
     }

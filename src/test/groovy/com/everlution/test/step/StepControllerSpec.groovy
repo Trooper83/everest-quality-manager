@@ -1,6 +1,7 @@
 package com.everlution.test.step
 
-
+import com.everlution.Link
+import com.everlution.LinkService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
@@ -227,7 +228,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         project.id = 1
         step.project = project
 
-        controller.save(step, new LinksCmd())
+        controller.save(step, new LinksCmd(links: []))
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/step/show/1'
@@ -262,6 +263,72 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         model.step instanceof Step
         model.project == p
         view == 'create'
+    }
+
+    void "save sets flash error when validation fails for link"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
+        controller.linkService = Mock(LinkService) {
+            1 * createSave(_) >> { Link link ->
+                throw new ValidationException("Invalid instance", link.errors)
+            }
+        }
+
+        when:"The save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        setToken(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+
+        controller.save(step, new LinksCmd(links: [new Link()]))
+
+        then:"A redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/step/show/1'
+        controller.flash.message == "default.created.message"
+        controller.flash.error == "An error occurred attempting to link steps"
+    }
+
+    void "save removes null links from list"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
+        controller.linkService = Mock(LinkService) {
+            1 * createSave(_) >> new Link()
+        }
+
+        when:"The save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        setToken(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+
+        controller.save(step, new LinksCmd(links: [null, new Link()]))
+
+        then:"A redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/step/show/1'
+        controller.flash.message == "default.created.message"
+        !controller.flash.error
     }
 
     void "show action renders show view"() {
@@ -625,10 +692,5 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
 
         where:
         httpMethod << ["PUT", "POST", "PATCH", "DELETE"]
-    }
-
-    void "search removes null items from links list"() {
-        expect:
-        false
     }
 }
