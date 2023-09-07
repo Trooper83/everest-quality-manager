@@ -153,7 +153,8 @@ function buildCloseButton() {
 */
 function createCardText(type, text) {
     const ele = document.createElement('p');
-    ele.setAttribute('class', 'mb-2')
+    ele.setAttribute('class', 'mb-2');
+    ele.setAttribute('data-test-id', `linkedItem${type}`);
     const title = document.createElement('strong');
     title.appendChild(document.createTextNode(`${type}: `));
     ele.appendChild(title);
@@ -193,5 +194,3 @@ function showTooltip(id) {
         element.tooltip('dispose');
     }, 2000);
 }
-
-//https://www.w3schools.com/howto/howto_js_autocomplete.asp

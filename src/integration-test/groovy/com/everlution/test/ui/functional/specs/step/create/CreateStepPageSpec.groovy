@@ -6,8 +6,6 @@ import com.everlution.Step
 import com.everlution.StepService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.project.ListProjectPage
-import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.step.CreateStepPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
@@ -59,22 +57,56 @@ class CreateStepPageSpec extends GebSpec {
         createPage.linkModule.addLink(step.name, 'Is Child of')
 
         then:
-        createPage.linkModule.isLinkDisplayed(step.name)
+        createPage.linkModule.isLinkDisplayed(step.name, 'Is Child of')
     }
 
-    void "tooltips display when they should"() {
-        expect: //TODO: this should be multiple tests
-        false
+    void "tooltips display when they should"(String name, String relation, String tipText) {
+        when:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.linkModule.searchInput = name
+        createPage.linkModule.relationSelect().selected = relation
+        createPage.linkModule.addButton.click()
+
+        then:
+        createPage.linkModule.getToolTipText() == tipText
+
+        where:
+        name     | relation      | tipText
+        ''       | 'Is Child of' | 'Field cannot be blank'
+        'name'   | ''            | 'Field cannot be blank'
     }
 
-    void "results fetched only when three characters typed"() {
-        expect:
-        false //could this be done by inspecting the network?
+    void "results fetched only when three characters typed"(int index) {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def text = step.name.substring(0, index)
+
+        when:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.scrollToBottom()
+        for (int i = 0; i < text.length(); i++){
+            char c = text.charAt(i)
+            String s = new StringBuilder().append(c).toString()
+            createPage.linkModule.searchInput << s
+        }
+        sleep(500)
+
+        then:
+        !createPage.linkModule.searchResultsMenu.displayed
+
+        where:
+        index << [1,2,3]
     }
 
     void "validation message displayed when name not selected from list"() {
-        expect:
-        false
+        when:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.linkModule.searchInput = 's'
+        createPage.linkModule.relationSelect().selected = 'Is Child of'
+        createPage.linkModule.addButton.click()
+
+        then:
+        createPage.linkModule.validationMessage.displayed
     }
 
     void "validation message removed when link added"() {

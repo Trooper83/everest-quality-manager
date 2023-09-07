@@ -8,10 +8,12 @@ class LinkModule extends Module {
     static content = {
         addButton { $('#btnAdd') }
         links { $('#linkedSteps .card') }
-        linkedItem(required: false) { text -> $("#linkedSteps .card p", text: text) }
+        linkedItems(required: false) { $("#linkedSteps .card") }
         searchInput { $('#search') }
         searchResults { $('.search-results-menu-item') }
         searchResultsMenu { $('#search-results') }
+        tooltip(wait: true) { $("div[role=tooltip]") }
+        validationMessage { $('div.text-danger') }
     }
 
     Select relationSelect() {
@@ -23,7 +25,11 @@ class LinkModule extends Module {
      */
     void addLink(String text, String relation) {
         relationSelect().selected = relation
-        searchInput << text
+        for (int i = 0; i < text.length(); i++){
+            char c = text.charAt(i)
+            String s = new StringBuilder().append(c).toString()
+            searchInput << s
+        }
         waitFor {
             searchResultsMenu.displayed
         }
@@ -35,7 +41,23 @@ class LinkModule extends Module {
     /**
      * determines if a linked item is displayed
      */
-    boolean isLinkDisplayed(text) {
-        linkedItem(text).size() == 1
+    boolean isLinkDisplayed(String text, String relation) {
+        for (def item : linkedItems) {
+            if (item.find('[data-test-id=linkedItemName]').text().endsWith(text) &&
+                    item.find('[data-test-id=linkedItemRelation]').text().endsWith(relation)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * gets the text of the displayed tooltip
+     */
+    String getToolTipText() {
+        waitFor() {
+            tooltip.displayed
+        }
+        return tooltip.text()
     }
 }
