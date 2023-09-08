@@ -208,4 +208,13 @@ class CreateStepPageSpec extends GebSpec {
         then:
         !createPage.linkModule.isLinkDisplayed(step.name, 'Is Parent of')
     }
+
+    void "correct relation field options are present"() {
+        expect:
+        def page = browser.page(CreateStepPage)
+        List found = page.linkModule.relationOptions*.text()
+        def expected = ["", "Is Child of", "Is Sibling of", "Is Parent of"]
+        found.size() == expected.size()
+        expected.containsAll(found)
+    }
 }

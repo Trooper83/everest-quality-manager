@@ -40,4 +40,17 @@ class CreateStepPage extends CreatePage {
         scrollToBottom()
         createButton.click()
     }
+
+    /**
+     * creates a step with the passed in data
+     */
+    void createStepWithLink(String action, String name, String result, String linkName, String relation) {
+        nameInput = name
+        actionInput = action
+        resultInput = result
+        scrollToBottom()
+        linkModule.addLink(linkName, relation)
+        scrollToBottom()
+        createButton.click()
+    }
 }

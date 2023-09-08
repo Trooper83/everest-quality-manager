@@ -10,6 +10,7 @@ class LinkModule extends Module {
     static content = {
         addButton { $('#btnAdd') }
         linkedItems(required: false) { $("#linkedSteps .card") }
+        relationOptions { $('#relation>option') }
         searchInput { $('#search').module(TextInput) }
         searchResults { $('.search-results-menu-item') }
         searchResultsMenu { $('#search-results') }

@@ -57,52 +57,62 @@
                     </ul>
                 </div>
             </div>
-            <div class="card mt-3">
+            <div class="card mt-3 mb-5">
                 <div class="card-header">
                     <h1>Related Steps</h1>
                 </div>
                 <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item border-bottom-0">
-                            <div class="row" id="parents">
-                                <p class="fw-bold border-bottom">Parents</p>
-                                <g:if test="${relations.parents.size() == 0}">
-                                    <p>No parent steps found</p>
-                                </g:if>
-                                <g:each in="${relations.parents}">
-                                    <div class="row mt-1">
-                                        <p class="col-6">${it.name}</p>
+                    <div class="row" id="parents">
+                        <p class="fw-bold border-bottom">Parents</p>
+                        <g:if test="${relations.parents.size() == 0}">
+                            <p>No parent steps found</p>
+                        </g:if>
+                        <div class="row row-cols-md-3 row-cols-sm-2 mb-3">
+                            <g:each in="${relations.parents}">
+                                <div class="col">
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <p>${it.name}</p>
+                                        </div>
                                     </div>
-                                </g:each>
-                            </div>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <div class="row" id="children">
-                                <p class="fw-bold border-bottom">Children</p>
-                                <g:if test="${relations.children.size() == 0}">
-                                    <p>No child steps found</p>
-                                </g:if>
-                                <g:each in="${relations.children}">
-                                    <div class="row">
-                                        <p class="col-6">${it.name}</p>
+                                </div>
+                            </g:each>
+                        </div>
+                    </div>
+                    <div class="row" id="siblings">
+                        <p class="fw-bold border-bottom">Siblings</p>
+                        <g:if test="${relations.siblings.size() == 0}">
+                            <p>No sibling steps found</p>
+                        </g:if>
+                        <div class="row row-cols-md-3 row-cols-sm-2 mb-3">
+                            <g:each in="${relations.siblings}">
+                                <div class="col">
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <p>${it.name}</p>
+                                        </div>
                                     </div>
-                                </g:each>
-                            </div>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            <div class="row" id="siblings">
-                                <p class="fw-bold border-bottom">Siblings</p>
-                                <g:if test="${relations.siblings.size() == 0}">
-                                    <p>No sibling steps found</p>
-                                </g:if>
-                                <g:each in="${relations.siblings}">
-                                    <div class="row">
-                                        <p class="col-6">${it.name}</p>
+                                </div>
+                            </g:each>
+                        </div>
+                    </div>
+                    <div class="row" id="children">
+                        <p class="fw-bold border-bottom">Children</p>
+                        <g:if test="${relations.children.size() == 0}">
+                            <p>No child steps found</p>
+                        </g:if>
+                        <div class="row row-cols-md-3 row-cols-sm-2 mb-3">
+                            <g:each in="${relations.children}">
+                                <div class="col">
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <p>${it.name}</p>
+                                        </div>
                                     </div>
-                                </g:each>
-                            </div>
-                        </li>
-                    </ul>
+                                </div>
+                            </g:each>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

@@ -74,6 +74,6 @@
         </main>
     </div>
 </div>
-<asset:javascript src="searchSteps.js"/>
+<asset:javascript src="linkItems.js"/>
 </body>
 </html>
