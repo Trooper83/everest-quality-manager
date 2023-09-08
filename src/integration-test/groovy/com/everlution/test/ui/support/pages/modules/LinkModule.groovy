@@ -2,29 +2,28 @@ package com.everlution.test.ui.support.pages.modules
 
 import geb.Module
 import geb.module.Select
+import geb.module.TextInput
+import geb.navigator.Navigator
 
 class LinkModule extends Module {
 
     static content = {
         addButton { $('#btnAdd') }
-        links { $('#linkedSteps .card') }
         linkedItems(required: false) { $("#linkedSteps .card") }
-        searchInput { $('#search') }
+        searchInput { $('#search').module(TextInput) }
         searchResults { $('.search-results-menu-item') }
         searchResultsMenu { $('#search-results') }
         tooltip(wait: true) { $("div[role=tooltip]") }
-        validationMessage { $('div.text-danger') }
+        validationMessage(required: false) { $('div.text-danger') }
     }
 
     Select relationSelect() {
         $("#relation").module(Select)
     }
 
-    /**
-     * adds a link using the supplied data
-     */
-    void addLink(String text, String relation) {
+    void setLinkProperties(String text, String relation) {
         relationSelect().selected = relation
+        searchInput.text = ''
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -35,6 +34,13 @@ class LinkModule extends Module {
         }
         searchResults.first().click()
         searchResults.first().click()
+    }
+
+    /**
+     * adds a link using the supplied data
+     */
+    void addLink(String text, String relation) {
+        setLinkProperties(text, relation)
         addButton.click()
     }
 
@@ -52,6 +58,14 @@ class LinkModule extends Module {
     }
 
     /**
+     * gets a linked item's hidden inputs
+     */
+    Navigator getLinkedItemHiddenInput(int index, String type) {
+        def selector = type === 'id' ? "[id='links[${index}].linkedId']" : "[id='links[${index}].relation']"
+        return linkedItems[index].find(selector)
+    }
+
+    /**
      * gets the text of the displayed tooltip
      */
     String getToolTipText() {
@@ -59,5 +73,12 @@ class LinkModule extends Module {
             tooltip.displayed
         }
         return tooltip.text()
+    }
+
+    /**
+     * removes a linked item
+     */
+    void removeLinkedItem(int index) {
+        linkedItems[index].find('svg').click()
     }
 }

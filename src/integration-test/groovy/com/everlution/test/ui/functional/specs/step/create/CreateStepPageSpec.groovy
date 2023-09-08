@@ -101,7 +101,7 @@ class CreateStepPageSpec extends GebSpec {
     void "validation message displayed when name not selected from list"() {
         when:
         CreateStepPage createPage = browser.page(CreateStepPage)
-        createPage.linkModule.searchInput = 's'
+        createPage.linkModule.searchInput << 's'
         createPage.linkModule.relationSelect().selected = 'Is Child of'
         createPage.linkModule.addButton.click()
 
@@ -110,32 +110,102 @@ class CreateStepPageSpec extends GebSpec {
     }
 
     void "validation message removed when link added"() {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+
+        and:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.linkModule.searchInput << 's'
+        createPage.linkModule.relationSelect().selected = 'Is Child of'
+        createPage.linkModule.addButton.click()
+
         expect:
-        false
+        createPage.linkModule.validationMessage.displayed
+
+        when:
+        createPage.scrollToBottom()
+        createPage.linkModule.addLink(step.name, 'Is Parent of')
+
+        then:
+        !createPage.linkModule.validationMessage.displayed
     }
 
     void "data-id removed from search input once linked step added"() {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+
+        and:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.scrollToBottom()
+        createPage.linkModule.setLinkProperties(step.name, 'Is Parent of')
+
         expect:
-        false
+        createPage.linkModule.searchInput.attr('data-id') as Long == step.id
+
+        when:
+        createPage.linkModule.addLink(step.name, 'Is Parent of')
+
+        then:
+        !createPage.linkModule.searchInput.attr('data-id')
     }
 
-    void "relation field reset when linked step added"() {
-        expect:
-        false
+    void "hidden inputs present for linked items"() {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+
+        when:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.scrollToBottom()
+        createPage.linkModule.addLink(step.name, 'Is Parent of')
+
+        then:
+        def id = createPage.linkModule.getLinkedItemHiddenInput(0, 'id')
+        def relation = createPage.linkModule.getLinkedItemHiddenInput(0, 'relation')
+        verifyAll {
+            id.value() as Long == step.id
+            !id.displayed
+            relation.value() == 'Is Parent of'
+            !relation.displayed
+        }
     }
 
-    void "step name search field reset when linked step added"() {
-        expect:
-        false
-    }
+    void "link fields reset when linked step added"() {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
 
-    void "linked steps display"() {
+        and:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.scrollToBottom()
+        createPage.linkModule.setLinkProperties(step.name, 'Is Parent of')
+
         expect:
-        false
+        createPage.linkModule.relationSelect().selected == 'Is Parent of'
+        createPage.linkModule.searchInput.value() == step.name
+
+        when:
+        createPage.linkModule.addButton.click()
+
+        then:
+        createPage.linkModule.relationSelect().selected == ''
+        createPage.linkModule.searchInput.text() == ''
     }
 
     void "added linked step can be removed"() {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+
+        and:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.scrollToBottom()
+        createPage.linkModule.addLink(step.name, 'Is Parent of')
+
         expect:
-        false
+        createPage.linkModule.isLinkDisplayed(step.name, 'Is Parent of')
+
+        when:
+        createPage.linkModule.removeLinkedItem(0)
+
+        then:
+        !createPage.linkModule.isLinkDisplayed(step.name, 'Is Parent of')
     }
 }
