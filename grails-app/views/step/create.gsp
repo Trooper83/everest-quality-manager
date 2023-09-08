@@ -23,16 +23,46 @@
                         <g:hiddenField name="isBuilderStep" value="true"/>
                         <div class="col-8 required mb-3">
                             <label class="form-label" for="name">Name</label>
-                            <g:textField class="form-control" name="name" value="${step.name}" maxLength="255"></g:textField>
+                            <g:textField class="form-control" name="name" value="${step.name}" maxLength="255" autocomplete="off"></g:textField>
                         </div>
                         <div class="col-8 mb-3">
-                            <label class="form-label" for="action">Action</label>
+                            <label class="form-label" for="act">Action</label>
                             <g:textArea class="form-control" maxLength="500" name="act" value="${step.act}"/>
                         </div>
                         <div class="col-8 mb-3">
                             <label class="form-label" for="result">Result</label>
                             <g:textArea class="form-control" maxLength="500" name="result" value="${step.result}"/>
                         </div>
+                    </div>
+                </div>
+                <div class="card mt-3 mb-5">
+                    <div class="card-header">
+                        <h1>Linked Steps</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2" id="validate"></div>
+                        <div class="row align-items-end mb-3">
+                            <div class="col-2">
+                                <label class="form-label" for="relation">Relationship</label>
+                                <g:select class="form-select" name="relation"
+                                          from="${['Is Child of', 'Is Parent of', 'Is Sibling of']}"
+                                          noSelection="${['':'']}" data-toggle="tooltip"
+                                          trigger="manual" title="Field cannot be blank"
+                                />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="search">Step</label>
+                                <g:textField class="form-control" name="search" type="text" placeholder="Name"
+                                             autocomplete="off" data-toggle="tooltip"
+                                             trigger="manual" title="Field cannot be blank"/>
+                                <ul class="search-results-menu col-6" id="search-results" style="position:absolute; z-index:999;"></ul>
+                            </div>
+                            <div class="col-1">
+                                <g:field class="btn btn-light border" type="button" name="btnAdd" value="Add"
+                                         onclick="addLinkItem(this)"/>
+                            </div>
+                        </div>
+                        <div class="row row-cols-md-3 row-cols-sm-2 mb-3" id="linkedSteps"></div>
                     </div>
                     <div class="card-footer">
                         <fieldset class="buttons">
@@ -44,5 +74,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="linkItems.js"/>
 </body>
 </html>

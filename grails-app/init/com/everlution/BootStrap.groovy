@@ -104,16 +104,16 @@ class BootStrap {
         def child = new Step(act: "do something123", result: "something happened123", project: project1,
                 person: person, isBuilderStep: true, name: "this is the ultimate child step").save(failOnError: true)
 
-        new StepLink(owner: parent, linkedStep: child, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
-        new StepLink(owner: child, linkedStep: parent, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
-        new StepLink(owner: uncle, linkedStep: child, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
-        new StepLink(owner: child, linkedStep: uncle, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
-        new StepLink(owner: grandParent, linkedStep: parent, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
-        new StepLink(owner: parent, linkedStep: grandParent, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
-        new StepLink(owner: grandParent, linkedStep: uncle, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
-        new StepLink(owner: uncle, linkedStep: grandParent, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
-        new StepLink(owner: uncle, linkedStep: parent, project: project1, relation: Relationship.IS_SIBLING_OF.name).save(failOnError: true)
-        new StepLink(owner: parent, linkedStep: uncle, project: project1, relation: Relationship.IS_SIBLING_OF.name).save(failOnError: true)
+        new Link(ownerId: parent.id, linkedId: child.id, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
+        new Link(ownerId: child.id, linkedId: parent.id, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
+        new Link(ownerId: uncle.id, linkedId: child.id, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
+        new Link(ownerId: child.id, linkedId: uncle.id, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
+        new Link(ownerId: grandParent.id, linkedId: parent.id, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
+        new Link(ownerId: parent.id, linkedId: grandParent.id, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
+        new Link(ownerId: grandParent.id, linkedId: uncle.id, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
+        new Link(ownerId: uncle.id, linkedId: grandParent.id, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
+        new Link(ownerId: uncle.id, linkedId: parent.id, project: project1, relation: Relationship.IS_SIBLING_OF.name).save(failOnError: true)
+        new Link(ownerId: parent.id, linkedId: uncle.id, project: project1, relation: Relationship.IS_SIBLING_OF.name).save(failOnError: true)
 
         new Step(act: "do something123", result: "something happened123", project: project,
                 person: person, isBuilderStep: true, name: "builder step 1").save(failOnError: true)

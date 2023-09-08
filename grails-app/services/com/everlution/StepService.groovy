@@ -6,7 +6,7 @@ import grails.gorm.transactions.Transactional
 @Service(Step)
 abstract class StepService implements IStepService {
 
-    StepLinkService stepLinkService
+    LinkService linkService
 
     /**
      * deletes a step, if any linked steps exist it deletes them first
@@ -15,9 +15,9 @@ abstract class StepService implements IStepService {
     @Transactional
     void delete(Serializable id) {
         def step = get(id)
-        def links = stepLinkService.getStepLinks(step)
+        def links = linkService.getLinks(step.id, step.project)
         links.each {
-            stepLinkService.delete(it.id)
+            linkService.delete(it.id)
         }
         step.delete()
     }
@@ -42,5 +42,31 @@ abstract class StepService implements IStepService {
         List steps = Step.findAllByProjectAndNameIlikeAndIsBuilderStep(project, "%${s}%", true, args)
         int c = Step.countByProjectAndNameIlikeAndIsBuilderStep(project, "%${s}%", true)
         return new SearchResult(steps, c)
+    }
+
+
+    /**
+     * gets all related steps
+     */
+    Map<String, List<Step>> getLinkedStepsByRelation(Step step) {
+        if (!step) {
+            return [children: [], parents: [], siblings: []]
+        }
+
+        List<Link> links = linkService.getLinks(step.id, step.project)
+        links.removeAll { it -> it.ownerId != step.id }
+
+        List<Step> children = [], parents = [], siblings = []
+
+        def childLinks = links.findAll { it -> it.relation == Relationship.IS_PARENT_OF.name }
+        childLinks.each { it -> children.add(get(it.linkedId)) }
+
+        def parentLinks = links.findAll { it -> it.relation == Relationship.IS_CHILD_OF.name }
+        parentLinks.each { it -> parents.add(get(it.linkedId)) }
+
+        def siblingLinks = links.findAll { it -> it.relation == Relationship.IS_SIBLING_OF.name }
+        siblingLinks.each { it -> siblings.add(get(it.linkedId)) }
+
+        return [children: children, parents: parents, siblings: siblings]
     }
 }

@@ -1,13 +1,14 @@
 package com.everlution.test.step
 
-
+import com.everlution.Link
+import com.everlution.LinkService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
 import com.everlution.Step
 import com.everlution.StepController
-import com.everlution.StepLinkService
 import com.everlution.StepService
+import com.everlution.command.LinksCmd
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -176,7 +177,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         def step = new Step(params)
 
         when:
-        controller.save(step)
+        controller.save(step, new LinksCmd())
 
         then:
         response.status == 405
@@ -190,7 +191,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
         setToken(params)
-        controller.save(null)
+        controller.save(null, new LinksCmd())
 
         then:"A 404 error is returned"
         response.status == 404
@@ -200,7 +201,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         when:"Save is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
-        controller.save(null)
+        controller.save(null, new LinksCmd())
 
         then:"A 500 error is returned"
         response.status == 500
@@ -227,7 +228,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         project.id = 1
         step.project = project
 
-        controller.save(step)
+        controller.save(step, new LinksCmd(links: []))
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/step/show/1'
@@ -256,7 +257,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         request.method = 'POST'
         def step = new Step()
         step.project = p
-        controller.save(step)
+        controller.save(step, new LinksCmd())
 
         then:"The create view is rendered again with the correct model"
         model.step instanceof Step
@@ -264,14 +265,77 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         view == 'create'
     }
 
+    void "save sets flash error when validation fails for link"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
+        controller.linkService = Mock(LinkService) {
+            1 * createSave(_) >> { Link link ->
+                throw new ValidationException("Invalid instance", link.errors)
+            }
+        }
+
+        when:"The save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        setToken(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+
+        controller.save(step, new LinksCmd(links: [new Link()]))
+
+        then:"A redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/step/show/1'
+        controller.flash.message == "default.created.message"
+        controller.flash.error == "An error occurred attempting to link steps"
+    }
+
+    void "save removes null links from list"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step)
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
+        controller.linkService = Mock(LinkService) {
+            1 * createSave(_) >> new Link()
+        }
+
+        when:"The save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'POST'
+        populateValidParams(params)
+        setToken(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+
+        controller.save(step, new LinksCmd(links: [null, new Link()]))
+
+        then:"A redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/step/show/1'
+        controller.flash.message == "default.created.message"
+        !controller.flash.error
+    }
+
     void "show action renders show view"() {
         given:
         controller.stepService = Mock(StepService) {
             1 * get(2) >> new Step()
-        }
-
-        controller.stepLinkService = Mock(StepLinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"a domain instance is passed to the show action"
@@ -285,10 +349,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         given:
         controller.stepService = Mock(StepService) {
             1 * get(null) >> null
-        }
-
-        controller.stepLinkService = Mock(StepLinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"The show action is executed with a null domain"
@@ -302,10 +363,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         given:
         controller.stepService = Mock(StepService) {
             1 * get(2) >> new Step()
-        }
-
-        controller.stepLinkService = Mock(StepLinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"A domain instance is passed to the show action"
@@ -319,10 +377,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         given:
         controller.stepService = Mock(StepService) {
             1 * get(2) >> new Step()
-        }
-
-        controller.stepLinkService = Mock(StepLinkService) {
-            1 * getStepLinksByType(_) >> [:]
+            1 * getLinkedStepsByRelation(_) >> [:]
         }
 
         when:"A domain instance is passed to the show action"
@@ -610,5 +665,32 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         then:"The user is redirected to index"
         response.redirectedUrl == '/project/1/step/show/2'
         flash.error == "An issue occurred when attempting to delete the Step"
+    }
+
+    void "search returns 404 when project is null"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> null
+        }
+
+        when:
+        controller.search(null, "")
+
+        then:
+        response.status == 404
+    }
+
+    void "search returns 405 for not allowed methods"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.search(1, "")
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["PUT", "POST", "PATCH", "DELETE"]
     }
 }

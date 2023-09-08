@@ -1,35 +1,35 @@
-package com.everlution.test.steplink
+package com.everlution.test.link
 
 import com.everlution.Project
 import com.everlution.Step
-import com.everlution.StepLink
+import com.everlution.Link
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 
-class StepLinkSpec extends Specification implements DomainUnitTest<StepLink> {
+class LinkSpec extends Specification implements DomainUnitTest<Link> {
 
     void "linkedStep cannot be null"() {
         when:
-        domain.linkedStep = null
+        domain.linkedId = null
 
         then:
-        !domain.validate(["linkedStep"])
+        !domain.validate(["linkedId"])
     }
 
     void "owner cannot be null"() {
         when:
-        domain.owner = null
+        domain.ownerId = null
 
         then:
-        !domain.validate(["owner"])
+        !domain.validate(["ownerId"])
     }
 
     void "test instances are persisted"() {
         setup:
-        new StepLink(linkedStep: new Step(), owner: new Step(), project: new Project(), relation: 'Is Sibling of').save()
+        new Link(linkedId: 1, ownerId: 2, project: new Project(), relation: 'Is Sibling of').save()
 
         expect:
-        StepLink.count() == 1
+        Link.count() == 1
     }
 
     void "project cannot be null"() {

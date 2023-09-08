@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.command.LinksCmd
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
@@ -7,12 +8,12 @@ import static org.springframework.http.HttpStatus.*
 
 class StepController {
 
+    LinkService linkService
     ProjectService projectService
     SpringSecurityService springSecurityService
     StepService stepService
-    StepLinkService stepLinkService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", search: "GET"]
 
     /**
      * lists all steps or perform search
@@ -34,7 +35,6 @@ class StepController {
         if(!params.isSearch) { // load view
             searchResult = stepService.findAllByProject(project, params)
 
-
         } else { // perform search
             searchResult = stepService.findAllInProjectByName(project, params.name, params)
         }
@@ -50,7 +50,7 @@ class StepController {
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
         def step = stepService.get(id)
-        def relations = stepLinkService.getStepLinksByType(step)
+        def relations = stepService.getLinkedStepsByRelation(step)
         respond step, model: [relations: relations], view: 'show'
     }
 
@@ -73,7 +73,7 @@ class StepController {
      * @param step - the step to save
      */
     @Secured("ROLE_BASIC")
-    def save(Step step) {
+    def save(Step step, LinksCmd links) {
         withForm {
             if (step == null) {
                 notFound()
@@ -88,6 +88,16 @@ class StepController {
                 def project = projectService.read(step.project.id)
                 respond step.errors, view:'create', model: [ project: project ]
                 return
+            }
+            try {
+                links.links?.removeAll( l -> l == null)
+                links.links?.each { link ->
+                    link.project = step.project
+                    link.ownerId = step.id
+                    linkService.createSave(link)
+                }
+            } catch (ValidationException ignored) {
+                flash.error = "An error occurred attempting to link steps"
             }
             request.withFormat {
                 form multipartForm {
@@ -186,6 +196,22 @@ class StepController {
         }.invalidToken {
             error()
         }
+    }
+
+    /**
+     * searches for steps by name
+     */
+    @Secured("ROLE_BASIC")
+    def search(Long projectId, String q) {
+
+        def project = projectService.get(projectId)
+        if (project == null) {
+            notFound()
+            return
+        }
+        params.max = 7
+        def searchResult = stepService.findAllInProjectByName(project, q, params)
+        respond searchResult.results, formats: ['json']
     }
 
     /**

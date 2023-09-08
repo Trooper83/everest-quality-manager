@@ -11,4 +11,17 @@ class ShowStepPage extends ShowPage {
         nameValue { $('#name') }
         resultValue { $('#result') }
     }
+
+    /**
+     * determines if a linked step is present
+     */
+    boolean isLinkDisplayed(String name, String relation) {
+       def links = $("#${relation}").find('.card')
+        for (def link : links) {
+            if (link.text() == name) {
+                return true
+            }
+        }
+        return false
+    }
 }
