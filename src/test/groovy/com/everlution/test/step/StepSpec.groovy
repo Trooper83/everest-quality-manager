@@ -133,15 +133,24 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.validate(["result"])
     }
 
-    void "project cannot be null"() {
+    void "project can be null when isBuilderStep is false"() {
         when:
-        domain.project == null
+        domain.project = null
+
+        then:
+        domain.validate(["project"])
+    }
+
+    void "project cannot be null when isBuilderStep is true"() {
+        when:
+        domain.project = null
+        domain.isBuilderStep = true
 
         then:
         !domain.validate(["project"])
     }
 
-    void "name can be null"() {
+    void "name can be null when isBuilderStep is false"() {
         when:
         domain.name = null
 
@@ -185,9 +194,18 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.validate(["name"])
     }
 
-    void "person cannot be null"() {
+    void "person can be null when isBuilderStep is false"() {
         when:
         domain.person = null
+
+        then:
+        domain.validate(["person"])
+    }
+
+    void "person cannot be null when isBuilderStep is true"() {
+        when:
+        domain.person = null
+        domain.isBuilderStep = true
 
         then:
         !domain.validate(["person"])
