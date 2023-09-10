@@ -72,8 +72,8 @@ To upgrade the gradle version locally modify the version number in the url of `.
 3. Generate script
 4. Modify script if needed
 5. Execute script against target db
-6. Run `model_db` environment to update model schema
-7. Save `model_db` backup file
+6. Run `model_db` environment to update model schema using `plain` format
+7. Save `model_db` backup file as `everest_base`
 
 ---------
 ## Docker
