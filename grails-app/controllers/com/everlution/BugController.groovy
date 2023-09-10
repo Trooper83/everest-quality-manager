@@ -81,10 +81,6 @@ class BugController {
 
             def person = springSecurityService.getCurrentUser() as Person
             bug.person = person
-            bug.steps.each {
-                it.project = bug.project
-                it.person = person
-            }
 
             try {
                 bugService.save(bug)
@@ -131,13 +127,6 @@ class BugController {
             if (projectId != bugProjectId) {
                 notFound()
                 return
-            }
-
-            bug.steps.each {
-                it.project = bug.project
-                if (it.person == null) {
-                    it.person = springSecurityService.getCurrentUser() as Person
-                }
             }
 
             try {

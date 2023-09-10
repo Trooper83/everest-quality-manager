@@ -28,8 +28,18 @@ class Step {
                     return false
                 }
         }
-        person nullable: false
-        project nullable: false
+        person nullable: true, validator: {
+            val, Step obj ->
+                if (val == null && obj.isBuilderStep == true) {
+                    return false
+                }
+        }
+        project nullable: true, validator: {
+            val, Step obj ->
+                if (val == null && obj.isBuilderStep == true) {
+                    return false
+                }
+        }
         result blank: true, maxSize: 500, nullable: true, validator: {
             val, Step obj ->
                 if(val == null && obj.act == null) {

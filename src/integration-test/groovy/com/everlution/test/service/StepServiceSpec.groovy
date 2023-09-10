@@ -78,7 +78,7 @@ class StepServiceSpec extends Specification {
         setupData()
 
         when:
-        Step step = new Step(act: "action", result: "result")
+        Step step = new Step(act: "action", result: "result", isBuilderStep: true)
         stepService.save(step)
 
         then:

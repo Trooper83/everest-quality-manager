@@ -234,39 +234,6 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         controller.flash.message == "default.created.message"
     }
 
-    void "save action correctly sets step project and person"() {
-        given:
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * save(_ as TestCase)
-        }
-        controller.springSecurityService = Mock(SpringSecurityService) {
-            1 * getCurrentUser() >> new Person()
-        }
-
-        response.reset()
-        setToken(params)
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'POST'
-        populateValidParams(params)
-        def testCase = new TestCase(params)
-        def project = new Project()
-        project.id = 1
-        testCase.id = 1
-        testCase.project = project
-        testCase.steps = [new Step()]
-
-        expect:
-        testCase.steps[0].project == null
-        testCase.steps[0].person == null
-
-        when:
-        controller.save(testCase)
-
-        then:
-        testCase.steps[0].project != null
-        testCase.steps[0].person != null
-    }
-
     void "save action sets person property"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
@@ -495,39 +462,6 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         then:"a redirect is issued to the show action"
         response.redirectedUrl == '/project/1/testCase/show/1'
         controller.flash.message == "default.updated.message"
-    }
-
-    void "update action correctly sets step project and person"() {
-        given:
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * saveUpdate(_ as TestCase, _ as RemovedItems)
-        }
-        controller.springSecurityService = Mock(SpringSecurityService) {
-            1 * getCurrentUser() >> new Person()
-        }
-
-        response.reset()
-        setToken(params)
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        populateValidParams(params)
-        def testCase = new TestCase(params)
-        def project = new Project()
-        project.id = 1
-        testCase.id = 1
-        testCase.project = project
-        testCase.steps = [new Step()]
-
-        expect:
-        testCase.steps[0].project == null
-        testCase.steps[0].person == null
-
-        when:
-        controller.update(testCase, new RemovedItems(), 1)
-
-        then:
-        testCase.steps[0].project != null
-        testCase.steps[0].person != null
     }
 
     void "test the update action with an invalid instance"() {
