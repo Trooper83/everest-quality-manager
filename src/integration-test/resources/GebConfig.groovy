@@ -24,7 +24,7 @@ environments {
     }
 
     // run via “./gradlew -Dgeb.env=integrated iT”
-    integrated {
+    prod {
         baseUrl = "https://www.everestquality.com"
         driver = {
             ChromeOptions o = new ChromeOptions()
