@@ -1,6 +1,7 @@
 package com.everlution
 
 import com.everlution.command.LinksCmd
+import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
@@ -128,7 +129,7 @@ class StepController {
      * @param step - item to update
      */
     @Secured("ROLE_BASIC")
-    def update(Step step, Long projectId) {
+    def update(Step step, Long projectId, LinksCmd links, RemovedItems removedItems) {
         withForm {
             if (step == null || projectId == null) {
                 notFound()
@@ -144,11 +145,21 @@ class StepController {
                 stepService.save(step)
             } catch (ValidationException e) {
                 def s = stepService.read(step.id)
+                def l = stepService.getLinkedStepsByRelation(s)
                 s.errors = e.errors
-                render view: 'edit', model: [step: s]
+                render view: 'edit', model: [step: s, linkedMap: l]
                 return
             }
-
+            try {
+                links.links?.removeAll( l -> l == null)
+                links.links?.each { link ->
+                    link.project = step.project
+                    link.ownerId = step.id
+                    linkService.createSave(link)
+                }
+            } catch (ValidationException ignored) {
+                flash.error = "An error occurred attempting to link steps"
+            }
             request.withFormat {
                 form multipartForm {
                     flash.message = message(code: 'default.updated.message',

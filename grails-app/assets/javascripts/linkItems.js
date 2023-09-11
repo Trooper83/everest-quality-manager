@@ -27,8 +27,17 @@ const suggestions = [];
 */
 function setEndpoint() {
     const url = window.location.href;
-    const last = url.lastIndexOf('/');
-    let sub = url.substring(0, last);
+    let sub;
+    if(url.endsWith('create') || url.endsWith('save')) {
+        const last = url.lastIndexOf('/');
+        sub = url.substring(0, last);
+    } else if (url.includes('update')) {
+        const last = url.lastIndexOf('/update');
+        sub = url.substring(0, last);
+    } else {
+        const last = url.lastIndexOf('/edit');
+        sub = url.substring(0, last);
+    }
     return sub + '/search';
 }
 
@@ -187,9 +196,21 @@ function createHiddenInput(type, value, index) {
 /**
 * removes a linked step
 */
-function removeLink(element) {
-    element.parentElement.parentElement.parentElement.setAttribute('style', 'display:none;')
-    element.parentElement.parentElement.remove();
+function removeLink(element, id) {
+    if(id) {
+        const input = document.createElement('input');
+        input.setAttribute('style', 'display:none;');
+        input.setAttribute('data-test-id', 'removed-tag-input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('id', 'removedItems.linkIds');
+        input.setAttribute('name', 'removedItems.linkIds');
+        input.setAttribute('value', id);
+        document.getElementById('links').appendChild(input);
+        element.parentElement.parentElement.parentElement.remove();
+    } else {
+        element.parentElement.parentElement.parentElement.setAttribute('style', 'display:none;')
+        element.parentElement.parentElement.remove();
+    }
 }
 
 /**

@@ -9,6 +9,7 @@ import com.everlution.Step
 import com.everlution.StepController
 import com.everlution.StepService
 import com.everlution.command.LinksCmd
+import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -434,7 +435,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         def step = new Step(params)
 
         when:
-        controller.update(step, null)
+        controller.update(step, null, null, null)
 
         then:
         response.status == 405
@@ -448,7 +449,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         setToken(params)
-        controller.update(null, 1)
+        controller.update(null, 1, new LinksCmd(), new RemovedItems())
 
         then:"A 404 error is returned"
         response.status == 404
@@ -458,7 +459,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         when:"update is called for a domain instance that doesn't exist"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(null, 1)
+        controller.update(null, 1, null, null)
 
         then:
         response.status == 500
@@ -469,7 +470,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         setToken(params)
-        controller.update(new Step(), null)
+        controller.update(new Step(), null, null, null)
 
         then:"A 404 error is returned"
         response.status == 404
@@ -484,7 +485,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         setToken(params)
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
-        controller.update(step, 1)
+        controller.update(step, 1, null, null)
 
         then:"A 404 error is returned"
         response.status == 404
@@ -508,7 +509,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         project.id = 1
         step.project = project
 
-        controller.update(step, 1)
+        controller.update(step, 1, new LinksCmd(), null)
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/step/show/1'
@@ -536,11 +537,92 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         step.id = 1
         project.id = 1
         step.project = project
-        controller.update(step, 1)
+        controller.update(step, 1, null, null)
 
         then:"The edit view is rendered again with the correct model"
         model.step instanceof Step
         view == '/step/edit'
+    }
+
+    void "update sets flash error when validation fails for link"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step) >> new Step()
+        }
+        controller.linkService = Mock(LinkService) {
+            1 * createSave(_) >> { Link link ->
+                throw new ValidationException("Invalid instance", link.errors)
+            }
+        }
+
+        when:"update action is executed with an invalid instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+        controller.update(step, 1, new LinksCmd(links: [new Link()]), null)
+
+        then:"The edit view is rendered again with the correct model"
+        controller.flash.error == "An error occurred attempting to link steps"
+    }
+
+    void "update action correctly removes null links"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step)
+        }
+
+        when:"The save action is executed with a valid instance"
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+
+        controller.update(step, 1, new LinksCmd(links: [null]), null)
+
+        then:"A redirect is issued to the show action"
+        response.redirectedUrl == '/project/1/step/show/1'
+        controller.flash.message == "default.updated.message"
+        !controller.flash.error
+    }
+
+    void "update repopulates links after validation failure"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step) >> { Step step ->
+                throw new ValidationException("Invalid instance", step.errors)
+            }
+            1 * read(_) >> {
+                Mock(Step)
+            }
+            1 * getLinkedStepsByRelation(_) >> [:]
+        }
+
+        when:"update action is executed with an invalid instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+        controller.update(step, 1, null, null)
+
+        then:"The edit view is rendered again with the correct model"
+        model.linkedMap instanceof Map
     }
 
     void "test the delete action method"(String httpMethod) {

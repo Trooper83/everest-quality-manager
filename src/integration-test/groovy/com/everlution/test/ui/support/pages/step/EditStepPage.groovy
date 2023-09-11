@@ -1,13 +1,19 @@
 package com.everlution.test.ui.support.pages.step
 
 import com.everlution.test.ui.support.pages.common.EditPage
+import com.everlution.test.ui.support.pages.modules.LinkModule
 
 class EditStepPage extends EditPage {
-    static url = "/step/edit"
+
     static at = { title == "Edit Step" }
+
+    static String convertToPath(Long projectId, Long stepId) {
+        "/project/${projectId}/step/edit/${stepId}"
+    }
 
     static content = {
         actionInput { $("#act") }
+        linkModule { module LinkModule }
         resultInput { $("#result") }
         nameInput { $("#name") }
     }
@@ -19,6 +25,7 @@ class EditStepPage extends EditPage {
         nameInput = name
         actionInput = action
         resultInput = result
+        scrollToBottom()
         updateButton.click()
     }
 }

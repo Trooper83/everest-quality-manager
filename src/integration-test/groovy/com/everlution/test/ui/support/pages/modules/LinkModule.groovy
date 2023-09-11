@@ -66,6 +66,14 @@ class LinkModule extends Module {
     }
 
     /**
+     * gets a linked item's hidden inputs
+     */
+    Navigator getLinkedItemHiddenInput(String name, String type) {
+        def s = type === 'id' ? "linkedId" : "relation"
+        return linkedItems.find(text: endsWith(name)).find(id: endsWith(s))
+    }
+
+    /**
      * gets the text of the displayed tooltip
      */
     String getToolTipText() {
