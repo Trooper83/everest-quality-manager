@@ -35,6 +35,95 @@
                             <g:textArea class="form-control" name="result" value="${step.result}" maxLength="500"></g:textArea>
                         </div>
                     </div>
+                </div>
+                <div class="card mt-3 mb-5" id="relatedSteps">
+                    <div class="card-header">
+                        <h1>Related Steps</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2" id="validate"></div>
+                        <div class="row align-items-end mb-3">
+                            <div class="col-2">
+                                <label class="form-label" for="relation">Relationship</label>
+                                <g:select class="form-select" name="relation"
+                                          from="${['Is Child of', 'Is Parent of', 'Is Sibling of']}"
+                                          noSelection="${['':'']}" data-toggle="tooltip"
+                                          trigger="manual" title="Field cannot be blank"
+                                />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="search">Step</label>
+                                <g:textField class="form-control" name="search" type="text" placeholder="Name"
+                                             autocomplete="off" data-toggle="tooltip"
+                                             trigger="manual" title="Field cannot be blank"/>
+                                <ul class="search-results-menu col-6" id="search-results" style="position:absolute; z-index:999;"></ul>
+                            </div>
+                            <div class="col-1">
+                                <g:field class="btn btn-light border" type="button" name="btnAdd" value="Add"
+                                         onclick="addLinkItem(this)"/>
+                            </div>
+                        </div>
+                        <div class="row" id="parents">
+                            <p class="fw-bold border-bottom">Parents</p>
+                            <div class="row row-cols-md-3 row-cols-sm-2 mb-3">
+                                <g:each in="${linkedMap.parents}">
+                                    <div class="col">
+                                        <div class="card mt-3">
+                                            <div class="card-body">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     style="cursor:pointer" width="20" height="20" fill="currentColor"
+                                                     class="bi bi-x position-absolute top-0 end-0 mt-1"
+                                                     viewBox="0 0 20 20" onclick="removeLink(this, ${it.id})">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                                <p><strong>Name: </strong>${it.name}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </g:each>
+                            </div>
+                        </div>
+                        <div class="row" id="siblings">
+                            <p class="fw-bold border-bottom">Siblings</p>
+                            <div class="row row-cols-md-3 row-cols-sm-2 mb-3">
+                                <g:each in="${linkedMap.siblings}">
+                                    <div class="col">
+                                        <div class="card mt-3">
+                                            <div class="card-body">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     style="cursor:pointer" width="20" height="20" fill="currentColor"
+                                                     class="bi bi-x position-absolute top-0 end-0 mt-1"
+                                                     viewBox="0 0 20 20" onclick="removeLink(this, ${it.id})">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                                <p><strong>Name: </strong>${it.name}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </g:each>
+                            </div>
+                        </div>
+                        <div class="row" id="children">
+                            <p class="fw-bold border-bottom">Children</p>
+                            <div class="row row-cols-md-3 row-cols-sm-2 mb-3">
+                                <g:each in="${linkedMap.children}">
+                                    <div class="col">
+                                        <div class="card mt-3">
+                                            <div class="card-body">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     style="cursor:pointer" width="20" height="20" fill="currentColor"
+                                                     class="bi bi-x position-absolute top-0 end-0 mt-1"
+                                                     viewBox="0 0 20 20" onclick="removeLink(this, ${it.id})">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                                <p><strong>Name: </strong>${it.name}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </g:each>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-footer">
                         <g:submitButton data-test-id="edit-update-button" name="update" class="btn btn-primary" value="${message(code: 'default.button.update.label', default: 'Update')}" />
                     </div>
@@ -43,5 +132,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="linkItems.js"/>
 </body>
 </html>

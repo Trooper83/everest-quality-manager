@@ -118,7 +118,9 @@ class StepController {
      */
     @Secured("ROLE_BASIC")
     def edit(Long id) {
-        respond stepService.get(id), view: "edit"
+        def step = stepService.get(id)
+        def relatedSteps = stepService.getLinkedStepsByRelation(step)
+        respond step, view: "edit", model: [linkedMap: relatedSteps]
     }
 
     /**

@@ -9,7 +9,7 @@ class LinkModule extends Module {
 
     static content = {
         addButton { $('#btnAdd') }
-        linkedItems(required: false) { $("#linkedSteps .card") }
+        linkedItems(required: false) { $("#links .card") }
         relationOptions { $('#relation>option') }
         searchInput { $('#search').module(TextInput) }
         searchResults { $('.search-results-menu-item') }
@@ -48,10 +48,9 @@ class LinkModule extends Module {
     /**
      * determines if a linked item is displayed
      */
-    boolean isLinkDisplayed(String text, String relation) {
+    boolean isLinkDisplayed(String text) {
         for (def item : linkedItems) {
-            if (item.find('[data-test-id=linkedItemName]').text().endsWith(text) &&
-                    item.find('[data-test-id=linkedItemRelation]').text().endsWith(relation)) {
+            if (item.find('[data-test-id=linkedItemName]').text().endsWith(text)) {
                 return true
             }
         }
