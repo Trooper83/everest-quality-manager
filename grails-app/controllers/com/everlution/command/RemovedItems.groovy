@@ -9,6 +9,7 @@ class RemovedItems implements Validateable {
 
     List<String> areaIds
     List<String> environmentIds
+    List<Long> linkIds
     List<String> stepIds
 
     static boolean defaultNullable() {

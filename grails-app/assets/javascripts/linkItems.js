@@ -27,8 +27,17 @@ const suggestions = [];
 */
 function setEndpoint() {
     const url = window.location.href;
-    const last = url.lastIndexOf('/');
-    let sub = url.substring(0, last);
+    let sub;
+    if(url.endsWith('create') || url.endsWith('save')) {
+        const last = url.lastIndexOf('/');
+        sub = url.substring(0, last);
+    } else if (url.includes('update')) {
+        const last = url.lastIndexOf('/update');
+        sub = url.substring(0, last);
+    } else {
+        const last = url.lastIndexOf('/edit');
+        sub = url.substring(0, last);
+    }
     return sub + '/search';
 }
 
@@ -106,12 +115,13 @@ function addLinkItem(element) {
             validationChildren[0].remove();
         }
 
-        const i = document.getElementById('linkedSteps').children.length;
+        const i = document.getElementById('parents').children.length + document.getElementById('siblings').children.length +
+            document.getElementById('children').children.length;
 
         const col = document.createElement('div');
         col.setAttribute('class', 'col');
         const card = document.createElement('div');
-        card.setAttribute('class', 'card mb-3');
+        card.setAttribute('class', 'card mb-2');
         col.appendChild(card);
         const body = document.createElement('div');
         body.setAttribute('class', 'card-body');
@@ -119,11 +129,19 @@ function addLinkItem(element) {
         card.appendChild(body);
 
         body.appendChild(createCardText('Name', stepName));
-        body.appendChild(createCardText('Relation', relation));
 
         body.appendChild(createHiddenInput('linkedId', stepId, i));
         body.appendChild(createHiddenInput('relation', relation, i));
-        const parent = document.getElementById('linkedSteps');
+
+        let eleId = '';
+        if(relation == 'Is Child of') {
+            eleId = 'parents';
+        } else if (relation == 'Is Sibling of') {
+            eleId = 'siblings';
+        } else {
+            eleId = 'children';
+        }
+        const parent = document.getElementById(eleId);
         parent.appendChild(col);
 
         searchInput.value = "";
@@ -153,7 +171,6 @@ function buildCloseButton() {
 */
 function createCardText(type, text) {
     const ele = document.createElement('p');
-    ele.setAttribute('class', 'mb-2');
     ele.setAttribute('data-test-id', `linkedItem${type}`);
     const title = document.createElement('strong');
     title.appendChild(document.createTextNode(`${type}: `));
@@ -179,9 +196,21 @@ function createHiddenInput(type, value, index) {
 /**
 * removes a linked step
 */
-function removeLink(element) {
-    element.parentElement.parentElement.parentElement.setAttribute('style', 'display:none;')
-    element.parentElement.parentElement.remove();
+function removeLink(element, id) {
+    if(id) {
+        const input = document.createElement('input');
+        input.setAttribute('style', 'display:none;');
+        input.setAttribute('data-test-id', 'removed-tag-input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('id', 'removedItems.linkIds');
+        input.setAttribute('name', 'removedItems.linkIds');
+        input.setAttribute('value', id);
+        document.getElementById('links').appendChild(input);
+        element.parentElement.parentElement.parentElement.remove();
+    } else {
+        element.parentElement.parentElement.parentElement.setAttribute('style', 'display:none;')
+        element.parentElement.parentElement.remove();
+    }
 }
 
 /**

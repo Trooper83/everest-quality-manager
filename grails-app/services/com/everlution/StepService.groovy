@@ -44,11 +44,10 @@ abstract class StepService implements IStepService {
         return new SearchResult(steps, c)
     }
 
-
     /**
      * gets all related steps
      */
-    Map<String, List<Step>> getLinkedStepsByRelation(Step step) {
+    Map<String, List<LinkItem>> getLinkedStepsByRelation(Step step) {
         if (!step) {
             return [children: [], parents: [], siblings: []]
         }
@@ -56,16 +55,16 @@ abstract class StepService implements IStepService {
         List<Link> links = linkService.getLinks(step.id, step.project)
         links.removeAll { it -> it.ownerId != step.id }
 
-        List<Step> children = [], parents = [], siblings = []
+        List<LinkItem> children = [], parents = [], siblings = []
 
         def childLinks = links.findAll { it -> it.relation == Relationship.IS_PARENT_OF.name }
-        childLinks.each { it -> children.add(get(it.linkedId)) }
+        childLinks.each { it -> children.add(new LinkItem(it.id, get(it.linkedId)))}
 
         def parentLinks = links.findAll { it -> it.relation == Relationship.IS_CHILD_OF.name }
-        parentLinks.each { it -> parents.add(get(it.linkedId)) }
+        parentLinks.each { it -> parents.add(new LinkItem(it.id, get(it.linkedId))) }
 
         def siblingLinks = links.findAll { it -> it.relation == Relationship.IS_SIBLING_OF.name }
-        siblingLinks.each { it -> siblings.add(get(it.linkedId)) }
+        siblingLinks.each { it -> siblings.add(new LinkItem(it.id, get(it.linkedId))) }
 
         return [children: children, parents: parents, siblings: siblings]
     }

@@ -37,7 +37,7 @@
                 </div>
                 <div class="card mt-3 mb-5">
                     <div class="card-header">
-                        <h1>Linked Steps</h1>
+                        <h1>Related Steps</h1>
                     </div>
                     <div class="card-body">
                         <div class="mb-2" id="validate"></div>
@@ -62,7 +62,23 @@
                                          onclick="addLinkItem(this)"/>
                             </div>
                         </div>
-                        <div class="row row-cols-md-3 row-cols-sm-2 mb-3" id="linkedSteps"></div>
+                        <div id="links">
+                            <div class="row">
+                                <p class="fw-bold border-bottom">Parents</p>
+                                <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="parents">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <p class="fw-bold border-bottom">Siblings</p>
+                                <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="siblings">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <p class="fw-bold border-bottom">Children</p>
+                                <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="children">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <fieldset class="buttons">

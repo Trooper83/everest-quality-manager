@@ -84,4 +84,64 @@ class EditStepSpec extends GebSpec {
             showPage.resultValue.text() == data.result
         }
     }
+
+    void "links are added to step"() {
+        setup: "get fake data"
+        Step linked = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = new Step(name: "name", act: "action", result: "result", project: project, person: person, isBuilderStep: true)
+        def id = stepService.save(step).id
+
+        when: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        to (EditStepPage, project.id, id)
+
+        and: "edit all bug data"
+        def editPage = browser.page(EditStepPage)
+        editPage.scrollToBottom()
+        editPage.linkModule.addLink(linked.name, 'Is Child of')
+        editPage.edit()
+
+        then: "data is displayed on show page"
+        def showPage = at ShowStepPage
+        showPage.isLinkDisplayed(linked.name, 'parents')
+    }
+
+    void "links are removed from step"() {
+        given: "get fake data"
+        Step linked = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = new Step(name: "name", act: "action", result: "result", project: project, person: person, isBuilderStep: true)
+        def id = stepService.save(step).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        to (EditStepPage, project.id, id)
+
+        and: "edit all bug data"
+        def editPage = browser.page(EditStepPage)
+        editPage.scrollToBottom()
+        editPage.linkModule.addLink(linked.name, 'Is Child of')
+        editPage.edit()
+
+        expect: "data is displayed on show page"
+        def showPage = at ShowStepPage
+        showPage.isLinkDisplayed(linked.name, 'parents')
+
+        when:
+        showPage.goToEdit()
+        def edit = browser.page(EditStepPage)
+        edit.scrollToBottom()
+        edit.linkModule.removeLinkedItem(0)
+        edit.edit()
+
+        then:
+        !showPage.isLinkDisplayed(linked.name, 'parents')
+    }
 }

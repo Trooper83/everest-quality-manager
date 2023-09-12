@@ -57,7 +57,7 @@ class CreateStepPageSpec extends GebSpec {
         createPage.linkModule.addLink(step.name, 'Is Child of')
 
         then:
-        createPage.linkModule.isLinkDisplayed(step.name, 'Is Child of')
+        createPage.linkModule.isLinkDisplayed(step.name)
     }
 
     void "tooltips display when they should"(String name, String relation, String tipText) {
@@ -200,13 +200,13 @@ class CreateStepPageSpec extends GebSpec {
         createPage.linkModule.addLink(step.name, 'Is Parent of')
 
         expect:
-        createPage.linkModule.isLinkDisplayed(step.name, 'Is Parent of')
+        createPage.linkModule.isLinkDisplayed(step.name)
 
         when:
         createPage.linkModule.removeLinkedItem(0)
 
         then:
-        !createPage.linkModule.isLinkDisplayed(step.name, 'Is Parent of')
+        !createPage.linkModule.isLinkDisplayed(step.name)
     }
 
     void "correct relation field options are present"() {
@@ -216,5 +216,24 @@ class CreateStepPageSpec extends GebSpec {
         def expected = ["", "Is Child of", "Is Sibling of", "Is Parent of"]
         found.size() == expected.size()
         expected.containsAll(found)
+    }
+
+    void "linked step is placed in correct row"(String id, String relation) {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+
+        when:
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.scrollToBottom()
+        createPage.linkModule.addLink(step.name, relation)
+
+        then:
+        $("#${id}").find('[data-test-id=linkedItemName]').text().endsWith(step.name)
+
+        where:
+        id        | relation
+        'parents' | 'Is Child of'
+        'siblings'| 'Is Sibling of'
+        'children'| 'Is Parent of'
     }
 }
