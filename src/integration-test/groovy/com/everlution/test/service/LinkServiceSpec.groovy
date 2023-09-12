@@ -13,7 +13,7 @@ import spock.lang.Specification
 
 @Rollback
 @Integration
-class linkServiceSpec extends Specification {
+class LinkServiceSpec extends Specification {
 
     @Shared Person person
     @Shared Project project
@@ -101,6 +101,27 @@ class linkServiceSpec extends Specification {
         def saved = linkService.createSave(link)
 
         then:
-        link.id != null
+        saved != null
+    }
+
+    void "read returns link"() {
+        expect:
+        setupData()
+        linkService.read(1) != null
+    }
+
+    void "delete related links deleted link and inverted link"() {
+        setup:
+        setupData()
+        def s = new Step(act: "action", result: "result", person: person, project: project).save()
+        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def link = new Link(ownerId: s.id, linkedId: step.id, project: project, relation: Relationship.IS_PARENT_OF.name)
+
+        when:
+        linkService.save(link)
+        linkService.deleteRelatedLinks([link.id])
+
+        then:
+        linkService.read(link.id) == null
     }
 }

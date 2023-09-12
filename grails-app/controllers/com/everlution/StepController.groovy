@@ -160,6 +160,11 @@ class StepController {
             } catch (ValidationException ignored) {
                 flash.error = "An error occurred attempting to link steps"
             }
+            try {
+                linkService.deleteRelatedLinks(removedItems.linkIds)
+            } catch (Exception ignored) {
+                flash.error = "An error occurred attempting to delete links"
+            }
             request.withFormat {
                 form multipartForm {
                     flash.message = message(code: 'default.updated.message',

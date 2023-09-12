@@ -72,7 +72,7 @@
                                 <div class="col">
                                     <div class="card mt-3">
                                         <div class="card-body">
-                                            <p>${it.name}</p>
+                                            <p>${it.linkedItem.name}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -89,7 +89,7 @@
                                 <div class="col">
                                     <div class="card mt-3">
                                         <div class="card-body">
-                                            <p>${it.name}</p>
+                                            <p>${it.linkedItem.name}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -106,7 +106,7 @@
                                 <div class="col">
                                     <div class="card mt-3">
                                         <div class="card-body">
-                                            <p>${it.name}</p>
+                                            <p>${it.linkedItem.name}</p>
                                         </div>
                                     </div>
                                 </div>

@@ -76,4 +76,24 @@ class CreateStepSpec extends GebSpec {
             showPage.isLinkDisplayed(linked.name, 'siblings')
         }
     }
+
+    void "link added to related step"() {
+        setup: "get fake data"
+        def step = DataFactory.step()
+        Project project = projectService.list(max: 1).first()
+        Step linked = stepService.findAllByProject(project, [max:1]).results.first()
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when: "create"
+        def createPage = to (CreateStepPage, project.id)
+        createPage.createStepWithLink(step.action, step.name, step.result, linked.name, 'Is Sibling of')
+
+        then: "data is displayed on show page"
+        def showPage = to (ShowStepPage, project.id, linked.id)
+        showPage.isLinkDisplayed(step.name, 'siblings')
+    }
 }

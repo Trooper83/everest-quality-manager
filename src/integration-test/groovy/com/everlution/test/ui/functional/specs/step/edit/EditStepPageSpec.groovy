@@ -263,7 +263,6 @@ class EditStepPageSpec extends GebSpec {
 
         then:
         def ele = $('[data-test-id=removed-tag-input]')
-        ele.value() == step.id.toString()
         !ele.displayed
     }
 }

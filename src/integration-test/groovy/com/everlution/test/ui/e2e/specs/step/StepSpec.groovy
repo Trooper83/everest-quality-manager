@@ -74,8 +74,25 @@ class StepSpec extends GebSpec {
     }
 
     void "links can be added and removed"() {
+        given:
+        def show = at ShowStepPage
+        show.sideBar.goToCreate('Step')
+        def st = DataFactory.step()
+        def page = at CreateStepPage
+        page.createStepWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
+
         expect:
-        false
+        def sPage = at ShowStepPage
+        sPage.isLinkDisplayed(step.name, 'parents')
+        sPage.goToEdit()
+
+        when:
+        def edit = browser.at(EditStepPage)
+        edit.linkModule.removeLinkedItem(0)
+        edit.edit()
+
+        then:
+        !sPage.isLinkDisplayed(step.name, 'parents')
     }
 
     void "step can be deleted"() {

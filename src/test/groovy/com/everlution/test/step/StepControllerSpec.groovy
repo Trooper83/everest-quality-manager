@@ -565,16 +565,47 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         step.id = 1
         project.id = 1
         step.project = project
-        controller.update(step, 1, new LinksCmd(links: [new Link()]), null)
+        controller.update(step, 1, new LinksCmd(links: [new Link()]), new RemovedItems())
 
         then:"The edit view is rendered again with the correct model"
         controller.flash.error == "An error occurred attempting to link steps"
+    }
+
+    void "update sets flash error when delete links fails"() {
+        given:
+        controller.stepService = Mock(StepService) {
+            1 * save(_ as Step) >> new Step()
+        }
+        controller.linkService = Mock(LinkService) {
+            1 * deleteRelatedLinks(_) >> {
+                throw new Exception("Invalid instance")
+            }
+            1 * createSave(_) >> new Link()
+        }
+
+        when:"update action is executed with an invalid instance"
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        populateValidParams(params)
+        def step = new Step(params)
+        def project = new Project()
+        step.id = 1
+        project.id = 1
+        step.project = project
+        controller.update(step, 1, new LinksCmd(links: [new Link()]), new RemovedItems(linkIds: [1]))
+
+        then:"The edit view is rendered again with the correct model"
+        controller.flash.error == "An error occurred attempting to delete links"
     }
 
     void "update action correctly removes null links"() {
         given:
         controller.stepService = Mock(StepService) {
             1 * save(_ as Step)
+        }
+        controller.linkService = Mock(LinkService) {
+            1 * deleteRelatedLinks(_)
         }
 
         when:"The save action is executed with a valid instance"
@@ -589,7 +620,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         project.id = 1
         step.project = project
 
-        controller.update(step, 1, new LinksCmd(links: [null]), null)
+        controller.update(step, 1, new LinksCmd(links: [null]), new RemovedItems())
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/step/show/1'

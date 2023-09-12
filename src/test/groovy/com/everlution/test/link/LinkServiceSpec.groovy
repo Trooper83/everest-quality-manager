@@ -209,4 +209,59 @@ class LinkServiceSpec extends Specification implements ServiceUnitTest<LinkServi
         links.get(1).linkedId == testStep.id
         links.get(1).relation == Relationship.IS_PARENT_OF.name
     }
+
+    void "validation fails for invalid relation type"() {
+        given:
+        setupData()
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        Step testStep1 = new Step(name: "should be returned", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        def link = new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: 'testing')
+
+        when:
+        service.createSave(link)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "read returns instance"() {
+        setup:
+        setupData()
+
+        expect:
+        service.read(parent.id) != null
+    }
+
+    void "delete related links deletes link and inverted link"() {
+        given:
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        Step testStep1 = new Step(name: "should be returned", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        def link = new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name)
+
+        and:
+        service.createSave(link)
+
+        expect:
+        Link.count() == 2
+
+        when:
+        service.deleteRelatedLinks([link.id])
+
+        then:
+        Link.count() == 0
+    }
+
+    void "delete related links does not throw null pointer when list null"() {
+        when:
+        service.deleteRelatedLinks(null)
+
+        then:
+        notThrown(NullPointerException)
+    }
 }
