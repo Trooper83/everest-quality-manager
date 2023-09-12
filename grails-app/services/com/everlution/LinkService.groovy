@@ -29,9 +29,22 @@ abstract class LinkService implements ILinkService {
      */
     @Transactional
     Link createSave(Link link) {
-        def inverted = createInvertedLink(link)
-        save(link)
-        save(inverted)
+        def l
+        def result = Link.withCriteria {
+            eq("project", link.project)
+            and {
+                eq("ownerId", link.ownerId)
+                eq("linkedId", link.linkedId)
+                eq("relation", link.relation)
+            }
+        }
+        if (result.size() == 0) {
+            l = save(link)
+        }
+        if (link.ownerId != link.linkedId) {
+            save(createInvertedLink(link))
+        }
+        return l
     }
 
     /**

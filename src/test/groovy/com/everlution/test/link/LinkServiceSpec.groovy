@@ -210,6 +210,47 @@ class LinkServiceSpec extends Specification implements ServiceUnitTest<LinkServi
         links.get(1).relation == Relationship.IS_PARENT_OF.name
     }
 
+    void "create save does not add bi-directional links when linking to self"() {
+        given:
+        setupData()
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        def link = new Link(ownerId: testStep.id, linkedId: testStep.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name)
+
+        when:
+        service.createSave(link)
+
+        then:
+        def links = service.getLinks(testStep.id, project)
+        links.size() == 1
+        links.get(0).ownerId == testStep.id
+        links.get(0).linkedId == testStep.id
+        links.get(0).relation == Relationship.IS_CHILD_OF.name
+    }
+
+    void "create save does not create duplicate links"() {
+        given:
+        setupData()
+        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
+                person: person, project: project).save()
+        def link1 = new Link(ownerId: testStep.id, linkedId: testStep.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name)
+        def link2 = new Link(ownerId: testStep.id, linkedId: testStep.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name)
+
+        when:
+        service.createSave(link1)
+        service.createSave(link2)
+
+        then:
+        def links = service.getLinks(testStep.id, project)
+        links.size() == 1
+        links.get(0).ownerId == testStep.id
+        links.get(0).linkedId == testStep.id
+        links.get(0).relation == Relationship.IS_CHILD_OF.name
+    }
+
     void "validation fails for invalid relation type"() {
         given:
         setupData()
