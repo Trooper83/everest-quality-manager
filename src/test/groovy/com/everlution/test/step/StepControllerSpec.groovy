@@ -783,7 +783,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
     void "search returns 404 when project is null"() {
         given:
         controller.projectService = Mock(ProjectService) {
-            1 * get(_) >> null
+            1 * read(_) >> null
         }
 
         when:

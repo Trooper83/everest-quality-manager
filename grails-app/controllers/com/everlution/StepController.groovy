@@ -14,7 +14,7 @@ class StepController {
     SpringSecurityService springSecurityService
     StepService stepService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", search: "GET"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", search: "GET", getRelatedSteps: "GET"]
 
     /**
      * lists all steps or perform search
@@ -222,7 +222,7 @@ class StepController {
     @Secured("ROLE_BASIC")
     def search(Long projectId, String q) {
 
-        def project = projectService.get(projectId)
+        def project = projectService.read(projectId)
         if (project == null) {
             notFound()
             return
@@ -230,6 +230,21 @@ class StepController {
         params.max = 7
         def searchResult = stepService.findAllInProjectByName(project, q, params)
         respond searchResult.results, formats: ['json']
+    }
+
+    /**
+     * gets related steps for the supplied step
+     */
+    @Secured("ROLE_BASIC")
+    def getRelatedSteps(Long projectId, Long stepId) {
+
+        def project = projectService.read(projectId)
+        if (stepId == null || project == null) {
+            notFound()
+            return
+        }
+        def steps = stepService.getRelatedSteps(stepId)
+        respond steps, formats: ['json']
     }
 
     /**
