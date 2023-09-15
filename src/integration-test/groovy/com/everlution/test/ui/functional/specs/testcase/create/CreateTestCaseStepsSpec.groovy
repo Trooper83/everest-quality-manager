@@ -13,7 +13,7 @@ class CreateTestCaseStepsSpec extends GebSpec {
 
     ProjectService projectService
 
-    void "removed test steps are not saved"() {
+    void "removed test free form steps are not saved"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -40,5 +40,10 @@ class CreateTestCaseStepsSpec extends GebSpec {
         at ShowTestCasePage
         def showPage = browser.page(ShowTestCasePage)
         showPage.getStepsCount() == 1
+    }
+
+    void "removed test builder steps are not saved"() {
+        expect:
+        false
     }
 }

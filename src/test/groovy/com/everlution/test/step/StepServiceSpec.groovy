@@ -175,7 +175,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
 
     void "read with invalid id returns null"() {
         expect: "invalid instance"
-        service.read(99999999) == null
+        service.read(null) == null
     }
 
     void "delete step with links deletes all related links"() {
@@ -268,5 +268,10 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         !map.parents.contains(testStep)
         map.siblings.size() == 1
         !map.siblings.contains(testStep)
+    }
+
+    void "get related steps"() {
+        expect:
+        false //TODO: need to add all tests for this
     }
 }

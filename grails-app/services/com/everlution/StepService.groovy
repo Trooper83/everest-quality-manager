@@ -72,7 +72,7 @@ abstract class StepService implements IStepService {
     /**
      * gets related steps
      */
-    List<Step> getRelatedSteps(Long id) {
+    RelatedSteps getRelatedSteps(Long id) {
         def step = read(id)
         if (!step) {
             return []
@@ -82,6 +82,6 @@ abstract class StepService implements IStepService {
         links.removeAll { it -> it.ownerId != id }
         def related = []
         links.each { it -> related.add(read(it.linkedId)) }
-        return related
+        return new RelatedSteps(step, related)
     }
 }

@@ -8,7 +8,7 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
-class CreatePageStepsSpec extends GebSpec {
+class CreatePageFreeFormStepsSpec extends GebSpec {
 
     ProjectService projectService
 
@@ -94,5 +94,10 @@ class CreatePageStepsSpec extends GebSpec {
         then:
         page.testStepTable.getStepsCount() == 1
         page.testStepTable.getStep(0).find('textarea[name="steps[0].act"]').focused
+    }
+
+    void "changing step type resets free form"() {
+        expect:
+        false
     }
 }

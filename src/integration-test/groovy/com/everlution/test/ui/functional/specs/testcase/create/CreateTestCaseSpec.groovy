@@ -87,4 +87,9 @@ class CreateTestCaseSpec extends GebSpec {
             showPage.areTestGroupsDisplayed([group.name, group1.name])
         }
     }
+
+    void "builder steps are persisted"() {
+        expect:
+        false
+    }
 }

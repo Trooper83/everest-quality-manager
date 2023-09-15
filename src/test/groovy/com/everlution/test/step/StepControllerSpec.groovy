@@ -806,4 +806,44 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
         where:
         httpMethod << ["PUT", "POST", "PATCH", "DELETE"]
     }
+
+    void "get related steps 405 for not allowed methods"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.getRelatedSteps(1, 1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["PUT", "POST", "PATCH", "DELETE"]
+    }
+
+    void "get related steps returns 404 when project null"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> null
+        }
+
+        when:
+        controller.getRelatedSteps(1, 1)
+
+        then:
+        response.status == 404
+    }
+
+    void "get related steps returns 404 when id null"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> null
+        }
+
+        when:
+        controller.getRelatedSteps(1, null)
+
+        then:
+        response.status == 404
+    }
 }

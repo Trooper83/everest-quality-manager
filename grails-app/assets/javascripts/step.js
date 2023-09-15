@@ -35,20 +35,31 @@ function removeEntryRow(element, id) {
 //end free form
 
 //start builder
-const searchElement = document.querySelector('#search');
 
-searchElement.addEventListener("change", displayMatchedResults);
-searchElement.addEventListener("keyup", displayMatchedResults);
+/**
+* set event listeners on search field
+*/
+(() => {
+  const searchElement = document.querySelector('#search');
 
-document.addEventListener("click", function (e) {
-    closeAllLists(e.target);
-});
+  searchElement.addEventListener("change", displayMatchedResults);
+  searchElement.addEventListener("keyup", displayMatchedResults);
+
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+})();
+
+const searchEndpoint = setEndpoint('search');
+const relatedEndpoint = setEndpoint('related');
+let fetchedSteps = [];
 
 /**
 * close any open result dropdown lists
 */
 function closeAllLists(ele) {
     const parent = document.getElementById("search-results");
+    const searchElement = document.querySelector('#search');
     if (ele != searchElement) {
         while (parent.hasChildNodes()) {
             parent.firstChild.remove()
@@ -73,36 +84,32 @@ function setEndpoint(type) {
         const last = url.lastIndexOf('/edit');
         sub = url.substring(0, last);
     }
-    const end = type == 'search' ? '/search' : '/getRelatedSteps'
+    const end = type == 'search' ? '/search' : '/getRelatedSteps';
     return sub + end;
 }
 
-const searchEndpoint = setEndpoint('search');
-const relatedEndpoint = setEndpoint('related');
-let suggestions = [];
-let steps = [];
 /**
 * fetch results from the server and display them
+* 'this' refers to search input here
 */
-function displayMatchedResults() {
+async function displayMatchedResults() {
 
     const url = `${searchEndpoint}?q=${this.value}`;
     let encoded = encodeURI(url);
 
     if(this.value.length > 2) {
-        fetch(encoded, {
+        const response = await fetch(encoded, {
             method: "GET",
-        })
-        .then((blobdata) => blobdata.json())
-        .then((data) => suggestions.push(...data));
+        });
+        const results = await response.json();
 
         const searchTerm = this.value;
-        const htmlToDisplay = suggestions
+        const htmlToDisplay = results
             .map((step) => {
                 const regex = RegExp(searchTerm, "gi");
                 const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
                 const html = `<li class='search-results-menu-item'
-                            onclick='displaySuggestedSteps(this,${step.id}); displayStepProperties(this,${step.id});'>
+                            onclick='displayStepProperties(${step.id});'>
                         <span class='name'>${stepName}</span></li>`;
                 return html;
             }).join("");
@@ -113,18 +120,35 @@ function displayMatchedResults() {
         } else {
             searchResults.innerHTML = htmlToDisplay;
         }
-        suggestions.length = 0;
     }
 }
 
-//TODO: issue is how to get the step action and result from the suggested step when the user uses the search function??
+/**
+* fetch steps if not already in array
+*/
+async function fetchStep(id) {
+    let s;
+    if (fetchedSteps.some(e => e.step.id == id)) {
+        s = fetchedSteps.find(e => e.step.id == id);
+    } else {
+        const url = `${relatedEndpoint}?stepId=${id}`;
+        let encoded = encodeURI(url);
+        const response = await fetch(encoded, {
+            method: "GET",
+        });
+        s = await response.json();
+        fetchedSteps.push(s);
+    }
+    return s;
+}
 /**
 * adds suggested steps to the dom
 */
-function displayStepProperties(element, id) {
+async function displayStepProperties(id) {
 
+        //create act element
         const actCol = document.createElement('div');
-        actCol.setAttribute('class', 'col-6');
+        actCol.setAttribute('class', 'col-5');
         const actCard = document.createElement('div');
         actCard.setAttribute('class', 'card mb-2');
         actCol.appendChild(actCard);
@@ -132,52 +156,101 @@ function displayStepProperties(element, id) {
         actBody.setAttribute('class', 'card-body');
         actCard.appendChild(actBody);
 
-        const step = steps.find(e => e.id == id);
-        actBody.appendChild(document.createTextNode(step.act));
+        const s = await fetchStep(id);
+        actBody.appendChild(document.createTextNode(s.step.act));
 
+        //create result element
         const resCol = document.createElement('div');
-        resCol.setAttribute('class', 'col-6');
+        resCol.setAttribute('class', 'col-5');
         const resCard = document.createElement('div');
         resCard.setAttribute('class', 'card mb-2');
         resCol.appendChild(resCard);
         const resBody = document.createElement('div');
         resBody.setAttribute('class', 'card-body');
         resCard.appendChild(resBody);
-        resBody.appendChild(document.createTextNode(step.result));
+        resBody.appendChild(document.createTextNode(s.step.result));
 
+        //create hidden input
+        const index = document.querySelector('#builderSteps').childElementCount;
+        const hidden = document.createElement('input');
+        hidden.setAttribute('style', 'display:none;');
+        hidden.setAttribute('id', `steps[${index}].id`);
+        hidden.setAttribute('name', `steps[${index}].id`);
+        hidden.setAttribute('type', 'text');
+        hidden.setAttribute('value', s.step.id);
+
+        //create remove link
+        const removeDiv = document.createElement('div');
+        removeDiv.setAttribute('class', 'col-1');
+        const removeInp = document.createElement('input');
+        removeInp.setAttribute('class', 'btn btn-link btn-sm');
+        removeInp.setAttribute('type', 'button');
+        removeInp.setAttribute('value', 'Remove');
+        removeInp.setAttribute('onclick', 'removeBuilderRow(this);');
+        removeDiv.appendChild(removeInp);
+
+        //create row and append elements
         const row = document.createElement('div');
-        row.setAttribute('class', 'row');
+        row.setAttribute('class', 'row align-items-center');
         row.appendChild(actCol);
         row.appendChild(resCol);
+        row.appendChild(removeDiv);
+        row.appendChild(hidden);
 
+        //remove link
+        if (document.querySelector('#builderSteps input[value=Remove]')) {
+            const link = document.getElementById('builderSteps').lastChild.querySelector('input[value=Remove]');
+            link.setAttribute('style', 'display:none;');
+        }
+
+        //append row to dom
         const parent = document.getElementById('builderSteps');
         parent.appendChild(row);
 
         document.getElementById('search').value = "";
+
+        await displaySuggestedSteps(id);
+}
+
+/**
+* displays the step that suggested steps are displayed for
+*/
+function setParentName(name) {
+    //remove previous step name if present and display new step name
+    const parentName = document.getElementById('suggestedName');
+    if(parentName.firstChild) {
+        parentName.firstChild.remove();
+    }
+    const prevStepName = document.createElement('p');
+    prevStepName.appendChild(document.createTextNode(name));
+    parentName.appendChild(prevStepName);
 }
 
 /**
 * adds suggested steps to the dom
 */
-async function displaySuggestedSteps(element, id) {
+async function displaySuggestedSteps(id) {
 
+        //remove any displayed suggested steps
         const parent = document.getElementById('suggestedSteps');
         while (parent.firstChild) {
           parent.removeChild(parent.firstChild);
         }
 
-        const url = `${relatedEndpoint}?stepId=${id}`;
-        let encoded = encodeURI(url);
+        const s = await fetchStep(id);
 
-        const response = await fetch(encoded, {
-            method: "GET",
-        });
-        steps = await response.json();
+        setParentName(s.step.name);
 
-        steps.forEach( step => {
+        if (s.relatedSteps.length == 0) {
+            const emptyDiv = document.createElement('p');
+            emptyDiv.appendChild(document.createTextNode('No related steps found'));
+            parent.appendChild(emptyDiv);
+        }
+        //add all related steps to dom
+        s.relatedSteps.forEach(step => {
             const col = document.createElement('div');
             col.setAttribute('class', 'col');
-            col.setAttribute('onclick', `displayStepProperties(this, ${step.id}); displaySuggestedSteps(this, ${step.id});`);
+            col.setAttribute('onclick', `displayStepProperties(${step.id});`);
             const card = document.createElement('div');
             card.setAttribute('class', 'card mb-2');
             col.appendChild(card);
@@ -187,7 +260,65 @@ async function displaySuggestedSteps(element, id) {
             body.appendChild(document.createTextNode(step.name));
             parent.appendChild(col);
         });
+}
 
-        steps.length = 0;
+/**
+* removes a row from builder steps
+*/
+function removeBuilderRow(element, id) {
+    if(id) {
+       const input = document.createElement('input');
+       input.setAttribute('style', 'display:none;');
+       input.setAttribute('data-test-id', 'step-removed-input');
+       input.setAttribute('type', 'text');
+       input.setAttribute('id', 'removedItems.stepIds');
+       input.setAttribute('name', 'removedItems.stepIds');
+       input.setAttribute('value', id);
+       element.closest('#builderSteps').appendChild(input);
+       element.closest('div.row').remove();
+    } else {
+       element.closest('div.row').remove();
+    }
+    //un-hide remove link and update suggested steps
+    if (document.querySelector('#builderSteps input[value=Remove]')) {
+        const link = document.getElementById('builderSteps').lastChild.querySelector('input[value=Remove]');
+        link.removeAttribute('style');
+        const previous = document.getElementById('builderSteps').lastChild.lastChild;
+        const stepId = previous.value;
+        displaySuggestedSteps(stepId);
+    } else {
+        resetForm('builder');
+    }
+}
+
+/**
+* resets step forms to avoid submitting builder and free-form step data
+*/
+function resetForm(type) {
+    if(type == 'free') {
+        if (document.getElementById('stepsTableContent').hasChildNodes()) {
+            const steps = document.getElementById('stepsTableContent');
+            while (steps.firstChild) {
+                 steps.removeChild(steps.firstChild);
+            }
+        }
+    } else {
+        if (document.getElementById('builderSteps').hasChildNodes()) {
+            const steps = document.getElementById('builderSteps');
+            while (steps.firstChild) {
+                steps.removeChild(steps.firstChild);
+            }
+        }
+        if (document.getElementById('suggestedSteps')) {
+
+            const suggested = document.getElementById('suggestedSteps');
+            while (suggested.firstChild) {
+                suggested.removeChild(suggested.firstChild);
+            }
+        }
+        if (document.getElementById('suggestedName').firstChild) {
+            document.getElementById('suggestedName').firstChild.remove();
+        }
+    }
 }
 //end builder

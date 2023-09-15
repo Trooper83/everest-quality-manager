@@ -5,6 +5,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
+import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestCycle
@@ -41,7 +42,8 @@ class ExecuteIterationSpec extends GebSpec {
         releasePlanService.addTestCycle(plan, cycle)
         def tc = DataFactory.testCase()
         def person = personService.list(max: 1).first()
-        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group],
+                steps: [new Step(act: 'action')])
         testCaseService.save(testCase)
         testCycleService.addTestIterations(cycle, [testCase])
 

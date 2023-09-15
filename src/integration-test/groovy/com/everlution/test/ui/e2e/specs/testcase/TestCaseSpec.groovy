@@ -84,4 +84,9 @@ class TestCaseSpec extends GebSpec {
         ListTestCasePage list = at ListTestCasePage
         !list.listTable.isValueInColumn("Name", tc.name)
     }
+
+    void "test case with builder steps persists steps"() {
+        expect:
+        false
+    }
 }

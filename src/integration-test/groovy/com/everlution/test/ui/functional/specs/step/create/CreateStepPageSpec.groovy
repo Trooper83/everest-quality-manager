@@ -236,4 +236,9 @@ class CreateStepPageSpec extends GebSpec {
         'siblings'| 'Is Sibling of'
         'children'| 'Is Parent of'
     }
+
+    void "suggestion results are removed when clicked outside of menu"() {
+        expect:
+        false
+    }
 }
