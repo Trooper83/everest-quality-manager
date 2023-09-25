@@ -154,10 +154,12 @@ async function displayStepProperties(id) {
         actCol.appendChild(actCard);
         const actBody = document.createElement('div');
         actBody.setAttribute('class', 'card-body');
+        const actP = document.createElement('p');
+        actBody.appendChild(actP);
         actCard.appendChild(actBody);
 
         const s = await fetchStep(id);
-        actBody.appendChild(document.createTextNode(s.step.act));
+        actP.appendChild(document.createTextNode(s.step.act));
 
         //create result element
         const resCol = document.createElement('div');
@@ -167,8 +169,10 @@ async function displayStepProperties(id) {
         resCol.appendChild(resCard);
         const resBody = document.createElement('div');
         resBody.setAttribute('class', 'card-body');
+        const resP = document.createElement('p');
+        resBody.appendChild(resP);
         resCard.appendChild(resBody);
-        resBody.appendChild(document.createTextNode(s.step.result));
+        resP.appendChild(document.createTextNode(s.step.result));
 
         //create hidden input
         const index = document.querySelector('#builderSteps').childElementCount;
@@ -217,7 +221,7 @@ async function displayStepProperties(id) {
 */
 function setParentName(name) {
     //remove previous step name if present and display new step name
-    const parentName = document.getElementById('suggestedName');
+    const parentName = document.getElementById('currentStep');
     if(parentName.firstChild) {
         parentName.firstChild.remove();
     }
@@ -243,6 +247,7 @@ async function displaySuggestedSteps(id) {
 
         if (s.relatedSteps.length == 0) {
             const emptyDiv = document.createElement('p');
+            emptyDiv.setAttribute('id', 'noStepsFound');
             emptyDiv.appendChild(document.createTextNode('No related steps found'));
             parent.appendChild(emptyDiv);
         }
@@ -257,7 +262,9 @@ async function displaySuggestedSteps(id) {
             const body = document.createElement('div');
             body.setAttribute('class', 'card-body');
             card.appendChild(body);
-            body.appendChild(document.createTextNode(step.name));
+            const p = document.createElement('p');
+            p.appendChild(document.createTextNode(step.name));
+            body.appendChild(p);
             parent.appendChild(col);
         });
 }
@@ -316,8 +323,8 @@ function resetForm(type) {
                 suggested.removeChild(suggested.firstChild);
             }
         }
-        if (document.getElementById('suggestedName').firstChild) {
-            document.getElementById('suggestedName').firstChild.remove();
+        if (document.getElementById('currentStep').firstChild) {
+            document.getElementById('currentStep').firstChild.remove();
         }
     }
 }

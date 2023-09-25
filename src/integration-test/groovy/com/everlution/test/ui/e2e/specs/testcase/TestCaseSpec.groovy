@@ -31,7 +31,7 @@ class TestCaseSpec extends GebSpec {
         projectHomePage.sideBar.goToCreate("Test Case")
 
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
-        createPage.createTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
+        createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
                 tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
     }
 

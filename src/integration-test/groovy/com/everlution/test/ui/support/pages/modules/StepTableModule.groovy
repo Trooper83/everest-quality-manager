@@ -8,7 +8,34 @@ class StepTableModule extends Module {
 
     static content = {
         addRowButton { $("#btnAddRow") }
+        builderStepRows(required: false) { $('#builderSteps div.row') }
+        builderTab { $("#builder-tab") }
+        currentStepName(required: false) { $("#currentStep p") }
+        freeFormTab { $("#free-form-tab") }
+        noSuggestedStepsText { $("#noStepsFound") }
+        searchInput { $("#search") }
+        searchResult { text -> $(".search-results-menu-item", text: text) }
+        searchResults { $('.search-results-menu-item') }
+        searchResultsMenu { $('#search-results') }
         stepRows(required: false) { $('#stepsTableContent div.row') }
+        suggestedStep(required: false) { text -> $("#suggestedSteps div.card-body p", text: text) }
+        suggestedSteps(required: false) { $("#suggestedSteps div.card") }
+    }
+
+    /**
+     * adds a builder step
+     */
+    void addBuilderStep(String text) {
+        for (int i = 0; i < text.length(); i++){
+            char c = text.charAt(i)
+            String s = new StringBuilder().append(c).toString()
+            searchInput << s
+        }
+        waitFor {
+            searchResultsMenu.displayed
+        }
+        searchResult(text).click()
+        sleep(500)
     }
 
     /**
@@ -49,6 +76,34 @@ class StepTableModule extends Module {
         data[1].value(result)
     }
 
+    /**
+     * gets the text of the current step
+     */
+    String getCurrentBuilderStepName() {
+        return currentStepName.text()
+    }
+
+    /**
+     * determines if a suggested step is displayed
+     */
+    boolean isSuggestedStepDisplayed(String name) {
+        return suggestedStep(name).size() == 1
+    }
+
+    /**
+     * gets a single builder step by index
+     */
+    Navigator getBuilderStep(int index) {
+        Navigator step = builderStepRows[index]
+        if (step.isEmpty()) {
+            throw new IllegalArgumentException("Step at index ${index} not found")
+        }
+        return step
+    }
+
+    /**
+     * gets a single step by index
+     */
     Navigator getStep(int index) {
         Navigator step = stepRows[index]
         if (step.isEmpty()) {
@@ -58,10 +113,41 @@ class StepTableModule extends Module {
     }
 
     /**
+     * gets the number of builder steps
+     */
+    int getBuilderStepsCount() {
+        return builderStepRows.size()
+    }
+
+    /**
      * gets the number of steps
      */
     int getStepsCount() {
         return stepRows.size()
+    }
+
+    /**
+     * gets the number of suggested steps
+     */
+    int getSuggestedStepsCount() {
+        return suggestedSteps.size()
+    }
+
+    /**
+     * determines if a builder row with the specified data is displayed
+     * @param action
+     * @param result
+     * @return - true a row contains both the action and result values,
+     * false if a row with the action and result is not found
+     */
+    boolean isBuilderRowDisplayed(String action, String result) {
+        for(row in builderStepRows) {
+            def data = row.find("div.card-body p")
+            if(data[0].text() == action & data[1].text() == result) {
+                return true
+            }
+        }
+        return false
     }
 
     /**
@@ -82,10 +168,36 @@ class StepTableModule extends Module {
     }
 
     /**
+     * removes the builder row at the supplied zero-based index
+     * @param index - the zero-based index of the row to remove
+     */
+    void removeBuilderRow(int index) {
+        getBuilderStep(index).find("input[value=Remove]").click()
+    }
+
+    /**
      * removes the row at the supplied zero-based index
      * @param index - the zero-based index of the row to remove
      */
     void removeRow(int index) {
         getStep(index).find("input[value=Remove]").click()
+    }
+
+    /**
+     * selects the steps form to use [builder, free-form]
+     */
+    void selectStepsTab(String type) {
+        if(type == 'builder') {
+            builderTab.click()
+        } else {
+            freeFormTab.click()
+        }
+    }
+
+    /**
+     * selects a suggested step
+     */
+    void selectSuggestedStep(String name) {
+        suggestedStep(name).click()
     }
 }

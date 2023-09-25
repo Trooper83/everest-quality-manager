@@ -102,7 +102,7 @@
                                 <div class="card-body">
                                     <div class="row border-bottom">
                                         <p class="col-8">Step Search</p>
-                                        <p class="col-4">Previous Step</p>
+                                        <p class="col-4">Current Step</p>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-6">
@@ -110,7 +110,7 @@
                                                          autocomplete="off"/>
                                             <ul class="search-results-menu col-6" id="search-results" style="position:absolute; z-index:999;"></ul>
                                         </div>
-                                        <div class="col-4 offset-2" id="suggestedName"></div>
+                                        <div class="col-4 offset-2" id="currentStep"></div>
                                     </div>
                                     <div class="row border-bottom mb-3 mt-3">
                                         <p class="col-4">Action</p>

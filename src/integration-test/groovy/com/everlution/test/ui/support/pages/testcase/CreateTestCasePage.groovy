@@ -8,8 +8,11 @@ import geb.module.MultipleSelect
 import geb.module.Select
 
 class CreateTestCasePage extends CreatePage {
-    static url = "/testCase/create"
+
     static at = { title == "Create TestCase" }
+    static String convertToPath(Long projectId) {
+        "/project/${projectId}/testCase/create"
+    }
 
     static content = {
         areaOptions { $("#area>option") }
@@ -55,11 +58,12 @@ class CreateTestCasePage extends CreatePage {
     /**
      * adds a generic test case
      */
-    void createTestCase() {
+    void createFreeFormTestCase() {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
         scrollToBottom()
+        testStepTable.selectStepsTab('free-form')
         testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }
@@ -67,8 +71,8 @@ class CreateTestCasePage extends CreatePage {
     /**
      * creates a test case with the supplied data
      */
-    void createTestCase(String name, String description, String area, List<String> environments,
-                        List<String> testGroups, String method, String type, String platform, List<Step> steps) {
+    void createBuilderTestCase(String name, String description, String area, List<String> environments,
+                                List<String> testGroups, String method, String type, String platform, List<String> steps) {
         nameInput = name
         descriptionInput = description
         executionMethodSelect().selected = method
@@ -78,6 +82,28 @@ class CreateTestCasePage extends CreatePage {
         environmentsSelect().selected = environments
         testGroupsSelect().selected = testGroups
         scrollToBottom()
+        steps.each { it ->
+            testStepTable.addBuilderStep(it)
+        }
+        scrollToBottom()
+        createButton.click()
+    }
+
+    /**
+     * creates a test case with the supplied data
+     */
+    void createFreeFormTestCase(String name, String description, String area, List<String> environments,
+                                List<String> testGroups, String method, String type, String platform, List<Step> steps) {
+        nameInput = name
+        descriptionInput = description
+        executionMethodSelect().selected = method
+        platformSelect().selected = platform
+        typeSelect().selected = type
+        areaSelect().selected = area
+        environmentsSelect().selected = environments
+        testGroupsSelect().selected = testGroups
+        scrollToBottom()
+        testStepTable.selectStepsTab('free-form')
         steps.each { it ->
             testStepTable.addStep(it.act, it.result)
         }
@@ -93,6 +119,7 @@ class CreateTestCasePage extends CreatePage {
         nameInput = "fake test case"
         descriptionInput = "fake description"
         scrollToBottom()
+        testStepTable.selectStepsTab('free-form')
         testStepTable.addStep("step action", "step result")
     }
 }

@@ -24,9 +24,12 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
     }
 
     void "add test step row"() {
-        expect: "row count is 0"
+        given:
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
+
+        expect: "row count is 0"
         page.testStepTable.getStepsCount() == 0
 
         when: "add a test step row"
@@ -40,6 +43,7 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         setup: "add a row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addRow()
 
         expect: "row count is 1"
@@ -48,7 +52,7 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         when: "remove the first row"
         page.testStepTable.removeRow(0)
 
-        then: "row count is 1"
+        then: "row count is 0"
         page.testStepTable.getStepsCount() == 0
     }
 
@@ -57,6 +61,7 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         def createPage = browser.page(CreateTestCasePage)
         createPage.completeCreateForm()
         createPage.scrollToBottom()
+        createPage.testStepTable.selectStepsTab('free-form')
         createPage.testStepTable.addStep("", "")
         createPage.createButton.click()
 
@@ -67,9 +72,10 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
     }
 
     void "remove button only displayed for last step"() {
-        setup: "add a row"
+        given: "add a row"
         def page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addRow()
 
         expect:
@@ -84,8 +90,12 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
     }
 
     void "alt+n hotkey adds new row with action in focus"() {
-        expect:
+        given:
         def page = browser.page(CreateTestCasePage)
+        page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
+
+        expect:
         page.testStepTable.getStepsCount() == 0
 
         when:
@@ -97,7 +107,20 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
     }
 
     void "changing step type resets free form"() {
-        expect:
-        false
+        setup: "add a row"
+        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
+        page.testStepTable.addRow()
+
+        expect: "row count is 1"
+        page.testStepTable.getStepsCount() == 1
+
+        when:
+        page.testStepTable.selectStepsTab('builder')
+        page.testStepTable.selectStepsTab('free-form')
+
+        then: "row count is 0"
+        page.testStepTable.getStepsCount() == 0
     }
 }
