@@ -1,6 +1,7 @@
 package com.everlution.test.ui.support.pages.step
 
 import com.everlution.test.ui.support.pages.common.ShowPage
+import com.everlution.test.ui.support.pages.modules.SideBarModule
 
 class ShowStepPage extends ShowPage {
 
@@ -13,6 +14,7 @@ class ShowStepPage extends ShowPage {
     static content = {
         actionValue { $('#act') }
         nameValue { $('#name') }
+        sideBar { module SideBarModule }
         resultValue { $('#result') }
     }
 

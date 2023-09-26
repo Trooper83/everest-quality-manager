@@ -2,6 +2,7 @@ package com.everlution.test.ui.support.pages.testcase
 
 import com.everlution.Step
 import com.everlution.test.ui.support.pages.common.CreatePage
+import com.everlution.test.ui.support.pages.modules.SideBarModule
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
 import geb.module.MultipleSelect
@@ -23,6 +24,7 @@ class CreateTestCasePage extends CreatePage {
         executionMethodOptions { $("#executionMethod>option") }
         nameInput { $("#name") }
         platformOptions { $("#platform>option") }
+        sideBar { module SideBarModule }
         testGroupsOptions { $("#testGroups>option") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
@@ -64,6 +66,18 @@ class CreateTestCasePage extends CreatePage {
         descriptionInput = faker.zelda().character()
         scrollToBottom()
         testStepTable.selectStepsTab('free-form')
+        testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        createButton.click()
+    }
+
+    /**
+     * adds a generic test case with a builder step
+     */
+    void createBuilderTestCase() {
+        Faker faker = new Faker()
+        nameInput = faker.zelda().game()
+        descriptionInput = faker.zelda().character()
+        scrollToBottom()
         testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
         createButton.click()
     }

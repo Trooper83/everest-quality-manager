@@ -238,7 +238,25 @@ class CreateStepPageSpec extends GebSpec {
     }
 
     void "suggestion results are removed when clicked outside of menu"() {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def text = step.name.substring(0, 5)
+        CreateStepPage createPage = browser.page(CreateStepPage)
+        createPage.scrollToBottom()
+        for (int i = 0; i < text.length(); i++){
+            char c = text.charAt(i)
+            String s = new StringBuilder().append(c).toString()
+            createPage.linkModule.searchInput << s
+        }
+        sleep(500)
+
         expect:
-        false
+        createPage.linkModule.searchResultsMenu.displayed
+
+        when:
+        createPage.linkModule.relationSelect().click()
+
+        then:
+        !createPage.linkModule.searchResultsMenu.displayed
     }
 }

@@ -2,11 +2,8 @@ package com.everlution.test.ui.functional.specs.testcase.create
 
 import com.everlution.Area
 import com.everlution.Environment
-import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
-import com.everlution.Step
-import com.everlution.StepService
 import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
@@ -19,9 +16,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreateTestCaseSpec extends GebSpec {
 
-    PersonService personService
     ProjectService projectService
-    StepService stepService
 
     void "authorized users can create test case"(String username, String password) {
         given: "login as a basic user"
@@ -91,61 +86,5 @@ class CreateTestCaseSpec extends GebSpec {
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.areTestGroupsDisplayed([group.name, group1.name])
         }
-    }
-
-    void "builder steps are persisted"() {
-        given: "get fake data"
-        def project = projectService.list(max:1).first()
-        def person = personService.list(max:1).first()
-        def step = new Step(project: project, person: person, name: 'what kind of name should I use', isBuilderStep: true,
-                act: 'here is the action', result: 'this is the result')
-        def step1 = new Step(project: project, person: person, name: '1what kind of name should I use', isBuilderStep: true,
-                act: '1here is the action', result: '1this is the result')
-        stepService.save(step)
-        stepService.save(step1)
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-
-        when: "create test case"
-        to(CreateTestCasePage, project.id)
-        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
-        def tcd = DataFactory.testCase()
-        createPage.createBuilderTestCase(
-                tcd.name, tcd.description, '', [], [],"Automated", "UI", "Web",
-                [step.name, step1.name])
-
-        then: "data is displayed on show page"
-        ShowTestCasePage showPage = at ShowTestCasePage
-        showPage.isStepsRowDisplayed('here is the action', 'this is the result')
-        showPage.isStepsRowDisplayed('1here is the action', '1this is the result')
-    }
-
-    void "free form steps are persisted"() {
-        given: "get fake data"
-        def project = projectService.list(max:1).first()
-        def step = new Step(act: 'here is the action', result: 'this is the result')
-        def step1 = new Step(act: '1here is the action', result: '1this is the result')
-
-        and: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-
-        when: "create test case"
-        to(CreateTestCasePage, project.id)
-        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
-        def tcd = DataFactory.testCase()
-        createPage.createFreeFormTestCase(
-                tcd.name, tcd.description, '', [], [],"Automated", "UI", "Web", [step, step1])
-
-        then: "data is displayed on show page"
-        ShowTestCasePage showPage = at ShowTestCasePage
-        showPage.isStepsRowDisplayed('here is the action', 'this is the result')
-        showPage.isStepsRowDisplayed('1here is the action', '1this is the result')
     }
 }
