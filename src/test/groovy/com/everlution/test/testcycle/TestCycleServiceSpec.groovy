@@ -90,8 +90,8 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.first().result == "ToDo"
         tc.testIterations.first().testCase == testCase
         tc.testIterations.first().steps.size() == testCase.steps.size()
-        tc.testIterations.first().steps[0].action == testCase.steps[0].act
-        tc.testIterations.first().steps[1].action == testCase.steps[1].act
+        tc.testIterations.first().steps[0].act == testCase.steps[0].act
+        tc.testIterations.first().steps[1].act == testCase.steps[1].act
         tc.testIterations.first().steps[0].result == testCase.steps[0].result
         tc.testIterations.first().steps[1].result == testCase.steps[1].result
     }
