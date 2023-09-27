@@ -219,6 +219,9 @@ async function displayStepProperties(id) {
             document.getElementById('search').value = "";
 
             await displaySuggestedSteps(id);
+
+        } else {
+            //do nothing
         }
 }
 
