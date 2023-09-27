@@ -244,6 +244,11 @@ class StepController {
             return
         }
         def steps = stepService.getRelatedSteps(stepId)
+
+        if (!steps.step) {
+            notFound()
+            return
+        }
         respond steps, formats: ['json']
     }
 

@@ -136,8 +136,12 @@ async function fetchStep(id) {
         const response = await fetch(encoded, {
             method: "GET",
         });
-        s = await response.json();
-        fetchedSteps.push(s);
+        if (response.ok) {
+            s = await response.json();
+            fetchedSteps.push(s);
+        } else {
+            s = null;
+        }
     }
     return s;
 }
@@ -159,61 +163,63 @@ async function displayStepProperties(id) {
         actCard.appendChild(actBody);
 
         const s = await fetchStep(id);
-        actP.appendChild(document.createTextNode(s.step.act));
+        if (s) {
+            actP.appendChild(document.createTextNode(s.step.act));
 
-        //create result element
-        const resCol = document.createElement('div');
-        resCol.setAttribute('class', 'col-5');
-        const resCard = document.createElement('div');
-        resCard.setAttribute('class', 'card mb-2');
-        resCol.appendChild(resCard);
-        const resBody = document.createElement('div');
-        resBody.setAttribute('class', 'card-body');
-        const resP = document.createElement('p');
-        resBody.appendChild(resP);
-        resCard.appendChild(resBody);
-        resP.appendChild(document.createTextNode(s.step.result));
+            //create result element
+            const resCol = document.createElement('div');
+            resCol.setAttribute('class', 'col-5');
+            const resCard = document.createElement('div');
+            resCard.setAttribute('class', 'card mb-2');
+            resCol.appendChild(resCard);
+            const resBody = document.createElement('div');
+            resBody.setAttribute('class', 'card-body');
+            const resP = document.createElement('p');
+            resBody.appendChild(resP);
+            resCard.appendChild(resBody);
+            resP.appendChild(document.createTextNode(s.step.result));
 
-        //create hidden input
-        const index = document.querySelector('#builderSteps').childElementCount;
-        const hidden = document.createElement('input');
-        hidden.setAttribute('style', 'display:none;');
-        hidden.setAttribute('id', `steps[${index}].id`);
-        hidden.setAttribute('name', `steps[${index}].id`);
-        hidden.setAttribute('type', 'text');
-        hidden.setAttribute('value', s.step.id);
+            //create hidden input
+            const index = document.querySelector('#builderSteps').childElementCount;
+            const hidden = document.createElement('input');
+            hidden.setAttribute('style', 'display:none;');
+            hidden.setAttribute('id', `steps[${index}].id`);
+            hidden.setAttribute('name', `steps[${index}].id`);
+            hidden.setAttribute('type', 'text');
+            hidden.setAttribute('value', s.step.id);
 
-        //create remove link
-        const removeDiv = document.createElement('div');
-        removeDiv.setAttribute('class', 'col-1');
-        const removeInp = document.createElement('input');
-        removeInp.setAttribute('class', 'btn btn-link btn-sm');
-        removeInp.setAttribute('type', 'button');
-        removeInp.setAttribute('value', 'Remove');
-        removeInp.setAttribute('onclick', 'removeBuilderRow(this);');
-        removeDiv.appendChild(removeInp);
+            //create remove link
+            const removeDiv = document.createElement('div');
+            removeDiv.setAttribute('class', 'col-1');
+            const removeInp = document.createElement('input');
+            removeInp.setAttribute('class', 'btn btn-link btn-sm');
+            removeInp.setAttribute('type', 'button');
+            removeInp.setAttribute('value', 'Remove');
+            removeInp.setAttribute('onclick', 'removeBuilderRow(this);');
+            removeDiv.appendChild(removeInp);
 
-        //create row and append elements
-        const row = document.createElement('div');
-        row.setAttribute('class', 'row align-items-center');
-        row.appendChild(actCol);
-        row.appendChild(resCol);
-        row.appendChild(removeDiv);
-        row.appendChild(hidden);
+            //create row and append elements
+            const row = document.createElement('div');
+            row.setAttribute('class', 'row align-items-center');
+            row.appendChild(actCol);
+            row.appendChild(resCol);
+            row.appendChild(removeDiv);
+            row.appendChild(hidden);
 
-        //remove link
-        if (document.querySelector('#builderSteps input[value=Remove]')) {
-            const link = document.getElementById('builderSteps').lastChild.querySelector('input[value=Remove]');
-            link.setAttribute('style', 'display:none;');
+            //remove link
+            if (document.querySelector('#builderSteps input[value=Remove]')) {
+                const link = document.getElementById('builderSteps').lastChild.querySelector('input[value=Remove]');
+                link.setAttribute('style', 'display:none;');
+            }
+
+            //append row to dom
+            const parent = document.getElementById('builderSteps');
+            parent.appendChild(row);
+
+            document.getElementById('search').value = "";
+
+            await displaySuggestedSteps(id);
         }
-
-        //append row to dom
-        const parent = document.getElementById('builderSteps');
-        parent.appendChild(row);
-
-        document.getElementById('search').value = "";
-
-        await displaySuggestedSteps(id);
 }
 
 /**
@@ -243,30 +249,32 @@ async function displaySuggestedSteps(id) {
 
         const s = await fetchStep(id);
 
-        setParentName(s.step.name);
+        if (s) {
+            setParentName(s.step.name);
+            if (s.relatedSteps.length == 0) {
+                const emptyDiv = document.createElement('p');
+                emptyDiv.setAttribute('id', 'noStepsFound');
+                emptyDiv.appendChild(document.createTextNode('No related steps found'));
+                parent.appendChild(emptyDiv);
+            }
 
-        if (s.relatedSteps.length == 0) {
-            const emptyDiv = document.createElement('p');
-            emptyDiv.setAttribute('id', 'noStepsFound');
-            emptyDiv.appendChild(document.createTextNode('No related steps found'));
-            parent.appendChild(emptyDiv);
+            //add all related steps to dom
+            s.relatedSteps.forEach(step => {
+                const col = document.createElement('div');
+                col.setAttribute('class', 'col');
+                col.setAttribute('onclick', `displayStepProperties(${step.id});`);
+                const card = document.createElement('div');
+                card.setAttribute('class', 'card mb-2');
+                col.appendChild(card);
+                const body = document.createElement('div');
+                body.setAttribute('class', 'card-body');
+                card.appendChild(body);
+                const p = document.createElement('p');
+                p.appendChild(document.createTextNode(step.name));
+                body.appendChild(p);
+                parent.appendChild(col);
+            });
         }
-        //add all related steps to dom
-        s.relatedSteps.forEach(step => {
-            const col = document.createElement('div');
-            col.setAttribute('class', 'col');
-            col.setAttribute('onclick', `displayStepProperties(${step.id});`);
-            const card = document.createElement('div');
-            card.setAttribute('class', 'card mb-2');
-            col.appendChild(card);
-            const body = document.createElement('div');
-            body.setAttribute('class', 'card-body');
-            card.appendChild(body);
-            const p = document.createElement('p');
-            p.appendChild(document.createTextNode(step.name));
-            body.appendChild(p);
-            parent.appendChild(col);
-        });
 }
 
 /**

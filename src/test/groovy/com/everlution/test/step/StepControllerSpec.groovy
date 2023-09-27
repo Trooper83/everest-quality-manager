@@ -4,6 +4,7 @@ import com.everlution.Link
 import com.everlution.LinkService
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.RelatedSteps
 import com.everlution.SearchResult
 import com.everlution.Step
 import com.everlution.StepController
@@ -837,11 +838,27 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
     void "get related steps returns 404 when id null"() {
         given:
         controller.projectService = Mock(ProjectService) {
-            1 * read(_) >> null
+            1 * read(_) >> new Project()
         }
 
         when:
         controller.getRelatedSteps(1, null)
+
+        then:
+        response.status == 404
+    }
+
+    void "get related steps renders validation error when step not found"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * read(_) >> new Project()
+        }
+        controller.stepService = Mock(StepService) {
+            1 * getRelatedSteps(_) >> new RelatedSteps(null, [])
+        }
+
+        when:
+        controller.getRelatedSteps(1, 111111)
 
         then:
         response.status == 404

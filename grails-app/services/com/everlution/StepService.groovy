@@ -70,12 +70,12 @@ abstract class StepService implements IStepService {
     }
 
     /**
-     * gets related steps
+     * gets related steps in which the supplied step id is the owner id
      */
     RelatedSteps getRelatedSteps(Long id) {
         def step = read(id)
         if (!step) {
-            return []
+            return new RelatedSteps(null, [])
         }
 
         List<Link> links = linkService.getLinks(id, step.project)
