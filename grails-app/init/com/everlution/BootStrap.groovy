@@ -95,13 +95,13 @@ class BootStrap {
         Step testStep2 = new Step(act: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
         Step testStep3 = new Step(act: "do something123", result: "something happened123", project: project, person: person).save(failOnError: true)
         Step testStep4 = new Step(act: "do something123", result: "something happened123", project: project1, person: person).save(failOnError: true)
-        def grandParent = new Step(act: "do something123", result: "something happened123", project: project1,
+        def grandParent = new Step(act: "grand parent", result: "grand parent result", project: project1,
                 person: person, isBuilderStep: true, name: "this is the grand parent step that has spawned all of them").save(failOnError: true)
-        def parent = new Step(act: "do something123", result: "something happened123", project: project1,
+        def parent = new Step(act: "parent act", result: "parent res", project: project1,
                 person: person, isBuilderStep: true, name: "this is the parent step that is a child to the grand parent").save(failOnError: true)
-        def uncle = new Step(act: "do something123", result: "something happened123", project: project1,
+        def uncle = new Step(act: "uncle act", result: "uncle res", project: project1,
                 person: person, isBuilderStep: true, name: "this is the uncle step that is child to the grand parent").save(failOnError: true)
-        def child = new Step(act: "do something123", result: "something happened123", project: project1,
+        def child = new Step(act: "child act", result: "child res", project: project1,
                 person: person, isBuilderStep: true, name: "this is the ultimate child step").save(failOnError: true)
 
         new Link(ownerId: parent.id, linkedId: child.id, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)

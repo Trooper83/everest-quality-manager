@@ -8,7 +8,7 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
-class CreatePageStepsSpec extends GebSpec {
+class CreatePageFreeFormStepsSpec extends GebSpec {
 
     ProjectService projectService
 
@@ -24,9 +24,12 @@ class CreatePageStepsSpec extends GebSpec {
     }
 
     void "add test step row"() {
-        expect: "row count is 0"
+        given:
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
+
+        expect: "row count is 0"
         page.testStepTable.getStepsCount() == 0
 
         when: "add a test step row"
@@ -40,6 +43,7 @@ class CreatePageStepsSpec extends GebSpec {
         setup: "add a row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addRow()
 
         expect: "row count is 1"
@@ -48,7 +52,7 @@ class CreatePageStepsSpec extends GebSpec {
         when: "remove the first row"
         page.testStepTable.removeRow(0)
 
-        then: "row count is 1"
+        then: "row count is 0"
         page.testStepTable.getStepsCount() == 0
     }
 
@@ -57,6 +61,7 @@ class CreatePageStepsSpec extends GebSpec {
         def createPage = browser.page(CreateTestCasePage)
         createPage.completeCreateForm()
         createPage.scrollToBottom()
+        createPage.testStepTable.selectStepsTab('free-form')
         createPage.testStepTable.addStep("", "")
         createPage.createButton.click()
 
@@ -67,10 +72,14 @@ class CreatePageStepsSpec extends GebSpec {
     }
 
     void "remove button only displayed for last step"() {
-        setup: "add a row"
+        given: "add a row"
         def page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addRow()
+        waitFor {
+            page.testStepTable.stepsCount == 1
+        }
 
         expect:
         page.testStepTable.getStep(0).find('input[value=Remove]').displayed
@@ -84,8 +93,12 @@ class CreatePageStepsSpec extends GebSpec {
     }
 
     void "alt+n hotkey adds new row with action in focus"() {
-        expect:
+        given:
         def page = browser.page(CreateTestCasePage)
+        page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
+
+        expect:
         page.testStepTable.getStepsCount() == 0
 
         when:
@@ -94,5 +107,23 @@ class CreatePageStepsSpec extends GebSpec {
         then:
         page.testStepTable.getStepsCount() == 1
         page.testStepTable.getStep(0).find('textarea[name="steps[0].act"]').focused
+    }
+
+    void "changing step type resets free form"() {
+        setup: "add a row"
+        CreateTestCasePage page = browser.page(CreateTestCasePage)
+        page.scrollToBottom()
+        page.testStepTable.selectStepsTab('free-form')
+        page.testStepTable.addRow()
+
+        expect: "row count is 1"
+        page.testStepTable.getStepsCount() == 1
+
+        when:
+        page.testStepTable.selectStepsTab('builder')
+        page.testStepTable.selectStepsTab('free-form')
+
+        then: "row count is 0"
+        page.testStepTable.getStepsCount() == 0
     }
 }

@@ -38,7 +38,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "create a test case"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.createTestCase()
+        page.createFreeFormTestCase()
 
         then: "at show test case page with message displayed"
         at ShowTestCasePage

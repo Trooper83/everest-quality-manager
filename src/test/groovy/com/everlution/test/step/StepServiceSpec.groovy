@@ -175,7 +175,7 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
 
     void "read with invalid id returns null"() {
         expect: "invalid instance"
-        service.read(99999999) == null
+        service.read(null) == null
     }
 
     void "delete step with links deletes all related links"() {
@@ -268,5 +268,66 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         !map.parents.contains(testStep)
         map.siblings.size() == 1
         !map.siblings.contains(testStep)
+    }
+
+    void "get related steps returns related steps instance"() {
+        given:
+        setupData()
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
+
+        when:
+        def steps = service.getRelatedSteps(testStep.id)
+
+        then:
+        steps.relatedSteps.size() == 3
+        steps.step.id == testStep.id
+    }
+
+    void "get related steps returns empty list and null step for step not found"() {
+        given:
+        setupData()
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
+
+        when:
+        def steps = service.getRelatedSteps(9999)
+
+        then:
+        steps.relatedSteps.size() == 0
+        steps.step == null
+    }
+
+    void "get related steps only returns owned related steps"() {
+        given:
+        setupData()
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        Step testStep2 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
+        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
+        new Link(ownerId: testStep2.id, linkedId: testStep.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
+
+        when:
+        def steps = service.getRelatedSteps(testStep.id)
+
+        then:
+        steps.relatedSteps.size() == 2
+        !steps.relatedSteps.contains(testStep2)
     }
 }

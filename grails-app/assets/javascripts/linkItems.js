@@ -1,26 +1,30 @@
-const searchElement = document.querySelector('#search');
-const searchResults = document.querySelector("#search-results");
 
-searchElement.addEventListener("change", displayMatchedResults);
-searchElement.addEventListener("keyup", displayMatchedResults);
+(() => {
+  const searchElement = document.querySelector('#search');
 
-document.addEventListener("click", function (e) {
-    closeAllLists(e.target);
-});
+  searchElement.addEventListener("change", displayMatchedResults);
+  searchElement.addEventListener("keyup", displayMatchedResults);
+
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+})();
+
+const suggestions = [];
+const endpoint = setEndpoint();
 
 /**
 * close any open result dropdown lists
 */
 function closeAllLists(elmnt) {
     const parent = document.getElementById("search-results");
+    const searchElement = document.querySelector('#search');
     if (elmnt != searchElement) {
         while (parent.hasChildNodes()) {
             parent.firstChild.remove()
         }
     }
 }
-
-const suggestions = [];
 
 /**
 * sets the endpoint
@@ -41,12 +45,13 @@ function setEndpoint() {
     return sub + '/search';
 }
 
-const endpoint = setEndpoint();
-
 /**
 * fetch results from the server and display them
 */
 function displayMatchedResults() {
+
+    const searchResults = document.querySelector("#search-results");
+    const searchElement = document.querySelector('#search');
 
     const url = `${endpoint}?q=${this.value}`;
     let encoded = encodeURI(url);

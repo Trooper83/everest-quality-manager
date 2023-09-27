@@ -193,4 +193,16 @@ class StepServiceSpec extends Specification {
         then:
         steps.siblings.size() == 1
     }
+
+    void "get related steps returns steps"() {
+        setup:
+        def step = setupData()
+
+        when:
+        def steps = stepService.getRelatedSteps(step.id)
+
+        then:
+        steps.step.id == step.id
+        steps.relatedSteps.size() == 1
+    }
 }

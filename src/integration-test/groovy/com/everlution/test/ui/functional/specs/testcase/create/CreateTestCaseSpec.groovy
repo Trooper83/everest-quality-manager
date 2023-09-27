@@ -30,7 +30,7 @@ class CreateTestCaseSpec extends GebSpec {
 
         when: "create a test case"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.createTestCase()
+        page.createFreeFormTestCase()
 
         then: "at show test case page"
         at ShowTestCasePage
@@ -70,7 +70,7 @@ class CreateTestCaseSpec extends GebSpec {
         go "/project/${project.id}/testCase/create"
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         def tcd = DataFactory.testCase()
-        createPage.createTestCase(
+        createPage.createFreeFormTestCase(
                 tcd.name, tcd.description, area.name, [env.name, env1.name], [group.name, group1.name],
                 "Automated", "UI", "Web", [])
 

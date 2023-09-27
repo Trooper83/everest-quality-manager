@@ -6,6 +6,8 @@ import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
+import com.everlution.test.ui.support.pages.step.CreateStepPage
+import com.everlution.test.ui.support.pages.step.ShowStepPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
@@ -29,14 +31,15 @@ class TestCaseSpec extends GebSpec {
 
         def projectHomePage = at ProjectHomePage
         projectHomePage.sideBar.goToCreate("Test Case")
-
-        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
-        createPage.createTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
     }
 
     void "test case is created and data persists"() {
-        expect: "data is displayed on show page"
+        when:
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
+                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
+
+        then: "data is displayed on show page"
         def showPage = at ShowTestCasePage
         verifyAll {
             showPage.areaValue.text() == area
@@ -53,6 +56,9 @@ class TestCaseSpec extends GebSpec {
 
     void "test case can be edited and data persists"() {
         given:
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
+                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
         def showPage = at ShowTestCasePage
         showPage.goToEdit()
 
@@ -76,6 +82,11 @@ class TestCaseSpec extends GebSpec {
     }
 
     void "test case can be deleted"() {
+        given:
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
+                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
+
         when:
         def showPage = at ShowTestCasePage
         showPage.delete()
@@ -83,5 +94,22 @@ class TestCaseSpec extends GebSpec {
         then:
         ListTestCasePage list = at ListTestCasePage
         !list.listTable.isValueInColumn("Name", tc.name)
+    }
+
+    void "test case with builder steps persists steps"() {
+        given:
+        def step = DataFactory.step()
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.sideBar.goToCreate('Step')
+        browser.page(CreateStepPage).createStep(step.action, step.name, step.result)
+
+        when:
+        browser.page(ShowStepPage).sideBar.goToCreate('Test Case')
+        createPage.createBuilderTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
+                tc.type, platform, [step.name])
+
+        then: "data is displayed on show page"
+        def showPage = at ShowTestCasePage
+        showPage.isStepsRowDisplayed(step.action, step.result)
     }
 }

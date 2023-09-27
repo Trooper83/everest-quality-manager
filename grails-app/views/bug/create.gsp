@@ -63,8 +63,7 @@
                             <p class="col-5">Action</p>
                             <p class="col-5">Result</p>
                         </div>
-                        <div id="stepsTableContent">
-                        </div>
+                        <div id="stepsTableContent"></div>
                         <input class="btn btn-secondary btn-sm mt-3" id="btnAddRow" type="button" value="Add Step" onclick="addEntryRow()" accesskey="n"/>
                         <asset:image src="icons/info.svg" alt="info" width="15" height="15"
                                      data-toggle="tooltip" data-placement="top" title="ALT+n to add a new row"/>
