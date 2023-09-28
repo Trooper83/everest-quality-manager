@@ -101,24 +101,30 @@ async function displayMatchedResults() {
         const response = await fetch(encoded, {
             method: "GET",
         });
-        const results = await response.json();
+        if (response.ok) {
+            const results = await response.json();
 
-        const searchTerm = this.value;
-        const htmlToDisplay = results
-            .map((step) => {
-                const regex = RegExp(searchTerm, "gi");
-                const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
-                const html = `<li class='search-results-menu-item'
-                            onclick='displayStepProperties(${step.id});'>
-                        <span class='name'>${stepName}</span></li>`;
-                return html;
-            }).join("");
+            const searchTerm = this.value;
+            const htmlToDisplay = results
+                .map((step) => {
+                    const regex = RegExp(searchTerm, "gi");
+                    const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
+                    const html = `<li class='search-results-menu-item'
+                                        onclick='displayStepProperties(${step.id});'>
+                                   <span class='name'>${stepName}</span></li>`;
+                    return html;
+                }).join("");
 
-        const searchResults = document.querySelector("#search-results");
-        if (searchTerm === "") {
-            searchResults.innerHTML = "";
+            const searchResults = document.querySelector("#search-results");
+            if (searchTerm === "") {
+                searchResults.innerHTML = "";
+            } else {
+                searchResults.innerHTML = htmlToDisplay;
+            }
         } else {
-            searchResults.innerHTML = htmlToDisplay;
+            const toast = document.getElementById('error-toast');
+            const t = new bootstrap.Toast(toast);
+            t.show();
         }
     }
 }
@@ -221,7 +227,9 @@ async function displayStepProperties(id) {
             await displaySuggestedSteps(id);
 
         } else {
-            //do nothing
+            const toast = document.getElementById('error-toast');
+            const t = new bootstrap.Toast(toast);
+            t.show();
         }
 }
 

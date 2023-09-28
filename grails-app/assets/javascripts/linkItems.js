@@ -60,32 +60,45 @@ function displayMatchedResults() {
         fetch(encoded, {
             method: "GET",
         })
+        .then((response) => {
+            if (!response.ok) {
+              throw new Error('Server returned ' + response.status);
+            }
+            return response;
+        })
         .then((blobdata) => blobdata.json())
-        .then((data) => suggestions.push(...data));
+        .then((data) => suggestions.push(...data))
+        .then(() => {
+            const searchTerm = this.value;
+            const htmlToDisplay = suggestions
+                .map((step) => {
+                    const regex = RegExp(searchTerm, "gi");
+                    const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
+                    const html = `<li class='search-results-menu-item' data-id='${step.id}'><span class='name'>${stepName}</span></li>`;
+                    return html;
+                }).join("");
 
-        const searchTerm = this.value;
-        const htmlToDisplay = suggestions
-            .map((step) => {
-                const regex = RegExp(searchTerm, "gi");
-                const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
-                const html = `<li class='search-results-menu-item' data-id='${step.id}'><span class='name'>${stepName}</span></li>`;
-                return html;
-            }).join("");
+            if (searchTerm === "") {
+                searchResults.innerHTML = "";
+            } else {
+                searchResults.innerHTML = htmlToDisplay;
+            }
+            suggestions.length = 0;
 
-        if (searchTerm === "") {
-            searchResults.innerHTML = "";
-        } else {
-            searchResults.innerHTML = htmlToDisplay;
-        }
-        suggestions.length = 0;
-
-        const searchItems = document.getElementsByClassName('search-results-menu-item');
-        for (const item of searchItems) {
-            item.addEventListener("click", function(e) {
-                searchElement.value = item.innerText;
-                searchElement.setAttribute('data-id', item.getAttribute('data-id'));
-            });
-        }
+            const searchItems = document.getElementsByClassName('search-results-menu-item');
+            for (const item of searchItems) {
+                item.addEventListener("click", function(e) {
+                    searchElement.value = item.innerText;
+                    searchElement.setAttribute('data-id', item.getAttribute('data-id'));
+                });
+            }
+        })
+        .catch(error => {
+          console.error('There was a problem with the Fetch operation:', error);
+          const toast = document.getElementById('error-toast');
+          const t = new bootstrap.Toast(toast);
+          t.show();
+        });
     }
 }
 
