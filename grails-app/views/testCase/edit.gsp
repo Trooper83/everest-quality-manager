@@ -107,6 +107,7 @@
             </g:form>
         </main>
     </div>
+    <g:render template="/shared/toastTemplate"/>
 </div>
 <asset:javascript src="step.js"/>
 </body>

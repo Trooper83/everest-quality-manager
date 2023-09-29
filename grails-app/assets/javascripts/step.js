@@ -156,20 +156,20 @@ async function fetchStep(id) {
 */
 async function displayStepProperties(id) {
 
-        //create act element
-        const actCol = document.createElement('div');
-        actCol.setAttribute('class', 'col-5');
-        const actCard = document.createElement('div');
-        actCard.setAttribute('class', 'card mb-2');
-        actCol.appendChild(actCard);
-        const actBody = document.createElement('div');
-        actBody.setAttribute('class', 'card-body');
-        const actP = document.createElement('p');
-        actBody.appendChild(actP);
-        actCard.appendChild(actBody);
-
         const s = await fetchStep(id);
         if (s) {
+
+            //create act element
+            const actCol = document.createElement('div');
+            actCol.setAttribute('class', 'col-5');
+            const actCard = document.createElement('div');
+            actCard.setAttribute('class', 'card mb-2');
+            actCol.appendChild(actCard);
+            const actBody = document.createElement('div');
+            actBody.setAttribute('class', 'card-body');
+            const actP = document.createElement('p');
+            actBody.appendChild(actP);
+            actCard.appendChild(actBody);
             actP.appendChild(document.createTextNode(s.step.act));
 
             //create result element
@@ -275,7 +275,8 @@ async function displaySuggestedSteps(id) {
                 col.setAttribute('class', 'col');
                 col.setAttribute('onclick', `displayStepProperties(${step.id});`);
                 const card = document.createElement('div');
-                card.setAttribute('class', 'card mb-2');
+                card.setAttribute('class', 'card mb-2 suggested');
+                card.setAttribute('style', 'cursor:pointer');
                 col.appendChild(card);
                 const body = document.createElement('div');
                 body.setAttribute('class', 'card-body');
