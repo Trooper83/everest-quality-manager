@@ -1,6 +1,5 @@
 package com.everlution.test.ui.support.pages.testcase
 
-import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.common.EditPage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import geb.module.MultipleSelect

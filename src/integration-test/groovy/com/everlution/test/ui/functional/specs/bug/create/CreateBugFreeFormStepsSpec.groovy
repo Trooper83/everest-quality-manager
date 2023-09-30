@@ -10,7 +10,7 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
-class CreateBugStepsSpec extends GebSpec {
+class CreateBugFreeFormStepsSpec extends GebSpec {
 
     void "removed test steps are not saved"() {
         given: "login as a basic user"
@@ -33,6 +33,8 @@ class CreateBugStepsSpec extends GebSpec {
         page.completeCreateForm()
 
         and: "add a new test step"
+        page.scrollToBottom()
+        page.stepsTable.selectStepsTab("free-form")
         page.stepsTable.addStep("should not persist", "should not persist")
 
         and: "remove row"
