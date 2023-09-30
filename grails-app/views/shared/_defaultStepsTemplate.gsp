@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-4 offset-2" id="currentStep"></div>
             </div>
-            <div class="row border-bottom mb-3 mt-3">
+            <div class="row border-bottom mb-3 mt-5">
                 <p class="col-4">Action</p>
                 <p class="col-4">Result</p>
                 <p class="col-4">Suggested</p>

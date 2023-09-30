@@ -217,7 +217,7 @@ async function displayStepProperties(id) {
 
             //create row and append elements
             const row = document.createElement('div');
-            row.setAttribute('class', 'row align-items-center mt-2');
+            row.setAttribute('class', 'row align-items-center mb-2');
             row.appendChild(actCol);
             row.appendChild(resCol);
             row.appendChild(removeDiv);

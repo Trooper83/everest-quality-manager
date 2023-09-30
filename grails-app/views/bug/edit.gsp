@@ -63,17 +63,16 @@
                         <h1>Steps To Recreate</h1>
                     </div>
                     <div class="card-body">
-                        <div class="row border-bottom">
-                            <p class="col-5">Action</p>
-                            <p class="col-5">Result</p>
-                        </div>
-                        <div id="stepsTableContent">
-                            <g:render template="/shared/editStepsTableTemplate" bean="${bug}" var="entity"/>
-                        </div>
-                        <input class="btn btn-secondary btn-sm mt-3" id="btnAddRow" type="button" value="Add Step" onclick="addEntryRow()" accesskey="n"/>
-                        <asset:image src="icons/info.svg" alt="info" width="15" height="15"
-                                     data-toggle="tooltip" data-placement="top" title="ALT+n to add a new row"/>
-                        <div class="row mb-3 mt-3">
+                        <g:if test="${bug.steps.size() == 0}">
+                            <g:render template="/shared/defaultStepsTemplate"/>
+                        </g:if>
+                        <g:elseif test="${bug.steps[0].isBuilderStep}">
+                            <g:render template="/shared/builderStepsTemplate" bean="${bug}" var="entity"/>
+                        </g:elseif>
+                        <g:else>
+                            <g:render template="/shared/freeFormStepsTemplate" bean="${bug}" var="entity"/>
+                        </g:else>
+                        <div class="row mb-3 mt-3 me-2 ms-2 border-top">
                             <div class="col-5 mt-3">
                                 <label class="form-label" for="expected">Expected</label>
                                 <g:textArea class="form-control" name="expected" value="${bug.expected}" maxLength="500"></g:textArea>

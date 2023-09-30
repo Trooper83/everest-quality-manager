@@ -88,7 +88,7 @@
                     </div>
                     <div class="card-body">
                         <g:if test="${testCase.steps.size() == 0}">
-                            <g:render template="/shared/defaultStepsTemplate" bean="${testCase}" var="entity"/>
+                            <g:render template="/shared/defaultStepsTemplate"/>
                         </g:if>
                         <g:elseif test="${testCase.steps[0].isBuilderStep}">
                             <g:render template="/shared/builderStepsTemplate" bean="${testCase}" var="entity"/>
