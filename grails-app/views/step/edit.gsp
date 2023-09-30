@@ -65,7 +65,7 @@
                         </div>
                         <div id="links">
                             <div class="row">
-                                <p class="fw-bold border-bottom">Parents</p>
+                                <p class="border-bottom">Parents</p>
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="parents">
                                     <g:each in="${linkedMap.parents}">
                                         <div class="col">
@@ -85,7 +85,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <p class="fw-bold border-bottom">Siblings</p>
+                                <p class="border-bottom">Siblings</p>
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="siblings">
                                     <g:each in="${linkedMap.siblings}">
                                         <div class="col">
@@ -105,7 +105,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <p class="fw-bold border-bottom">Children</p>
+                                <p class="border-bottom">Children</p>
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="children">
                                     <g:each in="${linkedMap.children}">
                                         <div class="col">
