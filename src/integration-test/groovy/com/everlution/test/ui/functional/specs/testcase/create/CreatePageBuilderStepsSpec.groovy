@@ -159,9 +159,9 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "selecting suggested step displays properties and suggested steps"() {
         setup:
-        def s = new Step(name: "1test step", act: "1action jackson", result: "1result", project: project, person: person,
+        def s = new Step(name: "12345test step", act: "1action jackson", result: "1result", project: project, person: person,
                 isBuilderStep: true)
-        def st = new Step(name: "2test step 2", act: "2action jackson 2", result: "2result 2", project: project, person: person,
+        def st = new Step(name: "2445556test step 2", act: "2action jackson 2", result: "2result 2", project: project, person: person,
                 isBuilderStep: true)
         stepService.save(s)
         stepService.save(st)
@@ -184,9 +184,9 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "suggested steps name and properties are repopulated with current step when step removed"() {
         given:
-        def s = new Step(name: "3test step", act: "3action jackson", result: "3result", project: project, person: person,
+        def s = new Step(name: "3456666test step", act: "3action jackson", result: "3result", project: project, person: person,
                 isBuilderStep: true)
-        def st = new Step(name: "4test step 2", act: "4action jackson 2", result: "4result 2", project: project, person: person,
+        def st = new Step(name: "45678test step 2", act: "4action jackson 2", result: "4result 2", project: project, person: person,
                 isBuilderStep: true)
         stepService.save(s)
         stepService.save(st)
@@ -303,5 +303,15 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
         then:
         createPage.testStepTable.noSuggestedStepsText.displayed
+    }
+
+    void "builder step row has hidden input"() {
+        when:
+        def createPage = createPage(CreateTestCasePage)
+        createPage.scrollToBottom()
+        createPage.testStepTable.addBuilderStep(step.name)
+
+        then:
+        !createPage.testStepTable.isBuilderStepHiddenInputDisplayed(0)
     }
 }

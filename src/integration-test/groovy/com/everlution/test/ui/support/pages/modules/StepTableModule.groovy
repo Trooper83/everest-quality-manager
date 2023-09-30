@@ -34,7 +34,7 @@ class StepTableModule extends Module {
         waitFor {
             searchResultsMenu.displayed
         }
-        searchResult(text).click()
+        searchResult(text).first().click()
         sleep(500)
     }
 
@@ -81,6 +81,26 @@ class StepTableModule extends Module {
      */
     String getCurrentBuilderStepName() {
         return currentStepName.text()
+    }
+
+    /**
+     * determines if a builder steps hidden input is displayed
+     * this will fail a test if it is not found at the index
+     */
+    boolean isBuilderStepHiddenInputDisplayed(int index) {
+        def s = getBuilderStep(index).find('input[data-name=hiddenId]')
+        assert s.size() == 1 //verify one is found
+        return s.displayed
+    }
+
+    /**
+     * determines if a removed builder steps hidden input is present
+     * this will fail a test if one is not found
+     */
+    boolean isRemovedBuilderStepHiddenInputDisplayed() {
+        def removed = $('#builderSteps input[data-test-id=step-removed-input]')
+        assert removed.size() == 1 //verify one is found
+        return removed.displayed
     }
 
     /**

@@ -7,6 +7,7 @@ import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
+import com.everlution.StepService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestGroup
@@ -24,6 +25,7 @@ class EditTestCaseSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
+    StepService stepService
     TestCaseService testCaseService
 
     @Shared Person person
@@ -62,7 +64,7 @@ class EditTestCaseSpec extends GebSpec {
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
-    void "step can be added to existing test case"() {
+    void "free-form step can be added to existing test case"() {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
@@ -80,6 +82,7 @@ class EditTestCaseSpec extends GebSpec {
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.scrollToBottom()
+        page.stepsTable.selectStepsTab('free-form')
         page.stepsTable.addStep("added action", "added result")
         page.editTestCase()
 
@@ -88,7 +91,7 @@ class EditTestCaseSpec extends GebSpec {
         showPage.isStepsRowDisplayed("added action", "added result")
     }
 
-    void "step can be edited on existing test case"() {
+    void "free-form step can be edited on existing test case"() {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
@@ -114,7 +117,7 @@ class EditTestCaseSpec extends GebSpec {
         showPage.isStepsRowDisplayed("edited action", "edited result")
     }
 
-    void "step can be deleted from existing test case"() {
+    void "free-form step can be deleted from existing test case"() {
         given: "create test case"
         Project project = projectService.list(max: 1).first()
         def step = new Step(act: "action", result: "result", project: project, person: person)
@@ -139,6 +142,68 @@ class EditTestCaseSpec extends GebSpec {
 
         when: "edit the test case"
         page.stepsTable.removeRow(0)
+        page.editTestCase()
+
+        then: "at show view with edited step values"
+        ShowTestCasePage showPage = at ShowTestCasePage
+        showPage.getStepsCount() == 0
+        !showPage.isStepsRowDisplayed("action", "result")
+    }
+
+    void "builder step can be added to existing test case"() {
+        given: "create test case"
+        Project project = projectService.list(max: 1).first()
+        Step step = stepService.findAllByProject(project, [max: 1]).results.first()
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project)
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/testCase/edit/${id}"
+
+        when: "edit the test case"
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        page.scrollToBottom()
+        page.stepsTable.addBuilderStep(step.name)
+        page.editTestCase()
+
+        then: "at show view with added step"
+        ShowTestCasePage showPage = at ShowTestCasePage
+        showPage.isStepsRowDisplayed(step.act, step.result)
+    }
+
+    void "builder step can be removed from existing test case"() {
+        given: "create test case"
+        Project project = projectService.list(max: 1).first()
+        def step = new Step(act: "action", result: "result", project: project, person: person, name: 'this is a test step',
+                isBuilderStep: true)
+        stepService.save(step)
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project,
+                steps: [step])
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/testCase/edit/${id}"
+
+        expect:
+        step.id != null
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        page.scrollToBottom()
+        page.stepsTable.getBuilderStepsCount() == 1
+
+        when: "edit the test case"
+        page.stepsTable.removeBuilderRow(0)
         page.editTestCase()
 
         then: "at show view with edited step values"

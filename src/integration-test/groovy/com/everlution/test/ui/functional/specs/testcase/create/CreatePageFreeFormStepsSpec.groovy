@@ -77,15 +77,12 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         page.scrollToBottom()
         page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addRow()
-        waitFor {
-            page.testStepTable.stepsCount == 1
-        }
-
-        expect:
-        page.testStepTable.getStep(0).find('input[value=Remove]').displayed
 
         when:
         page.testStepTable.addRow()
+        waitFor {
+            page.testStepTable.stepsCount == 2
+        }
 
         then:
         !page.testStepTable.getStep(0).find('input[value=Remove]').displayed

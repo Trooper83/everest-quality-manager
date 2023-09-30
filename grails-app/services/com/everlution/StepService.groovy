@@ -23,7 +23,7 @@ abstract class StepService implements IStepService {
     }
 
     /**
-     * finds all steps in a project
+     * finds all builder steps in a project
      */
     @Transactional
     SearchResult findAllByProject(Project project, Map args) {
@@ -33,7 +33,7 @@ abstract class StepService implements IStepService {
     }
 
     /**
-     * finds all steps in the project with a name
+     * finds all builder steps in the project with a name
      * that contains the string
      * @param name - the string to search
      */

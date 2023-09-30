@@ -1,13 +1,17 @@
 package com.everlution.test.ui.support.pages.testcase
 
 import com.everlution.test.ui.support.pages.common.BasePage
+import com.everlution.test.ui.support.pages.common.EditPage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import geb.module.MultipleSelect
 import geb.module.Select
 
-class EditTestCasePage extends BasePage {
-    static url = "/testCase/edit"
+class EditTestCasePage extends EditPage {
+
     static at = { title == "Edit TestCase" }
+    static String convertToPath(Long projectId, Long testCaseId) {
+        "/project/${projectId}/testCase/edit/${testCaseId}"
+    }
 
     static content = {
         areaOptions { $("#area>option") }

@@ -1,6 +1,11 @@
 package com.everlution.test.ui.functional.specs.testcase.edit
 
-
+import com.everlution.Person
+import com.everlution.PersonService
+import com.everlution.Project
+import com.everlution.ProjectService
+import com.everlution.TestCase
+import com.everlution.TestCaseService
 import com.everlution.test.ui.support.data.Credentials
 
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -15,11 +20,18 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class EditPageSpec extends GebSpec {
 
+    PersonService personService
+    ProjectService projectService
+    TestCaseService testCaseService
+
     def setup() {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+    }
 
+    void "verify method and type field options"() {
+        given:
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 0)
 
@@ -28,11 +40,10 @@ class EditPageSpec extends GebSpec {
 
         browser.page(ListTestCasePage).listTable.clickCell("Name", 0)
 
+        when:
         browser.page(ShowTestCasePage).goToEdit()
-    }
 
-    void "verify method and type field options"() {
-        expect: "correct options populate for executionMethod and type"
+        then: "correct options populate for executionMethod and type"
         EditTestCasePage page = browser.page(EditTestCasePage)
         verifyAll {
             page.executionMethodOptions*.text() == ["", "Automated", "Manual"]
@@ -41,10 +52,39 @@ class EditPageSpec extends GebSpec {
     }
 
     void "verify platform field options"() {
-        expect: "correct options populate for executionMethod and type"
+        given:
+        def projectsPage = at(ListProjectPage)
+        projectsPage.projectTable.clickCell('Name', 0)
+
+        def projectHomePage = at ProjectHomePage
+        projectHomePage.sideBar.goToProjectDomain('Test Cases')
+
+        browser.page(ListTestCasePage).listTable.clickCell("Name", 0)
+
+        when:
+        browser.page(ShowTestCasePage).goToEdit()
+
+        then: "correct options populate for executionMethod and type"
         EditTestCasePage page = browser.page(EditTestCasePage)
         verifyAll {
             page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
         }
+    }
+
+    void "default steps panel displays for test with no steps"() {
+        given: "create test case"
+        Project project = projectService.list(max: 1).first()
+        Person person = personService.list(max: 1).first()
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project)
+        def id = testCaseService.save(testCase).id
+
+        when: "go to edit page"
+        go "/project/${project.id}/testCase/edit/${id}"
+
+        then: "edit the test case"
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        page.stepsTable.freeFormTab.displayed
+        page.stepsTable.builderTab.displayed
     }
 }

@@ -15,7 +15,7 @@ import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
 @Integration
-class EditPageStepsSpec extends GebSpec {
+class EditPageFreeFormStepsSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
@@ -132,13 +132,14 @@ class EditPageStepsSpec extends GebSpec {
         and:
         def page = browser.page(EditTestCasePage)
         page.scrollToBottom()
-        page.stepsTable.addRow()
-
-        expect:
-        page.stepsTable.getStep(0).find('input[value=Remove]').displayed
+        page.stepsTable.selectStepsTab('free-form')
 
         when:
         page.stepsTable.addRow()
+        page.stepsTable.addRow()
+        waitFor {
+            page.stepsTable.stepsCount > 0
+        }
 
         then:
         !page.stepsTable.getStep(0).find('input[value=Remove]').displayed

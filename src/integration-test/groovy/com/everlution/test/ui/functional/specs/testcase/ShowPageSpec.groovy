@@ -46,7 +46,7 @@ class ShowPageSpec extends GebSpec {
         showPage.statusMessage.text() ==~ /TestCase \d+ created/
     }
 
-    void "edit link directs to home view"() {
+    void "edit link directs to edit view"() {
         given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
