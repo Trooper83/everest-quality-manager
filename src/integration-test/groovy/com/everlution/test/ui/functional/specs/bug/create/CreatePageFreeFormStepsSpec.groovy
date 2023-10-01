@@ -14,7 +14,7 @@ import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
 @Integration
-class CreatePageStepsSpec extends GebSpec {
+class CreatePageFreeFormStepsSpec extends GebSpec {
 
     BugService bugService
     PersonService personService
@@ -76,7 +76,7 @@ class CreatePageStepsSpec extends GebSpec {
 
         when: "create bug"
         CreateBugPage createPage = at CreateBugPage
-        createPage.createBug(name, description, "", [], "", "", "", "actual", "expected")
+        createPage.createFreeFormBug(name, description, "", [], "", "", "", "actual", "expected")
 
         then:
         createPage.errorsMessage*.text() ==
@@ -109,5 +109,23 @@ class CreatePageStepsSpec extends GebSpec {
         then:
         page.stepsTable.getStepsCount() == 1
         page.stepsTable.getStep(0).find('textarea[name="steps[0].act"]').focused
+    }
+
+    void "changing step type resets free form"() {
+        setup: "add a row"
+        def page = browser.page(CreateBugPage)
+        page.scrollToBottom()
+        page.stepsTable.selectStepsTab('free-form')
+        page.stepsTable.addRow()
+
+        expect: "row count is 1"
+        page.stepsTable.getStepsCount() == 1
+
+        when:
+        page.stepsTable.selectStepsTab('builder')
+        page.stepsTable.selectStepsTab('free-form')
+
+        then: "row count is 0"
+        page.stepsTable.getStepsCount() == 0
     }
 }

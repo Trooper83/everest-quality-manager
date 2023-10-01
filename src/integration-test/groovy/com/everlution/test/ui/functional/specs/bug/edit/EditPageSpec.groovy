@@ -1,5 +1,11 @@
 package com.everlution.test.ui.functional.specs.bug.edit
 
+import com.everlution.Bug
+import com.everlution.BugService
+import com.everlution.Person
+import com.everlution.PersonService
+import com.everlution.Project
+import com.everlution.ProjectService
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage
@@ -12,6 +18,10 @@ import grails.testing.mixin.integration.Integration
 
 @Integration
 class EditPageSpec extends GebSpec {
+
+    BugService bugService
+    PersonService personService
+    ProjectService projectService
 
     void "verify platform options"() {
         given: "login as a basic user"
@@ -65,5 +75,26 @@ class EditPageSpec extends GebSpec {
         verifyAll {
             page.statusOptions*.text() == ["Open", "Closed"]
         }
+    }
+
+    void "default steps panel displayed for bug with no steps"() {
+        given: "create bug"
+        Project project = projectService.list(max: 1).first()
+        Person person = personService.list(max: 1).first()
+        Bug bug = new Bug(person: person, name: "first1", project: project, status: 'Open')
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when: "go to edit page"
+        go "/project/${project.id}/bug/edit/${id}"
+
+        then:
+        def page = at EditBugPage
+        page.stepsTable.builderTab.displayed
+        page.stepsTable.freeFormTab.displayed
     }
 }

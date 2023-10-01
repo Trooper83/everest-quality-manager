@@ -36,7 +36,7 @@ class CreateBugSpec extends GebSpec {
 
         when: "create a bug"
         def page = at CreateBugPage
-        page.createBug()
+        page.createFreeFormBug()
 
         then: "at show page"
         at ShowBugPage
@@ -82,7 +82,7 @@ class CreateBugSpec extends GebSpec {
 
         when: "create bug"
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createBug(name, description, area.name, [env.name, env1.name], "Web", action, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area.name, [env.name, env1.name], "Web", action, result, actual, expected)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage

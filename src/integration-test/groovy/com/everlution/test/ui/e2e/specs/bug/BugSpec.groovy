@@ -37,7 +37,7 @@ class BugSpec extends GebSpec {
         projectHomePage.sideBar.goToCreate("Bug")
 
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createBug(name, description, area, [env, env1], "Web", action, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", action, result, actual, expected)
     }
 
     void "bug can be created and data persists"() {

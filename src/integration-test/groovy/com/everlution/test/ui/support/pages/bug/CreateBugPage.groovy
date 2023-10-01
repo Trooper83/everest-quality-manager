@@ -1,6 +1,5 @@
 package com.everlution.test.ui.support.pages.bug
 
-import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.common.CreatePage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 import com.github.javafaker.Faker
@@ -46,9 +45,26 @@ class CreateBugPage extends CreatePage {
     }
 
     /**
+     * creates a bug with the supplied data
+     */
+    void createBuilderBug(String name, String description, String area, List<String> environment,
+                           String platform, String stepName, String actual, String expected) {
+        nameInput = name
+        descriptionInput = description
+        areaSelect().selected = area
+        platformSelect().selected = platform
+        environmentsSelect().selected = environment
+        scrollToBottom()
+        stepsTable.addBuilderStep(stepName)
+        expectedInput = expected
+        actualInput = actual
+        createButton.click()
+    }
+
+    /**
      * adds a generic bug
      */
-    void createBug() {
+    void createFreeFormBug() {
         Faker faker = new Faker()
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
@@ -63,8 +79,8 @@ class CreateBugPage extends CreatePage {
     /**
      * creates a bug with the supplied data
      */
-    void createBug(String name, String description, String area, List<String> environment,
-                   String platform, String action, String result, String actual, String expected) {
+    void createFreeFormBug(String name, String description, String area, List<String> environment,
+                           String platform, String action, String result, String actual, String expected) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area

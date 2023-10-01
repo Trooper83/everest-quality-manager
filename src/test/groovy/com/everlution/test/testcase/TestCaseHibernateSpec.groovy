@@ -112,6 +112,26 @@ class TestCaseHibernateSpec extends HibernateSpec {
         Step.findById(testStep.id) != null
     }
 
+    void "remove from test case does not delete steps"() {
+        given: "valid domain instances"
+        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
+        testCase.save()
+
+        expect:
+        testStep.id != null
+        testCase.steps.size() == 1
+
+        when: "remove steps"
+        testCase.removeFromSteps(testStep)
+        sessionFactory.currentSession.flush()
+
+        then: "steps are not found"
+        testCase.steps.empty
+        Step.findById(testStep.id) != null
+    }
+
     void "test steps order persists"() {
         given: "save a test case"
         Step testStep = new Step(act: "do something", result: "something happened123", person: person, project: project)
