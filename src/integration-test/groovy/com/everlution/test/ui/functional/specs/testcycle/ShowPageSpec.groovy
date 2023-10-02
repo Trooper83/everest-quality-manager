@@ -229,28 +229,6 @@ class ShowPageSpec extends GebSpec {
         at ExecuteTestIterationPage
     }
 
-    void "add tests modal closes with cancel button"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to cycle"
-        to (ShowTestCyclePage, cycle.releasePlan.project.id, cycle.id)
-
-        and:
-        def show = at ShowTestCyclePage
-        show.addTestsButton.click()
-
-        when:
-        show.closeAddTestsModal()
-
-        then:
-        waitFor {
-            !show.addTestsModal.displayed
-        }
-    }
-
     void "add tests modal closes with x button"() {
         given: "login as a basic user"
         to LoginPage

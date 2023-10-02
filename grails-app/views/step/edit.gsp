@@ -69,7 +69,7 @@
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="parents">
                                     <g:each in="${linkedMap.parents}">
                                         <div class="col">
-                                            <div class="card">
+                                            <div class="card mb-2">
                                                 <div class="card-body">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          style="cursor:pointer" width="20" height="20" fill="currentColor"
@@ -89,7 +89,7 @@
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="siblings">
                                     <g:each in="${linkedMap.siblings}">
                                         <div class="col">
-                                            <div class="card">
+                                            <div class="card mb-2">
                                                 <div class="card-body">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          style="cursor:pointer" width="20" height="20" fill="currentColor"
@@ -109,7 +109,7 @@
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="children">
                                     <g:each in="${linkedMap.children}">
                                         <div class="col">
-                                            <div class="card">
+                                            <div class="card mb-2">
                                                 <div class="card-body">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          style="cursor:pointer" width="20" height="20" fill="currentColor"

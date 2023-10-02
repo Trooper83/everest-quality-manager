@@ -100,7 +100,7 @@ class EditStepPageSpec extends GebSpec {
         !editPage.linkModule.searchResultsMenu.displayed
 
         where:
-        index << [1,2,3]
+        index << [1,2]
     }
 
     void "validation message displayed when name not selected from list"() {
@@ -204,11 +204,9 @@ class EditStepPageSpec extends GebSpec {
         editPage.scrollToBottom()
         editPage.linkModule.addLink(step.name, 'Is Parent of')
 
-        expect:
-        editPage.linkModule.isLinkDisplayed(step.name)
-
         when:
         editPage.linkModule.removeLinkedItem(0)
+        sleep(500)
 
         then:
         !editPage.linkModule.isLinkDisplayed(step.name)

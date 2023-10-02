@@ -159,9 +159,9 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "selecting suggested step displays properties and suggested steps"() {
         setup:
-        def s = new Step(name: "12345test step", act: "1action jackson", result: "1result", project: project, person: person,
+        def s = new Step(name: "12345test544 step", act: "1action jackson345", result: "1result54", project: project, person: person,
                 isBuilderStep: true)
-        def st = new Step(name: "2445556test step 2", act: "2action jackson 2", result: "2result 2", project: project, person: person,
+        def st = new Step(name: "2445556test step 234535", act: "2action jackson 2454", result: "2result 254", project: project, person: person,
                 isBuilderStep: true)
         stepService.save(s)
         stepService.save(st)
@@ -202,6 +202,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.testStepTable.selectSuggestedStep(step.name)
 
         expect:
+        sleep(500)
         createPage.testStepTable.isSuggestedStepDisplayed(st.name)
         createPage.testStepTable.getCurrentBuilderStepName() == step.name
 
