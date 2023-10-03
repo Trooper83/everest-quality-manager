@@ -17,10 +17,10 @@ abstract class StepService implements IStepService {
         def step = get(id)
         if (step) {
             def links = linkService.getLinks(step.id, step.project)
+            step.delete()
             links.each {
                 linkService.delete(it.id)
             }
-            step.delete()
         }
     }
 

@@ -5,7 +5,6 @@ import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
-import org.hibernate.exception.ConstraintViolationException
 import org.springframework.dao.DataIntegrityViolationException
 
 import static org.springframework.http.HttpStatus.*
