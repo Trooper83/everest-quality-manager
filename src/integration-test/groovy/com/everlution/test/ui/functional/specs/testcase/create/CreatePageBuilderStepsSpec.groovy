@@ -184,15 +184,17 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "suggested steps name and properties are repopulated with current step when step removed"() {
         given:
-        //TODO: this should not use the provide step
         def s = new Step(name: "3456666test step", act: "3action jackson", result: "3result", project: project, person: person,
                 isBuilderStep: true)
         def st = new Step(name: "45678test step 2", act: "4action jackson 2", result: "4result 2", project: project, person: person,
                 isBuilderStep: true)
+        def stp = new Step(name: "45678te23442st step 2", act: "4ac23424tion jackson 2", result: "4res23424ult 2",
+                project: project, person: person, isBuilderStep: true)
         stepService.save(s)
         stepService.save(st)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
-        def li = new Link(ownerId: step.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
+        stepService.save(stp)
+        def l = new Link(ownerId: s.id, linkedId: stp.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def li = new Link(ownerId: stp.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
         linkService.save(l)
         linkService.save(li)
 
@@ -200,18 +202,17 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         def createPage = createPage(CreateTestCasePage)
         createPage.scrollToBottom()
         createPage.testStepTable.addBuilderStep(s.name)
-        createPage.testStepTable.selectSuggestedStep(step.name)
-        sleep(500)
+        createPage.testStepTable.selectSuggestedStep(stp.name)
 
         expect:
         createPage.testStepTable.isSuggestedStepDisplayed(st.name)
-        createPage.testStepTable.getCurrentBuilderStepName() == step.name
+        createPage.testStepTable.getCurrentBuilderStepName() == stp.name
 
         when:
         createPage.testStepTable.removeBuilderRow(1)
 
         then:
-        createPage.testStepTable.isSuggestedStepDisplayed(step.name)
+        createPage.testStepTable.isSuggestedStepDisplayed(stp.name)
         createPage.testStepTable.getCurrentBuilderStepName() == s.name
     }
 

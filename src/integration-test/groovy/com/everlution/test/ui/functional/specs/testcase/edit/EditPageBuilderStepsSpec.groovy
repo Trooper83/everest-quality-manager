@@ -289,10 +289,16 @@ class EditPageBuilderStepsSpec extends GebSpec {
 
     void "removing step adds hidden input"() {
         given:
-        //TODO: this should use it own step
+        def st = new Step(name: 'removing step add hidden input', act: 'action123', project: project, person: person,
+                isBuilderStep: true)
+        stepService.save(st)
+        def tc = DataFactory.testCase()
+        def test = new TestCase(name: tc.name, project: project, person: person)
+        testCaseService.save(test)
+        to(EditTestCasePage, project.id, test.id)
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.scrollToBottom()
-        page.stepsTable.addBuilderStep(step.name)
+        page.stepsTable.addBuilderStep(st.name)
         page.edit()
 
         and:
@@ -301,8 +307,7 @@ class EditPageBuilderStepsSpec extends GebSpec {
 
         when:
         page.scrollToBottom()
-        def count = page.stepsTable.stepsCount
-        page.stepsTable.removeBuilderRow(count - 1)
+        page.stepsTable.removeBuilderRow(0)
 
         then:
         !page.stepsTable.isRemovedBuilderStepHiddenInputDisplayed()
