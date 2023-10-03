@@ -58,6 +58,7 @@ class CreateBugPage extends CreatePage {
         stepsTable.addBuilderStep(stepName)
         expectedInput = expected
         actualInput = actual
+        scrollToBottom()
         createButton.click()
     }
 
