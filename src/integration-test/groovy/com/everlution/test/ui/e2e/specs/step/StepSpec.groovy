@@ -92,6 +92,7 @@ class StepSpec extends GebSpec {
 
         when:
         def edit = browser.at(EditStepPage)
+        edit.scrollToBottom()
         edit.linkModule.removeLinkedItem(0)
         edit.edit()
 
@@ -129,7 +130,7 @@ class StepSpec extends GebSpec {
         given:
         def page = at ShowStepPage
         def url = currentUrl
-        page.sideBar.goToCreate('Bugs')
+        page.sideBar.goToCreate('Bug')
         def create = browser.page(CreateBugPage)
         create.createBuilderBug('E2E test delete bug with step', '', '', [], '',
                 step.name, '', '')
@@ -147,7 +148,7 @@ class StepSpec extends GebSpec {
         given:
         def page = at ShowStepPage
         def url = currentUrl
-        page.sideBar.goToCreate('Test Cases')
+        page.sideBar.goToCreate('Test Case')
         def create = browser.page(CreateTestCasePage)
         create.createBuilderTestCase('E2E test delete test case with step', '', '', [], [],
                 '', '', '', [step.name])
