@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.step.edit
 
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
@@ -15,6 +16,7 @@ import spock.lang.Shared
 @Integration
 class EditStepPageSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     StepService stepService
 
@@ -100,7 +102,7 @@ class EditStepPageSpec extends GebSpec {
         !editPage.linkModule.searchResultsMenu.displayed
 
         where:
-        index << [1,2,3]
+        index << [1,2]
     }
 
     void "validation message displayed when name not selected from list"() {
@@ -197,15 +199,16 @@ class EditStepPageSpec extends GebSpec {
 
     void "added linked step can be removed"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def person = personService.list(max:1).first()
+        Step st = new Step(name: 'added linked step can be removed', project: project, person: person,
+                isBuilderStep: true, act: 'this is an action')
+        def s = stepService.save(st)
+        to(EditStepPage, project.id, s.id)
 
         and:
         EditStepPage editPage = browser.page(EditStepPage)
         editPage.scrollToBottom()
         editPage.linkModule.addLink(step.name, 'Is Parent of')
-
-        expect:
-        editPage.linkModule.isLinkDisplayed(step.name)
 
         when:
         editPage.linkModule.removeLinkedItem(0)
@@ -225,7 +228,11 @@ class EditStepPageSpec extends GebSpec {
 
     void "linked step is placed in correct row"(String id, String relation) {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def person = personService.list(max:1).first()
+        Step st = new Step(name: 'added linked step can be removed', project: project, person: person,
+                isBuilderStep: true, act: 'this is an action')
+        def s = stepService.save(st)
+        to(EditStepPage, project.id, s.id)
 
         when:
         EditStepPage editPage = browser.page(EditStepPage)

@@ -43,22 +43,22 @@ class IterationStepHibernateSpec extends HibernateSpec {
 
     void "update cascades to step"() {
         given:
-        def step = new IterationStep(action: "test", result: "result")
+        def step = new IterationStep(act: "test", result: "result")
         def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [step], testCycle: testCycle).save()
 
         expect:
-        IterationStep.findById(step.id).action == "test"
+        IterationStep.findById(step.id).act == "test"
 
         when:
-        iteration.steps.first().action = "edited"
+        iteration.steps.first().act = "edited"
 
         then:
-        IterationStep.findById(step.id).action == "edited"
+        IterationStep.findById(step.id).act == "edited"
     }
 
     void "delete test iteration deletes step"() {
         given:
-        def step = new IterationStep(action: "test", result: "result")
+        def step = new IterationStep(act: "test", result: "result")
         def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [step], testCycle: testCycle).save()
 
         expect:
@@ -73,7 +73,7 @@ class IterationStepHibernateSpec extends HibernateSpec {
 
     void "removeFrom test iteration deletes step"() {
         given:
-        def step = new IterationStep(action: "test", result: "result")
+        def step = new IterationStep(act: "test", result: "result")
         def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [step], testCycle: testCycle).save()
 
         expect:

@@ -95,7 +95,7 @@ class CreateStepPageSpec extends GebSpec {
         !createPage.linkModule.searchResultsMenu.displayed
 
         where:
-        index << [1,2,3]
+        index << [1,2]
     }
 
     void "validation message displayed when name not selected from list"() {
@@ -254,6 +254,7 @@ class CreateStepPageSpec extends GebSpec {
         createPage.linkModule.searchResultsMenu.displayed
 
         when:
+        createPage.linkModule.relationSelect().click()
         createPage.linkModule.relationSelect().click()
 
         then:

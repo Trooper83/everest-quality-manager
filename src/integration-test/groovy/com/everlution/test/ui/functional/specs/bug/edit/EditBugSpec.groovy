@@ -8,6 +8,8 @@ import com.everlution.Person
 import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.Step
+import com.everlution.StepService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage
@@ -23,6 +25,7 @@ class EditBugSpec extends GebSpec {
     BugService bugService
     PersonService personService
     ProjectService projectService
+    StepService stepService
 
     @Shared Person person
 
@@ -97,5 +100,146 @@ class EditBugSpec extends GebSpec {
             showPage.descriptionValue.text() == data.description
             !showPage.areEnvironmentsDisplayed([env.name])
         }
+    }
+
+    void "free-form step can be added to existing bug"() {
+        given: "create bug"
+        Project project = projectService.list(max: 1).first()
+        def bug = new Bug(person: person, name: "first1", project: project, status: 'Open')
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/bug/edit/${id}"
+
+        when: "edit the bug"
+        EditBugPage page = browser.page(EditBugPage)
+        page.scrollToBottom()
+        page.stepsTable.selectStepsTab('free-form')
+        page.stepsTable.addStep("added action", "added result")
+        page.edit()
+
+        then: "at show view with added step"
+        ShowBugPage showPage = at ShowBugPage
+        showPage.isStepsRowDisplayed("added action", "added result")
+    }
+
+    void "free-form step can be edited on existing bug"() {
+        given: "create bug"
+        Project project = projectService.list(max: 1).first()
+        Bug bug = new Bug(person: person, name: "first1", project: project, status: 'Open',
+                steps: [new Step(act: "changelog entry", result: "changelog entry", person: person, project: project)])
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/bug/edit/${id}"
+
+        when: "edit the bug"
+        EditBugPage page = browser.page(EditBugPage)
+        page.stepsTable.editTestStep(0, "edited action", "edited result")
+        page.edit()
+
+        then: "at show view with edited step values"
+        ShowBugPage showPage = at ShowBugPage
+        showPage.isStepsRowDisplayed("edited action", "edited result")
+    }
+
+    void "free-form step can be deleted from existing bug"() {
+        given: "create bug"
+        Project project = projectService.list(max: 1).first()
+        def step = new Step(act: "action", result: "result", project: project, person: person)
+        Bug bug = new Bug(person: person, name: "first1", project: project, steps: [step], status: 'Open')
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/bug/edit/${id}"
+
+        expect:
+        step.id != null
+        EditBugPage page = browser.page(EditBugPage)
+        page.scrollToBottom()
+        page.stepsTable.getStepsCount() == 1
+
+        when: "edit the bug"
+        page.stepsTable.removeRow(0)
+        page.edit()
+
+        then: "at show view with edited step values"
+        ShowBugPage showPage = at ShowBugPage
+        showPage.getStepsCount() == 0
+        !showPage.isStepsRowDisplayed("action", "result")
+    }
+
+    void "builder step can be added to existing bug"() {
+        given: "create bug"
+        Project project = projectService.list(max: 1).first()
+        Step step = stepService.findAllByProject(project, [max: 1]).results.first()
+        Bug bug = new Bug(person: person, name: "first1", project: project, status: 'Open')
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/bug/edit/${id}"
+
+        when: "edit the bug"
+        EditBugPage page = browser.page(EditBugPage)
+        page.scrollToBottom()
+        page.stepsTable.addBuilderStep(step.name)
+        page.edit()
+
+        then: "at show view with added step"
+        ShowBugPage showPage = at ShowBugPage
+        showPage.isStepsRowDisplayed(step.act, step.result)
+    }
+
+    void "builder step can be removed from existing bug"() {
+        given: "create bug"
+        Project project = projectService.list(max: 1).first()
+        def step = new Step(act: "action", result: "result", project: project, person: person, name: 'this is a test step',
+                isBuilderStep: true)
+        stepService.save(step)
+        Bug bug = new Bug(person: person, name: "first1", project: project, steps: [step], status: 'Open')
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/bug/edit/${id}"
+
+        expect:
+        step.id != null
+        EditBugPage page = browser.page(EditBugPage)
+        page.scrollToBottom()
+        page.stepsTable.getBuilderStepsCount() == 1
+
+        when: "edit the bug"
+        page.stepsTable.removeBuilderRow(0)
+        page.edit()
+
+        then: "at show view with edited step values"
+        ShowBugPage showPage = at ShowBugPage
+        showPage.getStepsCount() == 0
+        !showPage.isStepsRowDisplayed("action", "result")
     }
 }

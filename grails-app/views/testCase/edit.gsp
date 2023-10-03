@@ -87,17 +87,15 @@
                         <h1>Steps</h1>
                     </div>
                     <div class="card-body">
-                        <div class="row border-bottom">
-                            <p class="col-5">Action</p>
-                            <p class="col-5">Result</p>
-                        </div>
-                        <div id="stepsTableContent">
-                            <g:render template="/shared/editStepsTableTemplate" bean="${testCase}" var="entity"/>
-                        </div>
-                        <input class="btn btn-secondary btn-sm mt-3" id="btnAddRow" type="button" value="Add Step"
-                               onclick="addEntryRow()" accesskey="n"/>
-                        <asset:image src="icons/info.svg" alt="info" width="15" height="15"
-                                     data-toggle="tooltip" data-placement="top" title="ALT+n to add a new row"/>
+                        <g:if test="${testCase.steps.size() == 0}">
+                            <g:render template="/shared/defaultStepsTemplate"/>
+                        </g:if>
+                        <g:elseif test="${testCase.steps[0].isBuilderStep}">
+                            <g:render template="/shared/builderStepsTemplate" bean="${testCase}" var="entity"/>
+                        </g:elseif>
+                        <g:else>
+                            <g:render template="/shared/freeFormStepsTemplate" bean="${testCase}" var="entity"/>
+                        </g:else>
                     </div>
                     <div class="card-footer">
                         <g:submitButton name="Update" data-test-id="edit-update-button" class="btn btn-primary"
@@ -107,6 +105,7 @@
             </g:form>
         </main>
     </div>
+    <g:render template="/shared/toastTemplate"/>
 </div>
 <asset:javascript src="step.js"/>
 </body>

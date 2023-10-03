@@ -11,7 +11,7 @@ class IterationStepSpec extends Specification implements DomainUnitTest<Iteratio
 
     void "test instances are persisted"() {
         setup:
-        new IterationStep(action: "First Test step", result: "test").save()
+        new IterationStep(act: "First Test step", result: "test").save()
 
         expect:
         IterationStep.count() == 1
@@ -26,79 +26,79 @@ class IterationStepSpec extends Specification implements DomainUnitTest<Iteratio
         domain.hashCode() == id
 
         when:
-        domain.action = "Test case name"
+        domain.act = "Test case name"
 
         then:
-        domain.action == "Test case name"
+        domain.act == "Test case name"
     }
 
     void "test we get a new domain"() {
         expect:
         domain != null
-        domain.action == null
+        domain.act == null
         System.identityHashCode(domain) != id
     }
 
-    void "action can be null when result is not"() {
+    void "act can be null when result is not"() {
         when:
-        domain.action = null
+        domain.act = null
         domain.result = "test"
 
         then:
-        domain.validate(["action"])
+        domain.validate(["act"])
     }
 
-    void "test action can be blank"() {
+    void "test act can be blank"() {
         when:
-        domain.action = ""
+        domain.act = ""
 
         then:
-        domain.validate(["action"])
+        domain.validate(["act"])
     }
 
-    void "validation fails if action and result are null"() {
+    void "validation fails if act and result are null"() {
         when:
-        domain.action = null
+        domain.act = null
         domain.result = null
 
         then:
-        !domain.validate(["action"])
-        domain.errors["action"].code == "validator.invalid"
+        !domain.validate(["act"])
+        domain.errors["act"].code == "validator.invalid"
     }
 
-    void "test action cannot exceed 500 characters"() {
+    void "test act cannot exceed 500 characters"() {
         when: "for a string of 501 characters"
         String str = "a" * 501
-        domain.action = str
+        domain.act = str
 
-        then: "action validation fails"
-        !domain.validate(["action"])
-        domain.errors["action"].code == "maxSize.exceeded"
+        then: "act validation fails"
+        !domain.validate(["act"])
+        domain.errors["act"].code == "maxSize.exceeded"
     }
 
-    void "test action validates with 500 characters"() {
+    void "test act validates with 500 characters"() {
         when: "for a string of 500 characters"
         String str = "a" * 500
-        domain.action = str
+        domain.act = str
 
-        then: "action validation passes"
-        domain.validate(["action"])
+        then: "act validation passes"
+        domain.validate(["act"])
     }
 
-    void "validation fails if result and action are null"() {
+    void "validation fails if result and act are null"() {
         when:
         domain.result = null
-        domain.action = null
+        domain.act = null
 
         then:
         !domain.validate(["result"])
         domain.errors["result"].code == "validator.invalid"
     }
 
-    void "result can be null when action is not"() {
+    void "result can be null when act is not"() {
         when:
         domain.result = null
-        domain.action = "test"
+        domain.act = "test"
 
         then:
         domain.validate(["result"])

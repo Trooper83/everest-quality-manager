@@ -6,9 +6,11 @@ import geb.module.MultipleSelect
 import geb.module.Select
 
 class EditBugPage extends EditPage {
-    static url = "/bug/edit"
-    static at = { title == "Edit Bug" }
 
+    static at = { title == "Edit Bug" }
+    static convertToPath(Long projectId, Long bugId) {
+        "/project/${projectId}/bug/edit/${bugId}"
+    }
     static content = {
         actualInput { $("#actual") }
         areaOptions { $("#area>option") }

@@ -2,6 +2,7 @@ package com.everlution.test.ui.e2e.specs.step
 
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -9,6 +10,9 @@ import com.everlution.test.ui.support.pages.step.CreateStepPage
 import com.everlution.test.ui.support.pages.step.EditStepPage
 import com.everlution.test.ui.support.pages.step.ListStepPage
 import com.everlution.test.ui.support.pages.step.ShowStepPage
+import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
+import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
+import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 
 class StepSpec extends GebSpec {
@@ -119,5 +123,44 @@ class StepSpec extends GebSpec {
         then:
         def lPage = at ListStepPage
         lPage.statusMessage.displayed
+    }
+
+    void "step related to bug cannot be deleted"() {
+        given:
+        def page = at ShowStepPage
+        def url = currentUrl
+        page.sideBar.goToCreate('Bugs')
+        def create = browser.page(CreateBugPage)
+        create.createBuilderBug('E2E test delete bug with step', '', '', [], '',
+                step.name, '', '')
+
+        when:
+        go(url)
+        browser.page(ShowStepPage).delete()
+
+        then:
+        def show = at ShowStepPage
+        show.errorsMessage.text() == 'Step is related to a TestCase or Bug and cannot be deleted'
+    }
+
+    void "deleting test with related builder step does not delete step"() {
+        given:
+        def page = at ShowStepPage
+        def url = currentUrl
+        page.sideBar.goToCreate('Test Cases')
+        def create = browser.page(CreateTestCasePage)
+        create.createBuilderTestCase('E2E test delete test case with step', '', '', [], [],
+                '', '', '', [step.name])
+        browser.page(ShowTestCasePage).delete()
+
+        expect:
+        at ListTestCasePage
+
+        when:
+        go(url)
+
+        then:
+        def showPage = at ShowStepPage
+        showPage.nameValue.text() == step.name
     }
 }

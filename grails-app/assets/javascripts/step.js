@@ -36,23 +36,33 @@ function removeEntryRow(element, id) {
 
 //start builder
 
+const searchEndpoint = setEndpoint('search');
+const relatedEndpoint = setEndpoint('related');
+let fetchedSteps = [];
+
 /**
 * set event listeners on search field
 */
 (() => {
   const searchElement = document.querySelector('#search');
 
-  searchElement.addEventListener("change", displayMatchedResults);
-  searchElement.addEventListener("keyup", displayMatchedResults);
+  if (searchElement) {
+    searchElement.addEventListener("change", displayMatchedResults);
+    searchElement.addEventListener("keyup", displayMatchedResults);
 
-  document.addEventListener("click", function (e) {
-      closeAllLists(e.target);
-  });
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
+  }
+
+  const rows = document.querySelectorAll('#builderSteps .row');
+  // get suggested steps if there are steps
+  if (rows.length > 0) {
+     const row = rows[rows.length - 1];
+     const stepId = row.querySelector('input[data-name=hiddenId]').value;
+     displaySuggestedSteps(stepId);
+  }
 })();
-
-const searchEndpoint = setEndpoint('search');
-const relatedEndpoint = setEndpoint('related');
-let fetchedSteps = [];
 
 /**
 * close any open result dropdown lists
@@ -101,24 +111,30 @@ async function displayMatchedResults() {
         const response = await fetch(encoded, {
             method: "GET",
         });
-        const results = await response.json();
+        if (response.ok) {
+            const results = await response.json();
 
-        const searchTerm = this.value;
-        const htmlToDisplay = results
-            .map((step) => {
-                const regex = RegExp(searchTerm, "gi");
-                const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
-                const html = `<li class='search-results-menu-item'
-                            onclick='displayStepProperties(${step.id});'>
-                        <span class='name'>${stepName}</span></li>`;
-                return html;
-            }).join("");
+            const searchTerm = this.value;
+            const htmlToDisplay = results
+                .map((step) => {
+                    const regex = RegExp(searchTerm, "gi");
+                    const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
+                    const html = `<li class='search-results-menu-item'
+                                        onclick='displayStepProperties(${step.id});'>
+                                   <span class='name'>${stepName}</span></li>`;
+                    return html;
+                }).join("");
 
-        const searchResults = document.querySelector("#search-results");
-        if (searchTerm === "") {
-            searchResults.innerHTML = "";
+            const searchResults = document.querySelector("#search-results");
+            if (searchTerm === "") {
+                searchResults.innerHTML = "";
+            } else {
+                searchResults.innerHTML = htmlToDisplay;
+            }
         } else {
-            searchResults.innerHTML = htmlToDisplay;
+            const toast = document.getElementById('error-toast');
+            const t = new bootstrap.Toast(toast);
+            t.show();
         }
     }
 }
@@ -150,27 +166,27 @@ async function fetchStep(id) {
 */
 async function displayStepProperties(id) {
 
-        //create act element
-        const actCol = document.createElement('div');
-        actCol.setAttribute('class', 'col-5');
-        const actCard = document.createElement('div');
-        actCard.setAttribute('class', 'card mb-2');
-        actCol.appendChild(actCard);
-        const actBody = document.createElement('div');
-        actBody.setAttribute('class', 'card-body');
-        const actP = document.createElement('p');
-        actBody.appendChild(actP);
-        actCard.appendChild(actBody);
-
         const s = await fetchStep(id);
         if (s) {
+
+            //create act element
+            const actCol = document.createElement('div');
+            actCol.setAttribute('class', 'col-5');
+            const actCard = document.createElement('div');
+            actCard.setAttribute('class', 'card');
+            actCol.appendChild(actCard);
+            const actBody = document.createElement('div');
+            actBody.setAttribute('class', 'card-body');
+            const actP = document.createElement('p');
+            actBody.appendChild(actP);
+            actCard.appendChild(actBody);
             actP.appendChild(document.createTextNode(s.step.act));
 
             //create result element
             const resCol = document.createElement('div');
             resCol.setAttribute('class', 'col-5');
             const resCard = document.createElement('div');
-            resCard.setAttribute('class', 'card mb-2');
+            resCard.setAttribute('class', 'card');
             resCol.appendChild(resCard);
             const resBody = document.createElement('div');
             resBody.setAttribute('class', 'card-body');
@@ -186,6 +202,7 @@ async function displayStepProperties(id) {
             hidden.setAttribute('id', `steps[${index}].id`);
             hidden.setAttribute('name', `steps[${index}].id`);
             hidden.setAttribute('type', 'text');
+            hidden.setAttribute('data-name', 'hiddenId');
             hidden.setAttribute('value', s.step.id);
 
             //create remove link
@@ -200,15 +217,17 @@ async function displayStepProperties(id) {
 
             //create row and append elements
             const row = document.createElement('div');
-            row.setAttribute('class', 'row align-items-center');
+            row.setAttribute('class', 'row align-items-center mb-2');
             row.appendChild(actCol);
             row.appendChild(resCol);
             row.appendChild(removeDiv);
             row.appendChild(hidden);
 
             //remove link
-            if (document.querySelector('#builderSteps input[value=Remove]')) {
-                const link = document.getElementById('builderSteps').lastChild.querySelector('input[value=Remove]');
+            if (document.querySelectorAll('#builderSteps .row').length > 0) {
+                const rows = document.querySelectorAll('#builderSteps .row');
+                const row = rows[rows.length - 1];
+                const link = row.querySelector('input[value=Remove]');
                 link.setAttribute('style', 'display:none;');
             }
 
@@ -221,7 +240,9 @@ async function displayStepProperties(id) {
             await displaySuggestedSteps(id);
 
         } else {
-            //do nothing
+            const toast = document.getElementById('error-toast');
+            const t = new bootstrap.Toast(toast);
+            t.show();
         }
 }
 
@@ -267,7 +288,8 @@ async function displaySuggestedSteps(id) {
                 col.setAttribute('class', 'col');
                 col.setAttribute('onclick', `displayStepProperties(${step.id});`);
                 const card = document.createElement('div');
-                card.setAttribute('class', 'card mb-2');
+                card.setAttribute('class', 'card mb-2 suggested');
+                card.setAttribute('style', 'cursor:pointer');
                 col.appendChild(card);
                 const body = document.createElement('div');
                 body.setAttribute('class', 'card-body');
@@ -284,6 +306,7 @@ async function displaySuggestedSteps(id) {
 * removes a row from builder steps
 */
 function removeBuilderRow(element, id) {
+
     if(id) {
        const input = document.createElement('input');
        input.setAttribute('style', 'display:none;');
@@ -294,18 +317,28 @@ function removeBuilderRow(element, id) {
        input.setAttribute('value', id);
        element.closest('#builderSteps').appendChild(input);
        element.closest('div.row').remove();
+       //un-hide remove link and update suggested steps
+       if (document.querySelectorAll('#builderSteps .row').length > 0) {
+           const rows = document.querySelectorAll('#builderSteps .row');
+           const row = rows[rows.length - 1];
+           row.querySelector('input[value=Remove]').removeAttribute('style');
+           const stepId = row.querySelector('input[data-name=hiddenId]').value;
+           displaySuggestedSteps(stepId);
+       } else {
+           resetForm('builder');
+       }
     } else {
        element.closest('div.row').remove();
-    }
-    //un-hide remove link and update suggested steps
-    if (document.querySelector('#builderSteps input[value=Remove]')) {
-        const link = document.getElementById('builderSteps').lastChild.querySelector('input[value=Remove]');
-        link.removeAttribute('style');
-        const previous = document.getElementById('builderSteps').lastChild.lastChild;
-        const stepId = previous.value;
-        displaySuggestedSteps(stepId);
-    } else {
-        resetForm('builder');
+       //un-hide remove link and update suggested steps
+       if (document.querySelectorAll('#builderSteps .row').length > 0) {
+           const rows = document.querySelectorAll('#builderSteps .row');
+           const row = rows[rows.length - 1];
+           row.querySelector('input[value=Remove]').removeAttribute('style');
+           const stepId = row.querySelector('input[data-name=hiddenId]').value;
+           displaySuggestedSteps(stepId);
+       } else {
+           resetForm('builder');
+       }
     }
 }
 
@@ -322,9 +355,9 @@ function resetForm(type) {
         }
     } else {
         if (document.getElementById('builderSteps').hasChildNodes()) {
-            const steps = document.getElementById('builderSteps');
-            while (steps.firstChild) {
-                steps.removeChild(steps.firstChild);
+            const rows = document.querySelectorAll('#builderSteps .row');
+            for (let row of rows) {
+                row.remove();
             }
         }
         if (document.getElementById('suggestedSteps')) {

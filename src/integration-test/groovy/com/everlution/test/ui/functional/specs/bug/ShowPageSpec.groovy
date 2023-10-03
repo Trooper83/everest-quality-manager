@@ -30,7 +30,7 @@ class ShowPageSpec extends GebSpec {
 
         when: "create a bug"
         def page = at CreateBugPage
-        page.createBug()
+        page.createFreeFormBug()
 
         then: "at show page with message displayed"
         def showPage = at ShowBugPage

@@ -41,7 +41,7 @@ abstract class TestCycleService implements ITestCycleService {
         testCases.each { TestCase testCase ->
             List<IterationStep> steps = []
             testCase.steps.each { Step step ->
-                def s = new IterationStep(action: step.act, result: step.result)
+                def s = new IterationStep(act: step.act, result: step.result)
                 steps.add(s)
             }
             iterations.add(new TestIteration(name: testCase.name, result: "ToDo", steps: steps, testCase: testCase))

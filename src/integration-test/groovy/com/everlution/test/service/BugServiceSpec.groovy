@@ -93,11 +93,34 @@ class BugServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "saveUpdate removes steps"() {
+    void "saveUpdate removes steps free form steps"() {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
         def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
+                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
+
+        expect:
+        stepService.get(step.id) != null
+        bug.steps.size() == 1
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        bugService.saveUpdate(bug, removed)
+
+        then: "step is removed"
+        bug.steps.size() == 0
+        bugService.get(bug.id).steps.size() == 0
+    }
+
+    void "saveUpdate removes builder steps"() {
+        setupData()
+        given: "valid test case with step"
+        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: project,
+                isBuilderStep: true, name: 'save update removes builder steps').save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
@@ -159,5 +182,108 @@ class BugServiceSpec extends Specification {
         expect:
         def bug = bugService.findAllInProjectByName(project, "again", [:]).results
         bug.first().name == "Name of the bug again"
+    }
+
+    void "delete method deletes free form steps"() {
+        setupData()
+        given: "valid test case with step"
+        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
+                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
+
+        expect:
+        stepService.get(step.id) != null
+        bug.steps.size() == 1
+
+        when: "call delete"
+        bugService.delete(bug.id)
+
+        then: "step is removed"
+        stepService.get(step.id) == null
+    }
+
+    void "delete method does not delete builder steps"() {
+        setupData()
+        given: "valid test case with step"
+        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: project,
+                isBuilderStep: true, name: 'delete does not delete builder steps').save()
+        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
+                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
+
+        expect:
+        stepService.get(step.id) != null
+        bug.steps.size() == 1
+
+        when: "delete"
+        bugService.delete(bug.id)
+
+        then: "step is removed"
+        stepService.get(step.id) != null
+    }
+
+    void "saveUpdate method deletes free form steps"() {
+        setupData()
+        given: "valid test case with step"
+        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
+                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
+
+        expect:
+        stepService.get(step.id) != null
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        bugService.saveUpdate(bug, removed)
+
+        then: "step is removed"
+        stepService.get(step.id) == null
+    }
+
+    void "saveUpdate method does not delete free form steps when validation fails"() {
+        setupData()
+        given: "valid test case with step"
+        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
+                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
+
+        expect:
+        stepService.get(step.id) != null
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        bug.name = ''
+        bugService.saveUpdate(bug, removed)
+
+        then: "step is removed"
+        thrown(ValidationException)
+        stepService.get(step.id) != null
+    }
+
+    void "saveUpdate method does not delete builder steps"() {
+        setupData()
+        given: "valid test case with step"
+        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: project,
+                isBuilderStep: true, name: 'save update does not remove builder steps').save()
+        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
+                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
+
+        expect:
+        stepService.get(step.id) != null
+        bug.steps.size() == 1
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        bugService.saveUpdate(bug, removed)
+
+        then: "step is removed"
+        stepService.get(step.id) != null
     }
 }

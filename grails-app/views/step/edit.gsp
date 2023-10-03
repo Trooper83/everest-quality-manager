@@ -65,11 +65,11 @@
                         </div>
                         <div id="links">
                             <div class="row">
-                                <p class="fw-bold border-bottom">Parents</p>
+                                <p class="border-bottom">Parents</p>
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="parents">
                                     <g:each in="${linkedMap.parents}">
                                         <div class="col">
-                                            <div class="card">
+                                            <div class="card mb-2">
                                                 <div class="card-body">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          style="cursor:pointer" width="20" height="20" fill="currentColor"
@@ -77,7 +77,7 @@
                                                          viewBox="0 0 20 20" onclick="removeLink(this, ${it.linkId})">
                                                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                                                     </svg>
-                                                    <p><strong>Name: </strong>${it.linkedItem.name}</p>
+                                                    <p data-test-id="linkedItemName"><strong>Name: </strong>${it.linkedItem.name}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -85,11 +85,11 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <p class="fw-bold border-bottom">Siblings</p>
+                                <p class="border-bottom">Siblings</p>
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="siblings">
                                     <g:each in="${linkedMap.siblings}">
                                         <div class="col">
-                                            <div class="card">
+                                            <div class="card mb-2">
                                                 <div class="card-body">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          style="cursor:pointer" width="20" height="20" fill="currentColor"
@@ -97,7 +97,7 @@
                                                          viewBox="0 0 20 20" onclick="removeLink(this, ${it.linkId})">
                                                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                                                     </svg>
-                                                    <p><strong>Name: </strong>${it.linkedItem.name}</p>
+                                                    <p data-test-id="linkedItemName"><strong>Name: </strong>${it.linkedItem.name}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -105,11 +105,11 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <p class="fw-bold border-bottom">Children</p>
+                                <p class="border-bottom">Children</p>
                                 <div class="row row-cols-md-3 row-cols-sm-2 mb-2 mt-3" style="min-height:2.5em;" id="children">
                                     <g:each in="${linkedMap.children}">
                                         <div class="col">
-                                            <div class="card">
+                                            <div class="card mb-2">
                                                 <div class="card-body">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          style="cursor:pointer" width="20" height="20" fill="currentColor"
@@ -117,7 +117,7 @@
                                                          viewBox="0 0 20 20" onclick="removeLink(this, ${it.linkId})">
                                                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                                                     </svg>
-                                                    <p><strong>Name: </strong>${it.linkedItem.name}</p>
+                                                    <p data-test-id="linkedItemName"><strong>Name: </strong>${it.linkedItem.name}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -133,6 +133,7 @@
             </g:form>
         </main>
     </div>
+    <g:render template="/shared/toastTemplate"/>
 </div>
 <asset:javascript src="linkItems.js"/>
 </body>

@@ -102,6 +102,24 @@ div.date-picker select:-moz-focusring {
   text-shadow: 0 0 0 var(--bs-body-color);
 }
 
+/* suggested steps */
+.suggested {
+    background-color: #e3ecff;
+    transition: border-color 1s, box-shadow 0.25s;
+}
+
+.suggested:hover {
+  border-color: rgba(50, 110, 253, 0.7);
+  box-shadow: 0px 0px 5px 1px rgba(50, 110, 253, 0.6);
+}
+
+/* toast */
+.toast {
+  position:fixed;
+  top:5em;
+  right:1.5em;
+}
+
 /*
  * Sidebar
  */

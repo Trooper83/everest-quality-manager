@@ -59,15 +59,8 @@
                         <h1>Steps To Recreate</h1>
                     </div>
                     <div class="card-body">
-                        <div class="row border-bottom">
-                            <p class="col-5">Action</p>
-                            <p class="col-5">Result</p>
-                        </div>
-                        <div id="stepsTableContent"></div>
-                        <input class="btn btn-secondary btn-sm mt-3" id="btnAddRow" type="button" value="Add Step" onclick="addEntryRow()" accesskey="n"/>
-                        <asset:image src="icons/info.svg" alt="info" width="15" height="15"
-                                     data-toggle="tooltip" data-placement="top" title="ALT+n to add a new row"/>
-                        <div class="row mb-3 mt-3">
+                        <g:render template="/shared/defaultStepsTemplate"/>
+                        <div class="row mb-3 mt-3 ms-2 me-2 border-top">
                             <div class="col-5 mt-3">
                                 <label class="form-label" for="expected">Expected</label>
                                 <g:textArea class="form-control" name="expected" value="${bug.expected}" maxLength="500"></g:textArea>

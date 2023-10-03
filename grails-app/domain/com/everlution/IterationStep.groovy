@@ -2,13 +2,13 @@ package com.everlution
 
 class IterationStep {
 
-    String action
+    String act
     String result
 
     static belongsTo = [ TestIteration ]
 
     static constraints = {
-        action blank: true, maxSize: 500, nullable: true, validator: {
+        act blank: true, maxSize: 500, nullable: true, validator: {
             val, IterationStep obj ->
                 if(val == null && obj.result == null) {
                     return false
@@ -16,7 +16,7 @@ class IterationStep {
         }
         result blank: true, maxSize: 500, nullable: true, validator: {
             val, IterationStep obj ->
-                if(val == null && obj.action == null) {
+                if(val == null && obj.act == null) {
                     return false
                 }
         }

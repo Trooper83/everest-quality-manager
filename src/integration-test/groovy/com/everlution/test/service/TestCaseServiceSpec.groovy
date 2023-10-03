@@ -122,11 +122,33 @@ class TestCaseServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "saveUpdate removes steps"() {
+    void "saveUpdate removes free form steps"() {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
+
+        expect:
+        stepService.get(step.id) != null
+        testCase.steps.size() == 1
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        testCaseService.saveUpdate(testCase, removed)
+
+        then: "step is removed"
+        testCase.steps.size() == 0
+    }
+
+    void "saveUpdate removes builder steps"() {
+        given: "valid test case with step"
+        def proj = projectService.list(max: 1).first()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: proj,
+                isBuilderStep: true, name: 'save update method does not delete me').save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
@@ -213,5 +235,108 @@ class TestCaseServiceSpec extends Specification {
         expect:
         def tests = testCaseService.findAllInProjectByName(project, "first", [:])
         tests.results.first().name == "first"
+    }
+
+    void "delete method deletes free form steps"() {
+        given: "valid test case with step"
+        def proj = projectService.list(max: 1).first()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
+
+        expect:
+        stepService.get(step.id) != null
+
+        when: "call delete"
+        testCaseService.delete(testCase.id)
+
+        then: "step is removed"
+        stepService.get(step.id) == null
+    }
+
+    void "delete method does not delete builder steps"() {
+        given: "valid test case with step"
+        def proj = projectService.list(max: 1).first()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: proj,
+                isBuilderStep: true, name: 'delete method does not delete me').save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
+
+        expect:
+        stepService.get(step.id) != null
+
+        when: "call saveUpdate"
+        testCaseService.delete(testCase.id)
+
+        then: "step is removed"
+        stepService.get(step.id) != null
+    }
+
+    void "saveUpdate method deletes free form steps"() {
+        given: "valid test case with step"
+        def proj = projectService.list(max: 1).first()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
+
+        expect:
+        stepService.get(step.id) != null
+        testCase.steps.size() == 1
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        testCaseService.saveUpdate(testCase, removed)
+
+        then: "step is removed"
+        stepService.get(step.id) == null
+    }
+
+    void "saveUpdate method does not delete free form steps when validation fails"() {
+        given: "valid test case with step"
+        def proj = projectService.list(max: 1).first()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
+
+        expect:
+        stepService.get(step.id) != null
+        testCase.steps.size() == 1
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        testCase.name = ''
+        testCaseService.saveUpdate(testCase, removed)
+
+        then: "step is removed"
+        thrown(ValidationException)
+        stepService.get(step.id) != null
+    }
+
+    void "saveUpdate method does not delete builder steps"() {
+        given: "valid test case with step"
+        def proj = projectService.list(max: 1).first()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def step = new Step(act: "action", result: "result", person: person, project: proj,
+                isBuilderStep: true, name: 'save update method does not delete me').save()
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
+
+        expect:
+        stepService.get(step.id) != null
+        testCase.steps.size() == 1
+
+        when: "call saveUpdate"
+        def removed = new RemovedItems()
+        removed.stepIds = [step.id]
+        testCaseService.saveUpdate(testCase, removed)
+
+        then: "step is removed"
+        stepService.get(step.id) != null
     }
 }

@@ -63,6 +63,14 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         service.get(bug.id) == null
     }
 
+    void "delete with invalid id does not throw exception"() {
+        when:
+        service.delete(null)
+
+        then:
+        noExceptionThrown()
+    }
+
     void "save with valid bug returns instance"() {
         given:
         def bug = new Bug(person: person, description: "Found a bug again!",

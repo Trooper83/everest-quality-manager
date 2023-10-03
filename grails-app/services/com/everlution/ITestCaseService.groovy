@@ -6,8 +6,6 @@ interface ITestCaseService {
 
     int countByProject(Project project)
 
-    void delete(Serializable id)
-
     TestCase read(Serializable id)
 
     TestCase save(TestCase testCase)
