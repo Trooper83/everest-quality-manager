@@ -63,6 +63,14 @@ class ScenarioServiceSpec extends Specification implements ServiceUnitTest<Scena
         service.get(scn.id) == null
     }
 
+    void "delete with invalid id does not throw exception"() {
+        when:
+        service.delete(null)
+
+        then:
+        noExceptionThrown()
+    }
+
     void "save with valid scenario returns instance"() {
         given:
         def project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()

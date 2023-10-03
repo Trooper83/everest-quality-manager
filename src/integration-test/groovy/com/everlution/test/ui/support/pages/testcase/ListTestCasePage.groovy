@@ -1,6 +1,7 @@
 package com.everlution.test.ui.support.pages.testcase
 
 import com.everlution.test.ui.support.pages.common.ListPage
+import com.everlution.test.ui.support.pages.modules.SideBarModule
 import geb.module.TextInput
 
 class ListTestCasePage extends ListPage {
@@ -12,6 +13,7 @@ class ListTestCasePage extends ListPage {
 
     static content = {
         nameInput { $("#name").module(TextInput) }
+        sideBar { module SideBarModule}
         searchButton { $("#searchButton") }
     }
 

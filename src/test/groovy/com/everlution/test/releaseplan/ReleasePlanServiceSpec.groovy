@@ -69,6 +69,14 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         service.get(id) == null
     }
 
+    void "delete with invalid id does not throw exception"() {
+        when:
+        service.delete(null)
+
+        then:
+        noExceptionThrown()
+    }
+
     void "save with valid plan returns instance"() {
         given:
         def pr = new Project(name: "name", code: "cod").save()

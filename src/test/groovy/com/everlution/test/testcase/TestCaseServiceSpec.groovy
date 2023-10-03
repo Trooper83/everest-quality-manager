@@ -69,6 +69,14 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         service.get(tc.id) == null
     }
 
+    void "delete with invalid id"() {
+        when:
+        service.delete(999)
+
+        then:
+        noExceptionThrown()
+    }
+
     void "save with valid object returns instance"() {
         given:
         def tc = new TestCase(person: person, name: "test", description: "desc",

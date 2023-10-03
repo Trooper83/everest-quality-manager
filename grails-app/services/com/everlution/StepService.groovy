@@ -15,11 +15,13 @@ abstract class StepService implements IStepService {
     @Transactional
     void delete(Serializable id) {
         def step = get(id)
-        def links = linkService.getLinks(step.id, step.project)
-        links.each {
-            linkService.delete(it.id)
+        if (step) {
+            def links = linkService.getLinks(step.id, step.project)
+            links.each {
+                linkService.delete(it.id)
+            }
+            step.delete()
         }
-        step.delete()
     }
 
     /**

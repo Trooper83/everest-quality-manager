@@ -76,6 +76,14 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         service.get(id) == null
     }
 
+    void "delete with invalid id does not throw exception"() {
+        when:
+        service.delete(null)
+
+        then:
+        noExceptionThrown()
+    }
+
     void "delete with test case"() {
         given:
         def person = new Person(email: "test1@test.com", password: "password").save()

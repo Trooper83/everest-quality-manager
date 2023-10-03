@@ -71,6 +71,14 @@ class ProjectServiceSpec extends Specification implements ServiceUnitTest<Projec
         service.get(p.id) == null
     }
 
+    void "delete with invalid id does not throw exception"() {
+        when:
+        service.delete(null)
+
+        then:
+        noExceptionThrown()
+    }
+
     void "save with valid project returns instance"() {
         given:
         def p = new Project(name: "Unit Test Project For Service", code: "BPZ")

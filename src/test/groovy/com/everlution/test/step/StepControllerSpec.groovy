@@ -15,6 +15,7 @@ import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
 import org.grails.web.servlet.mvc.SynchronizerTokensHolder
+import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.Specification
 
 class StepControllerSpec extends Specification implements ControllerUnitTest<StepController> {
@@ -765,7 +766,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
 
         controller.stepService = Mock(StepService) {
             1 * delete(2) >> {
-                throw new Exception("Invalid instance", new Throwable("message"))
+                throw new DataIntegrityViolationException("Invalid instance", new Throwable("message"))
             }
             1 * read(2) >> step
         }
@@ -778,7 +779,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
 
         then:"The user is redirected to index"
         response.redirectedUrl == '/project/1/step/show/2'
-        flash.error == "An issue occurred when attempting to delete the Step"
+        flash.error == "Step is related to a TestCase or Bug and cannot be deleted"
     }
 
     void "search returns 404 when project is null"() {

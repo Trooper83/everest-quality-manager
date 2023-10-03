@@ -184,6 +184,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "suggested steps name and properties are repopulated with current step when step removed"() {
         given:
+        //TODO: this should not use the provide step
         def s = new Step(name: "3456666test step", act: "3action jackson", result: "3result", project: project, person: person,
                 isBuilderStep: true)
         def st = new Step(name: "45678test step 2", act: "4action jackson 2", result: "4result 2", project: project, person: person,
@@ -200,9 +201,9 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.scrollToBottom()
         createPage.testStepTable.addBuilderStep(s.name)
         createPage.testStepTable.selectSuggestedStep(step.name)
+        sleep(500)
 
         expect:
-        sleep(500)
         createPage.testStepTable.isSuggestedStepDisplayed(st.name)
         createPage.testStepTable.getCurrentBuilderStepName() == step.name
 

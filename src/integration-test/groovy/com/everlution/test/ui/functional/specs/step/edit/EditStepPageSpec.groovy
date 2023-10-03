@@ -197,6 +197,7 @@ class EditStepPageSpec extends GebSpec {
 
     void "added linked step can be removed"() {
         given:
+        //TODO: this should create its own step
         Step step = stepService.findAllByProject(project, [max:1]).results.first()
 
         and:
@@ -206,7 +207,6 @@ class EditStepPageSpec extends GebSpec {
 
         when:
         editPage.linkModule.removeLinkedItem(0)
-        sleep(500)
 
         then:
         !editPage.linkModule.isLinkDisplayed(step.name)
@@ -223,6 +223,7 @@ class EditStepPageSpec extends GebSpec {
 
     void "linked step is placed in correct row"(String id, String relation) {
         given:
+        //TODO: this should create its own step
         Step step = stepService.findAllByProject(project, [max:1]).results.first()
 
         when:

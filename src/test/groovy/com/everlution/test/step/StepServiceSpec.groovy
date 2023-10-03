@@ -58,6 +58,14 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         service.get(s.id) == null
     }
 
+    void "delete with invalid id does not throw exception"() {
+        when:
+        service.delete(null)
+
+        then:
+        noExceptionThrown()
+    }
+
     void "save with valid object returns instance"() {
         given:
         def step = new Step(act: 'action', result: 'result', person: person, project: project)

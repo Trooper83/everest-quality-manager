@@ -5,6 +5,9 @@ import com.everlution.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
+import org.hibernate.exception.ConstraintViolationException
+import org.springframework.dao.DataIntegrityViolationException
+
 import static org.springframework.http.HttpStatus.*
 
 class StepController {
@@ -198,12 +201,11 @@ class StepController {
 
             try {
                 stepService.delete(id)
-            } catch (Exception ignored) {
-                flash.error = "An issue occurred when attempting to delete the Step"
+            } catch (DataIntegrityViolationException ignored) {
+                flash.error = "Step is related to a TestCase or Bug and cannot be deleted"
                 redirect uri: "/project/${step.project.id}/step/show/${step.id}"
                 return
             }
-
             request.withFormat {
                 form multipartForm {
                     flash.message = message(code: 'default.deleted.message', args: [message(code: 'step.label', default: 'Step'), id])

@@ -10,6 +10,24 @@ abstract class TestCaseService implements ITestCaseService {
     StepService stepService
 
     /**
+     * deletes a test case, removes (builder) or deletes (free-from) steps
+     * @param id
+     */
+    @Transactional
+    void delete(Serializable id) {
+        def tc = get(id)
+        if (tc) {
+            List steps = tc.steps
+            tc.delete()
+            for (Step step in steps) {
+                if (!step.isBuilderStep) {
+                    stepService.delete(step.id)
+                }
+            }
+        }
+    }
+
+    /**
      * finds all test cases in a project with the name
      */
     @Transactional
@@ -40,17 +58,27 @@ abstract class TestCaseService implements ITestCaseService {
     }
 
     /**
-     * save an updated test case, deletes any removed steps
+     * save an updated test case, deletes any removed free-form steps
      * @param testCase - the test case to update
      * @param removedItems - ids of the steps to remove
      * @return - the updated test case
      */
     @Transactional
     TestCase saveUpdate(TestCase testCase, RemovedItems removedItems) {
+        def steps = []
         for(id in removedItems.stepIds) {
             def step = stepService.get(id)
-            testCase.removeFromSteps(step)
+            if (step) {
+                steps.add(step)
+                testCase.removeFromSteps(step)
+            }
         }
-        return save(testCase)
+        def updated = save(testCase)
+        for (Step step in steps) {
+            if (!step.isBuilderStep) {
+                stepService.delete(step.id)
+            }
+        }
+        return updated
     }
 }

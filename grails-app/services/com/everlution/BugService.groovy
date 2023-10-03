@@ -7,8 +7,25 @@ import grails.gorm.transactions.Transactional
 @Service(Bug)
 abstract class BugService implements IBugService {
 
-    IStepService stepService
+    StepService stepService
 
+    @Transactional
+    void delete(Serializable id) {
+        def b = get(id)
+        if (b) {
+            List steps = b.steps
+            b.delete()
+            for (Step step in steps) {
+                if (!step.isBuilderStep) {
+                    stepService.delete(step.id)
+                }
+            }
+        }
+    }
+
+    /**
+     * find all bugs in project
+     */
     @Transactional
     SearchResult findAllByProject(Project project, Map args) {
         int c = Bug.countByProject(project)
@@ -29,17 +46,27 @@ abstract class BugService implements IBugService {
     }
 
     /**
-     * save an updated bug, deletes any removed steps
+     * save an updated bug, deletes any removed free-form steps
      * @param bug - the bug to update
      * @param removedItems - ids of the steps to remove
      * @return - the updated bug
      */
     @Transactional
     Bug saveUpdate(Bug bug, RemovedItems removedItems) {
+        def steps = []
         for(id in removedItems.stepIds) {
             def step = stepService.get(id)
-            bug.removeFromSteps(step)
+            if (step) {
+                steps.add(step)
+                bug.removeFromSteps(step)
+            }
         }
-        return save(bug)
+        def updated = save(bug)
+        for (Step step in steps) {
+            if (!step.isBuilderStep) {
+                stepService.delete(step.id)
+            }
+        }
+        return updated
     }
 }
