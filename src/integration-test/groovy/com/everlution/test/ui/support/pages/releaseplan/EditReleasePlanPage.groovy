@@ -19,6 +19,7 @@ class EditReleasePlanPage extends EditPage {
         releaseDateMonthSelect { $("#releaseDate_month").module(Select) }
         releaseDateYearSelect { $("#releaseDate_year").module(Select) }
         statusSelect { $("#status").module(Select) }
+        statusSelectOptions { $("#status > option")}
     }
 
     /**

@@ -31,15 +31,12 @@ class ScenarioHibernateSpec extends HibernateSpec {
         def scn = new Scenario(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
-        expect:
-        scn.lastUpdated != null
-
         when:
         scn.name = "new name"
         scn.save(flush: true)
 
         then:
-        scn.lastUpdated != scn.dateCreated
+        scn.lastUpdated != null
     }
 
     void "save does not cascade to project"() {

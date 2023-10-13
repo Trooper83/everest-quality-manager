@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.project.home
 
+import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
@@ -22,6 +23,7 @@ class HomePageSpec extends GebSpec {
 
     @Shared int id
 
+    PersonService personService
     ProjectService projectService
     ReleasePlanService releasePlanService
 
@@ -73,8 +75,10 @@ class HomePageSpec extends GebSpec {
 
     void "error message displayed when project cannot be deleted with associated items"() {
         given: "a project with a release plan"
+        def person = personService.list(max:1).first()
         def project = projectService.list(max: 1).first()
-        def plan = new ReleasePlan(name: "test plan", project: project, status: "ToDo")
+
+        def plan = new ReleasePlan(name: "test plan", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
 
         and: "go to show project page"
@@ -91,11 +95,14 @@ class HomePageSpec extends GebSpec {
 
     void "next and previous links display"() {
         given: "a project with a release plan"
+        def person = personService.list(max:1).first()
         def project = projectService.list(max: 1).first()
         def futureDate = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
         def pastDate = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
-        def nextPlan = new ReleasePlan(name: "next plan", project: project, status: "ToDo", plannedDate: futureDate)
-        def previousPlan = new ReleasePlan(name: "previous plan", project: project, status: "Released", releaseDate: pastDate)
+        def nextPlan = new ReleasePlan(name: "next plan", project: project, status: "ToDo", plannedDate: futureDate,
+                person: person)
+        def previousPlan = new ReleasePlan(name: "previous plan", project: project, status: "Released",
+                releaseDate: pastDate, person: person)
         releasePlanService.save(nextPlan)
         releasePlanService.save(previousPlan)
 

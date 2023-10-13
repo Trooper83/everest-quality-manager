@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.releaseplan.edit
 
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
@@ -18,6 +19,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class EditReleasePlanSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     ReleasePlanService releasePlanService
 
@@ -62,7 +64,8 @@ class EditReleasePlanSpec extends GebSpec {
         def projectData = DataFactory.project()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code))
         def pd = DataFactory.releasePlan()
-        def plan = new ReleasePlan(name: pd.name, project: project, status: "ToDo")
+        def person = personService.list(max:1).first()
+        def plan = new ReleasePlan(name: pd.name, project: project, status: "ToDo", person: person)
         def id = releasePlanService.save(plan).id
 
         and: "login as a basic user"

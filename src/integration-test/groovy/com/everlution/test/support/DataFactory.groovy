@@ -1,5 +1,6 @@
 package com.everlution.test.support
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.TestCycle
@@ -145,19 +146,19 @@ class DataFactory {
         }
     }
 
-    static ReleasePlan createReleasePlan(Project project = null) {
+    static ReleasePlan createReleasePlan(Person person, Project project = null) {
         if(project == null) {
             project = createProject()
         }
         ReleasePlan.withNewSession { session ->
-            new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo").save()
+            new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo", person: person).save()
         }
     }
 
-    static TestCycle createTestCycle() {
+    static TestCycle createTestCycle(Person person) {
         TestCycle.withNewSession { session ->
             def project = new Project(name: faker.lorem().sentence(2), code: projectCodes.removeAt(0)).save()
-            def plan = new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo").save()
+            def plan = new ReleasePlan(name: faker.ancient().god(), project: project, status: "ToDo", person: person).save()
             new TestCycle(name: faker.animal().name(), releasePlan: plan).save()
         }
     }

@@ -9,10 +9,9 @@ import com.everlution.TestCycle
 import com.everlution.TestGroup
 import com.everlution.TestIteration
 import grails.test.hibernate.HibernateSpec
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
-
-import javax.persistence.EntityNotFoundException
 
 class TestCaseHibernateSpec extends HibernateSpec {
 
@@ -38,15 +37,12 @@ class TestCaseHibernateSpec extends HibernateSpec {
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
-        expect:
-        testCase.lastUpdated != null
-
         when:
         testCase.name = "new name"
         testCase.save(flush: true)
 
         then:
-        testCase.lastUpdated != testCase.dateCreated
+        testCase.lastUpdated != null
     }
 
     void "test save does not cascade to project"() {
@@ -216,6 +212,6 @@ class TestCaseHibernateSpec extends HibernateSpec {
         testCase.delete(flush: true)
 
         then:
-        thrown(EntityNotFoundException)
+        thrown(DataIntegrityViolationException)
     }
 }

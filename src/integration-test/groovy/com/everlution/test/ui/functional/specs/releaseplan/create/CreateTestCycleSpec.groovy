@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.releaseplan.create
 
+import com.everlution.PersonService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -10,6 +11,8 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class CreateTestCycleSpec extends GebSpec {
 
+    PersonService personService
+
     void "authorized users can create test cycle"(String username, String password) {
         given: "login as an authorized user"
         to LoginPage
@@ -17,7 +20,8 @@ class CreateTestCycleSpec extends GebSpec {
         loginPage.login(username, password)
 
         and: "go to the create page"
-        def plan = DataFactory.createReleasePlan()
+        def person = personService.list(max:1).first()
+        def plan = DataFactory.createReleasePlan(person)
         ShowReleasePlanPage page = to(ShowReleasePlanPage, plan.project.id, plan.id)
 
         when: "create test cycle"

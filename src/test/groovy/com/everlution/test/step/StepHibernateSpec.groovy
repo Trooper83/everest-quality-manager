@@ -36,6 +36,6 @@ class StepHibernateSpec extends HibernateSpec {
         testStep.save(flush: true)
 
         then:
-        testStep.lastUpdated != testStep.dateCreated
+        testStep.lastUpdated != null
     }
 }

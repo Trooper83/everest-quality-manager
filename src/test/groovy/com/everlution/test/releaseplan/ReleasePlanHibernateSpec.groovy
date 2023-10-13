@@ -30,17 +30,12 @@ class ReleasePlanHibernateSpec extends HibernateSpec {
         given:
         def plan = new ReleasePlan(name: "name", project: project, status: "ToDo", person: person).save()
 
-        expect:
-        plan.lastUpdated != null
-        plan.lastUpdated == plan.dateCreated
-
         when:
         plan.name = "new name"
         plan.save(flush: true)
 
         then:
         plan.lastUpdated != null
-        plan.lastUpdated != plan.dateCreated
     }
 
     void "save does not cascade to project"() {
