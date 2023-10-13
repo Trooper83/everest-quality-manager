@@ -117,8 +117,10 @@ async function displayMatchedResults() {
             const searchTerm = this.value;
             const htmlToDisplay = results
                 .map((step) => {
-                    const regex = RegExp(searchTerm, "gi");
-                    const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
+                    const start = step.name.toUpperCase().indexOf(searchTerm.toUpperCase());
+                    const end = searchTerm.length;
+                    const stepName = step.name.substring(0, start) + '<b>' + step.name.substring(start, start + end) + '</b>' +
+                        step.name.substring(start + end);
                     const html = `<li class='search-results-menu-item'
                                         onclick='displayStepProperties(${step.id});'>
                                    <span class='name'>${stepName}</span></li>`;
@@ -180,7 +182,8 @@ async function displayStepProperties(id) {
             const actP = document.createElement('p');
             actBody.appendChild(actP);
             actCard.appendChild(actBody);
-            actP.appendChild(document.createTextNode(s.step.act));
+            const actText = s.step.act == null ? '' : s.step.act
+            actP.appendChild(document.createTextNode(actText));
 
             //create result element
             const resCol = document.createElement('div');
@@ -193,7 +196,8 @@ async function displayStepProperties(id) {
             const resP = document.createElement('p');
             resBody.appendChild(resP);
             resCard.appendChild(resBody);
-            resP.appendChild(document.createTextNode(s.step.result));
+            const resText = s.step.result == null ? '' : s.step.result
+            resP.appendChild(document.createTextNode(resText));
 
             //create hidden input
             const index = document.querySelector('#builderSteps').childElementCount;

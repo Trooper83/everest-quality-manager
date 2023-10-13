@@ -26,6 +26,7 @@ function addTag(type) {
         element.append(row);
         $(`#${type}`).val('');
         $(`#${type}Row ul`).append(element);
+        $(`#${type}`).focus();
     } else {
         let element = $(`[name=${type}]`);
         element.tooltip('show');

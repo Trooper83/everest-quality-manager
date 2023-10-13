@@ -109,4 +109,13 @@ class CreatePageAreaSpec extends GebSpec {
         where:
         text << ['', ' ']
     }
+
+    void "adding tag sets input focus"() {
+        when:
+        def page = browser.page(CreateProjectPage)
+        page.addAreaTag('Test')
+
+        then:
+        page.areaInput.focused
+    }
 }

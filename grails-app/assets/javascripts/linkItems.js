@@ -72,8 +72,10 @@ function displayMatchedResults() {
             const searchTerm = this.value;
             const htmlToDisplay = suggestions
                 .map((step) => {
-                    const regex = RegExp(searchTerm, "gi");
-                    const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
+                    const start = step.name.toUpperCase().indexOf(searchTerm.toUpperCase());
+                    const end = searchTerm.length;
+                    const stepName = step.name.substring(0, start) + '<b>' + step.name.substring(start, start + end) + '</b>' +
+                        step.name.substring(start + end);
                     const html = `<li class='search-results-menu-item' data-id='${step.id}'><span class='name'>${stepName}</span></li>`;
                     return html;
                 }).join("");

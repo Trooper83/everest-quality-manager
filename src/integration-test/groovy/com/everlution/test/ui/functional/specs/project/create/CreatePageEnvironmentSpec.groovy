@@ -109,4 +109,13 @@ class CreatePageEnvironmentSpec extends GebSpec {
         show.isEnvironmentDisplayed("Test Env2")
         show.isEnvironmentDisplayed("Test Env3")
     }
+
+    void "adding tag sets input focus"() {
+        when:
+        def page = browser.page(CreateProjectPage)
+        page.addEnvironmentTag('tag')
+
+        then:
+        page.environmentInput.focused
+    }
 }
