@@ -8,6 +8,7 @@ class Scenario {
     List environments
     String executionMethod
     String gherkin
+    Date lastUpdated
     String name
     Person person
     String platform

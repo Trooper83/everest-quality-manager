@@ -24,13 +24,29 @@ class TestCaseHibernateSpec extends HibernateSpec {
         project = new Project(name: "Test Case Date Project", code: "TCD").save()
     }
 
-    void "test date created auto generated"() {
+    void "test dateCreated auto generated"() {
         when:
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "API", project: project).save()
 
         then:
         testCase.dateCreated != null
+    }
+
+    void "lastUpdated auto generated"() {
+        given:
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+
+        expect:
+        testCase.lastUpdated != null
+
+        when:
+        testCase.name = "new name"
+        testCase.save(flush: true)
+
+        then:
+        testCase.lastUpdated != testCase.dateCreated
     }
 
     void "test save does not cascade to project"() {
@@ -189,7 +205,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
         given:
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def plan = new ReleasePlan(name: "rp123", project: project, status: "ToDo").save()
+        def plan = new ReleasePlan(name: "rp123", project: project, status: "ToDo", person: person).save()
         def cycle = new TestCycle(name: "test cycle", releasePlan: plan).save()
         def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: cycle).save()
 

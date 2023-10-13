@@ -166,8 +166,8 @@ class BootStrap {
         new Scenario(person: person, name: "scenario part 2", description: "desc",
                 executionMethod: "Automated", type: "UI",
                 project: project).save(failOnError: true)
-        def plan = new ReleasePlan(name: "Bootstrapped release plan", project: project, status: "ToDo").save(failOnError: true)
-        new ReleasePlan(name: "Bootstrapped release plan1", project: project1, status: "ToDo").save(failOnError: true)
+        def plan = new ReleasePlan(name: "Bootstrapped release plan", project: project, status: "ToDo", person: person).save(failOnError: true)
+        new ReleasePlan(name: "Bootstrapped release plan1", project: project1, status: "ToDo", person: person).save(failOnError: true)
         def cycle = new TestCycle(name: "Bootstrapped test cycle")
         plan.addToTestCycles(cycle).save(failOnError: true)
     }

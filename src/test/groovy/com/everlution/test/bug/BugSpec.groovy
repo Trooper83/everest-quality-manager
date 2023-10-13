@@ -420,4 +420,20 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         then: "expected validation passes"
         domain.validate(["expected"])
     }
+
+    void "dateCreated can be null"() {
+        when:
+        domain.dateCreated = null
+
+        then:
+        domain.validate(["dateCreated"])
+    }
+
+    void "lastUpdated can be null"() {
+        when:
+        domain.lastUpdated = null
+
+        then:
+        domain.validate(["lastUpdated"])
+    }
 }

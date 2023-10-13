@@ -8,6 +8,7 @@ import com.everlution.ReleasePlanService
 import com.everlution.SearchResult
 import com.everlution.TestCycle
 import com.everlution.TestGroupService
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -204,6 +205,9 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * save(_ as ReleasePlan)
         }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
+        }
 
         when:"The save action is executed with a valid instance"
         response.reset()
@@ -235,6 +239,9 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
             1 * save(_ as ReleasePlan) >> { ReleasePlan releasePlan ->
                 throw new ValidationException("Invalid instance", releasePlan.errors)
             }
+        }
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser()
         }
 
         when:"The save action is executed with an invalid instance"

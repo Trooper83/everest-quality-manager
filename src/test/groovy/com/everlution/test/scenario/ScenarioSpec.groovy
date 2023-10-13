@@ -415,4 +415,20 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         !domain.validate(["environments"])
         domain.errors["environments"].code == "validator.invalid"
     }
+
+    void "dateCreated can be null"() {
+        when:
+        domain.dateCreated = null
+
+        then:
+        domain.validate(["dateCreated"])
+    }
+
+    void "lastUpdated can be null"() {
+        when:
+        domain.lastUpdated = null
+
+        then:
+        domain.validate(["lastUpdated"])
+    }
 }

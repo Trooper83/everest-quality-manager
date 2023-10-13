@@ -2,6 +2,8 @@ package com.everlution
 
 class TestIteration {
 
+    Date dateCreated
+    Date lastUpdated
     String name
     String notes
     Person person
@@ -15,7 +17,10 @@ class TestIteration {
     static hasMany = [ steps: IterationStep ]
 
     static mapping = {
+        person cascade: "none"
         steps cascade: "all-delete-orphan"
+        testCase cascade: "none"
+        testCycle cascade: "none"
     }
 
     static constraints = {

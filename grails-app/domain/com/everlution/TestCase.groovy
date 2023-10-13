@@ -7,6 +7,7 @@ class TestCase {
     String description
     Collection environments
     String executionMethod
+    Date lastUpdated
     String name
     Person person
     String platform

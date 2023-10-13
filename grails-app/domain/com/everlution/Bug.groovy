@@ -8,6 +8,7 @@ class Bug {
     String description
     List environments
     String expected
+    Date lastUpdated
     String name
     Person person
     String platform

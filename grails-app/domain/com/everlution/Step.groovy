@@ -5,6 +5,7 @@ class Step {
     String act
     Date dateCreated
     boolean isBuilderStep = false
+    Date lastUpdated
     String name
     Person person
     Project project

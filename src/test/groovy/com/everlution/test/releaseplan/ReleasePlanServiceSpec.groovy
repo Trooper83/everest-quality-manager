@@ -1,5 +1,6 @@
 package com.everlution.test.releaseplan
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
@@ -12,6 +13,7 @@ import spock.lang.Specification
 
 class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<ReleasePlanService>, DataTest {
 
+    @Shared Person person
     @Shared Project project
 
     def setupSpec() {
@@ -20,8 +22,9 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     def setup() {
         project = new Project(name: "name", code: "cod").save()
-        new ReleasePlan(name: "first plan", project: project, status: "ToDo").save()
-        new ReleasePlan(name: "second plan", project: project, status: "ToDo").save()
+        person = new Person(email: "testemail@email.com", password: "NewPassword#2023!").save()
+        new ReleasePlan(name: "first plan", project: project, status: "ToDo", person: person).save()
+        new ReleasePlan(name: "second plan", project: project, status: "ToDo", person: person).save()
     }
 
     void "get with valid id returns instance"() {
@@ -55,9 +58,9 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
     void "delete with valid id deletes instance"() {
         given:
         def pr = new Project(name: "name", code: "cod").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save()
-        new ReleasePlan(name: "name", project: pr, status: "ToDo").save()
-        def id = new ReleasePlan(name: "name", project: pr, status: "ToDo").save(flush: true).id
+        new ReleasePlan(name: "name", project: pr, status: "ToDo", person: person).save()
+        new ReleasePlan(name: "name", project: pr, status: "ToDo", person: person).save()
+        def id = new ReleasePlan(name: "name", project: pr, status: "ToDo", person: person).save(flush: true).id
 
         expect:
         service.get(id) != null
@@ -80,7 +83,7 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
     void "save with valid plan returns instance"() {
         given:
         def pr = new Project(name: "name", code: "cod").save()
-        def plan = new ReleasePlan(name: "name", project: pr, status: "ToDo")
+        def plan = new ReleasePlan(name: "name", project: pr, status: "ToDo", person: person)
 
         when:
         def saved = service.save(plan)
@@ -103,7 +106,8 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
     void "removeTestCycle removes test cycle"() {
         given:
         def cycle = new TestCycle(name: "testing cycle")
-        ReleasePlan plan = new ReleasePlan(name: "name", project: project, status: "ToDo").addToTestCycles(cycle).save()
+        ReleasePlan plan = new ReleasePlan(name: "name", project: project, status: "ToDo", person: person)
+                .addToTestCycles(cycle).save()
 
         expect:
         cycle.releasePlan == plan
@@ -128,8 +132,8 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
     void "find all by project only returns plans with project"() {
         given:
         def proj = new Project(name: "Plan Project1223", code: "BP8").save()
-        def plan = new ReleasePlan(name: "Name of the plan", project: proj, status: "ToDo").save(flush: true)
-        new ReleasePlan(name: "Name of the plan123", project: project, status: "ToDo").save(flush: true)
+        def plan = new ReleasePlan(name: "Name of the plan", project: proj, status: "ToDo", person: person).save(flush: true)
+        new ReleasePlan(name: "Name of the plan123", project: project, status: "ToDo", person: person).save(flush: true)
 
         expect:
         ReleasePlan.list().contains(plan)
@@ -155,7 +159,8 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
 
     void "add test cycle saves test cycle"() {
         given:
-        def plan = new ReleasePlan(name: "Name of the plan123", project: project, status: "ToDo").save(flush: true)
+        def plan = new ReleasePlan(name: "Name of the plan123", project: project, status: "ToDo", person: person)
+                .save(flush: true)
         def cycle = new TestCycle()
 
         expect:
@@ -180,7 +185,7 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
     void "find all in project by name only returns plans in project"() {
         given:
         def proj = new Project(name: "TestService Spec Project99999", code: "BP5").save()
-        def plan = new ReleasePlan(name: "Name of the plan", project: proj, status: "ToDo").save(flush: true)
+        def plan = new ReleasePlan(name: "Name of the plan", project: proj, status: "ToDo", person: person).save(flush: true)
 
         expect:
         ReleasePlan.list().contains(plan)

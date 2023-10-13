@@ -1,5 +1,6 @@
 package com.everlution
 
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
@@ -8,6 +9,7 @@ class ReleasePlanController {
 
     ProjectService projectService
     ReleasePlanService releasePlanService
+    SpringSecurityService springSecurityService
 
     static allowedMethods = [addTestCycle: "POST", save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -104,9 +106,12 @@ class ReleasePlanController {
                 return
             }
 
+            def person = springSecurityService.getCurrentUser() as Person
+            releasePlan.person = person
+
             try {
                 releasePlanService.save(releasePlan)
-            } catch (ValidationException e) {
+            } catch (ValidationException ignored) {
                 def project = projectService.read(releasePlan.project.id)
                 respond releasePlan.errors, view:'create', model: [ project: project ]
                 return
