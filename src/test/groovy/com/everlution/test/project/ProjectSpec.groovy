@@ -97,9 +97,9 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         domain.validate(["name"])
     }
 
-    void "project code cannot exceed 3 characters"() {
+    void "project code cannot exceed 5 characters"() {
         when: "for a string of 4 characters"
-        String str = "a" * 4
+        String str = "a" * 6
         domain.code = str
 
         then: "code validation fails"
@@ -107,13 +107,16 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
         domain.errors["code"].code == "maxSize.exceeded"
     }
 
-    void "project code validates with 3 characters"() {
+    void "project code validates with 3-5 characters"(int number) {
         when: "for a string of 3 characters"
-        String str = "a" * 3
+        String str = "a" * number
         domain.code = str
 
         then: "code validation passes"
         domain.validate(["code"])
+
+        where:
+        number << [3,4,5]
     }
 
     void "project code fails validation with 2 characters"() {

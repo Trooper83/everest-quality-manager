@@ -215,4 +215,20 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         expect:
         !domain.isBuilderStep
     }
+
+    void "dateCreated can be null"() {
+        when:
+        domain.dateCreated = null
+
+        then:
+        domain.validate(["dateCreated"])
+    }
+
+    void "lastUpdated can be null"() {
+        when:
+        domain.lastUpdated = null
+
+        then:
+        domain.validate(["lastUpdated"])
+    }
 }

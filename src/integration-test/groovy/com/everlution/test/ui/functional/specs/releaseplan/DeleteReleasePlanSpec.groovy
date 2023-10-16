@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.releaseplan
 
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
@@ -15,6 +16,7 @@ import spock.lang.Shared
 @Integration
 class DeleteReleasePlanSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
     ReleasePlanService releasePlanService
 
@@ -23,7 +25,8 @@ class DeleteReleasePlanSpec extends GebSpec {
 
     def setup() {
         project = projectService.list(max: 1).first()
-        def plan = new ReleasePlan(name: "delete spec plan", project: project, status: "ToDo")
+        def person = personService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "delete spec plan", project: project, status: "ToDo", person: person)
         id = releasePlanService.save(plan).id
     }
 

@@ -23,8 +23,8 @@ class TestIterationServiceSpec extends Specification {
     TestIteration setupData() {
         def person = personService.list(max: 1).first()
         def project = projectService.list(max: 1).first()
-        def testCase = new TestCase(name: "name of test case", project: project, person: person)
-        def plan = new ReleasePlan(name: "plan", project: project, status: "ToDo").save()
+        def testCase = new TestCase(name: "name of test case", project: project, person: person).save()
+        def plan = new ReleasePlan(name: "plan", project: project, status: "ToDo", person: person).save()
         def cycle = new TestCycle(name: "name of cycle", releasePlan: plan).save()
         new TestIteration(name: "name of test iteration", testCase: testCase, result: "ToDo", steps: [],
                 testCycle: cycle)

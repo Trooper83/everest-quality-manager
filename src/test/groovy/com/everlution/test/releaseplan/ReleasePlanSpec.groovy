@@ -1,5 +1,6 @@
 package com.everlution.test.releaseplan
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import grails.testing.gorm.DomainUnitTest
@@ -12,9 +13,10 @@ class ReleasePlanSpec extends Specification implements DomainUnitTest<ReleasePla
 
     void "test instances are persisted"() {
         setup:
+        def person = new Person(email: "test@test.com", password: "test")
         def project = new Project(name: "rps domain project", code: "rps")
-        new ReleasePlan(name: "First Test Case", project: project, status: "ToDo").save()
-        new ReleasePlan(name: "Second Test Case", project: project, status: "ToDo").save()
+        new ReleasePlan(name: "First Test Case", project: project, status: "ToDo", person: person).save()
+        new ReleasePlan(name: "Second Test Case", project: project, status: "ToDo", person: person).save()
 
         expect:
         ReleasePlan.count() == 2
@@ -79,12 +81,28 @@ class ReleasePlanSpec extends Specification implements DomainUnitTest<ReleasePla
         domain.validate(["name"])
     }
 
-    void "date created can be null"() {
+    void "dateCreated can be null"() {
         when: "property null"
         domain.dateCreated = null
 
         then: "validation passes"
         domain.validate(["dateCreated"])
+    }
+
+    void "lastUpdated can be null"() {
+        when: "property null"
+        domain.lastUpdated = null
+
+        then: "validation passes"
+        domain.validate(["lastUpdated"])
+    }
+
+    void "person cannot be null"() {
+        when: "property null"
+        domain.person = null
+
+        then: "validation passes"
+        !domain.validate(["person"])
     }
 
     void "test cycles can be null"() {

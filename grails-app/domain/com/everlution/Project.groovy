@@ -25,7 +25,7 @@ class Project {
     }
 
     static constraints = {
-        code blank: false, nullable: false, minSize: 3, maxSize: 3, unique: true
+        code blank: false, nullable: false, minSize: 3, maxSize: 5, unique: true
         name blank: false, nullable: false, maxSize: 100, unique: true
         areas validator: { val ->
             if(val == null) {

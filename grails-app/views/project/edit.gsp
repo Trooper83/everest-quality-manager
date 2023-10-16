@@ -22,7 +22,7 @@
                     <div class="card-body">
                         <div class="col-4 required mb-3">
                             <label class="form-label fw-bold" for="code">Code</label>
-                            <g:textField class="form-control" name="code" value="${project.code}" maxLength="3"></g:textField>
+                            <g:textField class="form-control" name="code" value="${project.code}" minLength="3" maxLength="5"></g:textField>
                         </div>
                         <div class="col-8 required mb-3">
                             <label class="form-label fw-bold" for="name">Name</label>

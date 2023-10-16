@@ -117,8 +117,10 @@ async function displayMatchedResults() {
             const searchTerm = this.value;
             const htmlToDisplay = results
                 .map((step) => {
-                    const regex = RegExp(searchTerm, "gi");
-                    const stepName = step.name.replace(regex, `<strong>${this.value}</strong>`);
+                    const start = step.name.toUpperCase().indexOf(searchTerm.toUpperCase());
+                    const end = searchTerm.length;
+                    const stepName = step.name.substring(0, start) + '<b>' + step.name.substring(start, start + end) + '</b>' +
+                        step.name.substring(start + end);
                     const html = `<li class='search-results-menu-item'
                                         onclick='displayStepProperties(${step.id});'>
                                    <span class='name'>${stepName}</span></li>`;
@@ -174,26 +176,30 @@ async function displayStepProperties(id) {
             actCol.setAttribute('class', 'col-5');
             const actCard = document.createElement('div');
             actCard.setAttribute('class', 'card');
+            actCard.setAttribute('style', 'min-height:3.5em;');
             actCol.appendChild(actCard);
             const actBody = document.createElement('div');
             actBody.setAttribute('class', 'card-body');
             const actP = document.createElement('p');
             actBody.appendChild(actP);
             actCard.appendChild(actBody);
-            actP.appendChild(document.createTextNode(s.step.act));
+            const actText = s.step.act == null ? '' : s.step.act
+            actP.appendChild(document.createTextNode(actText));
 
             //create result element
             const resCol = document.createElement('div');
             resCol.setAttribute('class', 'col-5');
             const resCard = document.createElement('div');
             resCard.setAttribute('class', 'card');
+            resCard.setAttribute('style', 'min-height:3.5em;');
             resCol.appendChild(resCard);
             const resBody = document.createElement('div');
             resBody.setAttribute('class', 'card-body');
             const resP = document.createElement('p');
             resBody.appendChild(resP);
             resCard.appendChild(resBody);
-            resP.appendChild(document.createTextNode(s.step.result));
+            const resText = s.step.result == null ? '' : s.step.result
+            resP.appendChild(document.createTextNode(resText));
 
             //create hidden input
             const index = document.querySelector('#builderSteps').childElementCount;

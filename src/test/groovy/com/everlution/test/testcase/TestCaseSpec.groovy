@@ -467,4 +467,20 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         !domain.validate(["testGroups"])
         domain.errors["testGroups"].code == "validator.invalid"
     }
+
+    void "dateCreated can be null"() {
+        when:
+        domain.dateCreated = null
+
+        then:
+        domain.validate(["dateCreated"])
+    }
+
+    void "lastUpdated can be null"() {
+        when:
+        domain.lastUpdated = null
+
+        then:
+        domain.validate(["lastUpdated"])
+    }
 }

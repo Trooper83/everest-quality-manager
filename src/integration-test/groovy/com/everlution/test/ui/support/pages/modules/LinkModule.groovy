@@ -34,6 +34,10 @@ class LinkModule extends Module {
             searchResultsMenu.displayed
         }
         searchResults.first().click()
+
+        if (searchResultsMenu.displayed) {
+            searchResults.first().click()
+        }
     }
 
     /**

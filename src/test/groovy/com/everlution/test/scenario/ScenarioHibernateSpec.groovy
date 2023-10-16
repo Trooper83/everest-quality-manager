@@ -26,6 +26,19 @@ class ScenarioHibernateSpec extends HibernateSpec {
         scn.dateCreated != null
     }
 
+    void "lastUpdated auto generated"() {
+        given:
+        def scn = new Scenario(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+
+        when:
+        scn.name = "new name"
+        scn.save(flush: true)
+
+        then:
+        scn.lastUpdated != null
+    }
+
     void "save does not cascade to project"() {
         when: "unsaved project is added to scenario"
         Project project = new Project(name: "Scenario Project2", code: "BMP")

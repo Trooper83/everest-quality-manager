@@ -18,13 +18,26 @@ class BugHibernateSpec extends HibernateSpec {
         person = new Person(email: "test@test.com", password: "!Password2022").save()
     }
 
-    void "date created populates on save"() {
+    void "dateCreated populates on save"() {
         given: "a bug instance"
         def bug = new Bug(person: person, name: "First Bug", description: "test", project: project, status: "Open",
                 actual: "actual", expected: "expected").save()
 
         expect: "bug has date created"
         bug.dateCreated != null
+    }
+
+    void "lastUpdated populates on save"() {
+        given: "a bug instance"
+        def bug = new Bug(person: person, name: "First Bug", description: "test", project: project, status: "Open",
+                actual: "actual", expected: "expected").save()
+
+        when:
+        bug.actual = "new actual"
+        bug.save(flush: true)
+
+        then: "bug has date created"
+        bug.lastUpdated != null
     }
 
     void "test save does not cascade to project"() {

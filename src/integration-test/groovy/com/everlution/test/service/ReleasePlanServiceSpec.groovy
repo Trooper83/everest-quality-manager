@@ -1,5 +1,7 @@
 package com.everlution.test.service
 
+import com.everlution.Person
+import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
@@ -17,19 +19,22 @@ import org.hibernate.SessionFactory
 @Rollback
 class ReleasePlanServiceSpec extends Specification {
 
+    PersonService personService
     ProjectService projectService
     ReleasePlanService releasePlanService
     TestCycleService testCycleService
     SessionFactory sessionFactory
 
+    @Shared Person person
     @Shared Project project
 
     private Long setupData() {
+        person = new Person(email: "testing9876@testing.com", password: "#Password#2023!").save()
         project = new Project(name: "project name 123", code: "pn1").save()
-        def releasePlan = new ReleasePlan(name: "name1", project: project, status: "ToDo").save()
-        new ReleasePlan(name: "name12", project: project, status: "ToDo").save()
-        new ReleasePlan(name: "name123", project: project, status: "ToDo").save()
-        new ReleasePlan(name: "name124", project: project, status: "ToDo").save(flush: true, failOnError: true)
+        def releasePlan = new ReleasePlan(name: "name1", project: project, status: "ToDo", person: person).save()
+        new ReleasePlan(name: "name12", project: project, status: "ToDo", person: person).save()
+        new ReleasePlan(name: "name123", project: project, status: "ToDo", person: person).save()
+        new ReleasePlan(name: "name124", project: project, status: "ToDo", person: person).save(flush: true, failOnError: true)
         releasePlan.id
     }
 
@@ -63,8 +68,9 @@ class ReleasePlanServiceSpec extends Specification {
 
     void "save persists instance"() {
         when:
-        def project = projectService.list(max: 1).first()
-        ReleasePlan releasePlan = new ReleasePlan(name: "test name", project: project, status: "ToDo")
+        def proj = projectService.list(max: 1).first()
+        def per = personService.list(max: 1).first()
+        ReleasePlan releasePlan = new ReleasePlan(name: "test name", project: proj, status: "ToDo", person: per)
         releasePlanService.save(releasePlan)
 
         then:
@@ -84,7 +90,9 @@ class ReleasePlanServiceSpec extends Specification {
         given:
         def cycle = new TestCycle(name: "test cycle")
         def project = projectService.list(max: 1).first()
-        ReleasePlan releasePlan = new ReleasePlan(name: "test name", project: project, testCycles: [cycle], status: "ToDo")
+        def per = personService.list(max: 1).first()
+        ReleasePlan releasePlan = new ReleasePlan(name: "test name", project: project, testCycles: [cycle],
+                status: "ToDo", person: per)
         releasePlanService.save(releasePlan)
 
         expect:
@@ -128,7 +136,8 @@ class ReleasePlanServiceSpec extends Specification {
         given:
         def cycle = new TestCycle(name: "test cycle123")
         def project = projectService.list(max: 1).first()
-        def releasePlan = new ReleasePlan(name: "test name123", project: project, status: "ToDo")
+        def per = personService.list(max: 1).first()
+        def releasePlan = new ReleasePlan(name: "test name123", project: project, status: "ToDo", person: per)
         releasePlanService.save(releasePlan)
 
         expect:
@@ -148,7 +157,8 @@ class ReleasePlanServiceSpec extends Specification {
         given:
         def cycle = new TestCycle()
         def project = projectService.list(max: 1).first()
-        def releasePlan = new ReleasePlan(name: "test name123", project: project, status: "ToDo")
+        def per = personService.list(max: 1).first()
+        def releasePlan = new ReleasePlan(name: "test name123", project: project, status: "ToDo", person: per)
         releasePlanService.save(releasePlan)
 
         when:

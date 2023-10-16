@@ -260,4 +260,30 @@ class CreateStepPageSpec extends GebSpec {
         then:
         !createPage.linkModule.searchResultsMenu.displayed
     }
+
+    void "search results are correctly displayed"(int start, int end) {
+        given:
+        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def text = step.name.substring(start, end)
+
+        when:
+        def createPage = createPage(CreateStepPage)
+        createPage.scrollToBottom()
+        for (int i = 0; i < text.length(); i++){
+            char c = text.charAt(i)
+            String s = new StringBuilder().append(c).toString()
+            createPage.linkModule.searchInput << s
+        }
+        waitFor {
+            createPage.linkModule.searchResultsMenu.displayed
+        }
+
+        then:
+        createPage.linkModule.searchResults.first().text() == step.name
+
+        where:
+        start | end
+        0     | 7
+        5     | 10
+    }
 }

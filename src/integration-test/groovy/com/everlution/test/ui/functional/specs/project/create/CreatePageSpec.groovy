@@ -26,8 +26,7 @@ class CreatePageSpec extends GebSpec {
         page.createProject("project name", "tt")
 
         then: "validation message is displayed"
-        page.errors.text() ==
-                "Property [code] with value [TT] is less than the minimum size of [3]"
+        at CreateProjectPage
     }
 
     void "name field unique message displayed"() {

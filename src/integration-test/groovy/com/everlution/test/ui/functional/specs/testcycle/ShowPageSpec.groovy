@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.testcycle
 
+import com.everlution.Person
 import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
@@ -24,6 +25,7 @@ import spock.lang.Shared
 @Integration
 class ShowPageSpec extends GebSpec {
 
+    @Shared Person person
     @Shared TestCycle cycle
 
     PersonService personService
@@ -33,7 +35,8 @@ class ShowPageSpec extends GebSpec {
     TestCycleService testCycleService
 
     def setup() {
-        cycle = DataFactory.createTestCycle()
+        person = personService.list(max:1).first()
+        cycle = DataFactory.createTestCycle(person)
     }
 
     void "add tests button not displayed for Read Only user"() {
@@ -74,16 +77,16 @@ class ShowPageSpec extends GebSpec {
     void "execute button not displayed for Read Only user"() {
         given:
         def gd = DataFactory.testGroup()
+        def person = personService.list(max: 1).first()
         def group = new TestGroup(name: gd.name)
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
         ArrayList<TestCase> tcList = [testCase]
@@ -108,14 +111,14 @@ class ShowPageSpec extends GebSpec {
         def gd = DataFactory.testGroup()
         def group = new TestGroup(name: gd.name)
         def pd = DataFactory.project()
+        def person = personService.list(max: 1).first()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
         ArrayList<TestCase> tcList = [testCase]
@@ -166,12 +169,11 @@ class ShowPageSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
 
@@ -201,12 +203,11 @@ class ShowPageSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
 
@@ -261,12 +262,11 @@ class ShowPageSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
 
@@ -307,12 +307,11 @@ class ShowPageSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
 
@@ -362,12 +361,11 @@ class ShowPageSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
 
@@ -394,12 +392,11 @@ class ShowPageSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
 
@@ -426,12 +423,11 @@ class ShowPageSpec extends GebSpec {
         def pd = DataFactory.project()
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
-        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo")
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
         releasePlanService.save(plan)
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
         def tc = DataFactory.testCase()
-        def person = personService.list(max: 1).first()
         def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
         testCaseService.save(testCase)
 

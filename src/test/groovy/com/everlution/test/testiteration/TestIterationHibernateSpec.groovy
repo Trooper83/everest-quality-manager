@@ -23,7 +23,8 @@ class TestIterationHibernateSpec extends HibernateSpec {
     def setup() {
         person = new Person(email: "test@test.com", password: "!Password2022").save()
         project = new Project(name: "tc domain project", code: "tdp").save()
-        releasePlan = new ReleasePlan(name: "releasing this", project: project, status: "ToDo").save()
+        releasePlan = new ReleasePlan(name: "releasing this", project: project, status: "ToDo",
+                person: person).save()
         testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
         testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()

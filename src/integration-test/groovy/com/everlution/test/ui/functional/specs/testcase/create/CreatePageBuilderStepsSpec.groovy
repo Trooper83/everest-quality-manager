@@ -317,4 +317,29 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         then:
         !createPage.testStepTable.isBuilderStepHiddenInputDisplayed(0)
     }
+
+    void "search results are correctly displayed"(int start, int end) {
+        given:
+        def text = step.name.substring(start, end)
+
+        when:
+        def createPage = createPage(CreateTestCasePage)
+        createPage.scrollToBottom()
+        for (int i = 0; i < text.length(); i++){
+            char c = text.charAt(i)
+            String s = new StringBuilder().append(c).toString()
+            createPage.testStepTable.searchInput << s
+        }
+        waitFor {
+            createPage.testStepTable.searchResultsMenu.displayed
+        }
+
+        then:
+        createPage.testStepTable.searchResults.first().text() == step.name
+
+        where:
+        start | end
+        0     | 7
+        5     | 10
+    }
 }

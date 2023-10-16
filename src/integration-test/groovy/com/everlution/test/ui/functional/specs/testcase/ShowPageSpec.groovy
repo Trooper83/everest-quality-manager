@@ -185,9 +185,9 @@ class ShowPageSpec extends GebSpec {
 
     void "delete test case with test iterations displays failure error"() {
         given:
-        def cycle = DataFactory.createTestCycle()
-        Project project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
+        def cycle = DataFactory.createTestCycle(person)
+        Project project = projectService.list(max: 1).first()
         TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project)
         def id = testCaseService.save(testCase).id

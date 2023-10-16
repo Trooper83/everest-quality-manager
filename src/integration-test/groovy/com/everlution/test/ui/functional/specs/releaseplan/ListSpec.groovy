@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.releaseplan
 
+import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
@@ -14,6 +15,7 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ListSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
 
     void "verify list table headers order"() {
@@ -78,16 +80,13 @@ class ListSpec extends GebSpec {
 
         and:
         def project = projectService.list(max: 1).first()
-        def plan = DataFactory.createReleasePlan(project)
-        DataFactory.createReleasePlan(project)
+        def person = personService.list(max: 1).first()
+        def plan = DataFactory.createReleasePlan(person, project)
 
         and: "go to show page"
-
-        def page = to(ListReleasePlanPage, project.id)
-        page.listTable.clickCell("Name", 0)
+        def showPage = to(ShowReleasePlanPage, project.id, plan.id)
 
         when: "delete"
-        def showPage = browser.page(ShowReleasePlanPage)
         showPage.deletePlan()
 
         then: "at list page and message displayed"

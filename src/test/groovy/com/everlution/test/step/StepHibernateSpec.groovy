@@ -16,11 +16,26 @@ class StepHibernateSpec extends HibernateSpec {
         project = new Project(name: "Delete Bug Cascade Project777", code: "ZZ7").save()
     }
 
-    void "test date created auto generated"() {
+    void "dateCreated auto generated"() {
         when:
         Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
 
         then:
         testStep.dateCreated != null
+    }
+
+    void "lastUpdated auto generated"() {
+        given:
+        Step testStep = new Step(act: "do something123", result: "something happened", person: person, project: project).save()
+
+        expect:
+        testStep.lastUpdated != null
+
+        when:
+        testStep.name = "name"
+        testStep.save(flush: true)
+
+        then:
+        testStep.lastUpdated != null
     }
 }

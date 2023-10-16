@@ -209,7 +209,7 @@ class ProjectServiceSpec extends Specification {
     void "delete throws constraint exception when project has associated release plans"() {
         given:
         Project project = new Project(name: "Release Plan Service Spec Project", code: "ZZX").save()
-        def plan = new ReleasePlan(name: "name", project: project, status: "ToDo").save()
+        def plan = new ReleasePlan(name: "name", project: project, status: "ToDo", person: person).save()
 
         expect:
         project.id != null
