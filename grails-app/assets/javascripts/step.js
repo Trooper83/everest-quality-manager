@@ -176,6 +176,7 @@ async function displayStepProperties(id) {
             actCol.setAttribute('class', 'col-5');
             const actCard = document.createElement('div');
             actCard.setAttribute('class', 'card');
+            actCard.setAttribute('style', 'min-height:3.5em;');
             actCol.appendChild(actCard);
             const actBody = document.createElement('div');
             actBody.setAttribute('class', 'card-body');
@@ -190,6 +191,7 @@ async function displayStepProperties(id) {
             resCol.setAttribute('class', 'col-5');
             const resCard = document.createElement('div');
             resCard.setAttribute('class', 'card');
+            resCard.setAttribute('style', 'min-height:3.5em;');
             resCol.appendChild(resCard);
             const resBody = document.createElement('div');
             resBody.setAttribute('class', 'card-body');
