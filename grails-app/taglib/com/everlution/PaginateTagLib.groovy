@@ -24,9 +24,11 @@ class PaginateTagLib implements TagLibrary {
      * @attr total REQUIRED The total number of results to paginate
      * @attr max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
      * @attr maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
-     * @attr projectId id of the project
+     * @attr projectId Id of the project
      * @attr domain The domain of the item
      * @attr isSearch Determines if the link should include isSearch parameter
+     * @attr isTopLevel Determines if the link is for a top-level domain [true, false] defaults to true
+     * @attr itemId The id of item to add to the link
      */
     Closure pagination = { Map attrsMap ->
         TypeConvertingMap attrs = (TypeConvertingMap)attrsMap
@@ -37,6 +39,8 @@ class PaginateTagLib implements TagLibrary {
 
         def projectId = attrs.int('projectId')
         def domainAttr = attrs.getProperty('domain')
+        def itemId = attrs.int('itemId') ?: -1
+        def isTopLevel = attrs.boolean('isTopLevel') == null ? true : attrs.boolean('isTopLevel')
 
         if (!domainAttr) {
             throwTagError("Tag [pagination] requires [domain]")
@@ -52,6 +56,10 @@ class PaginateTagLib implements TagLibrary {
 
         if (!projectOrUserDomain && !projectId) {
             throwTagError("Tag [pagination] requires [projectId] for non-project domains")
+        }
+
+        if (!isTopLevel && itemId == -1) {
+            throwTagError("Tag [pagination] requires [itemId] for non-top level views")
         }
 
         projectId = projectId ?: -1
@@ -79,7 +87,7 @@ class PaginateTagLib implements TagLibrary {
         // display previous link when not on firststep
         if (currentstep > firststep) {
             linkParams.offset = offset - max
-            writer << createLink(linkParams, 'Previous', domain, projectId)
+            writer << createLink(linkParams, 'Previous', domain, projectId, isTopLevel, itemId)
         }
 
         // display steps when steps are enabled and laststep is not firststep
@@ -104,7 +112,7 @@ class PaginateTagLib implements TagLibrary {
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
                 linkParams.offset = 0
-                writer << createLink(linkParams, firststep.toString(), domain, projectId)
+                writer << createLink(linkParams, firststep.toString(), domain, projectId, isTopLevel, itemId)
             }
             //show a gap if beginstep isn't immediately after firststep
             if (beginstep > firststep+1) {
@@ -118,7 +126,7 @@ class PaginateTagLib implements TagLibrary {
                 }
                 else {
                     linkParams.offset = (i-1) * max
-                    writer << createLink(linkParams, i.toString(), domain, projectId)
+                    writer << createLink(linkParams, i.toString(), domain, projectId, isTopLevel, itemId)
                 }
             }
 
@@ -129,18 +137,18 @@ class PaginateTagLib implements TagLibrary {
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
                 linkParams.offset = (laststep - 1) * max
-                writer << createLink(linkParams, laststep.toString(), domain, projectId)
+                writer << createLink(linkParams, laststep.toString(), domain, projectId, isTopLevel, itemId)
             }
         }
 
         // display next link when not on laststep
         if (currentstep < laststep) {
             linkParams.offset = offset + max
-            writer << createLink(linkParams, 'Next', domain, projectId)
+            writer << createLink(linkParams, 'Next', domain, projectId, isTopLevel, itemId)
         }
     }
 
-    private String createLink(Map linkParams, String linkText, String domain, int projectId) {
+    private String createLink(Map linkParams, String linkText, String domain, int projectId, boolean isTopLevel, int itemId) {
         def p = ""
         def s = linkParams.size()
         linkParams.eachWithIndex { key, value, i ->
@@ -157,7 +165,10 @@ class PaginateTagLib implements TagLibrary {
             href = "/projects"
         } else if (domain == 'user') {
             href = '/user/search'
-        } else {
+        } else if ((domain == 'testGroup' || domain == 'testCycle') && !isTopLevel) {
+            href = "/project/${projectId}/${domain}/show/${itemId}"
+        }
+        else {
             href = "/project/${projectId}/${domain}s"
         }
         href = href + p

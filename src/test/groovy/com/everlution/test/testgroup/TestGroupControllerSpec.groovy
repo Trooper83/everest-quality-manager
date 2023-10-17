@@ -3,6 +3,7 @@ package com.everlution.test.testgroup
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
+import com.everlution.TestCase
 import com.everlution.TestGroup
 import com.everlution.TestGroupController
 import com.everlution.TestGroupService
@@ -249,11 +250,11 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     void "show action renders show view"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * get(2) >> new TestGroup()
+            1 * get(2) >> new TestGroup(testCases: [])
         }
 
         when:"a domain instance is passed to the show action"
-        controller.show(2)
+        controller.show(2, null, null)
 
         then:
         view == "show"
@@ -266,7 +267,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:"The show action is executed with a null domain"
-        controller.show(null)
+        controller.show(null, null, null)
 
         then:"A 404 error is returned"
         response.status == 404
@@ -275,14 +276,19 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     void "show action with a valid id returns a test group"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * get(2) >> new TestGroup()
+            1 * get(2) >> new TestGroup(testCases: [])
         }
 
         when:"A domain instance is passed to the show action"
-        controller.show(2)
+        controller.show(2, null, null)
 
         then:"A model is populated containing the domain instance"
         model.testGroup instanceof TestGroup
+    }
+
+    void "add more tests"() {
+        expect:
+        false
     }
 
     void "edit action with a null id returns 404"() {

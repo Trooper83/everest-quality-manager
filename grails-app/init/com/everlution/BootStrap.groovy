@@ -133,12 +133,56 @@ class BootStrap {
                 project: project, area: area).save(failOnError: true)
         def testCase3 = new TestCase(person: person, name: "test part 4", description: "desc",
                 executionMethod: "Automated", type: "UI", steps: [testStep4],
-                project: project1, area: area1).save(failOnError: true)
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase31 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase32 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase33 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase34 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase35 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase36 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase37 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase38 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase39 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase310 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
+        def testCase311 = new TestCase(person: person, name: "test part 4", description: "desc",
+                executionMethod: "Automated", type: "UI", steps: [testStep4],
+                project: project1, area: area1, environments: [env1]).save(failOnError: true)
         testCase.addToTestGroups(group)
         testCase.addToTestGroups(group1)
         testCase1.addToTestGroups(group2)
         testCase2.addToTestGroups(group)
         testCase3.addToTestGroups(group2)
+        testCase31.addToTestGroups(group2)
+        testCase32.addToTestGroups(group2)
+        testCase33.addToTestGroups(group2)
+        testCase34.addToTestGroups(group2)
+        testCase35.addToTestGroups(group2)
+        testCase36.addToTestGroups(group2)
+        testCase37.addToTestGroups(group2)
+        testCase38.addToTestGroups(group2)
+        testCase39.addToTestGroups(group2)
+        testCase310.addToTestGroups(group2)
+        testCase311.addToTestGroups(group2)
         def bugStep = new Step(act: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)
         def bugStep1 = new Step(act: "do something", result: "something happened", project: project, person: person).save(failOnError: true)
         def bugStep2 = new Step(act: "do something", result: "something happened", project: project1, person: person).save(failOnError: true)

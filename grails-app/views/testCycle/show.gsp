@@ -84,7 +84,8 @@
                         </tbody>
                     </table>
                     <ul class="pagination mb-5">
-                        <g:pagination domain="testCycle" projectId="${testCycle.releasePlan.project.id}" total="${testCycle.testIterations.size() ?: 0}"/>
+                        <g:pagination domain="testCycle" projectId="${testCycle.releasePlan.project.id}"
+                                      total="${testCycle.testIterations.size() ?: 0}" isTopLevel="false" itemId="${testCycle.id}"/>
                     </ul>
                 </div>
             </div>

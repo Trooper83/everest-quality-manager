@@ -42,8 +42,22 @@ class TestGroupController {
      * @return - the group to show
      */
     @Secured("ROLE_READ_ONLY")
-    def show(Long id) {
-        respond testGroupService.get(id), view: 'show'
+    def show(Long id, Integer max, Integer offset) {
+        def group = testGroupService.get(id)
+        def tests
+        if (group) {
+            def c = group.testCases.size()
+            if (c > 0) {
+                max = Math.min(max ?: 10, 100)
+                offset = offset == null ? 0 : offset
+                def start = offset == null ? 0 : offset
+                def end = start + offset > (c - 1) ? (c - 1) : (start + max) - 1
+                tests = group.testCases.getAt(start..end)
+            } else {
+                tests = []
+            }
+        }
+        respond group, view: 'show', model: [tests: tests]
     }
 
     /**
