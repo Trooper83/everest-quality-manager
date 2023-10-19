@@ -5,6 +5,8 @@ import geb.navigator.Navigator
 
 class TableModule extends Module {
     static content = {
+        paginationGroup { $(".pagination") }
+        paginationGroupLink { text -> $(".pagination li a", text: text) }
         tableHeaders { $("thead th") }
         tableRows(required: false) { $("tbody tr") }
     }
@@ -73,6 +75,22 @@ class TableModule extends Module {
      */
     int getRowCount() {
         tableRows.size()
+    }
+
+    /**
+     * gets if a value in a column
+     */
+    String getValueInColumn(int row, String columnName) {
+        int columnIndex = getColumnIndex(columnName)
+        def value = tableRows[row].find('td')[columnIndex].text()
+        return value
+    }
+
+    /**
+     * clicks a pagination link
+     */
+    void goToPage(String linkText) {
+        paginationGroupLink(linkText).click()
     }
 
     /**

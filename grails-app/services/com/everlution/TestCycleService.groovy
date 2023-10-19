@@ -26,6 +26,32 @@ abstract class TestCycleService implements ITestCycleService {
     }
 
     /**
+     * gets a test group with paginated test cases
+     */
+    @Transactional
+    CycleWithPaginatedTests getWithPaginatedTests(Serializable id, Map params) {
+        def cycle = get(id)
+        List<TestIteration> tests = []
+        if (cycle) {
+            def c = cycle.testIterations?.size()
+            if (c > 0) {
+                def max = params.max as Integer
+                def offset = params.offset as Integer
+                max = max < 0 ? 0 : max
+                offset = offset < 0 ? 0 : offset
+                max = Math.min(max ?: 10, 100)
+                offset = offset == null ? 0 : offset
+                def start = offset == null ? 0 : offset
+                def end = (start + max) > (c - 1) ? (c - 1) : (start + max) - 1
+                if (start <= end) {
+                    tests.addAll(cycle.testIterations.getAt(start..end))
+                }
+            }
+        }
+        return new CycleWithPaginatedTests(cycle, tests)
+    }
+
+    /**
      * removes an iteration from a test cycle
      */
     @Transactional

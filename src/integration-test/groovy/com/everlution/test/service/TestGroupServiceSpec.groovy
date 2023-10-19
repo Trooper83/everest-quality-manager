@@ -156,4 +156,22 @@ class TestGroupServiceSpec extends Specification {
         def groups = testGroupService.findAllInProjectByName(project, "name", [:])
         groups.results.first().name == "name 1"
     }
+
+    void "getWithPaginatedTests returns group and tests"() {
+        given:
+        setupData()
+        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        def group = new TestGroup(name: "name 12345", project: project)
+        testGroupService.save(group)
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: project).save()
+        group.addToTestCases(testCase)
+
+        when:
+        def result = testGroupService.getWithPaginatedTests(group.id, [:])
+
+        then:
+        result.testGroup == group
+        result.tests.first() == testCase
+    }
 }

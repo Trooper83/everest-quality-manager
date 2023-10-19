@@ -8,6 +8,7 @@ import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
+import com.everlution.TestGroup
 import com.everlution.TestIteration
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -244,5 +245,49 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
 
         then:
         tc.testCaseIds.size() == 2
+    }
+
+    void "getWithPaginatedTests param values"(String max, String offset) {
+        when:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCycle tc = new TestCycle(name: "First Test Cycle", releasePlan: releasePlan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
+        def params = ['max':max, 'offset':offset]
+        service.getWithPaginatedTests(tc.id, params)
+
+        then:
+        noExceptionThrown()
+
+        where:
+        max | offset
+        '0'   | '0'
+        '1'   | '0'
+        '50'  | '0'
+        '101' | '0'
+        '-1'  | '0'
+        null  | '0'
+        null  | null
+        '10'  | null
+        '10'  | '1'
+        '10'  | '-1'
+        '10'  | '100'
+        '100' | '100'
+    }
+
+    void "getWithPaginatedTests returns null group when not found"() {
+        when:
+        def params = ['max': '1', 'offset': '1']
+        def group = service.getWithPaginatedTests(111, params)
+
+        then:
+        !group.testCycle
+    }
+
+    void "getWithPaginatedTests returns empty list group when not found"() {
+        when:
+        def params = ['max': '1', 'offset': '1']
+        def group = service.getWithPaginatedTests(111, params)
+
+        then:
+        group.iterations.empty
     }
 }

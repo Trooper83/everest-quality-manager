@@ -261,4 +261,47 @@ class TestGroupServiceSpec extends Specification implements ServiceUnitTest<Test
         'not found' | 0
         'test'      | 3
     }
+
+    void "getWithPaginatedTests param values"(String max, String offset) {
+        when:
+        new TestGroup(name: "test group 1", project: project, testCases: [new TestCase()]).save()
+        def params = ['max':max, 'offset':offset]
+        service.getWithPaginatedTests(1, params)
+
+        then:
+        noExceptionThrown()
+
+        where:
+        max | offset
+        '0'   | '0'
+        '1'   | '0'
+        '50'  | '0'
+        '101' | '0'
+        '-1'  | '0'
+        null  | '0'
+        null  | null
+        '10'  | null
+        '10'  | '1'
+        '10'  | '-1'
+        '10'  | '100'
+        '100' | '100'
+    }
+
+    void "getWithPaginatedTests returns null group when not found"() {
+        when:
+        def params = ['max': '1', 'offset': '1']
+        def group = service.getWithPaginatedTests(111, params)
+
+        then:
+        !group.testGroup
+    }
+
+    void "getWithPaginatedTests returns empty list group when not found"() {
+        when:
+        def params = ['max': '1', 'offset': '1']
+        def group = service.getWithPaginatedTests(111, params)
+
+        then:
+        group.tests.empty
+    }
 }

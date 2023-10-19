@@ -68,7 +68,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <g:each var="iteration" in="${testCycle.testIterations}">
+                        <g:each var="iteration" in="${iterations}">
                             <tr>
                                 <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/show/${iteration.id}">${iteration.id}</g:link></td>
                                 <td>${iteration.name}</td>

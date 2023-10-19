@@ -4,7 +4,7 @@ import com.everlution.test.ui.support.pages.common.ListPage
 import geb.module.TextInput
 
 class ListTestGroupPage extends ListPage {
-    static url = "/testGroup/index"
+
     static at = { title == "TestGroup List" }
 
     String convertToPath(Long projectId) {

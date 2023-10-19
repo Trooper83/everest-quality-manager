@@ -57,4 +57,30 @@ abstract class TestGroupService implements ITestGroupService {
     List<TestGroup> getAll(List<Serializable> ids) {
         return TestGroup.getAll(ids)
     }
+
+    /**
+     * gets a test group with paginated test cases
+     */
+    @Transactional
+    GroupWithPaginatedTests getWithPaginatedTests(Serializable id, Map params) {
+        def group = get(id)
+        List<TestCase> tests = []
+        if (group) {
+            def c = group.testCases?.size()
+            if (c > 0) {
+                def max = params.max as Integer
+                def offset = params.offset as Integer
+                max = max < 0 ? 0 : max
+                offset = offset < 0 ? 0 : offset
+                max = Math.min(max ?: 10, 100)
+                offset = offset == null ? 0 : offset
+                def start = offset == null ? 0 : offset
+                def end = (start + max) > (c - 1) ? (c - 1) : (start + max) - 1
+                if (start <= end) {
+                    tests.addAll(group.testCases.getAt(start..end))
+                }
+            }
+        }
+        return new GroupWithPaginatedTests(group, tests)
+    }
 }

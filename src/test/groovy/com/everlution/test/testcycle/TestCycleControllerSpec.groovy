@@ -1,9 +1,9 @@
 package com.everlution.test.testcycle
 
+import com.everlution.CycleWithPaginatedTests
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestCycle
@@ -37,7 +37,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
     void "show action with a null id"() {
         given:
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(null) >> null
+            1 * getWithPaginatedTests(null, params) >> new CycleWithPaginatedTests(null, [])
         }
 
         when:"show action is executed with a null domain"
@@ -51,7 +51,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         given:
         def plan = new ReleasePlan(name: "name", project: new Project())
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(2) >> new TestCycle(releasePlan: plan)
+            1 * getWithPaginatedTests(2, params) >> new CycleWithPaginatedTests(new TestCycle(releasePlan: plan), [])
         }
 
         when:"A domain instance is passed to the show action"
@@ -74,7 +74,7 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         group1.addToTestCases(tc)
         def plan = new ReleasePlan(name: "release", project: project).save()
         controller.testCycleService = Mock(TestCycleService) {
-            1 * get(1) >> new TestCycle(releasePlan: plan)
+            1 * getWithPaginatedTests(1, params) >> new CycleWithPaginatedTests(new TestCycle(releasePlan: plan), [])
         }
 
         when:

@@ -446,4 +446,42 @@ class ShowPageSpec extends GebSpec {
         then:
         show.statusMessage.text() == "Tests successfully added"
     }
+
+    void "pagination works for results"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+
+        for (int i = 0; i <= 12; i++) {
+            def td = DataFactory.testCase()
+            def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
+            testCaseService.save(testCase)
+        }
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+        def show = at ShowTestCyclePage
+        show.addTestsByGroup()
+
+        when:
+        show.scrollToBottom()
+        def found = show.testsTable.getValueInColumn(0, 'Id')
+        show.testsTable.goToPage('2')
+
+        then:
+        at ShowTestCyclePage
+        !show.testsTable.isValueInColumn('Id', found)
+    }
 }
