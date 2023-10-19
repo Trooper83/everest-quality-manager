@@ -68,7 +68,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <g:each var="iteration" in="${testCycle.testIterations}">
+                        <g:each var="iteration" in="${iterations}">
                             <tr>
                                 <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/show/${iteration.id}">${iteration.id}</g:link></td>
                                 <td>${iteration.name}</td>
@@ -84,7 +84,8 @@
                         </tbody>
                     </table>
                     <ul class="pagination mb-5">
-                        <g:pagination domain="testCycle" projectId="${testCycle.releasePlan.project.id}" total="${testCycle.testIterations.size() ?: 0}"/>
+                        <g:pagination domain="testCycle" projectId="${testCycle.releasePlan.project.id}"
+                                      total="${testCycle.testIterations.size() ?: 0}" isTopLevel="false" itemId="${testCycle.id}"/>
                     </ul>
                 </div>
             </div>

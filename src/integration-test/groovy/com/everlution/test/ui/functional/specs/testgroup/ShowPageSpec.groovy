@@ -6,6 +6,7 @@ import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestGroup
+import com.everlution.TestGroupService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -25,6 +26,7 @@ class ShowPageSpec extends GebSpec {
     PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
+    TestGroupService testGroupService
 
     void "create message displays after group created"() {
         given: "login as a basic user"
@@ -238,5 +240,35 @@ class ShowPageSpec extends GebSpec {
 
         then: "at show test case page"
         at ShowTestCasePage
+    }
+
+    void "pagination works for results"() {
+        given: "login as a basic user"
+        def person = personService.list(max:1).first()
+        def data = DataFactory.testGroup()
+        TestGroup group = new TestGroup(name: data.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+
+        for (int i = 0; i <= 12; i++) {
+            def td = DataFactory.testCase()
+            def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
+            testCaseService.save(testCase)
+        }
+
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to (ShowTestGroupPage, project.id, group.id)
+        def found = page.testCaseTable.getValueInColumn(0, 'Name')
+        page.scrollToBottom()
+        page.testCaseTable.goToPage('2')
+
+        then:
+        at ShowTestGroupPage
+        !page.testCaseTable.isValueInColumn('Name', found)
     }
 }

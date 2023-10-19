@@ -1,33 +1,32 @@
 package com.everlution.test.ui.functional.specs.testgroup
 
+import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.TestGroup
+import com.everlution.TestGroupService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.project.ListProjectPage
-import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import spock.lang.Shared
 
 @Integration
 class ListSpec extends GebSpec {
 
     ProjectService projectService
+    TestGroupService testGroupService
+
+    @Shared Project project
 
     def setup() {
-        given: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Test Groups')
+        project = projectService.list(max:1).first()
+        to(ListTestGroupPage, project.id)
     }
 
     void "verify list table headers order"() {
@@ -67,5 +66,31 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         def listPage = at ListTestGroupPage
         listPage.statusMessage.text() ==~ /TestGroup \d+ deleted/
+    }
+
+    void "pagination loads next page"() {
+        given:
+        def groups = testGroupService.findAllByProject(project, [max:20])
+        if (groups.count < 12) {
+            def c = 12 - groups.count
+            for (int i = 0; i <= c; i++) {
+                def g = DataFactory.testGroup()
+                testGroupService.save(new TestGroup(name: g.name, project: project))
+            }
+        }
+
+        def page = at ListTestGroupPage
+        refreshWaitFor {
+            page.listTable.getRowCount() == 10
+        }
+
+        when:
+        page.scrollToBottom()
+        def found = page.listTable.getValueInColumn(0, 'Name')
+        page.listTable.goToPage('2')
+
+        then:
+        at ListTestGroupPage
+        !page.listTable.isValueInColumn('Name', found)
     }
 }

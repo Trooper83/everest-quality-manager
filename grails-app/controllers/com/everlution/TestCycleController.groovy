@@ -62,13 +62,13 @@ class TestCycleController {
      */
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
-        def testCycle = testCycleService.get(id)
-        if (testCycle == null) {
+        def result = testCycleService.getWithPaginatedTests(id, params)
+        if (result.testCycle == null) {
             notFound()
             return
         }
-        def groups = testCycle.releasePlan.project.testGroups.findAll { TestGroup tg -> tg.testCases.size() > 0 }
-        respond testCycle, view: 'show', model: [ testGroups: groups ]
+        def groups = result.testCycle.releasePlan.project.testGroups.findAll { TestGroup tg -> tg.testCases.size() > 0 }
+        respond result.testCycle, view: 'show', model: [ testGroups: groups, iterations: result.iterations ]
     }
 
     /**

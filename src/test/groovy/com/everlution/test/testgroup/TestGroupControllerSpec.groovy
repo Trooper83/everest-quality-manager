@@ -1,5 +1,6 @@
 package com.everlution.test.testgroup
 
+import com.everlution.GroupWithPaginatedTests
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
@@ -249,7 +250,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     void "show action renders show view"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * get(2) >> new TestGroup()
+            1 * getWithPaginatedTests(2, params) >> new GroupWithPaginatedTests(new TestGroup(), [])
         }
 
         when:"a domain instance is passed to the show action"
@@ -262,7 +263,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     void "Test the show action with a null id"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * get(null) >> null
+            1 * getWithPaginatedTests(null, params) >> new GroupWithPaginatedTests(null, [])
         }
 
         when:"The show action is executed with a null domain"
@@ -275,7 +276,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
     void "show action with a valid id returns a test group"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
-            1 * get(2) >> new TestGroup()
+            1 * getWithPaginatedTests(2, params) >> new GroupWithPaginatedTests(new TestGroup(), [])
         }
 
         when:"A domain instance is passed to the show action"

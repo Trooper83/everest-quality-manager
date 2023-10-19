@@ -43,7 +43,8 @@ class TestGroupController {
      */
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
-        respond testGroupService.get(id), view: 'show'
+        def group = testGroupService.getWithPaginatedTests(id, params)
+        respond group.testGroup, view: 'show', model: [tests: group.tests]
     }
 
     /**
