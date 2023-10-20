@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <asset:link rel="shortcut icon" href="icons/favicon.ico" type="image/x-icon"/>
     <title>
         <g:layoutTitle default="Everest"/>
     </title>
