@@ -7,11 +7,10 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath "org.grails.plugins:hibernate5:7.3.1"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.4.6"
-        classpath 'org.grails.plugins:database-migration:4.2.0'
     }
 }
 
-version "2.0.1"
+version "2.0.2"
 group "com.everlution.everest"
 
 apply plugin:"idea"
@@ -50,14 +49,6 @@ configurations.all {
     }
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDir 'grails-app/migrations'
-        }
-    }
-}
-
 dependencies {
     developmentOnly('org.springframework.boot:spring-boot-devtools:2.7.2')
     implementation 'org.springframework.boot:spring-boot-starter-logging:2.7.2'
@@ -83,8 +74,6 @@ dependencies {
     implementation 'org.grails.plugins:gsp:5.3.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.5'
     implementation 'org.apache.tomcat:tomcat-jdbc:10.1.9'
-    implementation 'org.grails.plugins:database-migration:4.2.0'
-    implementation 'org.liquibase:liquibase-core:4.20.0'
     console 'org.grails:grails-console:5.3.2'
     profile 'org.grails.profiles:web:5.0.5'
     //Migration of h2 to v2 is difficult (https://h2database.com/html/migration-to-v2.html)
