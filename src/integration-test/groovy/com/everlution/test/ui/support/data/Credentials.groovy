@@ -6,7 +6,6 @@ enum Credentials {
     APP_ADMIN("app_admin@appadmin.com", "!Password#2022"),
     BASIC("basic@basic.com", "!Password#2022"),
     DISABLED("disabled@disabled.com", "!Password#2022"),
-    ORG_ADMIN("org_admin@orgadmin.com", "!Password#2022"),
     PASSWORD_EXPIRED("expired@passwordexpired.com", "!Password#2022"),
     PROJECT_ADMIN("project_admin@projectadmin.com", "!Password#2022"),
     READ_ONLY("read_only@readonly.com", "!Password#2022")

@@ -60,7 +60,7 @@
                                     <g:set var='authority'
                                            value='${uiPropertiesStrategy.getProperty(role, "authority")}'/>
                                     <g:checkBox class="form-check-input" type="checkbox" name='${authority}'/>
-                                    <label class="form-check-label">${authority}</label>
+                                    <label class="form-check-label">${authority.replaceAll('_',' ')}</label>
                                 </div>
                             </g:each>
                         </div>

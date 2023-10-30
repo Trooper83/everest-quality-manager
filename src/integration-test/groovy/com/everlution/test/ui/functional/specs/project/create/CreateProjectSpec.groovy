@@ -30,7 +30,6 @@ class CreateProjectSpec extends GebSpec {
         where:
         username                         | password                          | name                | code
         Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password | "created project 1" | "CP1"
-        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password     | "created project 2" | "CP2"
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password     | "created project 3" | "CP3"
     }
 

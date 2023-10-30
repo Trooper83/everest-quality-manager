@@ -27,15 +27,12 @@ class ErrorsSpec extends GebSpec {
         "/user/create" | Credentials.BASIC.email
         "/user/create" | Credentials.READ_ONLY.email
         "/user/create" | Credentials.PROJECT_ADMIN.email
-        "/user/create" | Credentials.ORG_ADMIN.email
         "/user/edit/1" | Credentials.BASIC.email
         "/user/edit/1" | Credentials.READ_ONLY.email
         "/user/edit/1" | Credentials.PROJECT_ADMIN.email
-        "/user/edit/1" | Credentials.ORG_ADMIN.email
         "/user/search" | Credentials.BASIC.email
         "/user/search" | Credentials.READ_ONLY.email
         "/user/search" | Credentials.PROJECT_ADMIN.email
-        "/user/search" | Credentials.ORG_ADMIN.email
     }
 
     void "denied page displayed for non-used security views"(String url, String username) {

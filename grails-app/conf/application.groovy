@@ -45,8 +45,7 @@ grails.plugin.springsecurity.http.headers.frameOptions = false
 */
 
 grails.plugin.springsecurity.roleHierarchy = '''
-   ROLE_APP_ADMIN > ROLE_ORG_ADMIN
-   ROLE_ORG_ADMIN > ROLE_PROJECT_ADMIN
+   ROLE_APP_ADMIN > ROLE_PROJECT_ADMIN
    ROLE_PROJECT_ADMIN > ROLE_BASIC
    ROLE_BASIC > ROLE_READ_ONLY
 '''

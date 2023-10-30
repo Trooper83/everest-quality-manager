@@ -36,7 +36,6 @@ class HomeAdminSpec extends GebSpec {
         email                           | password
         Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
-        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
     }
 
     void "admin button not displayed for basic and read only"(String email, String password) {
