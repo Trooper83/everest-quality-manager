@@ -25,10 +25,12 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Name</th>
+                            <g:columnSort domain="step" projectId="${project.id}" property="name" title="Name"/>
                             <th>Action</th>
                             <th>Result</th>
-                            <th>Created By</th>
+                            <g:columnSort domain="step" projectId="${project.id}" property="person" title="Created By"/>
+                            <g:columnSort domain="step" projectId="${project.id}" property="dateCreated" title="Created"/>
+                            <g:columnSort domain="step" projectId="${project.id}" property="lastUpdated" title="Updated"/>
                         </tr>
                         </thead>
                         <tbody>
@@ -38,6 +40,8 @@
                                 <td>${step.act}</td>
                                 <td>${step.result}</td>
                                 <td>${step.person.email}</td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${step.dateCreated}"/></td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${step.lastUpdated}"/></td>
                             </tr>
                         </g:each>
                         </tbody>

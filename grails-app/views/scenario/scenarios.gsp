@@ -24,21 +24,27 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Created By</th>
-                            <th>Platform</th>
-                            <th>Type</th>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="name" title="Name"/>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="person" title="Created By"/>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="area" title="Area"/>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="platform" title="Platform"/>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="type" title="Type"/>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="executionMethod" title="Execution Method"/>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="dateCreated" title="Created"/>
+                            <g:columnSort domain="scenario" projectId="${project.id}" property="lastUpdated" title="Updated"/>
                         </tr>
                         </thead>
                         <tbody>
                         <g:each var="scenario" in="${scenarioList}">
                             <tr>
                                 <td><g:link uri="/project/${project.id}/scenario/show/${scenario.id}">${scenario.name}</g:link></td>
-                                <td>${scenario.description}</td>
                                 <td>${scenario.person.email}</td>
+                                <td>${scenario.area?.name}</td>
                                 <td>${scenario.platform}</td>
                                 <td>${scenario.type}</td>
+                                <td>${scenario.executionMethod}</td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${scenario.dateCreated}"/></td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${scenario.lastUpdated}"/></td>
                             </tr>
                         </g:each>
                         </tbody>

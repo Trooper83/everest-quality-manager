@@ -28,7 +28,8 @@
         <table class="table table-light table-bordered mt-3">
             <thead class="thead-light">
             <tr>
-                <th>Name</th>
+                <g:columnSort domain="testGroup" projectId="${testGroup.project.id}" property="name" title="Name"
+                        isTopLevel="false" itemId="${testGroup.id}"/>
                 <th>Area</th>
                 <th>Platform</th>
                 <th>Type</th>

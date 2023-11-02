@@ -24,23 +24,27 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Created By</th>
-                            <th>Project</th>
-                            <th>Platform</th>
-                            <th>Type</th>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="name" title="Name"/>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="person" title="Created By"/>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="area" title="Area"/>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="platform" title="Platform"/>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="type" title="Type"/>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="executionMethod" title="Execution Method"/>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="dateCreated" title="Created"/>
+                            <g:columnSort domain="testCase" projectId="${project.id}" property="lastUpdated" title="Updated"/>
                         </tr>
                         </thead>
                         <tbody>
                         <g:each var="test" in="${testCaseList}">
                             <tr>
                                 <td><g:link uri="/project/${project.id}/testCase/show/${test.id}">${test.name}</g:link></td>
-                                <td>${test.description}</td>
                                 <td>${test.person.email}</td>
-                                <td>${test.project.name}</td>
+                                <td>${test.area?.name}</td>
                                 <td>${test.platform}</td>
                                 <td>${test.type}</td>
+                                <td>${test.executionMethod}</td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${test.dateCreated}"/></td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${test.lastUpdated}"/></td>
                             </tr>
                         </g:each>
                         </tbody>

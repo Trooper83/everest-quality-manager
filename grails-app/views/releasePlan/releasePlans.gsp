@@ -24,10 +24,13 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Planned Date</th>
-                            <th>Release Date</th>
+                            <g:columnSort domain="releasePlan" projectId="${project.id}" property="name" title="Name"/>
+                            <g:columnSort domain="releasePlan" projectId="${project.id}" property="status" title="Status"/>
+                            <g:columnSort domain="releasePlan" projectId="${project.id}" property="person" title="Created By"/>
+                            <g:columnSort domain="releasePlan" projectId="${project.id}" property="plannedDate" title="Planned"/>
+                            <g:columnSort domain="releasePlan" projectId="${project.id}" property="releaseDate" title="Released"/>
+                            <g:columnSort domain="releasePlan" projectId="${project.id}" property="dateCreated" title="Created"/>
+                            <g:columnSort domain="releasePlan" projectId="${project.id}" property="lastUpdated" title="Updated"/>
                         </tr>
                         </thead>
                         <tbody>
@@ -37,11 +40,18 @@
                                     <g:link uri="/project/${project.id}/releasePlan/show/${releasePlan.id}">${releasePlan.name}</g:link>
                                 </td>
                                 <td>${releasePlan.status}</td>
+                                <td>${releasePlan.person}</td>
                                 <td>
                                     <g:formatDate format="MMMM d, yyyy" date="${releasePlan.plannedDate}"/>
                                 </td>
                                 <td>
                                     <g:formatDate format="MMMM d, yyyy" date="${releasePlan.releaseDate}"/>
+                                </td>
+                                <td>
+                                    <g:formatDate format="MMMM d, yyyy" date="${releasePlan.dateCreated}"/>
+                                </td>
+                                <td>
+                                    <g:formatDate format="MMMM d, yyyy" date="${releasePlan.lastUpdated}"/>
                                 </td>
                             </tr>
                         </g:each>
