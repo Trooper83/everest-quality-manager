@@ -1,6 +1,5 @@
 package com.everlution.test.testcycle
 
-import com.everlution.CycleWithPaginatedTests
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
@@ -11,6 +10,7 @@ import com.everlution.TestCycleController
 import com.everlution.TestCycleService
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
+import com.everlution.TestIterationService
 import com.everlution.command.IterationsCmd
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -37,11 +37,11 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
     void "show action with a null id"() {
         given:
         controller.testCycleService = Mock(TestCycleService) {
-            1 * getWithPaginatedTests(null, params) >> new CycleWithPaginatedTests(null, [])
+            1 * get(_) >> null
         }
 
         when:"show action is executed with a null domain"
-        controller.show(null)
+        controller.show(null, 1)
 
         then:"404 error is returned"
         response.status == 404
@@ -51,11 +51,15 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         given:
         def plan = new ReleasePlan(name: "name", project: new Project())
         controller.testCycleService = Mock(TestCycleService) {
-            1 * getWithPaginatedTests(2, params) >> new CycleWithPaginatedTests(new TestCycle(releasePlan: plan), [])
+            1 * get(_) >> new TestCycle(releasePlan: plan)
+        }
+
+        controller.testIterationService = Mock(TestIterationService) {
+            1 * findAllByTestCycle(_, _) >> []
         }
 
         when:"A domain instance is passed to the show action"
-        controller.show(2)
+        controller.show(2, 1)
 
         then:"A model is populated containing the domain instance"
         model.testCycle instanceof TestCycle
@@ -74,14 +78,43 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         group1.addToTestCases(tc)
         def plan = new ReleasePlan(name: "release", project: project).save()
         controller.testCycleService = Mock(TestCycleService) {
-            1 * getWithPaginatedTests(1, params) >> new CycleWithPaginatedTests(new TestCycle(releasePlan: plan), [])
+            1 * get(_) >> new TestCycle(releasePlan: plan)
+        }
+
+        controller.testIterationService = Mock(TestIterationService) {
+            1 * findAllByTestCycle(_, _) >> []
         }
 
         when:
-        controller.show(1)
+        controller.show(1, 1)
 
         then:
         model.testGroups == [group1]
+    }
+
+    void "show action param max"(Integer max, int expected) {
+        given:
+        def plan = new ReleasePlan(name: "name1", project: new Project())
+        controller.testCycleService = Mock(TestCycleService) {
+            1 * get(_) >> new TestCycle(releasePlan: plan)
+        }
+
+        controller.testIterationService = Mock(TestIterationService) {
+            1 * findAllByTestCycle(_, _) >> []
+        }
+
+        when:"the action is executed"
+        controller.show(2, max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
     }
 
     void "add tests renders success message"() {

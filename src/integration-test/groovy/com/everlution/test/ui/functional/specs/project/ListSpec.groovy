@@ -4,7 +4,6 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
-
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -29,6 +28,35 @@ class ListSpec extends GebSpec {
         then: "correct headers are displayed"
         ListProjectPage page = browser.page(ListProjectPage)
         page.projectTable.getHeaders() == ["Name", "Code"]
+    }
+
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def page = to ListProjectPage
+
+        and:
+        page.projectTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.projectTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column | propName
+        'Name' | 'name'
+        'Code' | 'code'
     }
 
     void "delete message displays after project deleted"() {

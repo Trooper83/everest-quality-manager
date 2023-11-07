@@ -9,7 +9,6 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
-import com.everlution.test.ui.support.pages.step.EditStepPage
 import com.everlution.test.ui.support.pages.step.ListStepPage
 import com.everlution.test.ui.support.pages.step.ShowStepPage
 import geb.spock.GebSpec
@@ -34,7 +33,39 @@ class ListSpec extends GebSpec {
 
         then: "correct headers are displayed"
         ListScenarioPage page = browser.page(ListScenarioPage)
-        page.listTable.getHeaders() == ["Name", "Action", "Result", "Created By"]
+        page.listTable.getHeaders() == ["Name", "Action", "Result", "Created By", "Created", "Updated"]
+    }
+
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to list page"
+        def project = projectService.list(max: 1).first()
+        def page = to(ListStepPage, project.id)
+
+        and:
+        page.listTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.listTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column | propName
+        'Name' | 'name'
+        'Created By' | 'person'
+        'Created' | 'dateCreated'
+        'Updated' | 'lastUpdated'
     }
 
     void "clicking name column directs to show page"() {

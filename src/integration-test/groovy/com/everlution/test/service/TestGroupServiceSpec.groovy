@@ -2,7 +2,6 @@ package com.everlution.test.service
 
 import com.everlution.Person
 import com.everlution.Project
-import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestGroup
@@ -163,9 +162,13 @@ class TestGroupServiceSpec extends Specification {
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
         def group = new TestGroup(name: "name 12345", project: project)
         testGroupService.save(group)
+        project.addToTestGroups(group)
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
-                executionMethod: "Automated", type: "UI", project: project).save()
+                executionMethod: "Automated", type: "UI", project: project)
+        testCaseService.save(testCase)
         group.addToTestCases(testCase)
+        testCase.addToTestGroups(group)
+        sessionFactory.currentSession.flush()
 
         when:
         def result = testGroupService.getWithPaginatedTests(group.id, [:])

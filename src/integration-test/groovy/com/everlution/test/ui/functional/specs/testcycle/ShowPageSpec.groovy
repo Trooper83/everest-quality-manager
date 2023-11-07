@@ -16,6 +16,7 @@ import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
+import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
 import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
@@ -412,6 +413,52 @@ class ShowPageSpec extends GebSpec {
 
         then:
         show.testsTable.getHeaders() == ["Id", "Name", "Result", "Executed By", ""]
+    }
+
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+        def show = at ShowTestCyclePage
+        show.addTestsByGroup(group.name)
+        def page = browser.page(ListTestGroupPage)
+        page.listTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.listTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column | propName
+        'Id' | 'id'
+        'Name' | 'name'
+        'Result' | 'result'
+        'Executed By' | 'person'
     }
 
     void "success message displays when tests added"() {

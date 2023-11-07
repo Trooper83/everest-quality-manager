@@ -60,10 +60,14 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Id</th>
-                            <th>Name</th>
-                            <th>Result</th>
-                            <th>Executed By</th>
+                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="id" title="Id"
+                                          isTopLevel="false" itemId="${testCycle.id}"/>
+                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="name" title="Name"
+                                          isTopLevel="false" itemId="${testCycle.id}"/>
+                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="result" title="Result"
+                                          isTopLevel="false" itemId="${testCycle.id}"/>
+                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="person" title="Executed By"
+                                          isTopLevel="false" itemId="${testCycle.id}"/>
                             <th></th>
                         </tr>
                         </thead>

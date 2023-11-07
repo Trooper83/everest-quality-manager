@@ -40,7 +40,7 @@
                                     <g:link uri="/project/${project.id}/releasePlan/show/${releasePlan.id}">${releasePlan.name}</g:link>
                                 </td>
                                 <td>${releasePlan.status}</td>
-                                <td>${releasePlan.person}</td>
+                                <td>${releasePlan.person.email}</td>
                                 <td>
                                     <g:formatDate format="MMMM d, yyyy" date="${releasePlan.plannedDate}"/>
                                 </td>

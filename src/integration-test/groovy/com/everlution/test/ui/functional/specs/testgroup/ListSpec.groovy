@@ -32,7 +32,29 @@ class ListSpec extends GebSpec {
     void "verify list table headers order"() {
         expect: "correct headers are displayed"
         def page = browser.page(ListTestGroupPage)
-        page.listTable.getHeaders() == ["Name"]
+        page.listTable.getHeaders() == ["Name", "Created"]
+    }
+
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given:
+        def page = browser.page(ListTestGroupPage)
+        page.listTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.listTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column | propName
+        'Name' | 'name'
+        'Created' | 'dateCreated'
     }
 
     void "clicking name column directs to show page"() {

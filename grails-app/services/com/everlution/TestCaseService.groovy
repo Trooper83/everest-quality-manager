@@ -58,6 +58,17 @@ abstract class TestCaseService implements ITestCaseService {
     }
 
     /**
+     * gets all tests with the supplied group
+     */
+    @Transactional
+    List<TestCase> getAllByGroup(Serializable testGroupId, Map params) {
+        def tests = TestCase.where {
+            testGroups { id == testGroupId }
+        }.list(params)
+        return tests
+    }
+
+    /**
      * save an updated test case, deletes any removed free-form steps
      * @param testCase - the test case to update
      * @param removedItems - ids of the steps to remove

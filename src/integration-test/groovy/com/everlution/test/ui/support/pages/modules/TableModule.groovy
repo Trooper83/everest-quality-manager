@@ -101,4 +101,11 @@ class TableModule extends Module {
         def cells = tableRows.collect( r -> r.find('td')[columnIndex])
         return cells.any { c -> c.text() == value }
     }
+
+    /**
+     * clicks a column header to sort
+     */
+    void sortColumn(String column) {
+        tableHeaders.find("a", text: column).click()
+    }
 }

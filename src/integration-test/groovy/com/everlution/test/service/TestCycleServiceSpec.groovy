@@ -182,21 +182,4 @@ class TestCycleServiceSpec extends Specification {
         then:
         testCycleService.get(tc.id).testCaseIds.size() == 2
     }
-
-    void "getWithPaginatedTests returns group and tests"() {
-        given:
-        setupData()
-        def project = DataFactory.createProject()
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo", person: person).save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: []).save(flush: true)
-        testCycleService.addTestIterations(tc, [testCase])
-
-        when:
-        def result = testCycleService.getWithPaginatedTests(tc.id, [:])
-
-        then:
-        result.testCycle == tc
-        result.iterations.first().testCase.id == testCase.id
-    }
 }

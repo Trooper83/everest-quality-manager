@@ -68,4 +68,24 @@ class TestIterationServiceSpec extends Specification {
         expect:
         testIterationService.read(999999999) == null
     }
+
+    void "findAllByTestCycle returns iterations"() {
+        given:
+        def person = personService.list(max: 1).first()
+        def project = projectService.list(max: 1).first()
+        def testCase = new TestCase(name: "name of test case", project: project, person: person).save()
+        def plan = new ReleasePlan(name: "plan", project: project, status: "ToDo", person: person).save()
+        def cycle = new TestCycle(name: "name of cycle", releasePlan: plan).save()
+        def iteration = new TestIteration(name: "name of test iteration", testCase: testCase, result: "ToDo", steps: [],
+                testCycle: cycle)
+        testIterationService.save(iteration)
+        cycle.addToTestIterations(iteration)
+
+        when:
+        def found = testIterationService.findAllByTestCycle(cycle, [:])
+
+        then:
+        found.size() == 1
+        found.first() instanceof TestIteration
+    }
 }

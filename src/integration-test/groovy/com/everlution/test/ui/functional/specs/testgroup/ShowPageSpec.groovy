@@ -213,6 +213,47 @@ class ShowPageSpec extends GebSpec {
         showPage.testCaseTable.getHeaders() == ["Name", "Area", "Platform", "Type", "Execution Method"]
     }
 
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def tc = DataFactory.testCase()
+        def person = personService.list(max: 1).first()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to show page"
+        def page = to (ShowTestGroupPage, project.id, group.id)
+        page.testCaseTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.testCaseTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column | propName
+        'Name' | 'name'
+        'Area' | 'area'
+        'Platform' | 'platform'
+        'Type' | 'type'
+        'Execution Method' | 'executionMethod'
+    }
+
     void "test case table id link opens show test case"() {
         given: "setup data"
         def gd = DataFactory.testGroup()

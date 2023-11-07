@@ -7,8 +7,6 @@ import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
-import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
-import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -35,7 +33,42 @@ class ListSpec extends GebSpec {
         def page = at ListBugPage
 
         then: "correct headers are displayed"
-        page.listTable.getHeaders() == ["Name", "Description", "Created By", "Platform", "Status"]
+        page.listTable.getHeaders() == ["Name", "Created By", "Platform", "Area", "Status", "Created", "Updated"]
+    }
+
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def projId = projectService.list(max:1).first().id
+        def page = to(ListBugPage, projId)
+
+        and:
+        page.listTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.listTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column       | propName
+        'Name'       | 'name'
+        'Created By' | 'person'
+        'Platform'   | 'platform'
+        'Area'       | 'area'
+        'Status'     | 'status'
+        'Created'    | 'dateCreated'
+        'Updated'    | 'lastUpdated'
     }
 
     void "delete message displays after bug deleted"() {

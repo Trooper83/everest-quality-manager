@@ -6,7 +6,7 @@ import com.github.javafaker.Faker
 class CreateTestGroupPage extends CreatePage {
     static at = { title == "Create TestGroup" }
 
-    String convertToPath(Long projectId) {
+    static String convertToPath(Long projectId) {
         "/project/${projectId}/testGroup/create"
     }
 
