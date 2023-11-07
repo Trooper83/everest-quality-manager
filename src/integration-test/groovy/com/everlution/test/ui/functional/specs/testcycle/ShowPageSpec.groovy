@@ -529,4 +529,81 @@ class ShowPageSpec extends GebSpec {
         at ShowTestCyclePage
         !show.testsTable.isValueInColumn('Id', found)
     }
+
+    void "pagination params remain set with sorting"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+
+        for (int i = 0; i <= 12; i++) {
+            def td = DataFactory.testCase()
+            def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
+            testCaseService.save(testCase)
+        }
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+        def show = at ShowTestCyclePage
+        show.addTestsByGroup()
+        show.scrollToBottom()
+        show.testsTable.goToPage('2')
+
+        when:
+        show.testsTable.sortColumn('Id')
+
+        then:
+        currentUrl.contains('offset=10')
+        currentUrl.contains('max=10')
+    }
+
+    void "sort params remain set with pagination"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+
+        for (int i = 0; i <= 12; i++) {
+            def td = DataFactory.testCase()
+            def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
+            testCaseService.save(testCase)
+        }
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+        def show = at ShowTestCyclePage
+        show.addTestsByGroup()
+        show.scrollToBottom()
+        show.testsTable.sortColumn('Id')
+
+        when:
+        show.scrollToBottom()
+        show.testsTable.goToPage('2')
+
+        then:
+        currentUrl.contains('sort=id')
+        currentUrl.contains('order=asc')
+    }
 }

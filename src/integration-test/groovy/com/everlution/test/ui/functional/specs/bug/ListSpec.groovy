@@ -1,5 +1,8 @@
 package com.everlution.test.ui.functional.specs.bug
 
+import com.everlution.Bug
+import com.everlution.BugService
+import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
@@ -13,7 +16,20 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ListSpec extends GebSpec {
 
+    BugService bugService
+    PersonService personService
     ProjectService projectService
+
+    private Long setupData() {
+        def person = personService.list(max:1).first()
+        def project = projectService.list(max:1).first()
+
+        for (int i = 0; i <= 12; i++) {
+            def b = new Bug(name: "Pagination Bug ${i}", person: person, project: project, status: "Open")
+            bugService.save(b)
+        }
+        return project.id
+    }
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -137,5 +153,164 @@ class ListSpec extends GebSpec {
 
         then: "at show page"
         at ShowBugPage
+    }
+
+    void "pagination next button not displayed"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+        def page = to(ListBugPage, id)
+
+        when:
+        page.scrollToBottom()
+        page.listTable.goToPage("2")
+
+        then:
+        !page.listTable.isPaginationButtonDisplayed('Next')
+    }
+
+    void "pagination works for results"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+        def page = to(ListBugPage, id)
+
+        when:
+        def found = page.listTable.getValueInColumn(0, 'Name')
+        page.scrollToBottom()
+        page.listTable.goToPage('2')
+
+        then:
+        at ListBugPage
+        !page.listTable.isValueInColumn('Name', found)
+    }
+
+    void "pagination params remain set with sorting"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+        def page = to(ListBugPage, id)
+
+        and:
+        page.scrollToBottom()
+        page.listTable.goToPage('2')
+
+        when:
+        page.listTable.sortColumn('Name')
+
+        then:
+        currentUrl.contains('max=10')
+        currentUrl.contains('offset=10')
+    }
+
+    void "sort params remain set with pagination"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def page = to(ListBugPage, id)
+        page.listTable.sortColumn('Name')
+
+        when:
+        page.scrollToBottom()
+        page.listTable.goToPage('2')
+
+        then:
+        currentUrl.contains('sort=name')
+        currentUrl.contains('order=asc')
+    }
+
+    void "search params remain set with pagination"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def page = to(ListBugPage, id)
+        page.search('Bug')
+
+        when:
+        page.scrollToBottom()
+        page.listTable.goToPage('2')
+
+        then:
+        currentUrl.contains('name=Bug')
+        currentUrl.contains('isSearch=true')
+    }
+
+    void "search params remain set with sort"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def page = to(ListBugPage, id)
+        page.search('Bug')
+
+        when:
+        page.listTable.sortColumn('Name')
+
+        then:
+        currentUrl.contains("name=Bug")
+        currentUrl.contains('isSearch=true')
+    }
+
+    void "pagination previous button displayed"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+        def page = to(ListBugPage, id)
+
+        when:
+        page.scrollToBottom()
+        page.listTable.goToPage('2')
+
+        then:
+        page.listTable.isPaginationButtonDisplayed('Previous')
+    }
+
+    void "pagination next button displayed"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+        def page = to(ListBugPage, id)
+
+        when:
+        page.scrollToBottom()
+
+        then:
+        page.listTable.isPaginationButtonDisplayed('Next')
+    }
+
+    void "pagination previous button not displayed"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+        def page = to(ListBugPage, id)
+
+        when:
+        page.scrollToBottom()
+
+        then:
+        !page.listTable.isPaginationButtonDisplayed('Previous')
     }
 }

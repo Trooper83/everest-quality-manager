@@ -6,7 +6,7 @@ import geb.navigator.Navigator
 class TableModule extends Module {
     static content = {
         paginationGroup { $(".pagination") }
-        paginationGroupLink { text -> $(".pagination li a", text: text) }
+        paginationGroupLink(required: false) { text -> $(".pagination li a", text: text) }
         tableHeaders { $("thead th") }
         tableRows(required: false) { $("tbody tr") }
     }
@@ -91,6 +91,13 @@ class TableModule extends Module {
      */
     void goToPage(String linkText) {
         paginationGroupLink(linkText).click()
+    }
+
+    /**
+     * determines if pagination button is displayed
+     */
+    boolean isPaginationButtonDisplayed(String text) {
+        return paginationGroupLink(text).size() > 0
     }
 
     /**

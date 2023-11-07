@@ -19,7 +19,8 @@ class DataFactory {
         "ASA", "ATA", "AUA", "AVA", "AWA", "AXA", "AYA", "AZA", "BAA", "BAB", "BAC", "BAD", "BAE", "BAF", "BAG", "BAH",
         "BAI", "BAJ", "BAK", "BAL", "BAM", "BAN", "BAO", "BAP", "BAQ", "BAR", "BAS", "BAT", "BAU", "BAV", "BAW",
         "BAX", "BAY", "BAZ", "BBB", "BBC", "BBD", "BBE", "BBF", "BBG", "BBH", "BBI", "BBJ", "BBK", "BBL", "BBM", "BBN",
-        "BBO", "BBP", "BBQ", "BBR", "BBS", "BBT", "BBU", "BBV", "BBW", "BBX", "BBY", "BBZ"]
+        "BBO", "BBP", "BBQ", "BBR", "BBS", "BBT", "BBU", "BBV", "BBW", "BBX", "BBY", "BBZ", "AAAA", "BBBB", "CCCC",
+        "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLL", "MMMM", "NNNN", "OOOO", "PPPP"]
 
     /**
      * gets a future date in 'MMMM dd, yyyy' format

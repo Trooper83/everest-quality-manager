@@ -2,7 +2,6 @@ package com.everlution.test.ui.functional.specs.project
 
 import com.everlution.Project
 import com.everlution.ProjectService
-import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -114,32 +113,5 @@ class ListSpec extends GebSpec {
         then: "at show page"
         listPage.projectTable.rowCount > 0
         listPage.nameInput.text == 'bootstrap'
-    }
-
-    void "pagination works for results"() {
-        given: "login as project admin user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
-
-        if (projectService.count() < 12) {
-            def c = 12 - projectService.count()
-
-            for (int i = 0; i <= c; i++) {
-                def p = DataFactory.project()
-                def project = new Project(code: p.code, name: p.name)
-                projectService.save(project)
-            }
-        }
-
-        when:
-        def list = to ListProjectPage
-        def found = list.projectTable.getValueInColumn(0, 'Name')
-        list.scrollToBottom()
-        list.projectTable.goToPage('2')
-
-        then:
-        at ListProjectPage
-        !list.projectTable.isValueInColumn('Name', found)
     }
 }
