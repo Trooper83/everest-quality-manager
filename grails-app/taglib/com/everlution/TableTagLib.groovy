@@ -4,7 +4,6 @@ import grails.artefact.TagLibrary
 import grails.gsp.TagLib
 import grails.util.TypeConvertingMap
 import groovy.transform.CompileStatic
-import org.grails.encoder.CodecLookup
 
 @TagLib
 @CompileStatic
