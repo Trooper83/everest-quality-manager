@@ -277,7 +277,7 @@ class TableTagLib implements TagLibrary {
             href = "/projects"
         } else if (domain == 'user') {
             href = '/user/search'
-        } else if ((domain == 'testGroup' || domain == 'testCycle') && !isTopLevel) {
+        } else if (!isTopLevel) {
             href = "/project/${projectId}/${domain}/show/${itemId}"
         }
         else {
