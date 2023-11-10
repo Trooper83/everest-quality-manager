@@ -17,6 +17,7 @@ class ShowTestCyclePage extends ShowPage {
         addTestsModalCancelButton { $("[data-test-id=modal-cancel-button]") }
         addTestsModalCloseButton { $("[data-test-id=modal-close-button]") }
         addTestsModalSubmitButton { $("[data-test-id=modal-submit-button]") }
+        progressBar { $(".progress-stacked") }
         releasePlanLink { $("#releasePlan") }
         testGroupsOptions { $("#testGroups>option") }
         testsTable { module TableModule }

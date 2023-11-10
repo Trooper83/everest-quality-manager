@@ -27,6 +27,7 @@ class ShowReleasePlanPage extends ShowPage {
         testCycleModalNameInput { $(testCycleModal.find("[id='testCycle.name']")) }
         testCycleModalPlatformOptions { testCycleModal.find("[id='testCycle.platform'] > option") }
         testCycleModalSubmitButton { testCycleModal.find("[data-test-id=modal-submit-button]") }
+        testCycleProgressBars { $(".progress-stacked") }
         testCycleViewLink { $("#testCycles [data-test-id=view-test-cycle-link]") }
     }
 
