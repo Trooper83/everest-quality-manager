@@ -5,8 +5,12 @@ import com.everlution.test.ui.support.pages.modules.TableModule
 import geb.module.TextInput
 
 class ListBugPage extends ListPage {
-    static url = "/bugs"
+
     static at = { title == "Bug List" }
+
+    static String convertToPath(Long projectId) {
+        "/project/${projectId}/bugs"
+    }
 
     static content = {
         nameInput { $("#name").module(TextInput) }

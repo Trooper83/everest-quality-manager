@@ -24,21 +24,25 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Created By</th>
-                            <th>Platform</th>
-                            <th>Status</th>
+                            <g:columnSort domain="bug" projectId="${project.id}" property="name" title="Name"/>
+                            <g:columnSort domain="bug" projectId="${project.id}" property="person" title="Created By"/>
+                            <g:columnSort domain="bug" projectId="${project.id}" property="platform" title="Platform"/>
+                            <g:columnSort domain="bug" projectId="${project.id}" property="area" title="Area"/>
+                            <g:columnSort domain="bug" projectId="${project.id}" property="status" title="Status"/>
+                            <g:columnSort domain="bug" projectId="${project.id}" property="dateCreated" title="Created"/>
+                            <g:columnSort domain="bug" projectId="${project.id}" property="lastUpdated" title="Updated"/>
                         </tr>
                         </thead>
                         <tbody>
                         <g:each var="bug" in="${bugList}">
                             <tr>
                                 <td><g:link uri="/project/${project.id}/bug/show/${bug.id}">${bug.name}</g:link></td>
-                                <td>${bug.description}</td>
                                 <td>${bug.person.email}</td>
                                 <td>${bug.platform}</td>
+                                <td>${bug.area?.name}</td>
                                 <td>${bug.status}</td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${bug.dateCreated}"/></td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${bug.lastUpdated}"/></td>
                             </tr>
                         </g:each>
                         </tbody>

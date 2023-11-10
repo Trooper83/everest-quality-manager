@@ -48,7 +48,6 @@ class EditScenarioSpec extends GebSpec {
         username                        | password
         Credentials.BASIC.email         | Credentials.BASIC.password
         Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
-        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 

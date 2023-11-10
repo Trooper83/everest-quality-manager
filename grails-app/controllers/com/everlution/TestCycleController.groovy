@@ -8,6 +8,7 @@ class TestCycleController {
 
     TestCaseService testCaseService
     TestCycleService testCycleService
+    TestIterationService testIterationService
     TestGroupService testGroupService
 
     static allowedMethods = [addTests: "POST"]
@@ -61,14 +62,16 @@ class TestCycleController {
      * @param id - id of the instance to display
      */
     @Secured("ROLE_READ_ONLY")
-    def show(Long id) {
-        def result = testCycleService.getWithPaginatedTests(id, params)
-        if (result.testCycle == null) {
+    def show(Long id, Integer max) {
+        params.max = Math.min(max ?: 10, 100)
+        def cycle = testCycleService.get(id)
+        if (cycle == null) {
             notFound()
             return
         }
-        def groups = result.testCycle.releasePlan.project.testGroups.findAll { TestGroup tg -> tg.testCases.size() > 0 }
-        respond result.testCycle, view: 'show', model: [ testGroups: groups, iterations: result.iterations ]
+        def iterations = testIterationService.findAllByTestCycle(cycle, params)
+        def groups = cycle.releasePlan.project.testGroups.findAll { TestGroup tg -> tg.testCases.size() > 0 }
+        respond cycle, view: 'show', model: [ testGroups: groups, iterations: iterations ]
     }
 
     /**

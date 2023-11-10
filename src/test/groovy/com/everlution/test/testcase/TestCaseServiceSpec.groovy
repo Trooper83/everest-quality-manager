@@ -4,6 +4,7 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.TestCase
 import com.everlution.TestCaseService
+import com.everlution.TestGroup
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -243,5 +244,21 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         ''          | 3
         'not found' | 0
         'test'      | 3
+    }
+
+    void "getAllByGroup returns empty list when group null"() {
+        when:
+        def t = service.getAllByGroup(null, [:])
+
+        then:
+        t.empty
+    }
+
+    void "getAllByGroup returns empty list when group not found"() {
+        when:
+        def t = service.getAllByGroup(999, [:])
+
+        then:
+        t.empty
     }
 }

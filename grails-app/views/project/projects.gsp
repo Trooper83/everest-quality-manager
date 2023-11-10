@@ -28,8 +28,8 @@
             <table class="table table-light table-bordered">
                 <thead class="thead-light">
                 <tr>
-                    <th>Name</th>
-                    <th>Code</th>
+                    <g:columnSort domain="project" property="name" title="Name"/>
+                    <g:columnSort domain="project" property="code" title="Code"/>
                 </tr>
                 </thead>
                 <tbody>

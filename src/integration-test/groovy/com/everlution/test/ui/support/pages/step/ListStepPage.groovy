@@ -4,8 +4,11 @@ import com.everlution.test.ui.support.pages.common.ListPage
 import geb.module.TextInput
 
 class ListStepPage extends ListPage {
-    static url = "/steps"
+
     static at = { title == "Step List" }
+    static String convertToPath(Long projectId) {
+        "/project/${projectId}/steps"
+    }
 
     static content = {
         nameInput { $("#name").module(TextInput) }

@@ -28,9 +28,10 @@ class TestCaseServiceSpec extends Specification {
     SessionFactory sessionFactory
 
     @Shared Project project
+    @Shared Person person
 
     private Long setupData() {
-        def person = new Person(email: "test1@test.com", password: "!Password2022").save()
+        person = new Person(email: "test1@test.com", password: "!Password2022").save()
         project = new Project(name: "TestCaseServiceSpec Project", code: "TTT").save()
         TestCase testCase = new TestCase(person: person, name: "first", description: "desc1",
                 executionMethod: "Automated", type: "API", project: project).save()
@@ -336,7 +337,25 @@ class TestCaseServiceSpec extends Specification {
         removed.stepIds = [step.id]
         testCaseService.saveUpdate(testCase, removed)
 
-        then: "step is removed"
+        then: "step is not deleted"
         stepService.get(step.id) != null
+    }
+
+    void "getAllByGroup returns test cases in group"() {
+        given:
+        setupData()
+        def group = new TestGroup(name: "name 12345", project: project).save()
+        project.addToTestGroups(group)
+        def testCase = new TestCase(person: person, name: "second", description: "desc2",
+                executionMethod: "Automated", type: "UI", project: project).save()
+        group.addToTestCases(testCase)
+        testCase.addToTestGroups(group)
+        sessionFactory.currentSession.flush()
+
+        when:
+        def tests = testCaseService.getAllByGroup(group.id, [:])
+
+        then:
+        tests.first() == testCase
     }
 }

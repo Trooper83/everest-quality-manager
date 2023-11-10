@@ -79,13 +79,19 @@
                     <div class="accordion mb-3" id="testCycles">
                         <g:each status="i" var="cycle" in="${releasePlan.testCycles}">
                             <div class="card mb-3">
-                                <div class="card-header" id="testCycle-${i}">
-                                    <h2 class="mb-0">
+                                <div class="card-header hstack" id="testCycle-${i}">
+                                    <h2 class="me-auto">
                                         <button class="btn btn-link btn-block text-left" type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#collapse-${i}">${cycle.name}
                                         </button>
                                     </h2>
+                                    <g:set var="todo" value="${cycle.testIterations.count {it.result == 'ToDo'}}" />
+                                    <g:set var="pass" value="${cycle.testIterations.count {it.result == 'Pass'}}" />
+                                    <g:set var="fail" value="${cycle.testIterations.count {it.result == 'Fail'}}" />
+                                    <g:set var="total" value="${cycle.testIterations.size()}" />
+                                    <p class="me-2 fw-bold">Progress:</p>
+                                    <g:multiProgressBar total="${total}" todo="${todo}" passed="${pass}" failed="${fail}"/>
                                 </div>
                                 <div id="collapse-${i}" class="collapse" data-parent="#testCycles">
                                     <div class="card-body" data-test-id="testCycle-content">

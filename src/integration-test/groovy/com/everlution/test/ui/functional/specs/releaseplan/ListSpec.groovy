@@ -29,7 +29,42 @@ class ListSpec extends GebSpec {
         def page = to(ListReleasePlanPage, id)
 
         then: "correct headers are displayed"
-        page.listTable.getHeaders() == ["Name", "Status", "Planned Date", "Release Date"]
+        page.listTable.getHeaders() == ["Name", "Status", "Created By", "Planned", "Released", "Created", "Updated"]
+    }
+
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def projId = projectService.list(max:1).first().id
+        def page = to(ListReleasePlanPage, projId)
+
+        and:
+        page.listTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.listTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column | propName
+        'Name' | 'name'
+        'Status' | 'status'
+        'Created By' | 'person'
+        'Planned' | 'plannedDate'
+        'Released' | 'releaseDate'
+        'Created' | 'dateCreated'
+        'Updated' | 'lastUpdated'
     }
 
     void "clicking name column directs to show page"() {

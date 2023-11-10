@@ -5,8 +5,11 @@ import com.everlution.test.ui.support.pages.modules.TableModule
 import geb.module.TextInput
 
 class ListScenarioPage extends ListPage {
-    static url = "/scenarios"
+
     static at = { title == "Scenario List" }
+    static convertToPath(Long projectId) {
+        "/project/${projectId}/scenarios"
+    }
 
     static content = {
         nameInput { $("#name").module(TextInput) }

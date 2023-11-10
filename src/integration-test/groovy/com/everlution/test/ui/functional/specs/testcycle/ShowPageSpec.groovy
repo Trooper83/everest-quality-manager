@@ -11,11 +11,14 @@ import com.everlution.TestCaseService
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestGroup
+import com.everlution.TestGroupService
+import com.everlution.TestIterationService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
+import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
 import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
@@ -32,6 +35,8 @@ class ShowPageSpec extends GebSpec {
     ProjectService projectService
     ReleasePlanService releasePlanService
     TestCaseService testCaseService
+    TestGroupService testGroupService
+    TestIterationService testIterationService
     TestCycleService testCycleService
 
     def setup() {
@@ -70,7 +75,6 @@ class ShowPageSpec extends GebSpec {
         username                        | password
         Credentials.BASIC.email         | Credentials.BASIC.password
         Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
-        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
@@ -141,7 +145,6 @@ class ShowPageSpec extends GebSpec {
         username                        | password
         Credentials.BASIC.email         | Credentials.BASIC.password
         Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
-        Credentials.ORG_ADMIN.email     | Credentials.ORG_ADMIN.password
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
     }
 
@@ -416,6 +419,52 @@ class ShowPageSpec extends GebSpec {
         show.testsTable.getHeaders() == ["Id", "Name", "Result", "Executed By", ""]
     }
 
+    void "sort parameters correctly set in url"(String column, String propName) {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+        def show = at ShowTestCyclePage
+        show.addTestsByGroup(group.name)
+        def page = browser.page(ListTestGroupPage)
+        page.listTable.sortColumn(column)
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=asc')
+
+        when:
+        page.listTable.sortColumn(column)
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=${propName}")
+        currentUrl.contains('order=desc')
+
+        where:
+        column | propName
+        'Id' | 'id'
+        'Name' | 'name'
+        'Result' | 'result'
+        'Executed By' | 'person'
+    }
+
     void "success message displays when tests added"() {
         given: "setup data"
         def gd = DataFactory.testGroup()
@@ -483,5 +532,154 @@ class ShowPageSpec extends GebSpec {
         then:
         at ShowTestCyclePage
         !show.testsTable.isValueInColumn('Id', found)
+    }
+
+    void "pagination params remain set with sorting"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+
+        for (int i = 0; i <= 12; i++) {
+            def td = DataFactory.testCase()
+            def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
+            testCaseService.save(testCase)
+        }
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+        def show = at ShowTestCyclePage
+        show.addTestsByGroup()
+        show.scrollToBottom()
+        show.testsTable.goToPage('2')
+
+        when:
+        show.testsTable.sortColumn('Id')
+
+        then:
+        currentUrl.contains('offset=10')
+        currentUrl.contains('max=10')
+    }
+
+    void "sort params remain set with pagination"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+
+        for (int i = 0; i <= 12; i++) {
+            def td = DataFactory.testCase()
+            def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
+            testCaseService.save(testCase)
+        }
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+        def show = at ShowTestCyclePage
+        show.addTestsByGroup()
+        show.scrollToBottom()
+        show.testsTable.sortColumn('Id')
+
+        when:
+        show.scrollToBottom()
+        show.testsTable.goToPage('2')
+
+        then:
+        currentUrl.contains('sort=id')
+        currentUrl.contains('order=asc')
+    }
+
+    void "progress bar has correct values"() {
+        given: "setup data"
+        def person = personService.list(max:1).first()
+        def gd = DataFactory.testGroup()
+        def project = projectService.list(max:1).first()
+        def group = new TestGroup(name: gd.name, project: project)
+        testGroupService.save(group)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+        def tc = DataFactory.testCase()
+        def tc1 = DataFactory.testCase()
+        def tc2 = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person)
+        def testCase1 = new TestCase(name: tc1.name, project: project, person: person)
+        def testCase2 = new TestCase(name: tc2.name, project: project, person: person)
+        testCaseService.save(testCase)
+        testCaseService.save(testCase1)
+        testCaseService.save(testCase2)
+        testCycleService.addTestIterations(testCycle, [testCase, testCase1, testCase2])
+        def iter = testCycle.testIterations.first()
+        iter.result = 'Pass'
+        testIterationService.save(iter)
+        def iteration = testCycle.testIterations[2]
+        iteration.result = 'Fail'
+        testIterationService.save(iteration)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when: "go to plan"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+
+        then:
+        def show = at ShowTestCyclePage
+        def progressBar = show.progressBar
+        progressBar[0].find("[aria-label='passed']").attr('aria-valuenow') == '1'
+        progressBar[0].find("[aria-label='failed']").attr('aria-valuenow') == '1'
+        progressBar[0].find("[aria-label='todo']").attr('aria-valuenow') == '1'
+    }
+
+    void "empty progress bar displayed when no test iterations are present on cycle"() {
+        given: "setup data"
+        def person = personService.list(max:1).first()
+        def gd = DataFactory.testGroup()
+        def project = projectService.list(max:1).first()
+        def group = new TestGroup(name: gd.name, project: project)
+        testGroupService.save(group)
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when: "go to plan"
+        to (ShowTestCyclePage, project.id, testCycle.id)
+
+        then:
+        def show = at ShowTestCyclePage
+        def progressBar = show.progressBar
+        progressBar[0].find("[aria-label='passed']").attr('aria-valuenow') == '0'
+        progressBar[0].find("[aria-label='failed']").attr('aria-valuenow') == '0'
+        progressBar[0].find("[aria-label='todo']").attr('aria-valuenow') == '0'
     }
 }

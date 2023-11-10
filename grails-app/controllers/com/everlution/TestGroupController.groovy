@@ -42,7 +42,8 @@ class TestGroupController {
      * @return - the group to show
      */
     @Secured("ROLE_READ_ONLY")
-    def show(Long id) {
+    def show(Long id, Integer max) {
+        params.max = Math.min(max ?: 10, 100)
         def group = testGroupService.getWithPaginatedTests(id, params)
         respond group.testGroup, view: 'show', model: [tests: group.tests]
     }

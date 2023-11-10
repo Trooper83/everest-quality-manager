@@ -28,11 +28,16 @@
         <table class="table table-light table-bordered mt-3">
             <thead class="thead-light">
             <tr>
-                <th>Name</th>
-                <th>Area</th>
-                <th>Platform</th>
-                <th>Type</th>
-                <th>Execution Method</th>
+                <g:columnSort domain="testGroup" projectId="${testGroup.project.id}" property="name" title="Name"
+                        isTopLevel="false" itemId="${testGroup.id}"/>
+                <g:columnSort domain="testGroup" projectId="${testGroup.project.id}" property="area" title="Area"
+                              isTopLevel="false" itemId="${testGroup.id}"/>
+                <g:columnSort domain="testGroup" projectId="${testGroup.project.id}" property="platform" title="Platform"
+                              isTopLevel="false" itemId="${testGroup.id}"/>
+                <g:columnSort domain="testGroup" projectId="${testGroup.project.id}" property="type" title="Type"
+                              isTopLevel="false" itemId="${testGroup.id}"/>
+                <g:columnSort domain="testGroup" projectId="${testGroup.project.id}" property="executionMethod"
+                              title="Execution Method" isTopLevel="false" itemId="${testGroup.id}"/>
             </tr>
             </thead>
             <tbody>

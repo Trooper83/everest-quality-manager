@@ -254,7 +254,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:"a domain instance is passed to the show action"
-        controller.show(2)
+        controller.show(2, null)
 
         then:
         view == "show"
@@ -267,7 +267,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:"The show action is executed with a null domain"
-        controller.show(null)
+        controller.show(null, null)
 
         then:"A 404 error is returned"
         response.status == 404
@@ -280,10 +280,30 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         }
 
         when:"A domain instance is passed to the show action"
-        controller.show(2)
+        controller.show(2, 0)
 
         then:"A model is populated containing the domain instance"
         model.testGroup instanceof TestGroup
+    }
+
+    void "show action param max"(Integer max, int expected) {
+        given:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * getWithPaginatedTests(1, params) >> new GroupWithPaginatedTests(new TestGroup(), [])
+        }
+
+        when:"the action is executed"
+        controller.show(1, max)
+
+        then:"the max is as expected"
+        controller.params.max == expected
+
+        where:
+        max  | expected
+        null | 10
+        1    | 1
+        99   | 99
+        101  | 100
     }
 
     void "edit action with a null id returns 404"() {

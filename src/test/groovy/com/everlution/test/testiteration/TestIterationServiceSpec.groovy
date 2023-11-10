@@ -88,4 +88,82 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         then:
         thrown(ValidationException)
     }
+
+    void "findAllByTestCycle returns iterations"() {
+        given:
+        def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
+        def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [],
+                testCycle: testCycle)
+        service.save(iteration)
+
+        when:
+        def found = service.findAllByTestCycle(testCycle, [:])
+
+        then:
+        found.size() == 1
+        found.first() == iteration
+    }
+
+    void "findAllByTestCycle null id returns empty list"() {
+        when:
+        def l = service.findAllByTestCycle(null, [:])
+
+        then:
+        noExceptionThrown()
+        l.empty
+    }
+
+    void "findAllByTestCycle null params returns empty list"() {
+        when:
+        def l = service.findAllByTestCycle(new TestCycle(), null)
+
+        then:
+        noExceptionThrown()
+        l.empty
+    }
+
+    void "findAllByTestCycle correctly sorts ascending when order and sort args present"() {
+        given:
+        def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
+        def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        def iteration = new TestIteration(name: "1test name", testCase: testCase, result: "ToDo", steps: [],
+                testCycle: testCycle)
+        def iteration1 = new TestIteration(name: "2test name", testCase: testCase, result: "ToDo", steps: [],
+                testCycle: testCycle)
+        service.save(iteration)
+        service.save(iteration1)
+
+        when:
+        def found = service.findAllByTestCycle(testCycle, [sort:'name', order:'asc'])
+
+        then:
+        found[0].name == '1test name'
+        found[1].name == '2test name'
+    }
+
+    void "findAllByTestCycle correctly sorts descending when order and sort args present"() {
+        given:
+        def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
+        def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        def iteration = new TestIteration(name: "1test name", testCase: testCase, result: "ToDo", steps: [],
+                testCycle: testCycle)
+        def iteration1 = new TestIteration(name: "2test name", testCase: testCase, result: "ToDo", steps: [],
+                testCycle: testCycle)
+        service.save(iteration)
+        service.save(iteration1)
+
+        when:
+        def found = service.findAllByTestCycle(testCycle, [sort:'name', order:'desc'])
+
+        then:
+        found[0].name == '2test name'
+        found[1].name == '1test name'
+    }
 }

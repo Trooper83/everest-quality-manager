@@ -69,7 +69,7 @@
 									<g:checkBox class="form-check-input" type="checkbox" name='${roleName}'
 												value="${role.value}"
 									/>
-									<label class="form-check-label">${roleName}</label>
+									<label class="form-check-label">${roleName.replaceAll('_',' ')}</label>
 								</div>
 							</g:each>
 						</div>

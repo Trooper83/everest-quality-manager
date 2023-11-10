@@ -24,13 +24,15 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <th>Name</th>
+                            <g:columnSort domain="testGroup" projectId="${project.id}" property="name" title="Name"/>
+                            <g:columnSort domain="testGroup" projectId="${project.id}" property="dateCreated" title="Created"/>
                         </tr>
                         </thead>
                         <tbody>
                         <g:each var="testGroup" in="${testGroupList}">
                             <tr>
                                 <td><g:link uri="/project/${project.id}/testGroup/show/${testGroup.id}">${testGroup.name}</g:link></td>
+                                <td><g:formatDate format="MMMM d, yyyy" date="${testGroup.dateCreated}"/></td>
                             </tr>
                         </g:each>
                         </tbody>
