@@ -40,6 +40,12 @@
                         </li>
                         <li class="list-group-item border-bottom">
                             <div class="row">
+                                <p class="col-4 fw-bold">Date Executed</p>
+                                <p class="col" id="dateExecuted"><g:formatDate format="MMMM d, yyyy h:mm a" date="${testIteration.dateExecuted}"/></p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
                                 <p class="col-4 fw-bold">Test Case</p>
                                 <p class="col">
                                     <g:link class="property-value" elementId="testCase"

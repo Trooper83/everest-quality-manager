@@ -104,7 +104,7 @@ class UtilityTagLibSpec extends Specification implements TagLibUnitTest<UtilityT
 
         final DecimalFormat df = new DecimalFormat("0.00");
 
-        def start = "<div class='progress-stacked'>"
+        def start = "<div class='progress-stacked w-50'>"
         def pass = "<div class='progress' role='progressbar' aria-label='passed' aria-valuenow='${passed}'"
         def pass_1 = " aria-valuemin='0' aria-valuemax='100' style='width: ${df.format(passPercent)}%'><div class='progress-bar bg-success'></div></div>"
         def fail = "<div class='progress' role='progressbar' aria-label='failed' aria-valuenow='${failed}'"

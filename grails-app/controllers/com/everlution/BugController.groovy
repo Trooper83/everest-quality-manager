@@ -30,7 +30,7 @@ class BugController {
             return
         }
 
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(max ?: 25, 100)
         def searchResult
         if(!params.isSearch) { // load view
             searchResult = bugService.findAllByProject(project, params)

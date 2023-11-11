@@ -24,7 +24,7 @@ class ProjectController {
      */
     @Secured("ROLE_READ_ONLY")
     def projects(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(max ?: 25, 100)
         if(!params.isSearch) { // load view
             def projects = projectService.list(params)
             def count = projectService.count()

@@ -190,9 +190,10 @@ class ShowPageSpec extends GebSpec {
 
         and:
         def show = at ShowTestCyclePage
-        show.addTestsByGroup()
+        show.addTestsByGroup(group.name)
 
         when:
+        show.scrollToBottom()
         show.testsTable.clickCell("Id", 0)
 
         then:
@@ -224,9 +225,10 @@ class ShowPageSpec extends GebSpec {
 
         and:
         def show = at ShowTestCyclePage
-        show.addTestsByGroup()
+        show.addTestsByGroup(group.name)
 
         when:
+        show.scrollToBottom()
         show.testsTable.clickCell("", 0)
 
         then:
@@ -416,7 +418,7 @@ class ShowPageSpec extends GebSpec {
         show.addTestsByGroup(group.name)
 
         then:
-        show.testsTable.getHeaders() == ["Id", "Name", "Result", "Executed By", ""]
+        show.testsTable.getHeaders() == ["Id", "Name", "Result", "Executed By", "Executed Date", ""]
     }
 
     void "sort parameters correctly set in url"(String column, String propName) {
@@ -463,6 +465,7 @@ class ShowPageSpec extends GebSpec {
         'Name' | 'name'
         'Result' | 'result'
         'Executed By' | 'person'
+        'Executed Date' | 'dateExecuted'
     }
 
     void "success message displays when tests added"() {
@@ -508,7 +511,7 @@ class ShowPageSpec extends GebSpec {
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
 
-        for (int i = 0; i <= 12; i++) {
+        for (int i = 0; i <= 26; i++) {
             def td = DataFactory.testCase()
             def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
             testCaseService.save(testCase)
@@ -546,7 +549,7 @@ class ShowPageSpec extends GebSpec {
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
 
-        for (int i = 0; i <= 12; i++) {
+        for (int i = 0; i <= 26; i++) {
             def td = DataFactory.testCase()
             def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
             testCaseService.save(testCase)
@@ -568,8 +571,8 @@ class ShowPageSpec extends GebSpec {
         show.testsTable.sortColumn('Id')
 
         then:
-        currentUrl.contains('offset=10')
-        currentUrl.contains('max=10')
+        currentUrl.contains('offset=25')
+        currentUrl.contains('max=25')
     }
 
     void "sort params remain set with pagination"() {
@@ -584,7 +587,7 @@ class ShowPageSpec extends GebSpec {
         def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
         releasePlanService.addTestCycle(plan, testCycle)
 
-        for (int i = 0; i <= 12; i++) {
+        for (int i = 0; i <= 26; i++) {
             def td = DataFactory.testCase()
             def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
             testCaseService.save(testCase)
@@ -598,8 +601,7 @@ class ShowPageSpec extends GebSpec {
         and: "go to cycle"
         to (ShowTestCyclePage, project.id, testCycle.id)
         def show = at ShowTestCyclePage
-        show.addTestsByGroup()
-        show.scrollToBottom()
+        show.addTestsByGroup(group.name)
         show.testsTable.sortColumn('Id')
 
         when:

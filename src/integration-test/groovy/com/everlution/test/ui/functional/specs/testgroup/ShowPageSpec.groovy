@@ -291,7 +291,7 @@ class ShowPageSpec extends GebSpec {
         def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
         projectService.save(project)
 
-        for (int i = 0; i <= 12; i++) {
+        for (int i = 0; i <= 26; i++) {
             def td = DataFactory.testCase()
             def testCase = new TestCase(name: td.name, project: project, person: person, testGroups: [group])
             testCaseService.save(testCase)

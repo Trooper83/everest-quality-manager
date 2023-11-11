@@ -98,6 +98,8 @@
                                           isTopLevel="false" itemId="${testCycle.id}"/>
                             <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="person" title="Executed By"
                                           isTopLevel="false" itemId="${testCycle.id}"/>
+                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="dateExecuted" title="Executed Date"
+                                          isTopLevel="false" itemId="${testCycle.id}"/>
                             <th></th>
                         </tr>
                         </thead>
@@ -108,6 +110,7 @@
                                 <td>${iteration.name}</td>
                                 <td>${iteration.result}</td>
                                 <td>${iteration.person?.email}</td>
+                                <td><g:formatDate format="MMMM d, yyyy h:mm a" date="${iteration.dateExecuted}"/></td>
                                 <td>
                                     <sec:ifAnyGranted roles="ROLE_BASIC">
                                         <g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/execute/${iteration.id}">Execute</g:link>

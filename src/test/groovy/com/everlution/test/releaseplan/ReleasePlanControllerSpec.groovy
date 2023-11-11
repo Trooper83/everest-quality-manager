@@ -46,7 +46,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         where:
         max  | expected
-        null | 10
+        null | 25
         1    | 1
         99   | 99
         101  | 100

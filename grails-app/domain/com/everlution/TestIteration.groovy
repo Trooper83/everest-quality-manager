@@ -3,6 +3,7 @@ package com.everlution
 class TestIteration {
 
     Date dateCreated
+    Date dateExecuted
     Date lastUpdated
     String name
     String notes
@@ -24,6 +25,7 @@ class TestIteration {
     }
 
     static constraints = {
+        dateExecuted nullable: true
         name blank: false, maxSize: 255, nullable: false
         notes blank: true, maxSize: 1000, nullable: true
         person nullable: true
