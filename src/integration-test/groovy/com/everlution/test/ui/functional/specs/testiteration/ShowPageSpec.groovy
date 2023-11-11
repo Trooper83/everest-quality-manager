@@ -91,9 +91,10 @@ class ShowPageSpec extends GebSpec {
 
         and:
         def showCycle = at ShowTestCyclePage
-        showCycle.addTestsByGroup()
+        showCycle.addTestsByGroup(group.name)
 
         and:
+        showCycle.scrollToBottom()
         showCycle.testsTable.clickCell("Id", 0)
 
         when:

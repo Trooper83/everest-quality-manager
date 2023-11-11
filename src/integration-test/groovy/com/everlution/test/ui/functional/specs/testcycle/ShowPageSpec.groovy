@@ -418,7 +418,7 @@ class ShowPageSpec extends GebSpec {
         show.addTestsByGroup(group.name)
 
         then:
-        show.testsTable.getHeaders() == ["Id", "Name", "Result", "Executed By", ""]
+        show.testsTable.getHeaders() == ["Id", "Name", "Result", "Executed By", "Executed Date", ""]
     }
 
     void "sort parameters correctly set in url"(String column, String propName) {
