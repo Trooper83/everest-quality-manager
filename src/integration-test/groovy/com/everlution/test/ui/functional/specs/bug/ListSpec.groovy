@@ -24,9 +24,11 @@ class ListSpec extends GebSpec {
         def person = personService.list(max:1).first()
         def project = projectService.list(max:1).first()
 
-        for (int i = 0; i <= 12; i++) {
-            def b = new Bug(name: "Pagination Bug ${i}", person: person, project: project, status: "Open")
-            bugService.save(b)
+        if (bugService.findAllByProject(project, [:]).count <= 25) {
+            for (int i = 0; i <= 26; i++) {
+                def b = new Bug(name: "Pagination Bug ${i}", person: person, project: project, status: "Open")
+                bugService.save(b)
+            }
         }
         return project.id
     }
@@ -205,8 +207,8 @@ class ListSpec extends GebSpec {
         page.listTable.sortColumn('Name')
 
         then:
-        currentUrl.contains('max=10')
-        currentUrl.contains('offset=10')
+        currentUrl.contains('max=25')
+        currentUrl.contains('offset=25')
     }
 
     void "sort params remain set with pagination"() {

@@ -92,10 +92,9 @@ class ListSpec extends GebSpec {
 
     void "pagination loads next page"() {
         given:
-        def groups = testGroupService.findAllByProject(project, [max:20])
-        if (groups.count < 12) {
-            def c = 12 - groups.count
-            for (int i = 0; i <= c; i++) {
+        def groups = testGroupService.findAllByProject(project, [max:30])
+        if (groups.count < 26) {
+            for (int i = 0; i <= 26; i++) {
                 def g = DataFactory.testGroup()
                 testGroupService.save(new TestGroup(name: g.name, project: project))
             }
@@ -103,7 +102,7 @@ class ListSpec extends GebSpec {
 
         def page = at ListTestGroupPage
         refreshWaitFor {
-            page.listTable.getRowCount() == 10
+            page.listTable.getRowCount() == 25
         }
 
         when:

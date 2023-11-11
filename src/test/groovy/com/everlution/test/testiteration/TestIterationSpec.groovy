@@ -227,4 +227,12 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         then:
         domain.validate(["lastUpdated"])
     }
+
+    void "dateExecuted can be null"() {
+        when:
+        domain.dateExecuted = null
+
+        then:
+        domain.validate(["dateExecuted"])
+    }
 }

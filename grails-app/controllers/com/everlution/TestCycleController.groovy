@@ -63,7 +63,7 @@ class TestCycleController {
      */
     @Secured("ROLE_READ_ONLY")
     def show(Long id, Integer max) {
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(max ?: 25, 100)
         def cycle = testCycleService.get(id)
         if (cycle == null) {
             notFound()

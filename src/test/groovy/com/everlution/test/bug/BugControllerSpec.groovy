@@ -49,7 +49,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
 
         where:
         max  | expected
-        null | 10
+        null | 25
         1    | 1
         99   | 99
         101  | 100

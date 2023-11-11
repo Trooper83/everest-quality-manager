@@ -20,6 +20,8 @@ import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+import java.text.SimpleDateFormat
+
 @Integration
 class ExecuteIterationSpec extends GebSpec {
 
@@ -72,5 +74,9 @@ class ExecuteIterationSpec extends GebSpec {
         show.resultValue.text() == "Pass"
         show.notesValue.text() == "Some notes"
         show.executedByValue.text() == Credentials.BASIC.email
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy")
+        Date date = new Date()
+        show.dateExecutedValue.text().contains(formatter.format(date))
     }
 }

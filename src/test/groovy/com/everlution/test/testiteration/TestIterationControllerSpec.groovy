@@ -1,5 +1,6 @@
 package com.everlution.test.testiteration
 
+import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.TestCycle
@@ -202,6 +203,43 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
 
         then:"A redirect is issued to the show action"
         controller.flash.message == "default.updated.message"
+    }
+
+    void "update action correctly sets person and dateExecuted"() {
+        given:
+        mockDomain(TestCycle)
+        controller.testIterationService = Mock(TestIterationService) {
+            1 * save(_ as TestIteration)
+        }
+
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person()
+        }
+
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        def iteration = new TestIteration()
+        iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
+
+        expect:
+        iteration.dateExecuted == null
+        iteration.person == null
+
+        when:"The save action is executed with a valid instance"
+        controller.update(iteration, 1)
+
+        then:
+        iteration.dateExecuted != null
+        iteration.person != null
     }
 
     void "update action with an invalid instance"() {

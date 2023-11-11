@@ -30,7 +30,7 @@ class TestCaseController {
             return
         }
 
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(max ?: 25, 100)
         def searchResults
         if(!params.isSearch) { // load view
             searchResults = testCaseService.findAllByProject(project, params)

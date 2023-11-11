@@ -24,7 +24,7 @@ class TestGroupController {
             return
         }
 
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(max ?: 25, 100)
         def testGroupResults
         if(!params.isSearch) { // load view
             testGroupResults = testGroupService.findAllByProject(project, params)
@@ -43,7 +43,7 @@ class TestGroupController {
      */
     @Secured("ROLE_READ_ONLY")
     def show(Long id, Integer max) {
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(max ?: 25, 100)
         def group = testGroupService.getWithPaginatedTests(id, params)
         respond group.testGroup, view: 'show', model: [tests: group.tests]
     }

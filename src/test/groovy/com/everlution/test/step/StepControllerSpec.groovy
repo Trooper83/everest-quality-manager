@@ -56,7 +56,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
 
         where:
         max  | expected
-        null | 10
+        null | 25
         1    | 1
         99   | 99
         101  | 100
