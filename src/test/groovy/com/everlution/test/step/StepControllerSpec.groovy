@@ -4,7 +4,7 @@ import com.everlution.Link
 import com.everlution.LinkService
 import com.everlution.Project
 import com.everlution.ProjectService
-import com.everlution.RelatedSteps
+import com.everlution.RelatedStepTemplates
 import com.everlution.SearchResult
 import com.everlution.Step
 import com.everlution.StepController
@@ -855,7 +855,7 @@ class StepControllerSpec extends Specification implements ControllerUnitTest<Ste
             1 * read(_) >> new Project()
         }
         controller.stepService = Mock(StepService) {
-            1 * getRelatedSteps(_) >> new RelatedSteps(null, [])
+            1 * getRelatedSteps(_) >> new RelatedStepTemplates(null, [])
         }
 
         when:

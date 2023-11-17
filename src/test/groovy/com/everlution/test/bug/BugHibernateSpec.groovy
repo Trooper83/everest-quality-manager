@@ -114,9 +114,9 @@ class BugHibernateSpec extends HibernateSpec {
         step.result == "edited result"
     }
 
-    void "test delete bug does not cascade to steps"() {
+    void "delete bug cascades to steps"() {
         given: "valid domain instances"
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened")
         Bug bug = new Bug(person: person, name: "test", description: "desc",
                 project: project, status: "Open",
                 actual: "actual", expected: "expected").addToSteps(testStep)
@@ -131,7 +131,7 @@ class BugHibernateSpec extends HibernateSpec {
         sessionFactory.currentSession.flush()
 
         then: "steps are not found"
-        Step.findById(testStep.id) != null
+        Step.findById(testStep.id) == null
     }
 
     void "test steps order persists"() {

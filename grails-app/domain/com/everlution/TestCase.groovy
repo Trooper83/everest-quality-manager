@@ -23,7 +23,7 @@ class TestCase {
         environments cascade: "none"
         person cascade: "none"
         project cascade: "none"
-        steps cascade: "save-update"
+        steps cascade: "all-delete-orphan"
         testGroups cascade: "none"
     }
 

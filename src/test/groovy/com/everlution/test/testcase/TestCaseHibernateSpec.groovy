@@ -107,7 +107,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
     void "delete test case does not cascade to steps"() {
         given: "valid domain instances"
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
         testCase.save()
@@ -121,12 +121,12 @@ class TestCaseHibernateSpec extends HibernateSpec {
         sessionFactory.currentSession.flush()
 
         then: "steps are not found"
-        Step.findById(testStep.id) != null
+        Step.get(testStep.id) == null
     }
 
     void "remove from test case does not delete steps"() {
         given: "valid domain instances"
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
         testCase.save()
@@ -141,7 +141,7 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
         then: "steps are not found"
         testCase.steps.empty
-        Step.findById(testStep.id) != null
+        Step.get(testStep.id) == null
     }
 
     void "test steps order persists"() {
