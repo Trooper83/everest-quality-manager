@@ -4,6 +4,7 @@ import com.everlution.Link
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Relationship
+import com.everlution.Step
 import com.everlution.StepTemplate
 import com.everlution.StepTemplateService
 import grails.testing.gorm.DataTest
@@ -318,5 +319,132 @@ class StepTemplateServiceSpec extends Specification implements ServiceUnitTest<S
         then:
         steps.relatedStepTemplates.size() == 2
         !steps.relatedStepTemplates.contains(testStepTemplate2)
+    }
+
+    void "deleting template with associated step orphans step"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "name", act: "do something", result: "something happened", person: person, project: project).save()
+        def s = new Step(act: "testing 12", template: t).save(flush: true)
+        def s1 = new Step(act: "testing 12", template: t).save(flush: true)
+
+        expect:
+        t.id != null
+        s.id != null
+        s.template == t
+        s1.template == t
+
+        when:
+        service.delete(t.id)
+        currentSession.flush()
+
+        then:
+        noExceptionThrown()
+        Step.get(s.id).template == null
+        Step.get(s1.id).template == null
+    }
+
+    void "updating action on template updates related steps"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "name", act: "first", person: person, project: project).save()
+        def s = new Step(act: "first", template: t).save(flush: true)
+        def s1 = new Step(act: "first", template: t).save(flush: true)
+        def s2 = new Step(act: "first", template: t).save(flush: true)
+
+        expect:
+        s.act == "first"
+        s.result == null
+        s1.act == "first"
+        s1.result == null
+        s2.act == "first"
+        s2.result == null
+
+        when:
+        t.act = "action"
+        service.update(t)
+
+        then:
+        Step.get(s.id).act == "action"
+        Step.get(s.id).result == null
+        Step.get(s1.id).act == "action"
+        Step.get(s1.id).result == null
+        Step.get(s2.id).act == "action"
+        Step.get(s2.id).result == null
+    }
+
+    void "updating result on template updates related steps"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "name", result: "first", person: person, project: project).save()
+        def s = new Step(act: "same", result: "first", template: t).save(flush: true)
+        def s1 = new Step(result: "first", template: t).save(flush: true)
+        def s2 = new Step(result: "first", template: t).save(flush: true)
+
+        expect:
+        s.result == "first"
+        s.act == "same"
+        s1.result == "first"
+        s1.act == null
+        s2.result == "first"
+        s2.act == null
+
+        when:
+        t.result = "res"
+        service.update(t)
+
+        then:
+        Step.get(s.id).act == null
+        Step.get(s.id).result == "res"
+        Step.get(s1.id).act == null
+        Step.get(s1.id).result == "res"
+        Step.get(s2.id).act == null
+        Step.get(s2.id).result == "res"
+    }
+
+    void "updating name on template does not update related steps"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "name", result: "test", person: person, project: project).save()
+        def s = new Step(act: "same", result: "first", template: t).save(flush: true)
+        def s1 = new Step(result: "second", template: t).save(flush: true)
+        def s2 = new Step(result: "third", template: t).save(flush: true)
+
+        expect:
+        s.result == "first"
+        s.act == "same"
+        s1.result == "second"
+        s1.act == null
+        s2.result == "third"
+        s2.act == null
+
+        when:
+        t.name = "new name"
+        service.update(t)
+
+        then:
+        StepTemplate.get(t.id).name == "new name"
+        Step.get(s.id).act == "same"
+        Step.get(s.id).result == "first"
+        Step.get(s1.id).act == null
+        Step.get(s1.id).result == "second"
+        Step.get(s2.id).act == null
+        Step.get(s2.id).result == "third"
+    }
+
+    void "update modifies instance"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "name", act: "first", person: person, project: project).save()
+
+        expect:
+        t.name == "name"
+
+        when:
+        t.name = "new name should be found"
+        service.update(t)
+
+        then:
+        service.read(t.id).name == "new name should be found"
     }
 }

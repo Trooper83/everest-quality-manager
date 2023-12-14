@@ -2,6 +2,7 @@ package com.everlution.test.steptemplate
 
 import com.everlution.Person
 import com.everlution.Project
+import com.everlution.Step
 import com.everlution.StepTemplate
 import grails.test.hibernate.HibernateSpec
 import spock.lang.Shared

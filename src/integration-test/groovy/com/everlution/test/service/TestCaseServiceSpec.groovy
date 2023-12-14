@@ -1,10 +1,10 @@
 package com.everlution.test.service
 
+import com.everlution.StepService
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
-import com.everlution.StepService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestGroup
@@ -127,7 +127,7 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def step = new Step(act: "action", result: "result").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
@@ -148,8 +148,7 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: proj,
-                isBuilderStep: true, name: 'save update method does not delete me').save()
+        def step = new Step(act: "action", result: "result", isBuilderStep: true).save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
@@ -242,7 +241,7 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def step = new Step(act: "action", result: "result").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
@@ -256,12 +255,11 @@ class TestCaseServiceSpec extends Specification {
         stepService.get(step.id) == null
     }
 
-    void "delete method does not delete builder steps"() {
+    void "delete method does delete builder steps"() {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: proj,
-                isBuilderStep: true, name: 'delete method does not delete me').save()
+        def step = new Step(act: "action", result: "result", isBuilderStep: true).save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
@@ -272,14 +270,14 @@ class TestCaseServiceSpec extends Specification {
         testCaseService.delete(testCase.id)
 
         then: "step is removed"
-        stepService.get(step.id) != null
+        stepService.get(step.id) == null
     }
 
     void "saveUpdate method deletes free form steps"() {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def step = new Step(act: "action", result: "result").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
@@ -291,6 +289,7 @@ class TestCaseServiceSpec extends Specification {
         def removed = new RemovedItems()
         removed.stepIds = [step.id]
         testCaseService.saveUpdate(testCase, removed)
+        sessionFactory.currentSession.flush()
 
         then: "step is removed"
         stepService.get(step.id) == null
@@ -300,7 +299,7 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: proj).save()
+        def step = new Step(act: "action", result: "result").save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 
@@ -323,8 +322,7 @@ class TestCaseServiceSpec extends Specification {
         given: "valid test case with step"
         def proj = projectService.list(max: 1).first()
         def person = new Person(email: "test1@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: proj,
-                isBuilderStep: true, name: 'save update method does not delete me').save()
+        def step = new Step(act: "action", result: "result", isBuilderStep: true).save()
         def testCase = new TestCase(person: person, name: "second", description: "desc2",
                 executionMethod: "Automated", type: "UI", project: proj, steps: [step]).save()
 

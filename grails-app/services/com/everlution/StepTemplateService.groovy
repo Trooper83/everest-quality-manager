@@ -7,15 +7,21 @@ import grails.gorm.transactions.Transactional
 abstract class StepTemplateService implements IStepTemplateService {
 
     LinkService linkService
+    StepService stepService
 
     @Transactional
     void delete(Serializable id) {
         def template = get(id)
         if (template) {
             def links = linkService.getLinks(template.id, template.project)
+            def steps = stepService.findAllByTemplate(template)
             template.delete()
             links.each {
                 linkService.delete(it.id)
+            }
+            steps.each {
+                it.template = null
+                stepService.save(it)
             }
         }
     }
@@ -80,5 +86,21 @@ abstract class StepTemplateService implements IStepTemplateService {
         def related = []
         links.each { it -> related.add(read(it.linkedId)) }
         return new RelatedStepTemplates(template, related)
+    }
+
+    @Transactional
+    StepTemplate update(StepTemplate template) {
+        def actDirty = template.isDirty('act')
+        def resDirty = template.isDirty('result')
+        def t = save(template)
+        if (actDirty || resDirty) {
+            def steps = stepService.findAllByTemplate(template)
+            steps.every {
+                it.act = template.act
+                it.result = template.result
+                stepService.save(it)
+            }
+        }
+        return t
     }
 }

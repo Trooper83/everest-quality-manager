@@ -1,5 +1,6 @@
 package com.everlution.test.ui.functional.specs.testcase.edit
 
+import com.everlution.StepService
 import com.everlution.Link
 import com.everlution.LinkService
 import com.everlution.Person
@@ -8,7 +9,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Relationship
 import com.everlution.Step
-import com.everlution.StepService
+
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.test.support.DataFactory

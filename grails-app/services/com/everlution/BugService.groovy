@@ -9,20 +9,6 @@ abstract class BugService implements IBugService {
 
     StepService stepService
 
-    @Transactional
-    void delete(Serializable id) {
-        def b = get(id)
-        if (b) {
-            List steps = b.steps
-            b.delete()
-            for (Step step in steps) {
-                if (!step.isBuilderStep) {
-                    stepService.delete(step.id)
-                }
-            }
-        }
-    }
-
     /**
      * find all bugs in project
      */
@@ -61,12 +47,6 @@ abstract class BugService implements IBugService {
                 bug.removeFromSteps(step)
             }
         }
-        def updated = save(bug)
-        for (Step step in steps) {
-            if (!step.isBuilderStep) {
-                stepService.delete(step.id)
-            }
-        }
-        return updated
+        return save(bug)
     }
 }

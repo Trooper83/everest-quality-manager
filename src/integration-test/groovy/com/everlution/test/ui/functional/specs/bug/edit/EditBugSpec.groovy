@@ -4,12 +4,13 @@ import com.everlution.Area
 import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.Environment
+import com.everlution.StepService
 import com.everlution.Person
 import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Step
-import com.everlution.StepService
+
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage

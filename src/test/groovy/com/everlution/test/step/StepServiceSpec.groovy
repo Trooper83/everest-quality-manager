@@ -2,40 +2,32 @@ package com.everlution.test.step
 
 import com.everlution.Person
 import com.everlution.Project
-import com.everlution.Relationship
 import com.everlution.Step
-import com.everlution.Link
 import com.everlution.StepService
+import com.everlution.StepTemplate
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException
-import spock.lang.Shared
 import spock.lang.Specification
 
 class StepServiceSpec extends Specification implements ServiceUnitTest<StepService>, DataTest {
 
     def setupSpec() {
-        mockDomains(Step, Person, Project, Link)
+        mockDomain(Step)
     }
 
-    @Shared Person person
-    @Shared Project project
-
-    private void setupData() {
-        project = new Project(name: "Unit Test Project For Service", code: "BPZ").save()
-        person = new Person(email: "email@test.com", password: "!Password2022").save()
-        new Step(name: 'first name', act: "action", result: "result", person: person, project: project,
-                    isBuilderStep: true).save()
-        new Step(name: 'second name', act: "action", result: "result", person: person, project: project,
-                    isBuilderStep: true).save()
-        new Step(act: "action", result: "result", person: person, project: project).save(flush: true)
+    def setup() {
+        service.save(new Step(act: "action", result: "result"))
     }
 
     void "get with valid id returns instance"() {
-        setupData()
-
         expect: "valid instance"
         service.get(1) instanceof Step
+    }
+
+    void "read returns instance"() {
+        expect: "valid instance"
+        service.read(1) instanceof Step
     }
 
     void "get with invalid id returns null"() {
@@ -43,41 +35,18 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         service.get(999999) == null
     }
 
-    void "delete with valid id deletes instance"() {
+    void "save with valid step returns instance"() {
         given:
-        def s = new Step(act: "action", result: "result", person: person, project: project).save(flush: true)
-
-        expect:
-        service.get(s.id) != null
-
-        when:
-        service.delete(s.id)
-        currentSession.flush()
-
-        then:
-        service.get(s.id) == null
-    }
-
-    void "delete with invalid id does not throw exception"() {
-        when:
-        service.delete(null)
-
-        then:
-        noExceptionThrown()
-    }
-
-    void "save with valid object returns instance"() {
-        given:
-        def step = new Step(act: 'action', result: 'result', person: person, project: project)
+        def step = new Step(act: 'action')
 
         when:
         def saved = service.save(step)
 
         then:
-        saved instanceof Step
+        service.get(saved.id) instanceof Step
     }
 
-    void "save with invalid object throws validation exception"() {
+    void "save with invalid scenario throws validation exception"() {
         given:
         def step = new Step()
 
@@ -88,254 +57,19 @@ class StepServiceSpec extends Specification implements ServiceUnitTest<StepServi
         thrown(ValidationException)
     }
 
-    void "find all by project only returns steps with project"() {
+    void "findAllByTemplate returns steps"() {
         given:
-        setupData()
-        def proj = new Project(name: "StepServiceSpec Project1223", code: "BP8").save()
-        def step = new Step(person: person, act: 'action', result: 'result', project: proj).save(flush: true)
+        def person = new Person(email: 'testing@tesitng123.com', password: 'Testingin!3431').save()
+        def project = new Project(name: 'testing proj 123', code: 't12').save()
+        def t = new StepTemplate(name: 'name', act: 'act', result: 'result', person: person, project: project).save()
+        def s = new Step(act: '123', template: t)
+        service.save(s)
 
         when:
-        def steps = service.findAllByProject(project, [:])
+        def l = service.findAllByTemplate(t)
 
         then:
-        steps.count == 2
-        steps.results.every { it.project.id == project.id }
-        steps.results.every { it.isBuilderStep == true }
-        !steps.results.contains(step)
-    }
-
-    void "find all by project with null project id returns empty list"() {
-        when:
-        def steps = service.findAllByProject(null, [:])
-
-        then:
-        noExceptionThrown()
-        steps.count == 0
-        steps.results.size() == 0
-    }
-
-    void "find all by name ilike returns test case"(String q) {
-        setup:
-        setupData()
-
-        expect:
-        def steps = service.findAllInProjectByName(project, q, [:])
-        steps.results.first().name == "first name"
-
-        where:
-        q << ['first', 'fi', 'irs', 't na', 'FIRST', 'name']
-    }
-
-    void "find all in project by name only returns tests in project"() {
-        given:
-        setupData()
-        def proj = new Project(name: "TestService Spec Project1223", code: "BP8").save()
-        def step = new Step(person: person, act: 'ation', result: 'result', project: proj).save(flush: true)
-
-        when:
-        def steps = service.findAllInProjectByName(project, 'first', [:])
-
-        then:
-        steps.results.every { it.project.id == project.id }
-        steps.results.every { it.isBuilderStep == true }
-        steps.results.size() == 1
-        steps.count == 1
-        !steps.results.contains(step)
-    }
-
-    void "find all in project by name with null project"() {
-        given:
-        setupData()
-
-        when:
-        def steps = service.findAllInProjectByName(null, 'test', [:])
-
-        then:
-        steps.results.empty
-        steps.count == 0
-        noExceptionThrown()
-    }
-
-    void "find all by name ilike with string"(String s, int size) {
-        setup:
-        setupData()
-
-        expect:
-        def steps = service.findAllInProjectByName(project, s, [:])
-        steps.results.size() == size
-        steps.count == size
-
-        where:
-        s           | size
-        null        | 0
-        ''          | 2
-        'not found' | 0
-        'name'      | 2
-    }
-
-    void "read returns instance"() {
-        setup:
-        setupData()
-
-        expect: "valid instance"
-        service.read(1) instanceof Step
-    }
-
-    void "read with invalid id returns null"() {
-        expect: "invalid instance"
-        service.read(null) == null
-    }
-
-    void "delete step with links deletes all related links"() {
-        given:
-        setupData()
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        def link = new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
-
-        expect:
-        testStep1.id != null
-        testStep.id != null
-        link.id != null
-
-        when:
-        service.delete(testStep.id)
-
-        then:
-        Step.get(testStep1.id) != null
-        Step.get(testStep.id) == null
-        Link.get(link.id) == null
-    }
-
-    void "get linked steps by relation returns empty map when step null"() {
-        given:
-        setupData()
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
-
-        when:
-        def map = service.getLinkedStepsByRelation(null)
-
-        then:
-        map.children.empty
-        map.parents.empty
-        map.siblings.empty
-    }
-
-    void "get linked steps by relation returns all items"() {
-        given:
-        setupData()
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
-
-        when:
-        def map = service.getLinkedStepsByRelation(testStep)
-
-        then:
-        map.children.size() == 1
-        map.parents.size() == 1
-        map.siblings.size() == 1
-    }
-
-    void "get linked steps by relation does not return step passed in"() {
-        given:
-        setupData()
-        Step testStep = new Step(name: "should not be here", act: "do something", result: "something happened",
-                person: person, project: project).save()
-        Step testStep1 = new Step(name: "should be returned", act: "do something", result: "something happened",
-                person: person, project: project).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save()
-        new Link(ownerId: testStep1.id, linkedId: testStep.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_PARENT_OF.name).save()
-        new Link(ownerId: testStep1.id, linkedId: testStep.id, project: project,
-                relation: Relationship.IS_PARENT_OF.name).save()
-        new Link(ownerId: testStep1.id, linkedId: testStep.id, project: project,
-                relation: Relationship.IS_CHILD_OF.name).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
-
-        when:
-        def map = service.getLinkedStepsByRelation(testStep)
-
-        then:
-        map.children.size() == 1
-        !map.children.contains(testStep)
-        map.parents.size() == 1
-        !map.parents.contains(testStep)
-        map.siblings.size() == 1
-        !map.siblings.contains(testStep)
-    }
-
-    void "get related steps returns related steps instance"() {
-        given:
-        setupData()
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
-
-        when:
-        def steps = service.getRelatedSteps(testStep.id)
-
-        then:
-        steps.relatedSteps.size() == 3
-        steps.step.id == testStep.id
-    }
-
-    void "get related steps returns empty list and null step for step not found"() {
-        given:
-        setupData()
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
-
-        when:
-        def steps = service.getRelatedSteps(9999)
-
-        then:
-        steps.relatedSteps.size() == 0
-        steps.step == null
-    }
-
-    void "get related steps only returns owned related steps"() {
-        given:
-        setupData()
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        Step testStep1 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        Step testStep2 = new Step(act: "do something", result: "something happened", person: person, project: project).save()
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
-        new Link(ownerId: testStep.id, linkedId: testStep1.id, project: project,
-                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
-        new Link(ownerId: testStep2.id, linkedId: testStep.id, project: project,
-                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
-
-        when:
-        def steps = service.getRelatedSteps(testStep.id)
-
-        then:
-        steps.relatedSteps.size() == 2
-        !steps.relatedSteps.contains(testStep2)
+        l.size() == 1
+        l.first() == s
     }
 }

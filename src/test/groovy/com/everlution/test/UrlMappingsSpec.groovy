@@ -235,4 +235,9 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
             projectId = 999
         }
     }
+
+    void "step template"() {
+        expect:
+        false //TODO: update any tests with urls especially fetch urls
+    }
 }

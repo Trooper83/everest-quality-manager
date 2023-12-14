@@ -2,10 +2,10 @@ package com.everlution.test.service
 
 import com.everlution.Bug
 import com.everlution.BugService
+import com.everlution.StepService
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
-import com.everlution.StepService
 import com.everlution.command.RemovedItems
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
@@ -93,11 +93,11 @@ class BugServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
-    void "saveUpdate removes steps free form steps"() {
+    void "saveUpdate removes free form steps"() {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def step = new Step(act: "action", result: "result").save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
@@ -119,8 +119,7 @@ class BugServiceSpec extends Specification {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: project,
-                isBuilderStep: true, name: 'save update removes builder steps').save()
+        def step = new Step(act: "action", result: "result", isBuilderStep: true).save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
@@ -188,7 +187,7 @@ class BugServiceSpec extends Specification {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def step = new Step(act: "action", result: "result").save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
@@ -203,31 +202,11 @@ class BugServiceSpec extends Specification {
         stepService.get(step.id) == null
     }
 
-    void "delete method does not delete builder steps"() {
-        setupData()
-        given: "valid test case with step"
-        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: project,
-                isBuilderStep: true, name: 'delete does not delete builder steps').save()
-        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
-                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
-
-        expect:
-        stepService.get(step.id) != null
-        bug.steps.size() == 1
-
-        when: "delete"
-        bugService.delete(bug.id)
-
-        then: "step is removed"
-        stepService.get(step.id) != null
-    }
-
     void "saveUpdate method deletes free form steps"() {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def step = new Step(act: "action", result: "result").save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
@@ -238,6 +217,7 @@ class BugServiceSpec extends Specification {
         def removed = new RemovedItems()
         removed.stepIds = [step.id]
         bugService.saveUpdate(bug, removed)
+        sessionFactory.currentSession.flush()
 
         then: "step is removed"
         stepService.get(step.id) == null
@@ -247,7 +227,7 @@ class BugServiceSpec extends Specification {
         setupData()
         given: "valid test case with step"
         def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: project).save()
+        def step = new Step(act: "action", result: "result").save()
         def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
                 steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
 
@@ -262,28 +242,6 @@ class BugServiceSpec extends Specification {
 
         then: "step is removed"
         thrown(ValidationException)
-        stepService.get(step.id) != null
-    }
-
-    void "saveUpdate method does not delete builder steps"() {
-        setupData()
-        given: "valid test case with step"
-        def person = new Person(email: "test999@test.com", password: "!Password2022").save()
-        def step = new Step(act: "action", result: "result", person: person, project: project,
-                isBuilderStep: true, name: 'save update does not remove builder steps').save()
-        def bug = new Bug(person: person, name: "second", description: "desc2", project: project,
-                steps: [step], status: "Open", actual: "actual", expected: "expected").save(failOnError: true)
-
-        expect:
-        stepService.get(step.id) != null
-        bug.steps.size() == 1
-
-        when: "call saveUpdate"
-        def removed = new RemovedItems()
-        removed.stepIds = [step.id]
-        bugService.saveUpdate(bug, removed)
-
-        then: "step is removed"
         stepService.get(step.id) != null
     }
 }

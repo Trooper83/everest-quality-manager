@@ -4,6 +4,7 @@ import com.everlution.Bug
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.Step
+import com.everlution.StepTemplate
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
@@ -133,6 +134,30 @@ class BugHibernateSpec extends HibernateSpec {
         then: "steps are not found"
         Step.findById(testStep.id) == null
     }
+
+    void "delete bug cascades to step with template"() {
+        given: "valid domain instances"
+        def t = new StepTemplate(name: "testing", person: person, project: project, act: 'testing').save()
+        Step testStep = new Step(act: "do something", result: "something happened", template: t)
+        Bug bug = new Bug(person: person, name: "test", description: "desc",
+                project: project, status: "Open",
+                actual: "actual", expected: "expected").addToSteps(testStep)
+        bug.save()
+
+        expect:
+        t.id != null
+        testStep.id != null
+        bug.steps.size() == 1
+
+        when: "delete bug"
+        bug.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "steps are not found"
+        Step.findById(testStep.id) == null
+        StepTemplate.get(t.id) != null
+    }
+
 
     void "test steps order persists"() {
         given: "save a bug"
