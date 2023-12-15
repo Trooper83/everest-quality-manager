@@ -35,10 +35,10 @@ class StepTemplateServiceSpec extends Specification {
     }
 
     void "get returns template"() {
-        setupData()
+        def t = setupData()
 
         expect:
-        stepTemplateService.get(1) != null
+        stepTemplateService.get(t.id) != null
     }
 
     void "get returns null for not found id"() {
