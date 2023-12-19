@@ -2,24 +2,26 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <g:set var="entityName" value="${message(code: 'step.label', default: 'Step')}"/>
+    <g:set var="entityName" value="${message(code: 'stepTemplate.label', default: 'Step Template')}"/>
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <g:render template="/shared/sidebarTemplate" model="['name':step.project.name, 'code':step.project.code]"/>
+        <g:render template="/shared/sidebarTemplate" model="['name':stepTemplate.project.name, 'code':stepTemplate.project.code]"/>
         <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
-            <g:render template="/shared/messagesTemplate" bean="${step}" var="entity"/>
+            <g:render template="/shared/messagesTemplate" bean="${stepTemplate}" var="entity"/>
             <div class="card mt-3">
                 <div class="card-header hstack gap-1">
                     <h1 class="me-auto">
                         <g:message code="default.show.label" args="[entityName]"/>
                     </h1>
                     <sec:ifAnyGranted roles="ROLE_BASIC">
-                        <g:form resource="${this.step}" method="DELETE" useToken="true"
-                                uri="/project/${this.step.project.id}/step/delete/${this.step.id}">
-                            <g:link class="btn btn-primary" uri="/project/${this.step.project.id}/step/edit/${this.step.id}" data-test-id="show-edit-link">
+                        <g:form resource="${this.stepTemplate}" method="DELETE" useToken="true"
+                                uri="/project/${this.stepTemplate.project.id}/stepTemplate/delete/${this.stepTemplate.id}">
+                            <g:link class="btn btn-primary"
+                                    uri="/project/${this.stepTemplate.project.id}/stepTemplate/edit/${this.stepTemplate.id}"
+                                    data-test-id="show-edit-link">
                                 <g:message code="default.button.edit.label" default="Edit"/>
                             </g:link>
                             <input class="btn btn-secondary" type="submit" data-test-id="show-delete-link"
@@ -33,25 +35,25 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p id="person-label" class="col-4 fw-bold">Created By</p>
-                                <p class="col" id="person" aria-labelledby="person-label">${step.person.email}</p>
+                                <p class="col" id="person" aria-labelledby="person-label">${stepTemplate.person.email}</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p id="name-label" class="col-4 fw-bold">Name</p>
-                                <p class="col" id="name" aria-labelledby="name-label">${step.name}</p>
+                                <p class="col" id="name" aria-labelledby="name-label">${stepTemplate.name}</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p id="action-label" class="col-4 fw-bold">Action</p>
-                                <p id="act" class="col" aria-labelledby="action-label">${step.act}</p>
+                                <p id="act" class="col" aria-labelledby="action-label">${stepTemplate.act}</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p id="result-label" class="col-4 fw-bold">Result</p>
-                                <p id="result" class="col" aria-labelledby="result-label">${step.result}</p>
+                                <p id="result" class="col" aria-labelledby="result-label">${stepTemplate.result}</p>
                             </div>
                         </li>
                     </ul>

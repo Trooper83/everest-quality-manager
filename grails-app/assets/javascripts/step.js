@@ -7,11 +7,12 @@ function getEntryRow() {
     const itemIndex = index + removed;
 
     const hidden = $('<input type="hidden" name="stepsIndex[' + itemIndex + ']" class="iHidden" value="" id="steps[' + itemIndex + ']"/>');
-    const action = $('<div class="col-5"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].act" value="" id="steps[' + itemIndex + '].act"/></div>');
-    const result = $('<div class="col-5"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></div>');
-    const button = $('<div class="col-2"><input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeEntryRow(this)" /></div>');
+    const action = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].act" value="" id="steps[' + itemIndex + '].act"/></div>');
+    const data = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].data" value="" id="steps[' + itemIndex + '].data"/></div>');
+    const result = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></div>');
+    const button = $('<div class="col-md-1"><input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeEntryRow(this)" /></div>');
 
-    row.append(hidden, action, result, button);
+    row.append(hidden, action, data, result, button);
     return row;
 }
 
@@ -82,7 +83,7 @@ function closeAllLists(ele) {
 * sets the endpoint
 */
 function setEndpoint(type) {
-    const url = window.location.href.replace(/testCase|bug/, 'step');
+    const url = window.location.href.replace(/testCase|bug/, 'stepTemplate');
     let sub;
     if(url.endsWith('create') || url.endsWith('save')) {
         const last = url.lastIndexOf('/');
@@ -94,7 +95,7 @@ function setEndpoint(type) {
         const last = url.lastIndexOf('/edit');
         sub = url.substring(0, last);
     }
-    const end = type == 'search' ? '/search' : '/getRelatedSteps';
+    const end = type == 'search' ? '/search' : '/getRelatedTemplates';
     return sub + end;
 }
 
@@ -146,10 +147,10 @@ async function displayMatchedResults() {
 */
 async function fetchStep(id) {
     let s;
-    if (fetchedSteps.some(e => e.step.id == id)) {
-        s = fetchedSteps.find(e => e.step.id == id);
+    if (fetchedSteps.some(e => e.template.id == id)) {
+        s = fetchedSteps.find(e => e.template.id == id);
     } else {
-        const url = `${relatedEndpoint}?stepId=${id}`;
+        const url = `${relatedEndpoint}?templateId=${id}`;
         let encoded = encodeURI(url);
         const response = await fetch(encoded, {
             method: "GET",
@@ -171,49 +172,65 @@ async function displayStepProperties(id) {
         const s = await fetchStep(id);
         if (s) {
 
-            //create act element
-            const actCol = document.createElement('div');
-            actCol.setAttribute('class', 'col-5');
-            const actCard = document.createElement('div');
-            actCard.setAttribute('class', 'card');
-            actCard.setAttribute('style', 'min-height:3.5em;');
-            actCol.appendChild(actCard);
-            const actBody = document.createElement('div');
-            actBody.setAttribute('class', 'card-body');
-            const actP = document.createElement('p');
-            actBody.appendChild(actP);
-            actCard.appendChild(actBody);
-            const actText = s.step.act == null ? '' : s.step.act
-            actP.appendChild(document.createTextNode(actText));
-
-            //create result element
-            const resCol = document.createElement('div');
-            resCol.setAttribute('class', 'col-5');
-            const resCard = document.createElement('div');
-            resCard.setAttribute('class', 'card');
-            resCard.setAttribute('style', 'min-height:3.5em;');
-            resCol.appendChild(resCard);
-            const resBody = document.createElement('div');
-            resBody.setAttribute('class', 'card-body');
-            const resP = document.createElement('p');
-            resBody.appendChild(resP);
-            resCard.appendChild(resBody);
-            const resText = s.step.result == null ? '' : s.step.result
-            resP.appendChild(document.createTextNode(resText));
-
-            //create hidden input
             const index = document.querySelector('#builderSteps').childElementCount;
-            const hidden = document.createElement('input');
-            hidden.setAttribute('style', 'display:none;');
-            hidden.setAttribute('id', `steps[${index}].id`);
-            hidden.setAttribute('name', `steps[${index}].id`);
-            hidden.setAttribute('type', 'text');
-            hidden.setAttribute('data-name', 'hiddenId');
-            hidden.setAttribute('value', s.step.id);
+
+            const actCol = document.createElement('div');
+            actCol.setAttribute('class', 'col');
+            const act = document.createElement('textArea');
+            act.setAttribute('class', 'form-control');
+            act.setAttribute('readonly', 'true');
+            act.setAttribute('id', `steps[${index}].act`);
+            act.setAttribute('name', `steps[${index}].act`);
+            act.setAttribute('style', 'min-height:3.5em; max-height:7em;');
+            act.setAttribute('type', 'text');
+            const actText = s.template.act == null ? '' : s.template.act
+            act.appendChild(document.createTextNode(actText));
+            act.setAttribute('value', actText);
+            actCol.appendChild(act);
+
+            //create data element
+            const dataCol = document.createElement('div');
+            dataCol.setAttribute('class', 'col');
+            const data = document.createElement('textArea');
+            data.setAttribute('class', 'form-control');
+            data.setAttribute('style', 'min-height:3.5em; max-height:7em;');
+            data.setAttribute('id', `steps[${index}].data`);
+            data.setAttribute('name', `steps[${index}].data`);
+            data.setAttribute('type', 'text');
+            dataCol.appendChild(data);
+
+            const resCol = document.createElement('div');
+            resCol.setAttribute('class', 'col');
+            const res = document.createElement('textArea');
+            res.setAttribute('class', 'form-control');
+            res.setAttribute('readonly', 'true');
+            res.setAttribute('id', `steps[${index}].result`);
+            res.setAttribute('name', `steps[${index}].result`);
+            res.setAttribute('style', 'min-height:3.5em; max-height:7em;');
+            res.setAttribute('type', 'text');
+            const resText = s.template.result == null ? '' : s.template.result
+            res.appendChild(document.createTextNode(resText));
+            resCol.appendChild(res);
+
+            const hiddenTemplate = document.createElement('input');
+            hiddenTemplate.setAttribute('style', 'display:none;');
+            hiddenTemplate.setAttribute('id', `steps[${index}].template`);
+            hiddenTemplate.setAttribute('name', `steps[${index}].template`);
+            hiddenTemplate.setAttribute('type', 'text');
+            hiddenTemplate.setAttribute('data-name', 'hiddenId');
+            hiddenTemplate.setAttribute('value', s.template.id);
+
+            //create hidden builder step boolean
+            const hiddenBoolean = document.createElement('input');
+            hiddenBoolean.setAttribute('style', 'display:none;');
+            hiddenBoolean.setAttribute('id', `steps[${index}].isBuilderStep`);
+            hiddenBoolean.setAttribute('name', `steps[${index}].isBuilderStep`);
+            hiddenBoolean.setAttribute('type', 'text');
+            hiddenBoolean.setAttribute('data-name', 'hiddenBoolean');
+            hiddenBoolean.setAttribute('value', 'true');
 
             //create remove link
             const removeDiv = document.createElement('div');
-            removeDiv.setAttribute('class', 'col-1');
             const removeInp = document.createElement('input');
             removeInp.setAttribute('class', 'btn btn-link btn-sm');
             removeInp.setAttribute('type', 'button');
@@ -225,9 +242,11 @@ async function displayStepProperties(id) {
             const row = document.createElement('div');
             row.setAttribute('class', 'row align-items-center mb-2');
             row.appendChild(actCol);
+            row.appendChild(dataCol);
             row.appendChild(resCol);
             row.appendChild(removeDiv);
-            row.appendChild(hidden);
+            row.appendChild(hiddenTemplate);
+            row.appendChild(hiddenBoolean);
 
             //remove link
             if (document.querySelectorAll('#builderSteps .row').length > 0) {
@@ -280,8 +299,8 @@ async function displaySuggestedSteps(id) {
         const s = await fetchStep(id);
 
         if (s) {
-            setParentName(s.step.name);
-            if (s.relatedSteps.length == 0) {
+            setParentName(s.template.name);
+            if (s.relatedStepTemplates.length == 0) {
                 const emptyDiv = document.createElement('p');
                 emptyDiv.setAttribute('id', 'noStepsFound');
                 emptyDiv.appendChild(document.createTextNode('No related steps found'));
@@ -289,10 +308,10 @@ async function displaySuggestedSteps(id) {
             }
 
             //add all related steps to dom
-            s.relatedSteps.forEach(step => {
+            s.relatedStepTemplates.forEach(template => {
                 const col = document.createElement('div');
                 col.setAttribute('class', 'col');
-                col.setAttribute('onclick', `displayStepProperties(${step.id});`);
+                col.setAttribute('onclick', `displayStepProperties(${template.id});`);
                 const card = document.createElement('div');
                 card.setAttribute('class', 'card mb-2 suggested');
                 card.setAttribute('style', 'cursor:pointer');
@@ -301,7 +320,7 @@ async function displaySuggestedSteps(id) {
                 body.setAttribute('class', 'card-body');
                 card.appendChild(body);
                 const p = document.createElement('p');
-                p.appendChild(document.createTextNode(step.name));
+                p.appendChild(document.createTextNode(template.name));
                 body.appendChild(p);
                 parent.appendChild(col);
             });

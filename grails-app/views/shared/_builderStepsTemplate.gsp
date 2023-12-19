@@ -15,42 +15,43 @@
                 <div class="col-4 offset-2" id="currentStep"></div>
             </div>
             <div class="row border-bottom mb-3 mt-5">
-                <p class="col-4">Action</p>
-                <p class="col-4">Result</p>
-                <p class="col-4">Suggested</p>
+                <p class="col">Action</p>
+                <p class="col">Data</p>
+                <p class="col">Result</p>
+                <p class="col">Suggested</p>
             </div>
             <div class="row mt-3">
-                <div class="col-8" id="builderSteps" style="min-height:2em;">
+                <div class="col-9" id="builderSteps" style="min-height:2em;">
                     <g:each status="i" var="step" in="${entity.steps}">
                         <div class="row align-items-center mb-2">
                             <g:hiddenField name="stepsIndex[${i}]" class="iHidden" />
-                            <div class="col-5">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <p>${step.act}</p>
-                                    </div>
-                                </div>
+                            <div class="col">
+                                <g:textArea class="form-control" name="steps[${i}].act" readonly="true"
+                                            style="min-height:3.5em; max-height:7em;">${step.act}</g:textArea>
                             </div>
-                            <div class="col-5">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <p>${step.result}</p>
-                                    </div>
-                                </div>
+                            <div class="col">
+                                <g:textArea class="form-control" name="steps[${i}].data"
+                                        style="min-height:3.5em; max-height:7em;">${step.data}</g:textArea>
                             </div>
-                            <div class="col-2">
+                            <div class="col">
+                                <g:textArea class="form-control" name="steps[${i}].result" readonly="true"
+                                            style="min-height:3.5em; max-height:7em;">${step.result}</g:textArea>
+                            </div>
+                            <div class="">
                                 <g:if test="${i == entity.steps.size() - 1}">
-                                    <input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeBuilderRow(this, ${step.id});" />
+                                    <input class="btn btn-link btn-sm" type="button" value="Remove"
+                                           onclick="removeBuilderRow(this, ${step.id});" />
                                 </g:if>
                                 <g:else>
-                                    <input class="btn btn-link btn-sm" type="button" value="Remove" style="display: none;" onclick="removeBuilderRow(this, ${step.id});" />
+                                    <input class="btn btn-link btn-sm" type="button" value="Remove" style="display: none;"
+                                           onclick="removeBuilderRow(this, ${step.id});" />
                                 </g:else>
                             </div>
                             <g:hiddenField name="steps[${i}].id" data-name="hiddenId" value="${step.id}"/>
                         </div>
                     </g:each>
                 </div>
-                <div class="col-4" id="suggestedSteps"></div>
+                <div class="col-3" id="suggestedSteps"></div>
             </div>
         </div>
     </div>
