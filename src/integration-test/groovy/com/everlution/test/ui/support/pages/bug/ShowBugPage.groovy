@@ -39,15 +39,11 @@ class ShowBugPage extends ShowPage {
 
     /**
      * determines if a row with the specified data is displayed
-     * @param action
-     * @param result
-     * @return - true a row contains both the action and result values,
-     * false if a row with the action and result is not found
      */
-    boolean isStepsRowDisplayed(String action, String result) {
+    boolean isStepsRowDisplayed(String action, String data, String result) {
         for(row in steps) {
-            def data = row.find("p")
-            if(data[0].text() == action & data[1].text() == result) {
+            def d = row.find("p")
+            if(d[0].text() == action & d[1].text() == data & d[2].text() == result) {
                 return true
             }
         }

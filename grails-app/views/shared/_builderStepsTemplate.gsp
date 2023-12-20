@@ -47,7 +47,7 @@
                                            onclick="removeBuilderRow(this, ${step.id});" />
                                 </g:else>
                             </div>
-                            <g:hiddenField name="steps[${i}].id" data-name="hiddenId" value="${step.id}"/>
+                            <g:hiddenField name="steps[${i}].id" data-name="hiddenId" value="${step.template.id}"/>
                         </div>
                     </g:each>
                 </div>

@@ -14,7 +14,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
     LinkService linkService
     PersonService personService
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     @Shared
     Person person
@@ -23,7 +23,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
     Project project
 
     @Shared
-    Step step
+    StepTemplate template
 
     def setup() {
         given: "login as a basic user"
@@ -34,13 +34,13 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         and: "go to the create page"
         project = projectService.list(max: 1).first()
         person = personService.list(max: 1).first()
-        step = stepService.findAllByProject(project, [max:1]).results.first()
+        template = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         to(CreateBugPage, project.id)
     }
 
     void "suggestions only displayed for string of 3 characters or more"(int index) {
         given:
-        def text = step.name.substring(0, index)
+        def text = template.name.substring(0, index)
 
         when:
         CreateBugPage createPage = browser.page(CreateBugPage)
@@ -61,7 +61,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "suggestions display for string of 3 characters or more"() {
         given:
-        def text = step.name.substring(0, 3)
+        def text = template.name.substring(0, 3)
 
         when:
         CreateBugPage createPage = browser.page(CreateBugPage)
@@ -79,7 +79,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "steps are retrieved when validation fails"() {
         given:
-        def text = step.name.substring(0, 5)
+        def text = template.name.substring(0, 5)
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.submit()
 
@@ -100,13 +100,13 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         given:
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.scrollToBottom()
-        createPage.stepsTable.addBuilderStep(step.name)
+        createPage.stepsTable.addBuilderStep(template.name)
 
         expect:
         createPage.stepsTable.getBuilderStep(0).find('input[value=Remove]').displayed
 
         when:
-        createPage.stepsTable.addBuilderStep(step.name)
+        createPage.stepsTable.addBuilderStep(template.name)
 
         then:
         !createPage.stepsTable.getBuilderStep(0).find('input[value=Remove]').displayed
@@ -117,8 +117,8 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         given:
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.scrollToBottom()
-        createPage.stepsTable.addBuilderStep(step.name)
-        createPage.stepsTable.addBuilderStep(step.name)
+        createPage.stepsTable.addBuilderStep(template.name)
+        createPage.stepsTable.addBuilderStep(template.name)
 
         expect:
         !createPage.stepsTable.getBuilderStep(0).find('input[value=Remove]').displayed
@@ -132,10 +132,10 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "selecting suggested result displays properties and suggested steps"() {
         setup:
-        def s = new Step(name: "test step", act: "action jackson", result: "result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def s = new StepTemplate(name: "test step", act: "action jackson", result: "result", project: project,
+                person: person)
+        stepTemplateService.save(s)
+        def l = new Link(ownerId: s.id, linkedId: template.id, relation: Relationship.IS_PARENT_OF.name, project: project)
         linkService.save(l)
 
         when:
@@ -144,21 +144,21 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.stepsTable.addBuilderStep(s.name)
 
         then:
-        createPage.stepsTable.isSuggestedStepDisplayed(step.name)
+        createPage.stepsTable.isSuggestedStepDisplayed(template.name)
         createPage.stepsTable.getCurrentBuilderStepName() == s.name
-        createPage.stepsTable.isBuilderRowDisplayed(s.act, s.result)
+        createPage.stepsTable.isBuilderRowDisplayed(s.act, '', s.result)
     }
 
     void "selecting suggested step displays properties and suggested steps"() {
         setup:
-        def s = new Step(name: "12345test step", act: "1action jackson", result: "1result", project: project, person: person,
-                isBuilderStep: true)
-        def st = new Step(name: "2445556test step 2", act: "2action jackson 2", result: "2result 2", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        stepService.save(st)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
-        def li = new Link(ownerId: step.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
+        def s = new StepTemplate(name: "12345test step", act: "1action jackson", result: "1result",
+                project: project, person: person)
+        def st = new StepTemplate(name: "2445556test step 2", act: "2action jackson 2", result: "2result 2",
+                project: project, person: person,)
+        stepTemplateService.save(s)
+        stepTemplateService.save(st)
+        def l = new Link(ownerId: s.id, linkedId: template.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def li = new Link(ownerId: template.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
         linkService.save(l)
         linkService.save(li)
 
@@ -166,24 +166,24 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         def createPage = createPage(CreateBugPage)
         createPage.scrollToBottom()
         createPage.stepsTable.addBuilderStep(s.name)
-        createPage.stepsTable.selectSuggestedStep(step.name)
+        createPage.stepsTable.selectSuggestedStep(template.name)
 
         then:
         createPage.stepsTable.isSuggestedStepDisplayed(st.name)
-        createPage.stepsTable.getCurrentBuilderStepName() == step.name
-        createPage.stepsTable.isBuilderRowDisplayed(step.act, step.result)
+        createPage.stepsTable.getCurrentBuilderStepName() == template.name
+        createPage.stepsTable.isBuilderRowDisplayed(template.act, '', template.result)
     }
 
     void "suggested steps name and properties are repopulated with current step when step removed"() {
         given:
-        def s = new Step(name: "3456666test step", act: "3action jackson", result: "3result", project: project, person: person,
-                isBuilderStep: true)
-        def st = new Step(name: "45678test step 2", act: "4action jackson 2", result: "4result 2", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        stepService.save(st)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
-        def li = new Link(ownerId: step.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
+        def s = new StepTemplate(name: "3456666test step", act: "3action jackson", result: "3result",
+                project: project, person: person)
+        def st = new StepTemplate(name: "45678test step 2", act: "4action jackson 2", result: "4result 2",
+                project: project, person: person)
+        stepTemplateService.save(s)
+        stepTemplateService.save(st)
+        def l = new Link(ownerId: s.id, linkedId: template.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def li = new Link(ownerId: template.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
         linkService.save(l)
         linkService.save(li)
 
@@ -191,26 +191,26 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         def createPage = createPage(CreateBugPage)
         createPage.scrollToBottom()
         createPage.stepsTable.addBuilderStep(s.name)
-        createPage.stepsTable.selectSuggestedStep(step.name)
+        createPage.stepsTable.selectSuggestedStep(template.name)
 
         expect:
         createPage.stepsTable.isSuggestedStepDisplayed(st.name)
-        createPage.stepsTable.getCurrentBuilderStepName() == step.name
+        createPage.stepsTable.getCurrentBuilderStepName() == template.name
 
         when:
         createPage.stepsTable.removeBuilderRow(1)
 
         then:
-        createPage.stepsTable.isSuggestedStepDisplayed(step.name)
+        createPage.stepsTable.isSuggestedStepDisplayed(template.name)
         createPage.stepsTable.getCurrentBuilderStepName() == s.name
     }
 
     void "changing step type resets builder form"() {
         given:
-        def s = new Step(name: "5test step", act: "5action jackson", result: "5result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def s = new StepTemplate(name: "5test step", act: "5action jackson", result: "5result", project: project,
+                person: person)
+        stepTemplateService.save(s)
+        def l = new Link(ownerId: s.id, linkedId: template.id, relation: Relationship.IS_PARENT_OF.name, project: project)
         linkService.save(l)
 
         and:
@@ -235,10 +235,10 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "form is reset when last step is removed"() {
         given:
-        def s = new Step(name: "6test step", act: "6action jackson", result: "6result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def s = new StepTemplate(name: "6test step", act: "6action jackson", result: "6result", project: project,
+                person: person)
+        stepTemplateService.save(s)
+        def l = new Link(ownerId: s.id, linkedId: template.id, relation: Relationship.IS_PARENT_OF.name, project: project)
         linkService.save(l)
 
         and:
@@ -262,7 +262,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "suggestion results are removed when clicked outside of menu"() {
         given:
-        def text = step.name.substring(0, 3)
+        def text = template.name.substring(0, 3)
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.scrollToBottom()
         for (int i = 0; i < text.length(); i++){
@@ -284,9 +284,9 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "no results message displayed when no related steps found"() {
         setup:
-        def s = new Step(name: "7test step", act: "7action jackson", result: "7result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
+        def s = new StepTemplate(name: "7test step", act: "7action jackson", result: "7result", project: project,
+                person: person)
+        stepTemplateService.save(s)
 
         when:
         def createPage = createPage(CreateBugPage)
@@ -301,7 +301,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         when:
         def createPage = createPage(CreateBugPage)
         createPage.scrollToBottom()
-        createPage.stepsTable.addBuilderStep(step.name)
+        createPage.stepsTable.addBuilderStep(template.name)
 
         then:
         !createPage.stepsTable.isBuilderStepHiddenInputDisplayed(0)

@@ -61,8 +61,7 @@ class CreateBugSpec extends GebSpec {
                 areas: [area], environments: [env, env1]))
         def name = faker.zelda().game()
         def description = faker.zelda().character()
-        def action = faker.lorem().sentence(5)
-        def result = faker.lorem().sentence(7)
+        def stepData = DataFactory.step()
         def actual = faker.lorem().sentence(7)
         def expected = faker.lorem().sentence(7)
 
@@ -81,7 +80,8 @@ class CreateBugSpec extends GebSpec {
 
         when: "create bug"
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area.name, [env.name, env1.name], "Web", action, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area.name, [env.name, env1.name], "Web", stepData.action,
+                stepData.data, stepData.result, actual, expected)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
@@ -92,7 +92,7 @@ class CreateBugSpec extends GebSpec {
             showPage.platformValue.text() == "Web"
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
-            showPage.isStepsRowDisplayed(action, result)
+            showPage.isStepsRowDisplayed(stepData.action, stepData.data, stepData.result)
             showPage.actualValue.text() == actual
             showPage.expectedValue.text() == expected
         }

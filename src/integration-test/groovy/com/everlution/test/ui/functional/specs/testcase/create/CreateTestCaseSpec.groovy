@@ -65,7 +65,7 @@ class CreateTestCaseSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
 
-        when: "create test case"
+        when: "create test case" //TODO: add data information
         go "/project/${project.id}/testCase/create"
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         def tcd = DataFactory.testCase()

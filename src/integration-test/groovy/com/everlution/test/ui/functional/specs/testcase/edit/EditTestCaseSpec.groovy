@@ -234,7 +234,7 @@ class EditTestCaseSpec extends GebSpec {
         and: "go to edit page"
         go "/project/${project.id}/testCase/edit/${id}"
 
-        when: "edit test case"
+        when: "edit test case" //TODO: add data information
         EditTestCasePage page = browser.page(EditTestCasePage)
         def edited = DataFactory.testCase()
         page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI", "iOS",

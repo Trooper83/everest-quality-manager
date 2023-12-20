@@ -103,6 +103,9 @@ class BootStrap {
         def child = new StepTemplate(act: "child act", result: "child res", project: project1,
                 person: person, name: "this is the ultimate child step").save(failOnError: true)
 
+        new StepTemplate(act: "act", result: "res", project: project,
+                person: person, name: "this is the step").save(failOnError: true)
+
         new Link(ownerId: parent.id, linkedId: child.id, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
         new Link(ownerId: child.id, linkedId: parent.id, project: project1, relation: Relationship.IS_CHILD_OF.name).save(failOnError: true)
         new Link(ownerId: uncle.id, linkedId: child.id, project: project1, relation: Relationship.IS_PARENT_OF.name).save(failOnError: true)
