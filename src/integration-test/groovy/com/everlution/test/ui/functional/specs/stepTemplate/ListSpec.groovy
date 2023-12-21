@@ -1,16 +1,15 @@
-package com.everlution.test.ui.functional.specs.step
+package com.everlution.test.ui.functional.specs.stepTemplate
 
 import com.everlution.PersonService
 import com.everlution.ProjectService
-import com.everlution.Step
-import com.everlution.StepService
+import com.everlution.StepTemplate
+import com.everlution.StepTemplateService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
-import com.everlution.test.ui.support.pages.step.ListStepPage
-import com.everlution.test.ui.support.pages.step.ShowStepPage
+import com.everlution.test.ui.support.pages.stepTemplate.ListStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.ShowStepTemplatePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -19,7 +18,7 @@ class ListSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     void "verify list table headers order"() {
         given: "login as read only user"
@@ -29,10 +28,10 @@ class ListSpec extends GebSpec {
 
         when: "go to list page"
         def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/steps"
+        go "/project/${project.id}/stepTemplates"
 
         then: "correct headers are displayed"
-        ListScenarioPage page = browser.page(ListScenarioPage)
+        def page = browser.page(ListStepTemplatePage)
         page.listTable.getHeaders() == ["Name", "Action", "Result", "Created By", "Created", "Updated"]
     }
 
@@ -44,7 +43,7 @@ class ListSpec extends GebSpec {
 
         and: "go to list page"
         def project = projectService.list(max: 1).first()
-        def page = to(ListStepPage, project.id)
+        def page = to(ListStepTemplatePage, project.id)
 
         and:
         page.listTable.sortColumn(column)
@@ -76,14 +75,14 @@ class ListSpec extends GebSpec {
 
         and: "go to list page"
         def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/steps"
+        go "/project/${project.id}/stepTemplates"
 
         when: "click first scenario in list"
-        def listPage = browser.page(ListStepPage)
+        def listPage = browser.page(ListStepTemplatePage)
         listPage.listTable.clickCell("Name", 0)
 
         then: "at show page"
-        at ShowStepPage
+        at ShowStepTemplatePage
     }
 
     void "search returns results and text retained in search box"() {
@@ -98,10 +97,10 @@ class ListSpec extends GebSpec {
 
         and:
         def projectPage = at ProjectHomePage
-        projectPage.sideBar.goToProjectDomain('Steps')
+        projectPage.sideBar.goToProjectDomain('Step Templates')
 
         when:
-        def page = at ListStepPage
+        def page = at ListStepTemplatePage
         page.search('step')
 
         then:
@@ -121,10 +120,10 @@ class ListSpec extends GebSpec {
 
         and:
         def projectPage = at ProjectHomePage
-        projectPage.sideBar.goToProjectDomain('Steps')
+        projectPage.sideBar.goToProjectDomain('Step Templates')
 
         and:
-        def page = at ListStepPage
+        def page = at ListStepTemplatePage
         page.search('step')
 
         expect:
@@ -139,13 +138,12 @@ class ListSpec extends GebSpec {
         page.nameInput.text == ''
     }
 
-    void "delete message displays after scenario deleted"() {
+    void "delete message displays after template deleted"() {
         given:
         def project = projectService.list(max: 1).first()
         def person = personService.list(max: 1).first()
-        def step = new Step(name: 'testing', person: person, project: project, act: 'action', result: 'result',
-                isBuilderStep: true)
-        def id = stepService.save(step).id
+        def step = new StepTemplate(name: 'testing', person: person, project: project, act: 'action', result: 'result')
+        def id = stepTemplateService.save(step).id
 
         and: "login as a read only user"
         to LoginPage
@@ -153,13 +151,13 @@ class ListSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to list page"
-        go "/project/${project.id}/step/show/${id}"
+        go "/project/${project.id}/stepTemplate/show/${id}"
 
         when:
-        browser.page(ShowStepPage).delete()
+        browser.page(ShowStepTemplatePage).delete()
 
         then: "at show page"
-        def steps = at ListStepPage
+        def steps = at ListStepTemplatePage
         steps.statusMessage.displayed
     }
 }

@@ -1,35 +1,35 @@
 package com.everlution
 
-class Step {
+class StepTemplate {
 
     String act
-    String data
     Date dateCreated
-    boolean isBuilderStep = false
     Date lastUpdated
+    String name
+    Person person
+    Project project
     String result
-    StepTemplate template
-
-    static belongsTo = [TestCase, Bug]
 
     static mapping = {
-        template cascade: "none"
+        person cascade: "none"
+        project cascade: "none"
     }
 
     static constraints = {
         act blank: true, maxSize: 500, nullable: true, validator: {
-            val, Step obj ->
+            val, StepTemplate obj ->
                 if(val == null && obj.result == null) {
                     return false
-            }
+                }
         }
-        data blank: true, nullable: true, maxSize: 500
+        name blank: false, nullable: false, maxSize: 255
+        person nullable: false
+        project nullable: false
         result blank: true, maxSize: 500, nullable: true, validator: {
-            val, Step obj ->
+            val, StepTemplate obj ->
                 if(val == null && obj.act == null) {
                     return false
                 }
         }
-        template nullable: true
     }
 }

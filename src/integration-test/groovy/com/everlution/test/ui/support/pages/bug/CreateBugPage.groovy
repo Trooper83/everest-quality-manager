@@ -73,7 +73,8 @@ class CreateBugPage extends CreatePage {
         expectedInput = faker.beer().name()
         scrollToBottom()
         stepsTable.selectStepsTab('free-form')
-        stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(5),
+                faker.lorem().sentence(7))
         createButton.click()
     }
 
@@ -81,7 +82,7 @@ class CreateBugPage extends CreatePage {
      * creates a bug with the supplied data
      */
     void createFreeFormBug(String name, String description, String area, List<String> environment,
-                           String platform, String action, String result, String actual, String expected) {
+                           String platform, String action, String data, String result, String actual, String expected) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
@@ -89,7 +90,7 @@ class CreateBugPage extends CreatePage {
         environmentsSelect().selected = environment
         scrollToBottom()
         stepsTable.selectStepsTab('free-form')
-        stepsTable.addStep(action, result)
+        stepsTable.addStep(action, data, result)
         expectedInput = expected
         actualInput = actual
         createButton.click()
@@ -105,7 +106,8 @@ class CreateBugPage extends CreatePage {
         descriptionInput = faker.zelda().character()
         scrollToBottom()
         stepsTable.selectStepsTab('free-form')
-        stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(7))
+        stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(5),
+                faker.lorem().sentence(7))
         actualInput = faker.beer().name()
         expectedInput = faker.beer().name()
     }

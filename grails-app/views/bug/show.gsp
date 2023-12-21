@@ -87,25 +87,26 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item border-bottom">
                             <div class="row">
-                                <p class="col-6 fw-bold">Action</p>
-                                <p class="col-6 fw-bold">Result</p>
+                                <p class="col-4 fw-bold">Action</p>
+                                <p class="col-4 fw-bold">Data</p>
+                                <p class="col-4 fw-bold">Result</p>
                             </div>
                         </li>
                     </ul>
                     <g:render template="/shared/showStepsTableTemplate" bean="${bug}" var="entity"/>
                     <ul class="list-group list-group-flush mt-3">
-                        <li class="list-group-item border-bottom">
+                        <li class="list-group-item border-bottom mt-4">
                             <div class="row">
-                                <p class="col-6 fw-bold">Expected</p>
-                                <p class="col-6 fw-bold">Actual</p>
+                                <p class="col-4 fw-bold">Expected</p>
+                                <p class="col-4 fw-bold">Actual</p>
                             </div>
                         </li>
                     </ul>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <div class="row">
-                                <p id="expected" class="col-6">${bug.expected}</p>
-                                <p id="actual" class="col-6">${bug.actual}</p>
+                                <p id="expected" class="col-4">${bug.expected}</p>
+                                <p id="actual" class="col-4">${bug.actual}</p>
                             </div>
                         </li>
                     </ul>

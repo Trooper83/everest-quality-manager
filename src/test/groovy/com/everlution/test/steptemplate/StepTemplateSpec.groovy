@@ -1,20 +1,24 @@
-package com.everlution.test.step
+package com.everlution.test.steptemplate
 
-import com.everlution.Step
+import com.everlution.Person
+import com.everlution.Project
+import com.everlution.StepTemplate
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
 
-class StepSpec extends Specification implements DomainUnitTest<Step> {
+class StepTemplateSpec extends Specification implements DomainUnitTest<StepTemplate> {
 
     @Shared int id
 
     void "test instances are persisted"() {
         setup:
-        new Step(act: "First Test step", result: "test").save()
+        def project = new Project(name: "tc domain project321", code: "td5").save()
+        def person = new Person(email: "test@test.com", password: "test").save()
+        new StepTemplate(name: "test name", act: "First Test step", result: "test", person: person, project: project).save()
 
         expect:
-        Step.count() == 1
+        StepTemplate.count() == 1
     }
 
     void "test domain instance"() {
@@ -64,6 +68,8 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         then:
         !domain.validate(["act"])
         domain.errors["act"].code == "validator.invalid"
+        !domain.validate(["result"])
+        domain.errors["result"].code == "validator.invalid"
     }
 
     void "test action cannot exceed 500 characters"() {
@@ -104,7 +110,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.validate(["result"])
     }
 
-    void "test result can be blank"() {
+    void "result can be blank"() {
         when:
         domain.result = ""
 
@@ -112,7 +118,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.validate(["result"])
     }
 
-    void "test result cannot exceed 500 characters"() {
+    void "result cannot exceed 500 characters"() {
         when: "for a string of 501 characters"
         String str = "a" * 501
         domain.result = str
@@ -122,7 +128,7 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.errors["result"].code == "maxSize.exceeded"
     }
 
-    void "test result validates with 500 characters"() {
+    void "result validates with 500 characters"() {
         when: "for a string of 500 characters"
         String str = "a" * 500
         domain.result = str
@@ -131,9 +137,55 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
         domain.validate(["result"])
     }
 
-    void "isBuilderStep defaults to false"() {
-        expect:
-        !domain.isBuilderStep
+    void "project cannot be null"() {
+        when:
+        domain.project = null
+
+        then:
+        !domain.validate(["project"])
+    }
+
+    void "name cannot be null"() {
+        when:
+        domain.name = null
+
+        then:
+        !domain.validate(["name"])
+    }
+
+    void "name cannot be blank"() {
+        when:
+        domain.name = ""
+
+        then:
+        !domain.validate(["name"])
+    }
+
+    void "name cannot exceed 255 characters"() {
+        when: "for a string of 256 characters"
+        String str = "a" * 256
+        domain.name = str
+
+        then: "validation fails"
+        !domain.validate(["name"])
+        domain.errors["name"].code == "maxSize.exceeded"
+    }
+
+    void "name validates with 255 characters"() {
+        when: "for a string of 255 characters"
+        String str = "a" * 255
+        domain.name = str
+
+        then: "validation passes"
+        domain.validate(["name"])
+    }
+
+    void "person cannot be null"() {
+        when:
+        domain.person = null
+
+        then:
+        !domain.validate(["person"])
     }
 
     void "dateCreated can be null"() {
@@ -150,48 +202,5 @@ class StepSpec extends Specification implements DomainUnitTest<Step> {
 
         then:
         domain.validate(["lastUpdated"])
-    }
-
-    void "data can be null"() {
-        when:
-        domain.data = null
-
-        then:
-        domain.validate(["data"])
-    }
-
-    void "data can be blank"() {
-        when:
-        domain.data = ""
-
-        then:
-        domain.validate(["data"])
-    }
-
-    void "data cannot exceed 500 characters"() {
-        when: "for a string of 256 characters"
-        String str = "a" * 501
-        domain.data = str
-
-        then: "validation fails"
-        !domain.validate(["data"])
-        domain.errors["data"].code == "maxSize.exceeded"
-    }
-
-    void "data validates with 500 characters"() {
-        when: "for a string of 500 characters"
-        String str = "a" * 500
-        domain.data = str
-
-        then: "validation passes"
-        domain.validate(["data"])
-    }
-
-    void "template can be null"() {
-        when:
-        domain.template = null
-
-        then:
-        domain.validate(["template"])
     }
 }

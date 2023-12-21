@@ -41,12 +41,14 @@ class StepTableModule extends Module {
     /**
      * adds a step
      * @param action - the action
+     * @param result - the data
      * @param result - the result
      */
-    void addStep(String action, String result) {
+    void addStep(String action, String data, String result) {
         addRow()
         int index = getStepsCount() - 1
         $("textarea[name='steps[${index}].act']").value(action)
+        $("textarea[name='steps[${index}].data']").value(data)
         $("textarea[name='steps[${index}].result']").value(result)
     }
 
@@ -70,10 +72,11 @@ class StepTableModule extends Module {
      * @param action - the updated action value
      * @param result - the updated result value
      */
-    void editTestStep(int index, String action, String result) {
-        def data = getStep(index).find("textarea")
-        data[0].value(action)
-        data[1].value(result)
+    void editTestStep(int index, String action, String data, String result) {
+        def row = getStep(index).find("textarea")
+        row[0].value(action)
+        row[1].value(data)
+        row[2].value(result)
     }
 
     /**
@@ -156,14 +159,15 @@ class StepTableModule extends Module {
     /**
      * determines if a builder row with the specified data is displayed
      * @param action
+     * @param data
      * @param result
-     * @return - true a row contains both the action and result values,
-     * false if a row with the action and result is not found
+     * @return - true a row contains the action, data and result values,
+     * false if a row with the action, data and result is not found
      */
-    boolean isBuilderRowDisplayed(String action, String result) {
+    boolean isBuilderRowDisplayed(String action, String data, String result) {
         for(row in builderStepRows) {
-            def data = row.find("div.card-body p")
-            if(data[0].text() == action & data[1].text() == result) {
+            def d = row.find("textarea")
+            if(d[0].text() == action & d[1].text() == data & d[2].text() == result) {
                 return true
             }
         }
@@ -173,14 +177,15 @@ class StepTableModule extends Module {
     /**
      * determines if a row with the specified data is displayed
      * @param action
+     * @param data
      * @param result
-     * @return - true a row contains both the action and result values,
-     * false if a row with the action and result is not found
+     * @return - true a row contains all the supplied values,
+     * false if a row is not found
      */
-    boolean isRowDisplayed(String action, String result) {
+    boolean isRowDisplayed(String action, String data, String result) {
         for(row in stepRows) {
-            def data = row.find("textarea")
-            if(data[0].text() == action & data[1].text() == result) {
+            def d = row.find("textarea")
+            if(d[0].text() == action & d[1].text() == data & d[2].text() == result) {
                 return true
             }
         }

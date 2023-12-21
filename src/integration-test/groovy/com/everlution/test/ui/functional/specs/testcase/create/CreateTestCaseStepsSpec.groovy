@@ -1,9 +1,10 @@
 package com.everlution.test.ui.functional.specs.testcase.create
 
+import com.everlution.StepTemplate
+import com.everlution.StepTemplateService
 import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.Step
-import com.everlution.StepService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -17,7 +18,7 @@ class CreateTestCaseStepsSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     void "removed test free form steps are not saved"() {
         given: "login as a basic user"
@@ -35,7 +36,7 @@ class CreateTestCaseStepsSpec extends GebSpec {
 
         and: "add a new test step"
         page.testStepTable.selectStepsTab('free-form')
-        page.testStepTable.addStep("should not persist", "should not persist")
+        page.testStepTable.addStep("should not persist", "", "should not persist")
 
         and: "remove row"
         page.testStepTable.removeRow(1)
@@ -64,7 +65,7 @@ class CreateTestCaseStepsSpec extends GebSpec {
         page.nameInput = 'A New Test Case'
 
         and: "add a new test step"
-        def step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         page.scrollToBottom()
         page.testStepTable.addBuilderStep(step.name)
         page.testStepTable.addBuilderStep(step.name)
@@ -86,12 +87,12 @@ class CreateTestCaseStepsSpec extends GebSpec {
         given: "get fake data"
         def project = projectService.list(max:1).first()
         def person = personService.list(max:1).first()
-        def step = new Step(project: project, person: person, name: 'what kind of name should I use', isBuilderStep: true,
+        def step = new StepTemplate(project: project, person: person, name: 'what kind of name should I use',
                 act: 'here is the action', result: 'this is the result')
-        def step1 = new Step(project: project, person: person, name: '1what kind of name should I use', isBuilderStep: true,
+        def step1 = new StepTemplate(project: project, person: person, name: '1what kind of name should I use',
                 act: '1here is the action', result: '1this is the result')
-        stepService.save(step)
-        stepService.save(step1)
+        stepTemplateService.save(step)
+        stepTemplateService.save(step1)
 
         and: "login as a basic user"
         to LoginPage
@@ -109,15 +110,15 @@ class CreateTestCaseStepsSpec extends GebSpec {
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
-        showPage.isStepsRowDisplayed('here is the action', 'this is the result')
-        showPage.isStepsRowDisplayed('1here is the action', '1this is the result')
+        showPage.isStepsRowDisplayed('here is the action', '', 'this is the result')
+        showPage.isStepsRowDisplayed('1here is the action', '', '1this is the result')
     }
 
     void "free form steps are persisted"() {
         given: "get fake data"
         def project = projectService.list(max:1).first()
-        def step = new Step(act: 'here is the action', result: 'this is the result')
-        def step1 = new Step(act: '1here is the action', result: '1this is the result')
+        def step = new Step(act: 'here is the action', result: 'this is the result', data: 'testing')
+        def step1 = new Step(act: '1here is the action', result: '1this is the result', data: 'testing')
 
         and: "login as a basic user"
         to LoginPage
@@ -134,7 +135,7 @@ class CreateTestCaseStepsSpec extends GebSpec {
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
-        showPage.isStepsRowDisplayed('here is the action', 'this is the result')
-        showPage.isStepsRowDisplayed('1here is the action', '1this is the result')
+        showPage.isStepsRowDisplayed('here is the action', 'testing','this is the result')
+        showPage.isStepsRowDisplayed('1here is the action', 'testing','1this is the result')
     }
 }

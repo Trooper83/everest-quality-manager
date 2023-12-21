@@ -18,7 +18,7 @@
                                 <g:link class="dropdown-item"
                                         uri="/project/${params.projectId}/scenario/create">Scenario</g:link>
                                 <g:link class="dropdown-item"
-                                        uri="/project/${params.projectId}/step/create">Step</g:link>
+                                        uri="/project/${params.projectId}/stepTemplate/create">Step Template</g:link>
                                 <g:link class="dropdown-item"
                                         uri="/project/${params.projectId}/testCase/create">Test Case</g:link>
                                 <g:link class="dropdown-item"
@@ -37,7 +37,7 @@
                         <g:link class="nav-link" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
                     </li>
                     <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/steps">Steps</g:link>
+                        <g:link class="nav-link" uri="/project/${params.projectId}/stepTemplates">Step Templates</g:link>
                     </li>
                     <li class="nav-item">
                         <g:link class="nav-link" uri="/project/${params.projectId}/testCases">Test Cases</g:link>

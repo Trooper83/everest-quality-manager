@@ -4,6 +4,7 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.ReleasePlan
 import com.everlution.Step
+import com.everlution.StepTemplate
 import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestGroup
@@ -105,9 +106,9 @@ class TestCaseHibernateSpec extends HibernateSpec {
         step.result == "edited result"
     }
 
-    void "delete test case does not cascade to steps"() {
+    void "delete test case cascades to steps"() {
         given: "valid domain instances"
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
         testCase.save()
@@ -121,12 +122,12 @@ class TestCaseHibernateSpec extends HibernateSpec {
         sessionFactory.currentSession.flush()
 
         then: "steps are not found"
-        Step.findById(testStep.id) != null
+        Step.get(testStep.id) == null
     }
 
-    void "remove from test case does not delete steps"() {
+    void "remove from test case deletes steps"() {
         given: "valid domain instances"
-        Step testStep = new Step(act: "do something", result: "something happened", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
         testCase.save()
@@ -141,14 +142,59 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
         then: "steps are not found"
         testCase.steps.empty
-        Step.findById(testStep.id) != null
+        Step.get(testStep.id) == null
+    }
+
+    void "delete test case cascades to steps with template"() {
+        given: "valid domain instances"
+        def t = new StepTemplate(name: 'template 1', act: 'action jackson', person: person, project: project).save()
+        Step testStep = new Step(act: "do something", result: "something happened", template: t)
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
+        testCase.save()
+
+        expect:
+        t.id != null
+        testStep.id != null
+        testCase.steps.size() == 1
+
+        when: "delete test case"
+        testCase.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "steps are not found"
+        Step.get(testStep.id) == null
+        StepTemplate.get(t.id) != null
+    }
+
+    void "remove from test case deletes step with template"() {
+        given: "valid domain instances"
+        def t = new StepTemplate(name: 'template 1', act: 'action jackson', person: person, project: project).save()
+        Step testStep = new Step(act: "do something", result: "something happened", template: t)
+        TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "UI", project: project).addToSteps(testStep)
+        testCase.save()
+
+        expect:
+        t.id != null
+        testStep.id != null
+        testCase.steps.size() == 1
+
+        when: "remove steps"
+        testCase.removeFromSteps(testStep)
+        sessionFactory.currentSession.flush()
+
+        then: "steps are not found"
+        testCase.steps.empty
+        Step.get(testStep.id) == null
+        StepTemplate.get(t.id) != null
     }
 
     void "test steps order persists"() {
         given: "save a test case"
-        Step testStep = new Step(act: "do something", result: "something happened123", person: person, project: project)
-        Step testStep1 = new Step(act: "I did something", result: "something happened231", person: person, project: project)
-        Step testStep2 = new Step(act: "something happened", result: "something happened321", person: person, project: project)
+        Step testStep = new Step(act: "do something", result: "something happened123")
+        Step testStep1 = new Step(act: "I did something", result: "something happened231")
+        Step testStep2 = new Step(act: "something happened", result: "something happened321")
         TestCase testCase = new TestCase(person: person, name: "test", description: "desc",
                 executionMethod: "Automated", type: "UI", project: project, steps: [testStep, testStep1, testStep2])
         testCase.save()

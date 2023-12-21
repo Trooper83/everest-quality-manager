@@ -1,4 +1,4 @@
-package com.everlution.test.ui.e2e.specs.step
+package com.everlution.test.ui.e2e.specs.stepTemplate
 
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
@@ -6,10 +6,10 @@ import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.pages.step.CreateStepPage
-import com.everlution.test.ui.support.pages.step.EditStepPage
-import com.everlution.test.ui.support.pages.step.ListStepPage
-import com.everlution.test.ui.support.pages.step.ShowStepPage
+import com.everlution.test.ui.support.pages.stepTemplate.CreateStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.EditStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.ListStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.ShowStepTemplatePage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
@@ -30,13 +30,13 @@ class StepSpec extends GebSpec {
         def projectHomePage = at ProjectHomePage
         projectHomePage.sideBar.goToCreate("Step")
 
-        CreateStepPage page = browser.at(CreateStepPage)
-        page.createStep(step.action, step.name, step.result)
+        def page = browser.at(CreateStepTemplatePage)
+        page.createStepTemplate(step.action, step.name, step.result)
     }
 
     void "step can be created"() {
         expect:
-        def show = at ShowStepPage
+        def show = at ShowStepTemplatePage
         verifyAll {
             show.nameValue.text() == step.name
             show.actionValue.text() == step.action
@@ -46,30 +46,30 @@ class StepSpec extends GebSpec {
 
     void "links created with step"() {
         given:
-        def show = at ShowStepPage
+        def show = at ShowStepTemplatePage
         show.sideBar.goToCreate('Step')
         def st = DataFactory.step()
 
         when:
-        def page = at CreateStepPage
-        page.createStepWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
+        def page = at CreateStepTemplatePage
+        page.createStepTemplateWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
 
         then:
-        def sPage = at ShowStepPage
+        def sPage = at ShowStepTemplatePage
         sPage.isLinkDisplayed(step.name, 'parents')
     }
 
     void "step can be edited"() {
         given:
         def s = DataFactory.step()
-        def show = at ShowStepPage
+        def show = at ShowStepTemplatePage
         show.goToEdit()
 
         when:
-        browser.at(EditStepPage).editStep(s.action, s.name, s.result)
+        browser.at(EditStepTemplatePage).editStepTemplate(s.action, s.name, s.result)
 
         then:
-        def page = at ShowStepPage
+        def page = at ShowStepTemplatePage
         verifyAll {
             page.nameValue.text() == s.name
             page.actionValue.text() == s.action
@@ -79,19 +79,19 @@ class StepSpec extends GebSpec {
 
     void "links can be added and removed"() {
         given:
-        def show = at ShowStepPage
+        def show = at ShowStepTemplatePage
         show.sideBar.goToCreate('Step')
         def st = DataFactory.step()
-        def page = at CreateStepPage
-        page.createStepWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
+        def page = at CreateStepTemplatePage
+        page.createStepTemplateWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
 
         expect:
-        def sPage = at ShowStepPage
+        def sPage = at ShowStepTemplatePage
         sPage.isLinkDisplayed(step.name, 'parents')
         sPage.goToEdit()
 
         when:
-        def edit = browser.at(EditStepPage)
+        def edit = browser.at(EditStepTemplatePage)
         edit.scrollToBottom()
         edit.linkModule.removeLinkedItem(0)
         edit.edit()
@@ -102,33 +102,33 @@ class StepSpec extends GebSpec {
 
     void "step can be deleted"() {
         when:
-        browser.at(ShowStepPage).delete()
+        browser.at(ShowStepTemplatePage).delete()
 
         then:
-        def page = at ListStepPage
+        def page = at ListStepTemplatePage
         page.statusMessage.displayed
     }
 
     void "step with links can be deleted"() {
         given:
-        def show = at ShowStepPage
+        def show = at ShowStepTemplatePage
         show.sideBar.goToCreate('Step')
         def st = DataFactory.step()
-        def page = at CreateStepPage
-        page.createStepWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
+        def page = at CreateStepTemplatePage
+        page.createStepTemplateWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
 
         when:
-        def sPage = at ShowStepPage
+        def sPage = at ShowStepTemplatePage
         sPage.delete()
 
         then:
-        def lPage = at ListStepPage
+        def lPage = at ListStepTemplatePage
         lPage.statusMessage.displayed
     }
 
     void "step related to bug cannot be deleted"() {
         given:
-        def page = at ShowStepPage
+        def page = at ShowStepTemplatePage
         def url = currentUrl
         page.sideBar.goToCreate('Bug')
         def create = browser.page(CreateBugPage)
@@ -137,16 +137,16 @@ class StepSpec extends GebSpec {
 
         when:
         go(url)
-        browser.page(ShowStepPage).delete()
+        browser.page(ShowStepTemplatePage).delete()
 
         then:
-        def show = at ShowStepPage
+        def show = at ShowStepTemplatePage
         show.errorsMessage.text() == 'Step is related to a TestCase or Bug and cannot be deleted'
     }
 
     void "deleting test with related builder step does not delete step"() {
         given:
-        def page = at ShowStepPage
+        def page = at ShowStepTemplatePage
         def url = currentUrl
         page.sideBar.goToCreate('Test Case')
         def create = browser.page(CreateTestCasePage)
@@ -161,7 +161,7 @@ class StepSpec extends GebSpec {
         go(url)
 
         then:
-        def showPage = at ShowStepPage
+        def showPage = at ShowStepTemplatePage
         showPage.nameValue.text() == step.name
     }
 }

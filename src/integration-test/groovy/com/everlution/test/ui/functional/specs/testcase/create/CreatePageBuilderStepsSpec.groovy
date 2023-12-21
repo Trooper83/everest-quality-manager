@@ -7,8 +7,8 @@ import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.Relationship
-import com.everlution.Step
-import com.everlution.StepService
+import com.everlution.StepTemplate
+import com.everlution.StepTemplateService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
@@ -22,7 +22,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
     LinkService linkService
     PersonService personService
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     @Shared
     Person person
@@ -31,7 +31,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
     Project project
 
     @Shared
-    Step step
+    StepTemplate stepTemplate
 
     def setup() {
         given: "login as a basic user"
@@ -42,13 +42,13 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         and: "go to the create page"
         project = projectService.list(max: 1).first()
         person = personService.list(max: 1).first()
-        step = stepService.findAllByProject(project, [max:1]).results.first()
+        stepTemplate = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         to(CreateTestCasePage, project.id)
     }
 
     void "suggestions only displayed for string of 3 characters or more"(int index) {
         given:
-        def text = step.name.substring(0, index)
+        def text = stepTemplate.name.substring(0, index)
 
         when:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
@@ -69,7 +69,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "suggestions display for string of 3 characters or more"() {
         given:
-        def text = step.name.substring(0, 3)
+        def text = stepTemplate.name.substring(0, 3)
 
         when:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
@@ -87,7 +87,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "steps are retrieved when validation fails"() {
         given:
-        def text = step.name.substring(0, 5)
+        def text = stepTemplate.name.substring(0, 5)
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.submit()
 
@@ -108,13 +108,13 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.scrollToBottom()
-        createPage.testStepTable.addBuilderStep(step.name)
+        createPage.testStepTable.addBuilderStep(stepTemplate.name)
 
         expect:
         createPage.testStepTable.getBuilderStep(0).find('input[value=Remove]').displayed
 
         when:
-        createPage.testStepTable.addBuilderStep(step.name)
+        createPage.testStepTable.addBuilderStep(stepTemplate.name)
 
         then:
         !createPage.testStepTable.getBuilderStep(0).find('input[value=Remove]').displayed
@@ -125,8 +125,8 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.scrollToBottom()
-        createPage.testStepTable.addBuilderStep(step.name)
-        createPage.testStepTable.addBuilderStep(step.name)
+        createPage.testStepTable.addBuilderStep(stepTemplate.name)
+        createPage.testStepTable.addBuilderStep(stepTemplate.name)
 
         expect:
         !createPage.testStepTable.getBuilderStep(0).find('input[value=Remove]').displayed
@@ -140,10 +140,10 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "selecting suggested result displays properties and suggested steps"() {
         setup:
-        def s = new Step(name: "test step", act: "action jackson", result: "result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def s = new StepTemplate(name: "test step", act: "action jackson", result: "result", project: project,
+                person: person)
+        stepTemplateService.save(s)
+        def l = new Link(ownerId: s.id, linkedId: stepTemplate.id, relation: Relationship.IS_PARENT_OF.name, project: project)
         linkService.save(l)
 
         when:
@@ -152,21 +152,21 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.testStepTable.addBuilderStep(s.name)
 
         then:
-        createPage.testStepTable.isSuggestedStepDisplayed(step.name)
+        createPage.testStepTable.isSuggestedStepDisplayed(stepTemplate.name)
         createPage.testStepTable.getCurrentBuilderStepName() == s.name
-        createPage.testStepTable.isBuilderRowDisplayed(s.act, s.result)
+        createPage.testStepTable.isBuilderRowDisplayed(s.act, "", s.result)
     }
 
     void "selecting suggested step displays properties and suggested steps"() {
         setup:
-        def s = new Step(name: "12345test544 step", act: "1action jackson345", result: "1result54", project: project, person: person,
-                isBuilderStep: true)
-        def st = new Step(name: "2445556test step 234535", act: "2action jackson 2454", result: "2result 254", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        stepService.save(st)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
-        def li = new Link(ownerId: step.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
+        def s = new StepTemplate(name: "12345test544 step", act: "1action jackson345", result: "1result54",
+                project: project, person: person)
+        def st = new StepTemplate(name: "2445556test step 234535", act: "2action jackson 2454", result: "2result 254",
+                project: project, person: person)
+        stepTemplateService.save(s)
+        stepTemplateService.save(st)
+        def l = new Link(ownerId: s.id, linkedId: stepTemplate.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def li = new Link(ownerId: stepTemplate.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
         linkService.save(l)
         linkService.save(li)
 
@@ -174,25 +174,25 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         def createPage = createPage(CreateTestCasePage)
         createPage.scrollToBottom()
         createPage.testStepTable.addBuilderStep(s.name)
-        createPage.testStepTable.selectSuggestedStep(step.name)
+        createPage.testStepTable.selectSuggestedStep(stepTemplate.name)
 
         then:
         createPage.testStepTable.isSuggestedStepDisplayed(st.name)
-        createPage.testStepTable.getCurrentBuilderStepName() == step.name
-        createPage.testStepTable.isBuilderRowDisplayed(step.act, step.result)
+        createPage.testStepTable.getCurrentBuilderStepName() == stepTemplate.name
+        createPage.testStepTable.isBuilderRowDisplayed(stepTemplate.act, "", stepTemplate.result)
     }
 
     void "suggested steps name and properties are repopulated with current step when step removed"() {
         given:
-        def s = new Step(name: "3456666test step", act: "3action jackson", result: "3result", project: project, person: person,
-                isBuilderStep: true)
-        def st = new Step(name: "45678test step 2", act: "4action jackson 2", result: "4result 2", project: project, person: person,
-                isBuilderStep: true)
-        def stp = new Step(name: "45678te23442st step 2", act: "4ac23424tion jackson 2", result: "4res23424ult 2",
-                project: project, person: person, isBuilderStep: true)
-        stepService.save(s)
-        stepService.save(st)
-        stepService.save(stp)
+        def s = new StepTemplate(name: "3456666test step", act: "3action jackson", result: "3result", project: project,
+                person: person)
+        def st = new StepTemplate(name: "45678test step 2", act: "4action jackson 2", result: "4result 2", project: project,
+                person: person)
+        def stp = new StepTemplate(name: "45678te23442st step 2", act: "4ac23424tion jackson 2", result: "4res23424ult 2",
+                project: project, person: person)
+        stepTemplateService.save(s)
+        stepTemplateService.save(st)
+        stepTemplateService.save(stp)
         def l = new Link(ownerId: s.id, linkedId: stp.id, relation: Relationship.IS_PARENT_OF.name, project: project)
         def li = new Link(ownerId: stp.id, linkedId: st.id, relation: Relationship.IS_SIBLING_OF.name, project: project)
         linkService.save(l)
@@ -218,10 +218,9 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "changing step type resets builder form"() {
         given:
-        def s = new Step(name: "5test step", act: "5action jackson", result: "5result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def s = new StepTemplate(name: "5test step", act: "5action jackson", result: "5result", project: project, person: person)
+        stepTemplateService.save(s)
+        def l = new Link(ownerId: s.id, linkedId: stepTemplate.id, relation: Relationship.IS_PARENT_OF.name, project: project)
         linkService.save(l)
 
         and:
@@ -246,10 +245,9 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "form is reset when last step is removed"() {
         given:
-        def s = new Step(name: "6test step", act: "6action jackson", result: "6result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: step.id, relation: Relationship.IS_PARENT_OF.name, project: project)
+        def s = new StepTemplate(name: "6test step", act: "6action jackson", result: "6result", project: project, person: person)
+        stepTemplateService.save(s)
+        def l = new Link(ownerId: s.id, linkedId: stepTemplate.id, relation: Relationship.IS_PARENT_OF.name, project: project)
         linkService.save(l)
 
         and:
@@ -273,7 +271,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "suggestion results are removed when clicked outside of menu"() {
         given:
-        def text = step.name.substring(0, 3)
+        def text = stepTemplate.name.substring(0, 3)
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.scrollToBottom()
         for (int i = 0; i < text.length(); i++){
@@ -295,9 +293,8 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "no results message displayed when no related steps found"() {
         setup:
-        def s = new Step(name: "7test step", act: "7action jackson", result: "7result", project: project, person: person,
-                isBuilderStep: true)
-        stepService.save(s)
+        def s = new StepTemplate(name: "7test step", act: "7action jackson", result: "7result", project: project, person: person)
+        stepTemplateService.save(s)
 
         when:
         def createPage = createPage(CreateTestCasePage)
@@ -312,7 +309,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         when:
         def createPage = createPage(CreateTestCasePage)
         createPage.scrollToBottom()
-        createPage.testStepTable.addBuilderStep(step.name)
+        createPage.testStepTable.addBuilderStep(stepTemplate.name)
 
         then:
         !createPage.testStepTable.isBuilderStepHiddenInputDisplayed(0)
@@ -320,7 +317,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
     void "search results are correctly displayed"(int start, int end) {
         given:
-        def text = step.name.substring(start, end)
+        def text = stepTemplate.name.substring(start, end)
 
         when:
         def createPage = createPage(CreateTestCasePage)
@@ -335,7 +332,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         }
 
         then:
-        createPage.testStepTable.searchResults.first().text() == step.name
+        createPage.testStepTable.searchResults.first().text() == stepTemplate.name
 
         where:
         start | end

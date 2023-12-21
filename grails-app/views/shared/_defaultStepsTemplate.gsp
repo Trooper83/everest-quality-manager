@@ -29,21 +29,24 @@
                 <div class="col-4 offset-2" id="currentStep"></div>
             </div>
             <div class="row border-bottom mb-3 mt-5">
-                <p class="col-4">Action</p>
-                <p class="col-4">Result</p>
-                <p class="col-4">Suggested</p>
+                <p class="col">Action</p>
+                <p class="col">Data</p>
+                <p class="col">Result</p>
+                <p class="col">Suggested</p>
             </div>
             <div class="row mt-3">
-                <div class="col-8" id="builderSteps" style="min-height:2em;"></div>
-                <div class="col-4" id="suggestedSteps"></div>
+                <div class="col-9" id="builderSteps" style="min-height:2em;"></div>
+                <div class="col-3" id="suggestedSteps"></div>
             </div>
         </div>
     </div>
     <div class="tab-pane fade" id="free-form-tab-pane" role="tabpanel" aria-labelledby="free-form-tab" tabindex="0">
         <div class="card-body">
             <div class="row border-bottom">
-                <p class="col-5">Action</p>
-                <p class="col-5">Result</p>
+                <p class="col">Action</p>
+                <p class="col">Data</p>
+                <p class="col">Result</p>
+                <p class="col-1"></p>
             </div>
             <div id="stepsTableContent"></div>
             <input class="btn btn-secondary btn-sm mt-3" id="btnAddRow" type="button" value="Add Step" onclick="addEntryRow()" accesskey="n"/>

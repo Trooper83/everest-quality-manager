@@ -3,7 +3,8 @@ package com.everlution.test.ui.functional.specs.bug.create
 import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.Step
-import com.everlution.StepService
+import com.everlution.StepTemplate
+import com.everlution.StepTemplateService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.data.Credentials
@@ -19,7 +20,7 @@ class CreateBugStepsSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     void "removed free form test steps are not saved"() {
         given: "login as a basic user"
@@ -44,7 +45,7 @@ class CreateBugStepsSpec extends GebSpec {
         and: "add a new test step"
         page.scrollToBottom()
         page.stepsTable.selectStepsTab("free-form")
-        page.stepsTable.addStep("should not persist", "should not persist")
+        page.stepsTable.addStep("should not persist", "should not persist", "should not persist")
 
         and: "remove row"
         page.stepsTable.removeRow(1)
@@ -73,10 +74,10 @@ class CreateBugStepsSpec extends GebSpec {
         page.nameInput = 'A New Test Case'
 
         and: "add a new test step"
-        def step = stepService.findAllByProject(project, [max:1]).results.first()
+        def template = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         page.scrollToBottom()
-        page.stepsTable.addBuilderStep(step.name)
-        page.stepsTable.addBuilderStep(step.name)
+        page.stepsTable.addBuilderStep(template.name)
+        page.stepsTable.addBuilderStep(template.name)
 
         and: "remove row"
         page.stepsTable.removeBuilderRow(1)
@@ -95,10 +96,10 @@ class CreateBugStepsSpec extends GebSpec {
         given: "get fake data"
         def project = projectService.list(max:1).first()
         def person = personService.list(max:1).first()
-        def data = DataFactory.step()
-        def step = new Step(project: project, person: person, name: data.name, isBuilderStep: true,
-                act: 'here is the action', result: 'this is the result')
-        stepService.save(step)
+        def stepData = DataFactory.step()
+        def template = new StepTemplate(name: 'name of the template', act: stepData.action, result: stepData.result,
+                person: person, project: project)
+        stepTemplateService.save(template)
 
         and: "login as a basic user"
         to LoginPage
@@ -110,17 +111,17 @@ class CreateBugStepsSpec extends GebSpec {
         to(CreateBugPage, project.id)
         CreateBugPage createPage = browser.page(CreateBugPage)
         def bd = DataFactory.bug()
-        createPage.createBuilderBug(bd.name, '', '', [], '', step.name, '', '')
+        createPage.createBuilderBug(bd.name, '', '', [], '', template.name, '', '')
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
-        showPage.isStepsRowDisplayed('here is the action', 'this is the result')
+        showPage.isStepsRowDisplayed(stepData.action, '', stepData.result)
     }
 
     void "free form steps are persisted"() {
         given: "get fake data"
         def project = projectService.list(max: 1).first()
-        def step = new Step(act: 'here is the action', result: 'this is the result')
+        def step = DataFactory.step()
 
         and: "login as a basic user"
         to LoginPage
@@ -132,10 +133,11 @@ class CreateBugStepsSpec extends GebSpec {
         to(CreateBugPage, project.id)
         CreateBugPage createPage = browser.page(CreateBugPage)
         def bd = DataFactory.bug()
-        createPage.createFreeFormBug(bd.name, bd.description, '', [], '', step.act, step.result, '', '')
+        createPage.createFreeFormBug(bd.name, bd.description, '', [], '', step.action, step.data,
+                step.result, '', '')
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
-        showPage.isStepsRowDisplayed('here is the action', 'this is the result')
+        showPage.isStepsRowDisplayed(step.action, step.data, step.result)
     }
 }

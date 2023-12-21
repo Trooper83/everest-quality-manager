@@ -4,6 +4,7 @@ import com.everlution.BugController
 import com.everlution.ProjectController
 import com.everlution.ReleasePlanController
 import com.everlution.ScenarioController
+import com.everlution.StepTemplateController
 import com.everlution.TestCaseController
 import com.everlution.TestCycleController
 import com.everlution.TestGroupController
@@ -233,6 +234,43 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         verifyUrlMapping("/project/999/testIteration/execute/123", controller: 'testIteration', action: 'execute') {
             id = 123
             projectId = 999
+        }
+    }
+
+    void "verify stepTemplate forward and reverse mappings"() {
+        mockController(StepTemplateController)
+
+        expect:
+        verifyUrlMapping("/project/123/stepTemplates", controller: 'stepTemplate', action: 'stepTemplates') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/stepTemplate/create", controller: 'stepTemplate', action: 'create') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/999/stepTemplate/save", controller: 'stepTemplate', action: 'save') {
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/stepTemplate/update/123", controller: 'stepTemplate', action: 'update') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/999/stepTemplate/delete/123", controller: 'stepTemplate', action: 'delete') {
+            id = 123
+            projectId = 999
+        }
+        verifyUrlMapping("/project/123/stepTemplate/show/123", controller: 'stepTemplate', action: 'show') {
+            id = 123
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/stepTemplate/edit/123", controller: 'stepTemplate', action: 'edit') {
+            id = 123
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/stepTemplate/search", controller: 'stepTemplate', action: 'search') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/stepTemplate/getRelatedTemplates", controller: 'stepTemplate', action: 'getRelatedTemplates') {
+            projectId = 123
         }
     }
 }

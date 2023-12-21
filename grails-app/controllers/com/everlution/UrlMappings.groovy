@@ -12,7 +12,7 @@ class UrlMappings {
             "/bugs"(controller: "bug", action: "bugs")
             "/releasePlans"(controller: "releasePlan", action: "releasePlans")
             "/scenarios"(controller: "scenario", action: "scenarios")
-            "/steps"(controller: "step", action: "steps")
+            "/stepTemplates"(controller: "stepTemplate", action: "stepTemplates")
             "/testCases"(controller: "testCase", action: "testCases")
             "/testGroups"(controller: "testGroup", action: "testGroups")
         }

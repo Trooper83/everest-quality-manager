@@ -1,44 +1,44 @@
-package com.everlution.test.ui.functional.specs.step.edit
+package com.everlution.test.ui.functional.specs.stepTemplate.edit
 
 import com.everlution.PersonService
 import com.everlution.Project
 import com.everlution.ProjectService
-import com.everlution.Step
-import com.everlution.StepService
+import com.everlution.StepTemplate
+import com.everlution.StepTemplateService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.step.EditStepPage
-import com.everlution.test.ui.support.pages.step.ShowStepPage
+import com.everlution.test.ui.support.pages.stepTemplate.EditStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.ShowStepTemplatePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
 @Integration
-class EditStepPageSpec extends GebSpec {
+class EditStepTemplatePageSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     @Shared
     Project project
 
     @Shared
-    Step step
+    StepTemplate stepTemplate
 
     def setup() {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
         project = projectService.list(max: 1).first()
-        step = stepService.findAllByProject(project, [max:1]).results.first()
-        to (EditStepPage, project.id, step.id)
+        stepTemplate = stepTemplateService.findAllInProject(project, [max:1]).results.first()
+        to (EditStepTemplatePage, project.id, stepTemplate.id)
     }
 
     void "error message displays on view"() {
         when:
-        def editPage = browser.at(EditStepPage)
-        editPage.editStep("action", "", "result")
+        def editPage = browser.at(EditStepTemplatePage)
+        editPage.editStepTemplate("action", "", "result")
 
         then:
         editPage.errorsMessage.displayed
@@ -46,8 +46,8 @@ class EditStepPageSpec extends GebSpec {
 
     void "error message displays when action and result are blank"() {
         when: "create"
-        def page = browser.page(EditStepPage)
-        page.editStep("", "test", "")
+        def page = browser.page(EditStepTemplatePage)
+        page.editStepTemplate("", "test", "")
 
         then:
         page.errorsMessage.size() == 2
@@ -55,9 +55,9 @@ class EditStepPageSpec extends GebSpec {
 
     void "steps are retrieved when validation fails"() {
         setup:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
-        def page = browser.page(EditStepPage)
-        page.editStep("test", "", "")
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
+        def page = browser.page(EditStepTemplatePage)
+        page.editStepTemplate("test", "", "")
 
         when:
         page.scrollToBottom()
@@ -69,7 +69,7 @@ class EditStepPageSpec extends GebSpec {
 
     void "tooltips display when fields blank"(String name, String relation, String tipText) {
         when:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.linkModule.searchInput = name
         editPage.linkModule.relationSelect().selected = relation
         editPage.linkModule.addButton.click()
@@ -85,11 +85,11 @@ class EditStepPageSpec extends GebSpec {
 
     void "results fetched only when three characters typed"(int index) {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         def text = step.name.substring(0, index)
 
         when:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.scrollToBottom()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
@@ -107,7 +107,7 @@ class EditStepPageSpec extends GebSpec {
 
     void "validation message displayed when name not selected from list"() {
         when:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.linkModule.searchInput << 's'
         editPage.linkModule.relationSelect().selected = 'Is Child of'
         editPage.linkModule.addButton.click()
@@ -118,10 +118,10 @@ class EditStepPageSpec extends GebSpec {
 
     void "validation message removed when link added"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.linkModule.searchInput << 's'
         editPage.linkModule.relationSelect().selected = 'Is Child of'
         editPage.linkModule.addButton.click()
@@ -139,10 +139,10 @@ class EditStepPageSpec extends GebSpec {
 
     void "data-id removed from search input once linked step added"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.scrollToBottom()
         editPage.linkModule.setLinkProperties(step.name, 'Is Parent of')
 
@@ -158,10 +158,10 @@ class EditStepPageSpec extends GebSpec {
 
     void "hidden inputs present for linked items"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         when:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.scrollToBottom()
         editPage.linkModule.addLink(step.name, 'Is Parent of')
 
@@ -178,10 +178,10 @@ class EditStepPageSpec extends GebSpec {
 
     void "link fields reset when linked step added"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.scrollToBottom()
         editPage.linkModule.setLinkProperties(step.name, 'Is Parent of')
 
@@ -200,26 +200,26 @@ class EditStepPageSpec extends GebSpec {
     void "added linked step can be removed"() {
         given:
         def person = personService.list(max:1).first()
-        Step st = new Step(name: 'added linked step can be removed', project: project, person: person,
-                isBuilderStep: true, act: 'this is an action')
-        def s = stepService.save(st)
-        to(EditStepPage, project.id, s.id)
+        def st = new StepTemplate(name: 'added linked step can be removed', project: project, person: person,
+                act: 'this is an action')
+        def s = stepTemplateService.save(st)
+        to(EditStepTemplatePage, project.id, s.id)
 
         and:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.scrollToBottom()
-        editPage.linkModule.addLink(step.name, 'Is Parent of')
+        editPage.linkModule.addLink(stepTemplate.name, 'Is Parent of')
 
         when:
         editPage.linkModule.removeLinkedItem(0)
 
         then:
-        !editPage.linkModule.isLinkDisplayed(step.name)
+        !editPage.linkModule.isLinkDisplayed(stepTemplate.name)
     }
 
     void "correct relation field options are present"() {
         expect:
-        def page = browser.page(EditStepPage)
+        def page = browser.page(EditStepTemplatePage)
         List found = page.linkModule.relationOptions*.text()
         def expected = ["", "Is Child of", "Is Sibling of", "Is Parent of"]
         found.size() == expected.size()
@@ -229,18 +229,18 @@ class EditStepPageSpec extends GebSpec {
     void "linked step is placed in correct row"(String id, String relation) {
         given:
         def person = personService.list(max:1).first()
-        Step st = new Step(name: 'added linked step can be removed', project: project, person: person,
-                isBuilderStep: true, act: 'this is an action')
-        def s = stepService.save(st)
-        to(EditStepPage, project.id, s.id)
+        def st = new StepTemplate(name: 'added linked step can be removed', project: project, person: person,
+                act: 'this is an action')
+        def s = stepTemplateService.save(st)
+        to(EditStepTemplatePage, project.id, s.id)
 
         when:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.scrollToBottom()
-        editPage.linkModule.addLink(step.name, relation)
+        editPage.linkModule.addLink(stepTemplate.name, relation)
 
         then:
-        $("#${id}").find('[data-test-id=linkedItemName]').text().endsWith(step.name)
+        $("#${id}").find('[data-test-id=linkedItemName]').text().endsWith(stepTemplate.name)
 
         where:
         id        | relation
@@ -251,20 +251,24 @@ class EditStepPageSpec extends GebSpec {
 
     void "removed items hidden input added when link removed"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def person = personService.list(max:1).first()
+        def st = new StepTemplate(name: '123added linked step can be removed', project: project, person: person,
+                act: 'this is an action')
+        def s = stepTemplateService.save(st)
+        to(EditStepTemplatePage, project.id, s.id)
 
         and:
-        EditStepPage editPage = browser.page(EditStepPage)
+        EditStepTemplatePage editPage = browser.page(EditStepTemplatePage)
         editPage.scrollToBottom()
-        editPage.linkModule.addLink(step.name, 'Is Parent of')
+        editPage.linkModule.addLink(stepTemplate.name, 'Is Parent of')
         editPage.edit()
 
         expect:
-        def s = browser.page(ShowStepPage)
-        s.isLinkDisplayed(step.name, 'children')
+        def show = at ShowStepTemplatePage
+        show.isLinkDisplayed(stepTemplate.name, 'children')
 
         when:
-        s.goToEdit()
+        show.goToEdit()
         editPage.scrollToBottom()
         editPage.linkModule.removeLinkedItem(0)
 

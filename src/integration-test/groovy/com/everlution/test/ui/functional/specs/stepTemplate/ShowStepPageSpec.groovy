@@ -1,13 +1,13 @@
-package com.everlution.test.ui.functional.specs.step
+package com.everlution.test.ui.functional.specs.stepTemplate
 
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.pages.step.CreateStepPage
-import com.everlution.test.ui.support.pages.step.EditStepPage
-import com.everlution.test.ui.support.pages.step.ListStepPage
-import com.everlution.test.ui.support.pages.step.ShowStepPage
+import com.everlution.test.ui.support.pages.stepTemplate.CreateStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.EditStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.ListStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.ShowStepTemplatePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -26,15 +26,15 @@ class ShowStepPageSpec extends GebSpec {
 
         and: "go to the create step page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToCreate("Step")
+        projectHomePage.sideBar.goToCreate("Step Template")
 
         when: "create a step"
-        def page = at CreateStepPage
-        page.createStep()
+        def page = at CreateStepTemplatePage
+        page.createStepTemplate()
 
         then: "at show page with message displayed"
-        def showPage = at ShowStepPage
-        showPage.statusMessage.text() ==~ /Step \d+ created/
+        def showPage = at ShowStepTemplatePage
+        showPage.statusMessage.text() ==~ /StepTemplate \d+ created/
     }
 
     void "edit link directs to edit view"() {
@@ -49,18 +49,18 @@ class ShowStepPageSpec extends GebSpec {
 
         and: "go to the lists step page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Steps')
+        projectHomePage.sideBar.goToProjectDomain('Step Templates')
 
         and: "go to list page"
-        def stepsPage = at ListStepPage
+        def stepsPage = at ListStepTemplatePage
         stepsPage.listTable.clickCell('Name', 0)
 
         when: "click the edit button"
-        def page = browser.page(ShowStepPage)
+        def page = browser.page(ShowStepTemplatePage)
         page.goToEdit()
 
         then: "at the edit page"
-        at EditStepPage
+        at EditStepTemplatePage
     }
 
     void "delete edit buttons not displayed for Read Only user"() {
@@ -75,14 +75,14 @@ class ShowStepPageSpec extends GebSpec {
 
         and: "go to the lists step page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Steps')
+        projectHomePage.sideBar.goToProjectDomain('Step Templates')
 
         when: "go to list page"
-        def stepsPage = at ListStepPage
+        def stepsPage = at ListStepTemplatePage
         stepsPage.listTable.clickCell('Name', 0)
 
         then: "create delete edit test case buttons are not displayed"
-        def page = browser.page(ShowStepPage)
+        def page = browser.page(ShowStepTemplatePage)
         verifyAll {
             !page.deleteLink.displayed
             !page.editLink.displayed
@@ -101,14 +101,14 @@ class ShowStepPageSpec extends GebSpec {
 
         and: "go to the lists step page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Steps')
+        projectHomePage.sideBar.goToProjectDomain('Step Templates')
 
         when: "go to list page"
-        def stepsPage = at ListStepPage
+        def stepsPage = at ListStepTemplatePage
         stepsPage.listTable.clickCell('Name', 0)
 
         then: "create delete edit test case buttons are not displayed"
-        def page = browser.page(ShowStepPage)
+        def page = browser.page(ShowStepTemplatePage)
         verifyAll {
             page.deleteLink.displayed
             page.editLink.displayed
@@ -133,21 +133,21 @@ class ShowStepPageSpec extends GebSpec {
 
         and: "go to the lists step page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Steps')
+        projectHomePage.sideBar.goToProjectDomain('Step Templates')
 
         and: "go to list page"
-        def stepsPage = at ListStepPage
+        def stepsPage = at ListStepTemplatePage
         stepsPage.listTable.clickCell('Name', 0)
 
         and: "go to edit"
-        def showPage = browser.page(ShowStepPage)
+        def showPage = browser.page(ShowStepTemplatePage)
         showPage.goToEdit()
 
         when: "edit a step"
-        def page = browser.page(EditStepPage)
+        def page = browser.page(EditStepTemplatePage)
         page.edit()
 
         then: "at show step page with message displayed"
-        showPage.statusMessage.text() ==~ /Step \d+ updated/
+        showPage.statusMessage.text() ==~ /StepTemplate \d+ updated/
     }
 }
