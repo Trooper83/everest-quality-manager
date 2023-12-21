@@ -95,7 +95,7 @@ class EditPageEnvironmentsSpec extends GebSpec {
         when: "add empty steps"
         page.scrollToBottom()
         page.stepsTable.selectStepsTab('free-form')
-        page.stepsTable.addStep("", "")
+        page.stepsTable.addStep("", "","")
 
         and: "submit"
         page.editTestCase()

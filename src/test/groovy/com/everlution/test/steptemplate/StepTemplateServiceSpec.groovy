@@ -228,6 +228,57 @@ class StepTemplateServiceSpec extends Specification implements ServiceUnitTest<S
         map.siblings.size() == 1
     }
 
+    void "getLinkedTemplatesByRelation returns child links in parents list"() {
+        given:
+        setupData()
+        StepTemplate testStepTemplate = new StepTemplate(name: "name", act: "do something", result: "something happened", person: person, project: project).save()
+        StepTemplate testStepTemplate1 = new StepTemplate(name: "namedsasd", act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStepTemplate.id, linkedId: testStepTemplate1.id, project: project,
+                relation: Relationship.IS_CHILD_OF.name).save(flush:true)
+
+        when:
+        def map = service.getLinkedTemplatesByRelation(testStepTemplate)
+
+        then:
+        map.children.size() == 0
+        map.parents.size() == 1
+        map.siblings.size() == 0
+    }
+
+    void "getLinkedTemplatesByRelation returns parent links in children list"() {
+        given:
+        setupData()
+        StepTemplate testStepTemplate = new StepTemplate(name: "name", act: "do something", result: "something happened", person: person, project: project).save()
+        StepTemplate testStepTemplate1 = new StepTemplate(name: "namedsasd", act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStepTemplate.id, linkedId: testStepTemplate1.id, project: project,
+                relation: Relationship.IS_PARENT_OF.name).save(flush:true)
+
+        when:
+        def map = service.getLinkedTemplatesByRelation(testStepTemplate)
+
+        then:
+        map.children.size() == 1
+        map.parents.size() == 0
+        map.siblings.size() == 0
+    }
+
+    void "getLinkedTemplatesByRelation returns sibling links in siblings list"() {
+        given:
+        setupData()
+        StepTemplate testStepTemplate = new StepTemplate(name: "name", act: "do something", result: "something happened", person: person, project: project).save()
+        StepTemplate testStepTemplate1 = new StepTemplate(name: "namedsasd", act: "do something", result: "something happened", person: person, project: project).save()
+        new Link(ownerId: testStepTemplate.id, linkedId: testStepTemplate1.id, project: project,
+                relation: Relationship.IS_SIBLING_OF.name).save(flush:true)
+
+        when:
+        def map = service.getLinkedTemplatesByRelation(testStepTemplate)
+
+        then:
+        map.children.size() == 0
+        map.parents.size() == 0
+        map.siblings.size() == 1
+    }
+
     void "getLinkedTemplatesByRelation does not return template passed in"() {
         given:
         setupData()

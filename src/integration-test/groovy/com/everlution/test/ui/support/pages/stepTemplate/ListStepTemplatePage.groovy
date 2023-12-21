@@ -1,13 +1,13 @@
-package com.everlution.test.ui.support.pages.step
+package com.everlution.test.ui.support.pages.stepTemplate
 
 import com.everlution.test.ui.support.pages.common.ListPage
 import geb.module.TextInput
 
-class ListStepPage extends ListPage {
+class ListStepTemplatePage extends ListPage {
 
-    static at = { title == "Step List" }
+    static at = { title == "Step Template List" }
     static String convertToPath(Long projectId) {
-        "/project/${projectId}/steps"
+        "/project/${projectId}/stepTemplates"
     }
 
     static content = {

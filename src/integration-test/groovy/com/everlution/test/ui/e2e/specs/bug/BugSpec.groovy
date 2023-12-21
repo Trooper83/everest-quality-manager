@@ -17,6 +17,7 @@ class BugSpec extends GebSpec {
     Faker faker = new Faker()
     def description = faker.zelda().character()
     def action = faker.lorem().sentence(5)
+    def data = faker.lorem().sentence(5)
     def result = faker.lorem().sentence(7)
     def actual = faker.lorem().sentence(4)
     def expected = faker.lorem().sentence(4)
@@ -37,7 +38,7 @@ class BugSpec extends GebSpec {
         projectHomePage.sideBar.goToCreate("Bug")
 
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", action, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", action, data, result, actual, expected)
     }
 
     void "bug can be created and data persists"() {
@@ -50,7 +51,7 @@ class BugSpec extends GebSpec {
             showPage.platformValue.text() == "Web"
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env, env1])
-            showPage.isStepsRowDisplayed(action, result)
+            showPage.isStepsRowDisplayed(action, data, result)
             showPage.expectedValue.text() == expected
             showPage.actualValue.text() == actual
         }

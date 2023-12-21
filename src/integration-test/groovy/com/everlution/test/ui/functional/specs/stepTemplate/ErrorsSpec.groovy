@@ -1,4 +1,4 @@
-package com.everlution.test.ui.functional.specs.step
+package com.everlution.test.ui.functional.specs.stepTemplate
 
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.DeniedPage
@@ -24,7 +24,7 @@ class ErrorsSpec extends GebSpec {
         notFoundPage.errors*.text().contains("Error: Page Not Found (404)")
 
         where:
-        url << ["/project/1/step/show/9999999999999999", "/project/1/step/edit/9999999999999999"]
+        url << ["/project/1/stepTemplate/show/9999999999999999", "/project/1/stepTemplate/edit/9999999999999999"]
     }
 
     void "denied page displayed for read_only user"(String url) {
@@ -41,6 +41,6 @@ class ErrorsSpec extends GebSpec {
         page.errors.text() == "Sorry, you're not authorized to view this page."
 
         where:
-        url << ["/project/1/step/create", "/project/1/step/edit/1"]
+        url << ["/project/1/stepTemplate/create", "/project/1/stepTemplate/edit/1"]
     }
 }

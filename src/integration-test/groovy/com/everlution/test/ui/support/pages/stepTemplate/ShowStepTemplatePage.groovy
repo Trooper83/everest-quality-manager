@@ -1,14 +1,14 @@
-package com.everlution.test.ui.support.pages.step
+package com.everlution.test.ui.support.pages.stepTemplate
 
 import com.everlution.test.ui.support.pages.common.ShowPage
 import com.everlution.test.ui.support.pages.modules.SideBarModule
 
-class ShowStepPage extends ShowPage {
+class ShowStepTemplatePage extends ShowPage {
 
-    static at = { title == "Step Details" }
+    static at = { title == "Step Template Details" }
 
     static String convertToPath(Long projectId, Long stepId) {
-        "/project/${projectId}/step/show/${stepId}"
+        "/project/${projectId}/stepTemplate/show/${stepId}"
     }
 
     static content = {

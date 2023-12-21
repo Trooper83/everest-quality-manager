@@ -107,13 +107,14 @@ class DataFactory {
     }
 
     /**
-     * creates fake data to populate a step
+     * creates fake data to populate a step or stepTemplate
      */
     static Map<String, String> step() {
         def action = faker.lorem().sentence(9)
         def data = faker.lorem().sentence(5)
+        def name = faker.lorem().sentence(7) //template only
         def result = faker.lorem().sentence(9)
-        return [action: action, data: data, result: result]
+        return [action: action, data: data, name: name, result: result]
     }
 
     /**

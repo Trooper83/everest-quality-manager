@@ -1,22 +1,20 @@
-package com.everlution.test.ui.functional.specs.step.create
+package com.everlution.test.ui.functional.specs.stepTemplate.create
 
-import com.everlution.StepService
 import com.everlution.Project
 import com.everlution.ProjectService
-import com.everlution.Step
-
+import com.everlution.StepTemplateService
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
-import com.everlution.test.ui.support.pages.step.CreateStepPage
+import com.everlution.test.ui.support.pages.stepTemplate.CreateStepTemplatePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
 @Integration
-class CreateStepPageSpec extends GebSpec {
+class CreateStepTemplatePageSpec extends GebSpec {
 
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     @Shared
     Project project
@@ -26,13 +24,13 @@ class CreateStepPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
         project = projectService.list(max: 1).first()
-        to (CreateStepPage, project.id)
+        to (CreateStepTemplatePage, project.id)
     }
 
     void "error message displays when name blank"() {
         when: "create"
-        def createPage = browser.page(CreateStepPage)
-        createPage.createStep("action", "", "result")
+        def createPage = browser.page(CreateStepTemplatePage)
+        createPage.createStepTemplate("action", "", "result")
 
         then:
         createPage.errorsMessage.displayed
@@ -40,8 +38,8 @@ class CreateStepPageSpec extends GebSpec {
 
     void "error message displays when action and result are blank"() {
         when: "create"
-        def createPage = browser.page(CreateStepPage)
-        createPage.createStep("", "test", "")
+        def createPage = browser.page(CreateStepTemplatePage)
+        createPage.createStepTemplate("", "test", "")
 
         then:
         createPage.errorsMessage.size() == 2
@@ -49,9 +47,9 @@ class CreateStepPageSpec extends GebSpec {
 
     void "steps are retrieved when validation fails"() {
         setup:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
-        def createPage = browser.page(CreateStepPage)
-        createPage.createStep("test", "", "")
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
+        def createPage = browser.page(CreateStepTemplatePage)
+        createPage.createStepTemplate("test", "", "")
 
         when:
         createPage.scrollToBottom()
@@ -63,7 +61,7 @@ class CreateStepPageSpec extends GebSpec {
 
     void "tooltips display when they should"(String name, String relation, String tipText) {
         when:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.linkModule.searchInput = name
         createPage.linkModule.relationSelect().selected = relation
         createPage.linkModule.addButton.click()
@@ -79,11 +77,11 @@ class CreateStepPageSpec extends GebSpec {
 
     void "results fetched only when three characters typed"(int index) {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         def text = step.name.substring(0, index)
 
         when:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.scrollToBottom()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
@@ -101,7 +99,7 @@ class CreateStepPageSpec extends GebSpec {
 
     void "validation message displayed when name not selected from list"() {
         when:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        def createPage = browser.page(CreateStepTemplatePage)
         createPage.linkModule.searchInput << 's'
         createPage.linkModule.relationSelect().selected = 'Is Child of'
         createPage.linkModule.addButton.click()
@@ -112,10 +110,10 @@ class CreateStepPageSpec extends GebSpec {
 
     void "validation message removed when link added"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.linkModule.searchInput << 's'
         createPage.linkModule.relationSelect().selected = 'Is Child of'
         createPage.linkModule.addButton.click()
@@ -133,10 +131,10 @@ class CreateStepPageSpec extends GebSpec {
 
     void "data-id removed from search input once linked step added"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.scrollToBottom()
         createPage.linkModule.setLinkProperties(step.name, 'Is Parent of')
 
@@ -152,10 +150,10 @@ class CreateStepPageSpec extends GebSpec {
 
     void "hidden inputs present for linked items"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         when:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.scrollToBottom()
         createPage.linkModule.addLink(step.name, 'Is Parent of')
 
@@ -172,10 +170,10 @@ class CreateStepPageSpec extends GebSpec {
 
     void "link fields reset when linked step added"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.scrollToBottom()
         createPage.linkModule.setLinkProperties(step.name, 'Is Parent of')
 
@@ -193,10 +191,10 @@ class CreateStepPageSpec extends GebSpec {
 
     void "added linked step can be removed"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.scrollToBottom()
         createPage.linkModule.addLink(step.name, 'Is Parent of')
 
@@ -212,7 +210,7 @@ class CreateStepPageSpec extends GebSpec {
 
     void "correct relation field options are present"() {
         expect:
-        def page = browser.page(CreateStepPage)
+        def page = browser.page(CreateStepTemplatePage)
         List found = page.linkModule.relationOptions*.text()
         def expected = ["", "Is Child of", "Is Sibling of", "Is Parent of"]
         found.size() == expected.size()
@@ -221,10 +219,10 @@ class CreateStepPageSpec extends GebSpec {
 
     void "linked step is placed in correct row"(String id, String relation) {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         when:
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.scrollToBottom()
         createPage.linkModule.addLink(step.name, relation)
 
@@ -240,9 +238,9 @@ class CreateStepPageSpec extends GebSpec {
 
     void "suggestion results are removed when clicked outside of menu"() {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         def text = step.name.substring(0, 5)
-        CreateStepPage createPage = browser.page(CreateStepPage)
+        CreateStepTemplatePage createPage = browser.page(CreateStepTemplatePage)
         createPage.scrollToBottom()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
@@ -264,11 +262,11 @@ class CreateStepPageSpec extends GebSpec {
 
     void "search results are correctly displayed"(int start, int end) {
         given:
-        Step step = stepService.findAllByProject(project, [max:1]).results.first()
+        def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         def text = step.name.substring(start, end)
 
         when:
-        def createPage = createPage(CreateStepPage)
+        def createPage = createPage(CreateStepTemplatePage)
         createPage.scrollToBottom()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)

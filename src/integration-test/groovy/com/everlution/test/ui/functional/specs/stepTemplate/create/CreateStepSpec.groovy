@@ -1,17 +1,15 @@
-package com.everlution.test.ui.functional.specs.step.create
+package com.everlution.test.ui.functional.specs.stepTemplate.create
 
-import com.everlution.StepService
 import com.everlution.Project
 import com.everlution.ProjectService
-import com.everlution.Step
-
+import com.everlution.StepTemplateService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.pages.step.CreateStepPage
-import com.everlution.test.ui.support.pages.step.ShowStepPage
+import com.everlution.test.ui.support.pages.stepTemplate.CreateStepTemplatePage
+import com.everlution.test.ui.support.pages.stepTemplate.ShowStepTemplatePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
@@ -19,7 +17,7 @@ import grails.testing.mixin.integration.Integration
 class CreateStepSpec extends GebSpec {
 
     ProjectService projectService
-    StepService stepService
+    StepTemplateService stepTemplateService
 
     void "authorized users can create step"(String username, String password) {
         given: "login as an authorized user"
@@ -33,14 +31,14 @@ class CreateStepSpec extends GebSpec {
 
         and: "go to the create page"
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToCreate("Step")
+        projectHomePage.sideBar.goToCreate("Step Template")
 
         when: "create a step"
-        def page = at CreateStepPage
-        page.createStep()
+        def page = at CreateStepTemplatePage
+        page.createStepTemplate()
 
         then: "at show page"
-        at ShowStepPage
+        at ShowStepTemplatePage
 
         where:
         username                        | password
@@ -53,7 +51,7 @@ class CreateStepSpec extends GebSpec {
         setup: "get fake data"
         def step = DataFactory.step()
         Project project = projectService.list(max: 1).first()
-        Step linked = stepService.findAllByProject(project, [max:1]).results.first()
+        def linked = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and: "login as a basic user"
         to LoginPage
@@ -61,14 +59,14 @@ class CreateStepSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
-        to (CreateStepPage, project.id)
+        to (CreateStepTemplatePage, project.id)
 
         when: "create bug"
-        def createPage = browser.page(CreateStepPage)
-        createPage.createStepWithLink(step.action, step.name, step.result, linked.name, 'Is Sibling of')
+        def createPage = browser.page(CreateStepTemplatePage)
+        createPage.createStepTemplateWithLink(step.action, step.name, step.result, linked.name, 'Is Sibling of')
 
         then: "data is displayed on show page"
-        def showPage = at ShowStepPage
+        def showPage = at ShowStepTemplatePage
         verifyAll {
             showPage.nameValue.text() == step.name
             showPage.actionValue.text() == step.action
@@ -81,7 +79,7 @@ class CreateStepSpec extends GebSpec {
         setup: "get fake data"
         def step = DataFactory.step()
         Project project = projectService.list(max: 1).first()
-        Step linked = stepService.findAllByProject(project, [max:1]).results.first()
+        def linked = stepTemplateService.findAllInProject(project, [max:1]).results.first()
 
         and: "login as a basic user"
         to LoginPage
@@ -89,11 +87,11 @@ class CreateStepSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when: "create"
-        def createPage = to (CreateStepPage, project.id)
-        createPage.createStepWithLink(step.action, step.name, step.result, linked.name, 'Is Sibling of')
+        def createPage = to (CreateStepTemplatePage, project.id)
+        createPage.createStepTemplateWithLink(step.action, step.name, step.result, linked.name, 'Is Sibling of')
 
         then: "data is displayed on show page"
-        def showPage = to (ShowStepPage, project.id, linked.id)
+        def showPage = to (ShowStepTemplatePage, project.id, linked.id)
         showPage.isLinkDisplayed(step.name, 'siblings')
     }
 }

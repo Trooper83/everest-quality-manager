@@ -62,7 +62,7 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         createPage.completeCreateForm()
         createPage.scrollToBottom()
         createPage.testStepTable.selectStepsTab('free-form')
-        createPage.testStepTable.addStep("", "")
+        createPage.testStepTable.addStep("", "", "")
         createPage.createButton.click()
 
         expect:

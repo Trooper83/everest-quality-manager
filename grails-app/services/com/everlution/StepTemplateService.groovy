@@ -63,9 +63,9 @@ abstract class StepTemplateService implements IStepTemplateService {
 
         def linkMap = links.groupBy { it -> it.relation }
 
-        linkMap[Relationship.IS_PARENT_OF.name].each { it -> parents.add(new LinkItem(it.id, get(it.linkedId)))}
+        linkMap[Relationship.IS_PARENT_OF.name].each { it -> children.add(new LinkItem(it.id, get(it.linkedId)))}
 
-        linkMap[Relationship.IS_CHILD_OF.name].each { it -> children.add(new LinkItem(it.id, get(it.linkedId)))}
+        linkMap[Relationship.IS_CHILD_OF.name].each { it -> parents.add(new LinkItem(it.id, get(it.linkedId)))}
 
         linkMap[Relationship.IS_SIBLING_OF.name].each { it -> siblings.add(new LinkItem(it.id, get(it.linkedId)))}
 
