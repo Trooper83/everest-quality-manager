@@ -73,7 +73,7 @@ class EditPageSpec extends GebSpec {
         then: "correct options are populated"
         EditBugPage page = browser.page(EditBugPage)
         verifyAll {
-            page.statusOptions*.text() == ["Open", "Closed"]
+            page.statusOptions*.text() == ["Open", "Fixed", "Closed"]
         }
     }
 

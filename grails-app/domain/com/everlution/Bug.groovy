@@ -10,6 +10,7 @@ class Bug {
     String expected
     Date lastUpdated
     String name
+    String notes
     Person person
     String platform
     Project project
@@ -41,6 +42,7 @@ class Bug {
         description blank: true, nullable: true, maxSize: 1000
         expected nullable: true, blank: true, maxSize: 500
         name blank: false, maxSize: 255, nullable: false
+        notes nullable: true, blank: true, maxSize: 500
         person nullable: false
         platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
         project nullable: false
@@ -55,7 +57,7 @@ class Bug {
             def envIds = val.collect { it.id }
             ids.containsAll(envIds)
         }
-        status blank: false, nullable: false, inList: ["Open", "Closed"]
+        status blank: false, nullable: false, inList: ["Open", "Fixed", "Closed"]
         steps nullable: true
     }
 }

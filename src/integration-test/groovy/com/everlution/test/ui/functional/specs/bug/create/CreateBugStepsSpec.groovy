@@ -133,7 +133,7 @@ class CreateBugStepsSpec extends GebSpec {
         to(CreateBugPage, project.id)
         CreateBugPage createPage = browser.page(CreateBugPage)
         def bd = DataFactory.bug()
-        createPage.createFreeFormBug(bd.name, bd.description, '', [], '', step.action, step.data,
+        createPage.createFreeFormBug(bd.name, bd.description, '', [], '', '', step.action, step.data,
                 step.result, '', '')
 
         then: "data is displayed on show page"

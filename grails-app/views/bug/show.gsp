@@ -76,6 +76,12 @@
                                 <p class="col" id="status" aria-labelledby="status-label">${bug.status}</p>
                             </div>
                         </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="notes-label" class="col-4 fw-bold">Notes</p>
+                                <p class="col" id="notes" aria-labelledby="description-label">${bug.notes}</p>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>

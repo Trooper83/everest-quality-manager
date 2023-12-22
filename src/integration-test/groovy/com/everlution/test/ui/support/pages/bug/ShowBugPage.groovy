@@ -15,6 +15,7 @@ class ShowBugPage extends ShowPage {
         environmentsList { $("#environments") }
         expectedValue { $("#expected") }
         nameValue { $("#name") }
+        notesValue { $("#notes") }
         platformValue { $("#platform") }
         projectValue { $("#project") }
         statusValue { $("#status") }

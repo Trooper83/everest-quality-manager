@@ -22,6 +22,7 @@ class BugSpec extends GebSpec {
     def actual = faker.lorem().sentence(4)
     def expected = faker.lorem().sentence(4)
     def name = faker.lorem().sentence(5)
+    def notes = faker.lorem().sentence(5)
     def area = 'Bugs'
     def env = 'Integrated'
     def env1 = 'Production'
@@ -38,7 +39,7 @@ class BugSpec extends GebSpec {
         projectHomePage.sideBar.goToCreate("Bug")
 
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", action, data, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", notes, action, data, result, actual, expected)
     }
 
     void "bug can be created and data persists"() {
@@ -51,6 +52,7 @@ class BugSpec extends GebSpec {
             showPage.platformValue.text() == "Web"
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env, env1])
+            showPage.notesValue.text() == notes
             showPage.isStepsRowDisplayed(action, data, result)
             showPage.expectedValue.text() == expected
             showPage.actualValue.text() == actual
@@ -65,7 +67,7 @@ class BugSpec extends GebSpec {
         when: "edit all bug data"
         EditBugPage editPage = browser.page(EditBugPage)
         def data = DataFactory.bug()
-        editPage.editBug(data.name, data.description, "",[""], "", data.expected, data.actual)
+        editPage.editBug(data.name, data.description, "",[""], "", "", data.expected, data.actual)
 
         then: "data is displayed on show page"
         verifyAll {

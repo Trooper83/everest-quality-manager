@@ -77,7 +77,7 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         when: "create bug"
         CreateBugPage createPage = at CreateBugPage
         createPage.createFreeFormBug(name, description, "", [], "", "", "", "",
-                "actual", "expected")
+                "","actual", "expected")
 
         then:
         createPage.errorsMessage*.text() ==

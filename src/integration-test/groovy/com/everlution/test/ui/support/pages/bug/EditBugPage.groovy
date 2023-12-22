@@ -20,6 +20,7 @@ class EditBugPage extends EditPage {
         homeLink { $("[data-test-id=edit-home-link]") }
         listLink { $("[data-test-id=edit-list-link]") }
         nameInput { $("#name") }
+        notesInput { $("#notes") }
         platformOptions { $("#platform>option") }
         projectNameField { $("[data-test-id=edit-project-name]") }
         statusOptions { $("#status>option") }
@@ -49,13 +50,14 @@ class EditBugPage extends EditPage {
     /**
      * edits a bug with the supplied data
      */
-    void editBug(String name, String description, String area, List<String> environments, String platform,
+    void editBug(String name, String description, String area, List<String> environments, String platform, String notes,
                  String expected, String actual) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
         platformSelect().selected = platform
         environmentsSelect().selected = environments
+        notesInput = notes
         statusSelect().selected = "Closed"
         expectedInput = expected
         actualInput = actual
