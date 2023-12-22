@@ -28,6 +28,7 @@ class CreateTestCasePage extends CreatePage {
         testGroupsOptions { $("#testGroups>option") }
         testStepTable { module StepTableModule }
         typeOptions { $("#type>option") }
+        verifyInput { $("#verify") }
     }
 
     /**
@@ -109,7 +110,8 @@ class CreateTestCasePage extends CreatePage {
      * creates a test case with the supplied data
      */
     void createFreeFormTestCase(String name, String description, String area, List<String> environments,
-                                List<String> testGroups, String method, String type, String platform, List<Step> steps) {
+                                List<String> testGroups, String method, String type, String platform, List<Step> steps,
+                                String verify) {
         nameInput = name
         descriptionInput = description
         executionMethodSelect().selected = method
@@ -123,6 +125,7 @@ class CreateTestCasePage extends CreatePage {
         steps.each { it ->
             testStepTable.addStep(it.act, it.data, it.result)
         }
+        verifyInput = verify
         scrollToBottom()
         createButton.click()
     }

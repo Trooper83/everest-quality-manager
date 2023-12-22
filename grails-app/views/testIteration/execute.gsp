@@ -59,12 +59,27 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item border-bottom">
                             <div class="row">
-                                <p class="col-6 fw-bold">Action</p>
-                                <p class="col-6 fw-bold">Result</p>
+                                <p class="col-4 fw-bold">Action</p>
+                                <p class="col-4 fw-bold">Data</p>
+                                <p class="col-4 fw-bold">Result</p>
                             </div>
                         </li>
                     </ul>
                     <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item border-bottom mt-4">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Verify</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <p id="verify" class="col-4">${testIteration.verify}</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <g:form resource="${this.testIteration}" method="PUT" useToken="true"

@@ -238,7 +238,7 @@ class EditTestCaseSpec extends GebSpec {
         EditTestCasePage page = browser.page(EditTestCasePage)
         def edited = DataFactory.testCase()
         page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI", "iOS",
-                [""])
+                [""], "verify added")
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -251,6 +251,7 @@ class EditTestCaseSpec extends GebSpec {
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
             showPage.platformValue.text() == "iOS"
+            showPage.verifyValue.text() == "verify added"
         }
     }
 }

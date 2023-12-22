@@ -37,7 +37,7 @@ class TestCaseSpec extends GebSpec {
         when:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
+                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')], tc.verify)
 
         then: "data is displayed on show page"
         def showPage = at ShowTestCasePage
@@ -51,6 +51,7 @@ class TestCaseSpec extends GebSpec {
             showPage.areEnvironmentsDisplayed([env])
             showPage.areTestGroupsDisplayed(['Regression'])
             showPage.isStepsRowDisplayed('Login to app', '', 'You are logged into the app')
+            showPage.verifyValue.text() == tc.verify
         }
     }
 
@@ -58,7 +59,7 @@ class TestCaseSpec extends GebSpec {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
+                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')], tc.verify)
         def showPage = at ShowTestCasePage
         showPage.goToEdit()
 
@@ -66,7 +67,7 @@ class TestCaseSpec extends GebSpec {
         def editPage = browser.page(EditTestCasePage)
         def testCase = DataFactory.scenario()
         editPage.editTestCase(testCase.name, testCase.description, '', [''],
-                'Manual', 'API', 'iOS', [''])
+                'Manual', 'API', 'iOS', [''], "testing")
 
         then: "data is displayed on show page"
         verifyAll {
@@ -78,6 +79,7 @@ class TestCaseSpec extends GebSpec {
             showPage.platformValue.text() == 'iOS'
             !showPage.areEnvironmentsDisplayed([env])
             !showPage.areTestGroupsDisplayed(['Regression'])
+            showPage.verifyValue.text() == 'testing'
         }
     }
 
@@ -85,7 +87,7 @@ class TestCaseSpec extends GebSpec {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')])
+                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')], tc.verify)
 
         when:
         def showPage = at ShowTestCasePage

@@ -8,7 +8,6 @@ import com.everlution.Step
 import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
-import com.everlution.TestGroup
 import com.everlution.TestIteration
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -74,9 +73,9 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
     void "add test iterations populates property on instance"() {
         given:
         def step = new Step(act: "action", result: "result")
-        def step1 = new Step(act: "action1", result: "result1")
+        def step1 = new Step(act: "action1", result: "result1", data: "data1")
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
-                executionMethod: "Manual", type: "UI", project: project, steps: [step, step1]).save()
+                executionMethod: "Manual", type: "UI", project: project, steps: [step, step1], verify: "verified").save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan).save(flush: true)
 
         expect:
@@ -89,6 +88,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         then:
         tc.testIterations.size() == 1
         tc.testIterations.first().name == testCase.name
+        tc.testIterations.first().verify == testCase.verify
         tc.testIterations.first().result == "ToDo"
         tc.testIterations.first().testCase == testCase
         tc.testIterations.first().steps.size() == testCase.steps.size()
@@ -96,6 +96,8 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.first().steps[1].act == testCase.steps[1].act
         tc.testIterations.first().steps[0].result == testCase.steps[0].result
         tc.testIterations.first().steps[1].result == testCase.steps[1].result
+        tc.testIterations.first().steps[0].data == null
+        tc.testIterations.first().steps[1].data == testCase.steps[1].data
     }
 
     void "add iterations from test cases returns same number of tests cases"() {

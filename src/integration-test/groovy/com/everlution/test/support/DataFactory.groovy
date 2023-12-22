@@ -124,7 +124,8 @@ class DataFactory {
         def name = faker.beer().name()
         def creator = faker.zelda().character()
         def description = faker.lorem().sentence(3)
-        return [name: name, creator: creator, description: description, executionMethod: "Automated", type: "UI"]
+        return [name: name, creator: creator, description: description, executionMethod: "Automated", type: "UI",
+                verify: "verified"]
     }
 
     /**

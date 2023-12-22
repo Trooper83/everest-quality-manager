@@ -12,6 +12,7 @@ class TestIteration {
     TestCase testCase
     TestCycle testCycle
     List steps
+    String verify
 
     static belongsTo = [ TestCycle ]
 
@@ -33,5 +34,6 @@ class TestIteration {
         steps nullable: false
         testCase nullable: false
         testCycle nullable: false
+        verify nullable: true, blank: true, maxSize: 500
     }
 }

@@ -20,6 +20,7 @@ class ShowTestCasePage extends ShowPage {
         testGroupsList { $("#testGroups") }
         testStepTable { module StepTableModule }
         typeValue { $ ("#type") }
+        verifyValue { $ ("#verify") }
     }
 
     /**

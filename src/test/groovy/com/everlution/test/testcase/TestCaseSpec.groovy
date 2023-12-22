@@ -483,4 +483,39 @@ class TestCaseSpec extends Specification implements DomainUnitTest<TestCase> {
         then:
         domain.validate(["lastUpdated"])
     }
+
+    void "verify can be null"() {
+        when:
+        domain.verify = null
+
+        then:
+        domain.validate(["verify"])
+    }
+
+    void "verify can be blank"() {
+        when:
+        domain.verify = ""
+
+        then:
+        domain.validate(["verify"])
+    }
+
+    void "verify cannot exceed 500 characters"() {
+        when: "for a string of 501 characters"
+        String str = "a" * 501
+        domain.verify = str
+
+        then: "validation fails"
+        !domain.validate(["verify"])
+        domain.errors["verify"].code == "maxSize.exceeded"
+    }
+
+    void "verify validates with 500 characters"() {
+        when: "for a string of 500 characters"
+        String str = "a" * 500
+        domain.verify = str
+
+        then: "description validation passes"
+        domain.validate(["verify"])
+    }
 }
