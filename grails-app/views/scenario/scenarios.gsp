@@ -43,8 +43,8 @@
                                 <td>${scenario.platform}</td>
                                 <td>${scenario.type}</td>
                                 <td>${scenario.executionMethod}</td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${scenario.dateCreated}"/></td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${scenario.lastUpdated}"/></td>
+                                <td data-name="createdDateValue">${scenario.dateCreated}</td>
+                                <td data-name="updatedDateValue">${scenario.lastUpdated}</td>
                             </tr>
                         </g:each>
                         </tbody>
@@ -57,5 +57,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

@@ -43,8 +43,8 @@
                                 <td>${test.platform}</td>
                                 <td>${test.type}</td>
                                 <td>${test.executionMethod}</td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${test.dateCreated}"/></td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${test.lastUpdated}"/></td>
+                                <td data-name="createdDateValue">${test.dateCreated}</td>
+                                <td data-name="updatedDateValue">${test.lastUpdated}</td>
                             </tr>
                         </g:each>
                         </tbody>
@@ -57,5 +57,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

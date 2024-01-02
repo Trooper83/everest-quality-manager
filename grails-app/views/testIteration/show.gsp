@@ -41,7 +41,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p class="col-4 fw-bold">Date Executed</p>
-                                <p class="col" id="dateExecuted"><g:formatDate format="MMMM d, yyyy h:mm a" date="${testIteration.dateExecuted}"/></p>
+                                <p class="col" data-name="executedDateValue" id="dateExecuted">${testIteration.dateExecuted}</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">
@@ -116,5 +116,6 @@
     </div>
 </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

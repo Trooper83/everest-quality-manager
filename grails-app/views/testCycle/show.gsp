@@ -110,7 +110,7 @@
                                 <td>${iteration.name}</td>
                                 <td>${iteration.result}</td>
                                 <td>${iteration.person?.email}</td>
-                                <td><g:formatDate format="MMMM d, yyyy h:mm a" date="${iteration.dateExecuted}"/></td>
+                                <td data-name="executedDateValue">${iteration.dateExecuted}</td>
                                 <td>
                                     <sec:ifAnyGranted roles="ROLE_BASIC">
                                         <g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/execute/${iteration.id}">Execute</g:link>
@@ -162,6 +162,7 @@
     </div>
 </div>
 <asset:javascript src="jquery-3.3.1.min.js"/>
+<asset:javascript src="time.js"/>
 <script>
         $(document).ready(function() {
             $('#testsModal').on('hidden.bs.modal', function () {
