@@ -37,7 +37,7 @@ class TestCaseSpec extends GebSpec {
         when:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')], tc.verify)
+                tc.type, platform, [new Step(act: 'Login to app', data: 'test', result: 'You are logged into the app')], tc.verify)
 
         then: "data is displayed on show page"
         def showPage = at ShowTestCasePage
@@ -50,7 +50,7 @@ class TestCaseSpec extends GebSpec {
             showPage.platformValue.text() == platform
             showPage.areEnvironmentsDisplayed([env])
             showPage.areTestGroupsDisplayed(['Regression'])
-            showPage.isStepsRowDisplayed('Login to app', '', 'You are logged into the app')
+            showPage.isStepsRowDisplayed('Login to app', 'test', 'You are logged into the app')
             showPage.verifyValue.text() == tc.verify
         }
     }
@@ -59,7 +59,7 @@ class TestCaseSpec extends GebSpec {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')], tc.verify)
+                tc.type, platform, [new Step(act: 'Login to app', data: 'test', result: 'You are logged into the app')], tc.verify)
         def showPage = at ShowTestCasePage
         showPage.goToEdit()
 
@@ -87,7 +87,7 @@ class TestCaseSpec extends GebSpec {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.createFreeFormTestCase(tc.name, tc.description, area, [env], ['Regression'], tc.executionMethod,
-                tc.type, platform, [new Step(act: 'Login to app', result: 'You are logged into the app')], tc.verify)
+                tc.type, platform, [new Step(act: 'Login to app', data: 'test', result: 'You are logged into the app')], tc.verify)
 
         when:
         def showPage = at ShowTestCasePage
@@ -102,7 +102,7 @@ class TestCaseSpec extends GebSpec {
         given:
         def step = DataFactory.step()
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
-        createPage.sideBar.goToCreate('Step')
+        createPage.sideBar.goToCreate('Step Template')
         browser.page(CreateStepTemplatePage).createStepTemplate(step.action, step.name, step.result)
 
         when:
@@ -112,6 +112,6 @@ class TestCaseSpec extends GebSpec {
 
         then: "data is displayed on show page"
         def showPage = at ShowTestCasePage
-        showPage.isStepsRowDisplayed(step.action, '', step.result)
+        showPage.isStepsRowDisplayed(step.action, 'test', step.result)
     }
 }

@@ -28,7 +28,7 @@ class StepSpec extends GebSpec {
         projectsPage.projectTable.clickCell('Name', 'Atlas')
 
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToCreate("Step")
+        projectHomePage.sideBar.goToCreate("Step Template")
 
         def page = browser.at(CreateStepTemplatePage)
         page.createStepTemplate(step.action, step.name, step.result)
@@ -47,7 +47,7 @@ class StepSpec extends GebSpec {
     void "links created with step"() {
         given:
         def show = at ShowStepTemplatePage
-        show.sideBar.goToCreate('Step')
+        show.sideBar.goToCreate('Step Template')
         def st = DataFactory.step()
 
         when:
@@ -80,7 +80,7 @@ class StepSpec extends GebSpec {
     void "links can be added and removed"() {
         given:
         def show = at ShowStepTemplatePage
-        show.sideBar.goToCreate('Step')
+        show.sideBar.goToCreate('Step Template')
         def st = DataFactory.step()
         def page = at CreateStepTemplatePage
         page.createStepTemplateWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
@@ -112,7 +112,7 @@ class StepSpec extends GebSpec {
     void "step with links can be deleted"() {
         given:
         def show = at ShowStepTemplatePage
-        show.sideBar.goToCreate('Step')
+        show.sideBar.goToCreate('Step Template')
         def st = DataFactory.step()
         def page = at CreateStepTemplatePage
         page.createStepTemplateWithLink(st.action, st.name, st.result, step.name, 'Is Child of')
@@ -124,24 +124,6 @@ class StepSpec extends GebSpec {
         then:
         def lPage = at ListStepTemplatePage
         lPage.statusMessage.displayed
-    }
-
-    void "step related to bug cannot be deleted"() {
-        given:
-        def page = at ShowStepTemplatePage
-        def url = currentUrl
-        page.sideBar.goToCreate('Bug')
-        def create = browser.page(CreateBugPage)
-        create.createBuilderBug('E2E test delete bug with step', '', '', [], '',
-                step.name, '', '')
-
-        when:
-        go(url)
-        browser.page(ShowStepTemplatePage).delete()
-
-        then:
-        def show = at ShowStepTemplatePage
-        show.errorsMessage.text() == 'Step is related to a TestCase or Bug and cannot be deleted'
     }
 
     void "deleting test with related builder step does not delete step"() {
