@@ -104,4 +104,37 @@ class ShowPageSpec extends GebSpec {
         then:
         at ShowTestCyclePage
     }
+
+    void "test iteration executed date field empty when not executed"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        projectService.save(project)
+        def person = personService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def testCycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, testCycle)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
+
+        when:
+        def showCycle = at ShowTestCyclePage
+        showCycle.addTestsByGroup(group.name)
+
+        then:
+        showCycle.scrollToBottom()
+        showCycle.testsTable.getValueInColumn(0, "Executed Date") == ''
+    }
 }

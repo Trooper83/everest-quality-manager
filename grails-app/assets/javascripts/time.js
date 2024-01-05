@@ -9,17 +9,20 @@ const options = {
 (() => {
     const created = document.querySelectorAll('[data-name=createdDateValue]');
     created.forEach((ele) => {
-      ele.innerText = getDateText(ele.innerText);
+        const text = ele.innerText;
+        ele.innerText = text.length > 0 ? getDateText(text) : '';
     });
 
     const updated = document.querySelectorAll('[data-name=updatedDateValue]');
     updated.forEach((ele) => {
-        ele.innerText = getDateText(ele.innerText);
+        const text = ele.innerText;
+        ele.innerText = text.length > 0 ? getDateText(text) : '';
     });
 
     const executed = document.querySelectorAll('[data-name=executedDateValue]');
     executed.forEach((ele) => {
-        ele.innerText = getDateText(ele.innerText);
+        const text = ele.innerText;
+        ele.innerText = text.length > 0 ? getDateText(text) : '';
     });
 })();
 
