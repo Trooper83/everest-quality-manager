@@ -15,6 +15,7 @@ class TestCase {
     List steps
     List testGroups
     String type
+    String verify
 
     static hasMany = [ environments: Environment, steps: Step, testGroups: TestGroup ]
 
@@ -68,5 +69,6 @@ class TestCase {
             def groupIds = val.collect { it.id }
             ids.containsAll(groupIds)
         }
+        verify nullable: true, blank:true, maxSize: 500
     }
 }

@@ -52,6 +52,10 @@
                                       multiple="true"
                             />
                         </div>
+                        <div class="col-8 mb-3">
+                            <label class="form-label" for="notes">Notes</label>
+                            <g:textArea class="form-control" name="notes" value="${bug.notes}" maxLength="500"></g:textArea>
+                        </div>
                     </div>
                 </div>
                 <div class="card mt-3 mb-5">

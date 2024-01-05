@@ -96,6 +96,12 @@
                         <g:else>
                             <g:render template="/shared/freeFormStepsTemplate" bean="${testCase}" var="entity"/>
                         </g:else>
+                        <div class="row mb-3 mt-3 me-2 ms-2 border-top">
+                            <div class="col-8 mt-3">
+                                <label class="form-label" for="verify">Verify</label>
+                                <g:textArea class="form-control" name="verify" value="${testCase.verify}" maxLength="500"></g:textArea>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <g:submitButton name="Update" data-test-id="edit-update-button" class="btn btn-primary"

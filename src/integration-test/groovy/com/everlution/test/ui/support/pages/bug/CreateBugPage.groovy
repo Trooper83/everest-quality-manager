@@ -25,6 +25,7 @@ class CreateBugPage extends CreatePage {
         homeLink { $("[data-test-id=create-home-link]") }
         listLink { $("[data-test-id=create-list-link]") }
         nameInput { $("#name") }
+        notesInput { $("#notes") }
         platformOptions { $("#platform>option") }
         stepsTable { module StepTableModule }
     }
@@ -82,12 +83,13 @@ class CreateBugPage extends CreatePage {
      * creates a bug with the supplied data
      */
     void createFreeFormBug(String name, String description, String area, List<String> environment,
-                           String platform, String action, String data, String result, String actual, String expected) {
+                           String platform, String notes, String action, String data, String result, String actual, String expected) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
         platformSelect().selected = platform
         environmentsSelect().selected = environment
+        notesInput = notes
         scrollToBottom()
         stepsTable.selectStepsTab('free-form')
         stepsTable.addStep(action, data, result)

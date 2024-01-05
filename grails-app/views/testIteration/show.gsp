@@ -41,7 +41,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p class="col-4 fw-bold">Date Executed</p>
-                                <p class="col" id="dateExecuted"><g:formatDate format="MMMM d, yyyy h:mm a" date="${testIteration.dateExecuted}"/></p>
+                                <p class="col" data-name="executedDateValue" id="dateExecuted">${testIteration.dateExecuted}</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">
@@ -89,17 +89,33 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item border-bottom">
                             <div class="row">
-                                <p class="col-6 fw-bold">Action</p>
-                                <p class="col-6 fw-bold">Result</p>
+                                <p class="col-4 fw-bold">Action</p>
+                                <p class="col-4 fw-bold">Data</p>
+                                <p class="col-4 fw-bold">Result</p>
                             </div>
                         </li>
                     </ul>
                     <g:render template="/shared/showStepsTableTemplate" bean="${testIteration}" var="entity"/>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item border-bottom mt-4">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Verify</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <p id="verify" class="col-4">${testIteration.verify}</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </main>
     </div>
 </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

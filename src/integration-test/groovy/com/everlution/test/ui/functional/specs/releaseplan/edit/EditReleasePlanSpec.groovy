@@ -77,13 +77,13 @@ class EditReleasePlanSpec extends GebSpec {
 
         when: "edit instance"
         def editPage = at EditReleasePlanPage
-        editPage.editReleasePlan("edited name", "Released", "August 10, 2023", "August 23, 2023")
+        editPage.editReleasePlan("edited name", "Released", "August 10, 2024", "August 23, 2024")
 
         then: "at show page with edited data"
         def showPage = at ShowReleasePlanPage
         showPage.nameValue.text() == "edited name"
         showPage.statusValue.text() == "Released"
-        showPage.plannedDateValue.text() == "August 10, 2023"
-        showPage.releaseDateValue.text() == "August 23, 2023"
+        showPage.plannedDateValue.text() == "August 10, 2024"
+        showPage.releaseDateValue.text() == "August 23, 2024"
     }
 }

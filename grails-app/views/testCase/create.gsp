@@ -83,6 +83,12 @@
                     </div>
                     <div class="card-body">
                         <g:render template="/shared/defaultStepsTemplate"/>
+                        <div class="row mb-3 mt-3 ms-2 me-2 border-top">
+                            <div class="col-8 mt-3">
+                                <label class="form-label" for="verify">Verify</label>
+                                <g:textArea class="form-control" name="verify" value="${testCase.verify}" maxLength="500"></g:textArea>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <g:submitButton name="create" class="btn btn-primary" value="${message(code: 'default.button.create.label', default: 'Create')}" />

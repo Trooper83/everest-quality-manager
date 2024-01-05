@@ -40,8 +40,8 @@
                                 <td>${template.act}</td>
                                 <td>${template.result}</td>
                                 <td>${template.person.email}</td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${template.dateCreated}"/></td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${template.lastUpdated}"/></td>
+                                <td data-name="createdDateValue">${template.dateCreated}</td>
+                                <td data-name="updatedDateValue">${template.lastUpdated}</td>
                             </tr>
                         </g:each>
                         </tbody>
@@ -54,5 +54,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

@@ -41,8 +41,8 @@
                                 <td>${bug.platform}</td>
                                 <td>${bug.area?.name}</td>
                                 <td>${bug.status}</td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${bug.dateCreated}"/></td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${bug.lastUpdated}"/></td>
+                                <td data-name="createdDateValue">${bug.dateCreated}</td>
+                                <td data-name="updatedDateValue">${bug.lastUpdated}</td>
                             </tr>
                         </g:each>
                         </tbody>
@@ -55,5 +55,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

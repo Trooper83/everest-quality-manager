@@ -64,6 +64,7 @@ class CreateBugSpec extends GebSpec {
         def stepData = DataFactory.step()
         def actual = faker.lorem().sentence(7)
         def expected = faker.lorem().sentence(7)
+        def notes = faker.lorem().sentence(7)
 
         and: "login as a basic user"
         to LoginPage
@@ -80,7 +81,7 @@ class CreateBugSpec extends GebSpec {
 
         when: "create bug"
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area.name, [env.name, env1.name], "Web", stepData.action,
+        createPage.createFreeFormBug(name, description, area.name, [env.name, env1.name], "Web", notes, stepData.action,
                 stepData.data, stepData.result, actual, expected)
 
         then: "data is displayed on show page"
@@ -90,6 +91,7 @@ class CreateBugSpec extends GebSpec {
             showPage.nameValue.text() == name
             showPage.descriptionValue.text() == description
             showPage.platformValue.text() == "Web"
+            showPage.notesValue.text() == notes
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.isStepsRowDisplayed(stepData.action, stepData.data, stepData.result)

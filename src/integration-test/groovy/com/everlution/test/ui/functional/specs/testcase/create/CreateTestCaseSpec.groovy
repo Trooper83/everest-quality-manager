@@ -71,7 +71,7 @@ class CreateTestCaseSpec extends GebSpec {
         def tcd = DataFactory.testCase()
         createPage.createFreeFormTestCase(
                 tcd.name, tcd.description, area.name, [env.name, env1.name], [group.name, group1.name],
-                "Automated", "UI", "Web", [])
+                "Automated", "UI", "Web", [], tcd.verify)
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -84,6 +84,7 @@ class CreateTestCaseSpec extends GebSpec {
             showPage.platformValue.text() == "Web"
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.areTestGroupsDisplayed([group.name, group1.name])
+            showPage.verifyValue.text() == tcd.verify
         }
     }
 }

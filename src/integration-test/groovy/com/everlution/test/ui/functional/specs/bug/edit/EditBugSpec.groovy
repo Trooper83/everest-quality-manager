@@ -75,7 +75,7 @@ class EditBugSpec extends GebSpec {
         def bugData = DataFactory.bug()
         def bug = bugService.save(new Bug(person: person, name: bugData.name,
                 description: bugData.description, project: project, area: area, platform: "Web", status: "Open",
-                actual: "actual", expected: "expected"))
+                actual: "actual", expected: "expected", notes: bugData.notes))
 
         when: "login as a basic user"
         to LoginPage
@@ -88,7 +88,7 @@ class EditBugSpec extends GebSpec {
         and: "edit all bug data"
         EditBugPage editPage = browser.page(EditBugPage)
         def data = DataFactory.bug()
-        editPage.editBug(data.name, data.description, "",[""], "", data.expected, data.actual)
+        editPage.editBug(data.name, data.description, "",[""], "", data.notes, data.expected, data.actual)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
@@ -101,6 +101,7 @@ class EditBugSpec extends GebSpec {
             showPage.statusValue.text() == "Closed"
             showPage.descriptionValue.text() == data.description
             !showPage.areEnvironmentsDisplayed([env.name])
+            showPage.notesValue.text() == data.notes
         }
     }
 

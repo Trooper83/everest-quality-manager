@@ -25,6 +25,7 @@ class EditTestCasePage extends EditPage {
         testGroupsOptions { $("#testGroups>option") }
         typeOptions { $("#type>option") }
         updateButton { $("[data-test-id=edit-update-button]")}
+        verifyInput { $("#verify")}
     }
 
     /**
@@ -58,7 +59,7 @@ class EditTestCasePage extends EditPage {
      * fills in all data but does not submit the form
      */
     void completeEditForm(String name, String description, String area, List<String> environments, String method,
-                          String type, String platform, List<String> testGroups) {
+                          String type, String platform, List<String> testGroups, String verify) {
         nameInput = name
         descriptionInput = description
         areaSelect().selected = area
@@ -67,6 +68,8 @@ class EditTestCasePage extends EditPage {
         executionMethodSelect().selected = method
         platformSelect().selected = platform
         typeSelect().selected = type
+        scrollToBottom()
+        verifyInput = verify
     }
 
     /**
@@ -81,8 +84,8 @@ class EditTestCasePage extends EditPage {
      * edits a test case with the supplied data
      */
     void editTestCase(String name, String description, String area, List<String> environments, String method,
-                      String type, String platform, List<String> testGroups) {
-        completeEditForm(name, description, area, environments, method, type, platform, testGroups)
+                      String type, String platform, List<String> testGroups, String verify) {
+        completeEditForm(name, description, area, environments, method, type, platform, testGroups, verify)
         scrollToBottom()
         updateButton.click()
     }

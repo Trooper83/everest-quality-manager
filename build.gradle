@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-version "2.0.3" //set tomcat
+version "2.0.4" //set tomcat
 group "com.everlution.everest"
 
 apply plugin:"idea"
@@ -99,7 +99,8 @@ bootRun {
         '-Dspring.output.ansi.enabled=always', 
         '-noverify', 
         '-XX:TieredStopAtLevel=1',
-        '-Xmx1024m')
+        '-Xmx1024m',
+        '-Duser.timezone=UTC')
     sourceResources sourceSets.main
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)

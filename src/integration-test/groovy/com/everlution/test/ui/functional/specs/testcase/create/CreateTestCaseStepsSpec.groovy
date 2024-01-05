@@ -131,7 +131,7 @@ class CreateTestCaseStepsSpec extends GebSpec {
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         def tcd = DataFactory.testCase()
         createPage.createFreeFormTestCase(
-                tcd.name, tcd.description, '', [], [],"Automated", "UI", "Web", [step, step1])
+                tcd.name, tcd.description, '', [], [],"Automated", "UI", "Web", [step, step1], tcd.verify)
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage

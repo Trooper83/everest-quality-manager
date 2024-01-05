@@ -22,7 +22,7 @@
                     <div class="card-body">
                         <div class="col-4 mb-3">
                             <label class="form-label" for="status">Status</label>
-                            <g:select class="form-select" name="status" from="${['Open', 'Closed']}" value="${bug.status}"
+                            <g:select class="form-select" name="status" from="${['Open', 'Fixed', 'Closed']}" value="${bug.status}"
                             />
                         </div>
                         <div class="col-8 required mb-3">
@@ -55,6 +55,10 @@
                                       noSelection="${['':'No Environment...']}"
                                       multiple="true"
                             />
+                        </div>
+                        <div class="col-8 mb-3">
+                            <label class="form-label" for="notes">Notes</label>
+                            <g:textArea class="form-control" name="notes" value="${bug.notes}" maxLength="500"></g:textArea>
                         </div>
                     </div>
                 </div>

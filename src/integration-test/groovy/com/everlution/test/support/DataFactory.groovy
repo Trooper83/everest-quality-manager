@@ -56,9 +56,11 @@ class DataFactory {
         def name = faker.zelda().game()
         def creator = faker.zelda().character()
         def description = faker.lorem().sentence(3)
+        def notes = faker.lorem().sentence(3)
         def actual = faker.lorem().sentence(3)
         def expected = faker.lorem().sentence(3)
-        return [creator: creator, name: name, description: description, actual: actual, expected: expected]
+        return [creator: creator, name: name, description: description, actual: actual, expected: expected,
+                notes: notes]
     }
 
     /**
@@ -124,7 +126,8 @@ class DataFactory {
         def name = faker.beer().name()
         def creator = faker.zelda().character()
         def description = faker.lorem().sentence(3)
-        return [name: name, creator: creator, description: description, executionMethod: "Automated", type: "UI"]
+        return [name: name, creator: creator, description: description, executionMethod: "Automated", type: "UI",
+                verify: "verified"]
     }
 
     /**

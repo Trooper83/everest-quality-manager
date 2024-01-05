@@ -110,6 +110,20 @@
                         </li>
                     </ul>
                     <g:render template="/shared/showStepsTableTemplate" bean="${testCase}" var="entity"/>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item border-bottom mt-4">
+                            <div class="row">
+                                <p class="col-4 fw-bold">Verify</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <p id="verify" class="col-4">${testCase.verify}</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </main>

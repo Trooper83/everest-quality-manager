@@ -32,7 +32,7 @@
                         <g:each var="testGroup" in="${testGroupList}">
                             <tr>
                                 <td><g:link uri="/project/${project.id}/testGroup/show/${testGroup.id}">${testGroup.name}</g:link></td>
-                                <td><g:formatDate format="MMMM d, yyyy" date="${testGroup.dateCreated}"/></td>
+                                <td data-name="createdDateValue">${testGroup.dateCreated}</td>
                             </tr>
                         </g:each>
                         </tbody>
@@ -45,5 +45,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

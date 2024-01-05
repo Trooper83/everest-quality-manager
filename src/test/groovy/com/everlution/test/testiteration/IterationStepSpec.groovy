@@ -130,4 +130,39 @@ class IterationStepSpec extends Specification implements DomainUnitTest<Iteratio
         then: "result validation passes"
         domain.validate(["result"])
     }
+
+    void "data can be null"() {
+        when:
+        domain.data = null
+
+        then:
+        domain.validate(["data"])
+    }
+
+    void "data can be blank"() {
+        when:
+        domain.data = ""
+
+        then:
+        domain.validate(["data"])
+    }
+
+    void "data cannot exceed 500 characters"() {
+        when: "for a string of 256 characters"
+        String str = "a" * 501
+        domain.data = str
+
+        then: "validation fails"
+        !domain.validate(["data"])
+        domain.errors["data"].code == "maxSize.exceeded"
+    }
+
+    void "data validates with 500 characters"() {
+        when: "for a string of 500 characters"
+        String str = "a" * 500
+        domain.data = str
+
+        then: "validation passes"
+        domain.validate(["data"])
+    }
 }

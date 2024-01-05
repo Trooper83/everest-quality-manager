@@ -47,12 +47,8 @@
                                 <td>
                                     <g:formatDate format="MMMM d, yyyy" date="${releasePlan.releaseDate}"/>
                                 </td>
-                                <td>
-                                    <g:formatDate format="MMMM d, yyyy" date="${releasePlan.dateCreated}"/>
-                                </td>
-                                <td>
-                                    <g:formatDate format="MMMM d, yyyy" date="${releasePlan.lastUpdated}"/>
-                                </td>
+                                <td data-name="createdDateValue">${releasePlan.dateCreated}</td>
+                                <td data-name="updatedDateValue">${releasePlan.lastUpdated}</td>
                             </tr>
                         </g:each>
                         </tbody>
@@ -65,5 +61,6 @@
         </main>
     </div>
 </div>
+<asset:javascript src="time.js"/>
 </body>
 </html>

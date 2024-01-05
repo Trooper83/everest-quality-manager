@@ -339,7 +339,7 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         domain.validate(["status"])
 
         where:
-        value << ["Open", "Closed"]
+        value << ["Open", "Closed", "Fixed"]
     }
 
     void "status value not in list"() {
@@ -435,5 +435,40 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
 
         then:
         domain.validate(["lastUpdated"])
+    }
+
+    void "notes can be null"() {
+        when:
+        domain.notes = null
+
+        then:
+        domain.validate(["notes"])
+    }
+
+    void "notes can be blank"() {
+        when:
+        domain.notes = ""
+
+        then:
+        domain.validate(["notes"])
+    }
+
+    void "notes cannot exceed 500 characters"() {
+        when: "for a string of 501 characters"
+        String str = "a" * 501
+        domain.notes = str
+
+        then: "validation fails"
+        !domain.validate(["notes"])
+        domain.errors["notes"].code == "maxSize.exceeded"
+    }
+
+    void "notes validates with 500 characters"() {
+        when: "for a string of 500 characters"
+        String str = "a" * 500
+        domain.notes = str
+
+        then: "description validation passes"
+        domain.validate(["notes"])
     }
 }
