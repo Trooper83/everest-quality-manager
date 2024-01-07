@@ -112,6 +112,6 @@ class TestCaseSpec extends GebSpec {
 
         then: "data is displayed on show page"
         def showPage = at ShowTestCasePage
-        showPage.isStepsRowDisplayed(step.action, 'test', step.result)
+        showPage.isStepsRowDisplayed(step.action, '', step.result)
     }
 }
