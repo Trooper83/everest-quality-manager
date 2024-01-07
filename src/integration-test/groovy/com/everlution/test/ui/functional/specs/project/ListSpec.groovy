@@ -3,6 +3,7 @@ package com.everlution.test.ui.functional.specs.project
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -113,5 +114,27 @@ class ListSpec extends GebSpec {
         then: "at show page"
         listPage.projectTable.rowCount > 0
         listPage.nameInput.text == 'bootstrap'
+    }
+
+    void "reset button reloads results"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.PROJECT_ADMIN.email, Credentials.PROJECT_ADMIN.password)
+
+        and:
+        def page = to(ListProjectPage)
+        page.searchModule.search('project')
+
+        expect:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == 'project'
+
+        when:
+        page.searchModule.resetSearch()
+
+        then:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == ''
     }
 }

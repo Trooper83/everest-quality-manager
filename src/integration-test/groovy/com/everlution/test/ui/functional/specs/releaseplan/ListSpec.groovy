@@ -128,4 +128,29 @@ class ListSpec extends GebSpec {
         def listPage = at ListReleasePlanPage
         listPage.statusMessage.text() ==~ /ReleasePlan \d+ deleted/
     }
+
+    void "reset button reloads results"() {
+        given: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list page"
+        def id = projectService.list(max: 1).first().id
+        def page = to(ListReleasePlanPage, id)
+
+        and:
+        page.searchModule.search('plan')
+
+        expect:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == 'plan'
+
+        when:
+        page.searchModule.resetSearch()
+
+        then:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == ''
+    }
 }

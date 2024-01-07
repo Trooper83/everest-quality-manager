@@ -21,6 +21,7 @@
             <g:textField class="form-control" name="name" autocomplete="off" placeholder="Project Name"
                          value="${params.name}"/>
             <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
+            <g:link uri="/projects" elementId="resetLink">Reset</g:link>
         </div>
     </g:form>
     <div class="row mt-3">

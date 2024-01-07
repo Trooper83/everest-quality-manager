@@ -17,6 +17,7 @@
                     <g:textField class="form-control" name="name" autocomplete="off" placeholder="Test Name"
                                  value="${params.name}"/>
                     <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
+                    <g:link uri="/project/${project.id}/testCases" elementId="resetLink">Reset</g:link>
                 </div>
             </g:form>
             <div class="row mt-3">

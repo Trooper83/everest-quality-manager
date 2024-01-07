@@ -315,4 +315,27 @@ class ListSpec extends GebSpec {
         then:
         !page.listTable.isPaginationButtonDisplayed('Previous')
     }
+
+    void "reset button reloads results"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def page = to(ListBugPage, id)
+        page.searchModule.search('bug')
+
+        expect:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == 'bug'
+
+        when:
+        page.searchModule.resetSearch()
+
+        then:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == ''
+    }
 }

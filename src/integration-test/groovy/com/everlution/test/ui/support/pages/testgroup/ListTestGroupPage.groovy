@@ -10,18 +10,4 @@ class ListTestGroupPage extends ListPage {
     String convertToPath(Long projectId) {
         "project/${projectId}/testGroups"
     }
-
-    static content = {
-        nameInput { $("#name").module(TextInput) }
-        searchButton { $("#searchButton") }
-    }
-
-    /**
-     * performs a search
-     * @param name - name to search for
-     */
-    void search(String name) {
-        nameInput << name
-        searchButton.click()
-    }
 }
