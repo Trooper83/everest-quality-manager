@@ -69,6 +69,7 @@ class ReleasePlanSpec extends GebSpec {
         cycle.addTestsByGroup()
 
         and:
+        cycle.scrollToBottom()
         cycle.testsTable.clickCell("", 0)
 
         when:

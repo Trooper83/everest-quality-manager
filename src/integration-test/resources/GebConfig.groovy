@@ -25,7 +25,7 @@ environments {
 
     // run via “./gradlew -Dgeb.env=integrated iT”
     prod {
-        baseUrl = "https://www.everestquality.com"
+        baseUrl = "https://www.everlution.everestquality.com"
         driver = {
             ChromeOptions o = new ChromeOptions()
             //o.addArguments('headless')
