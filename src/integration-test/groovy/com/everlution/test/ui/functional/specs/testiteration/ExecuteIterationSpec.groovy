@@ -11,6 +11,7 @@ import com.everlution.TestCaseService
 import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestGroup
+import com.everlution.TestResultService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -30,6 +31,7 @@ class ExecuteIterationSpec extends GebSpec {
     ReleasePlanService releasePlanService
     TestCaseService testCaseService
     TestCycleService testCycleService
+    TestResultService testResultService
 
     void "update result persists"() {
         setup:
@@ -66,17 +68,99 @@ class ExecuteIterationSpec extends GebSpec {
         page.resultSelect().selectedText == "ToDo"
 
         when:
-        page.setResult("Pass", "Some notes")
+        page.setResult("Passed", "Some notes")
 
         then:
         def show = at ShowTestIterationPage
         show.statusMessage.text() ==~ /Test Iteration \S+ updated/
-        show.resultValue.text() == "Pass"
+        show.resultValue.text() == "Passed"
         show.notesValue.text() == "Some notes"
         show.executedByValue.text() == Credentials.BASIC.email
 
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy")
         Date date = new Date()
         show.dateExecutedValue.text().contains(formatter.format(date))
+    }
+
+    void "executing iteration creates test result when pass or fail"(String result) {
+        given:
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def proj = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        def project = projectService.save(proj)
+        def person = personService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def cycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, cycle)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group],
+                steps: [new Step(act: 'action')])
+        testCaseService.save(testCase)
+        testCycleService.addTestIterations(cycle, [testCase])
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        go "/project/${project.id}/testCycle/show/${cycle.id}"
+
+        and:
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
+
+        when:
+        def page = browser.page(ExecuteTestIterationPage)
+        page.setResult(result, "Some notes")
+
+        then:
+        at ShowTestIterationPage
+        testResultService.findAllByTestCase(testCase).size() == 1
+
+        where:
+        result << ['Passed', 'Failed']
+
+    }
+
+    void "executing iteration does not create test result when todo"() {
+        given:
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def proj = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        def project = projectService.save(proj)
+        def person = personService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def cycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, cycle)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group],
+                steps: [new Step(act: 'action')])
+        testCaseService.save(testCase)
+        testCycleService.addTestIterations(cycle, [testCase])
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        go "/project/${project.id}/testCycle/show/${cycle.id}"
+
+        and:
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
+
+        when:
+        def page = browser.page(ExecuteTestIterationPage)
+        page.setResult('ToDo', "Some notes")
+
+        then:
+        at ShowTestIterationPage
+        testResultService.findAllByTestCase(testCase).size() == 0
     }
 }

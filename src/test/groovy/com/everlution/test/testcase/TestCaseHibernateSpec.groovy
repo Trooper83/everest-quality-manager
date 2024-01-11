@@ -9,6 +9,7 @@ import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestGroup
 import com.everlution.TestIteration
+import com.everlution.TestResult
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.InvalidDataAccessApiUsageException
@@ -253,6 +254,22 @@ class TestCaseHibernateSpec extends HibernateSpec {
 
         expect:
         TestIteration.findById(iteration.id) != null
+
+        when:
+        testCase.delete(flush: true)
+
+        then:
+        thrown(DataIntegrityViolationException)
+    }
+
+    void "delete test case does not cascade to results"() {
+        given:
+        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
+                executionMethod: "Manual", type: "UI", project: project).save()
+        def result = new TestResult(testCase: testCase, result: "Failed").save()
+
+        expect:
+        TestResult.findById(result.id) != null
 
         when:
         testCase.delete(flush: true)

@@ -4,7 +4,7 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.TestGroup
+import com.everlution.TestResult
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -18,7 +18,7 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
     @Shared Project project
 
     def setupSpec() {
-        mockDomains(TestCase, Person, Project)
+        mockDomains(TestCase, Person, Project, TestResult)
     }
 
     def setup() {
@@ -260,5 +260,21 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
 
         then:
         t.empty
+    }
+
+    void "deleting test case deletes all test results"() {
+        given:
+        def tc = new TestCase(person: person, name: "test", description: "desc",
+                executionMethod: "Automated", type: "API", project: project).save()
+        def result = new TestResult(testCase: tc, result: "Skipped").save(flush: true)
+
+        expect:
+        result.id != null
+
+        when:
+        service.delete(tc.id)
+
+        then:
+        TestResult.findById(result.id) == null
     }
 }

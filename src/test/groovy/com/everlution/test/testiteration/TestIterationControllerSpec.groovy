@@ -7,6 +7,8 @@ import com.everlution.TestCycle
 import com.everlution.TestIteration
 import com.everlution.TestIterationController
 import com.everlution.TestIterationService
+import com.everlution.TestResult
+import com.everlution.TestResultService
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -184,6 +186,10 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
             1 * getCurrentUser()
         }
 
+        controller.testResultService = Mock(TestResultService) {
+            1 * save(_ as TestResult)
+        }
+
         when:"The save action is executed with a valid instance"
         response.reset()
         request.contentType = FORM_CONTENT_TYPE
@@ -214,6 +220,10 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
 
         controller.springSecurityService = Mock(SpringSecurityService) {
             1 * getCurrentUser() >> new Person()
+        }
+
+        controller.testResultService = Mock(TestResultService) {
+            1 * save(_ as TestResult)
         }
 
         response.reset()
@@ -274,5 +284,128 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         then:"The edit view is rendered again with the correct model"
         model.testIteration != null
         view == '/testIteration/execute'
+    }
+
+    void "update action calls testResultService save for pass or fail"(String result) {
+        given:
+        mockDomain(TestCycle)
+        controller.testIterationService = Mock(TestIterationService) {
+            1 * save(_ as TestIteration)
+        }
+
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person()
+        }
+
+        controller.testResultService = Mock(TestResultService) {
+            1 * save(_ as TestResult)
+        }
+
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        def iteration = new TestIteration(result: result)
+        iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
+
+        expect:
+        iteration.dateExecuted == null
+        iteration.person == null
+
+        when:"The save action is executed with a valid instance"
+        controller.update(iteration, 1)
+
+        then:
+        iteration.dateExecuted != null
+        iteration.person != null
+
+        where:
+        result << ['Passed', 'Failed']
+    }
+
+    void "update action does not call testResultService save for todo result"() {
+        given:
+        mockDomain(TestCycle)
+        controller.testIterationService = Mock(TestIterationService) {
+            1 * save(_ as TestIteration)
+        }
+
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person()
+        }
+
+        controller.testResultService = Mock(TestResultService) {
+            0 * save(_ as TestResult)
+        }
+
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        def iteration = new TestIteration(result: 'ToDo')
+        iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
+
+        expect:
+        iteration.dateExecuted == null
+        iteration.person == null
+
+        when:"The save action is executed with a valid instance"
+        controller.update(iteration, 1)
+
+        then:
+        iteration.dateExecuted != null
+        iteration.person != null
+    }
+
+    void "flash error present when validation exception for test result"() {
+        given:
+        mockDomain(TestCycle)
+        controller.testIterationService = Mock(TestIterationService) {
+            1 * save(_ as TestIteration)
+        }
+
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person()
+        }
+
+        controller.testResultService = Mock(TestResultService) {
+            1 * save(_ as TestResult) >> { TestResult testResult ->
+                throw new ValidationException('Invalid instance', testResult.errors)
+            }
+        }
+
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        def iteration = new TestIteration(result: 'Passed')
+        iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
+
+        when:"The save action is executed with a valid instance"
+        controller.update(iteration, 1)
+
+        then:
+        flash.error == 'An error occurred saving the Test Result'
     }
 }

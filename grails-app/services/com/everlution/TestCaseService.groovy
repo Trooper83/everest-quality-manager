@@ -8,6 +8,16 @@ import grails.gorm.transactions.Transactional
 abstract class TestCaseService implements ITestCaseService {
 
     StepService stepService
+    TestResultService testResultService
+
+    @Transactional
+    void delete(Serializable id) {
+        TestCase tc = get(id)
+        if(tc) {
+            tc.delete()
+        }
+        testResultService.deleteAllByTestCase(tc)
+    }
 
     /**
      * finds all test cases in a project with the name

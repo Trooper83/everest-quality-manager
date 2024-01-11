@@ -12,6 +12,7 @@ class TestIterationController {
 
     SpringSecurityService springSecurityService
     TestIterationService testIterationService
+    TestResultService testResultService
 
     static allowedMethods = [update: "PUT"]
 
@@ -63,6 +64,14 @@ class TestIterationController {
                 t.errors = testIteration.errors
                 render view: 'execute', model: [testIteration: t]
                 return
+            }
+
+            try {
+                if (testIteration.result != 'ToDo') {
+                    testResultService.save(new TestResult(testCase: testIteration.testCase, result: testIteration.result))
+                }
+            } catch (ValidationException ignored) {
+                flash.error = "An error occurred saving the Test Result"
             }
 
             request.withFormat {

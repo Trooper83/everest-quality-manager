@@ -1,0 +1,30 @@
+package com.everlution.test.service
+
+import grails.gorm.transactions.Rollback
+import grails.testing.mixin.integration.Integration
+import spock.lang.Specification
+
+@Integration
+@Rollback
+class TestResultServiceSpec extends Specification {
+
+    void "save returns instance"() {
+        expect:
+        false
+    }
+
+    void "delete removes instance"() {
+        expect:
+        false
+    }
+
+    void "findAllByTestCase returns results"() {
+        expect:
+        false
+    }
+
+    void "deleteAllByTestCase removes instances"() {
+        expect:
+        false
+    }
+}

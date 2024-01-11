@@ -92,7 +92,7 @@
                     <div class="card-body">
                         <div class="col-4 mb-3">
                             <label class="form-label" for="result">Result</label>
-                            <g:select class="form-select" name="result" id="result" from="${['ToDo', 'Pass', 'Fail']}"
+                            <g:select class="form-select" name="result" id="result" from="${['ToDo', 'Passed', 'Failed']}"
                                       value="${testIteration.result}"/>
                         </div>
                         <div class="col-6 mb-3">
