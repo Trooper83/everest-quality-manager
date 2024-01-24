@@ -261,20 +261,4 @@ class TestCaseHibernateSpec extends HibernateSpec {
         then:
         thrown(DataIntegrityViolationException)
     }
-
-    void "delete test case does not cascade to results"() {
-        given:
-        def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
-                executionMethod: "Manual", type: "UI", project: project).save()
-        def result = new TestResult(testCase: testCase, result: "Failed").save()
-
-        expect:
-        TestResult.findById(result.id) != null
-
-        when:
-        testCase.delete(flush: true)
-
-        then:
-        thrown(DataIntegrityViolationException)
-    }
 }

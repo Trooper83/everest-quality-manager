@@ -2,16 +2,16 @@ package com.everlution
 
 class TestResult {
 
+    AutomatedTest automatedTest
     Date dateCreated
     String result
-    TestCase testCase
 
     static mapping = {
-        testCase cascade: "none"
+        automatedTest cascade: "none"
     }
 
     static constraints = {
+        automatedTest nullable: false
         result blank: false, nullable: false, inList: ["Failed", "Passed", "Skipped"]
-        testCase nullable: false
     }
 }

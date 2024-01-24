@@ -1,8 +1,7 @@
 package com.everlution.test.testresult
 
-import com.everlution.Person
+import com.everlution.AutomatedTest
 import com.everlution.Project
-import com.everlution.TestCase
 import com.everlution.TestResult
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
@@ -14,10 +13,9 @@ class TestResultSpec extends Specification implements DomainUnitTest<TestResult>
 
     void "instances are persisted"() {
         def project = new Project(name: "tc domain project321", code: "td5").save()
-        def person = new Person(email: "test@test.com", password: "test")
-        def tc = new TestCase(person: person, name: "First test", description: "test", project: project).save()
-        new TestResult(testCase: tc, result: 'Passed').save()
-        new TestResult(testCase: tc, result: 'Failed').save()
+        def at = new AutomatedTest(fullName: "First test", project: project).save()
+        new TestResult(automatedTest: at, result: 'Passed').save()
+        new TestResult(automatedTest: at, result: 'Passed').save()
 
         expect:
         TestResult.count() == 2
@@ -45,13 +43,13 @@ class TestResultSpec extends Specification implements DomainUnitTest<TestResult>
         System.identityHashCode(domain) != id
     }
 
-    void "testCase cannot be null"() {
+    void "automatedTest cannot be null"() {
         when:
-        domain.testCase = null
+        domain.automatedTest = null
 
         then:
-        !domain.validate(["testCase"])
-        domain.errors["testCase"].code == "nullable"
+        !domain.validate(["automatedTest"])
+        domain.errors["automatedTest"].code == "nullable"
     }
 
     void "result cannot be null"() {

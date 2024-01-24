@@ -261,20 +261,4 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
         then:
         t.empty
     }
-
-    void "deleting test case deletes all test results"() {
-        given:
-        def tc = new TestCase(person: person, name: "test", description: "desc",
-                executionMethod: "Automated", type: "API", project: project).save()
-        def result = new TestResult(testCase: tc, result: "Skipped").save(flush: true)
-
-        expect:
-        result.id != null
-
-        when:
-        service.delete(tc.id)
-
-        then:
-        TestResult.findById(result.id) == null
-    }
 }

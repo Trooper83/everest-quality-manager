@@ -12,19 +12,4 @@ class TestResultServiceSpec extends Specification {
         expect:
         false
     }
-
-    void "delete removes instance"() {
-        expect:
-        false
-    }
-
-    void "findAllByTestCase returns results"() {
-        expect:
-        false
-    }
-
-    void "deleteAllByTestCase removes instances"() {
-        expect:
-        false
-    }
 }

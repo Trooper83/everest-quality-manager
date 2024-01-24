@@ -1,8 +1,8 @@
 package com.everlution.test.testresult
 
+import com.everlution.AutomatedTest
 import com.everlution.Person
 import com.everlution.Project
-import com.everlution.TestCase
 import com.everlution.TestResult
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
@@ -22,34 +22,37 @@ class TestResultHibernateSpec extends HibernateSpec {
 
     void "dateCreated populated on save"() {
         when:
-        def tc = new TestCase(person: person, name: "First test", description: "test", project: project).save()
-        TestResult r = new TestResult(testCase: tc, result: 'Passed').save()
+        def at = new AutomatedTest(fullName: 'fullname', project: project).save()
+        TestResult r = new TestResult(automatedTest: at, result: 'Passed').save()
 
         then:
         r.dateCreated != null
     }
 
-    void "save does not cascade to test case"() {
+    void "save does not cascade to automatedTest"() {
+        given:
+        def at = new AutomatedTest(fullName: "fullname", project: project)
+        def tr = new TestResult(automatedTest: at, result: "Skipped")
+
+        expect:
+        at.id == null
+
         when:
-        def tc = new TestCase(person: person, name: "First test", description: "test", project: project)
-        new TestResult(testCase: tc, result: 'Passed').save()
+        tr.save()
 
         then:
         thrown(InvalidDataAccessApiUsageException)
     }
 
-    void "delete does not cascade to test case"() {
+    void "delete does not cascade to automatedTest"() {
         given:
-        def tc = new TestCase(person: person, name: "First test", description: "test", project: project).save()
-        def r = new TestResult(testCase: tc, result: 'Passed').save()
-
-        expect:
-        TestCase.findById(tc.id) != null
+        def at = new AutomatedTest(fullName: "fullname", project: project).save()
+        def tr = new TestResult(automatedTest: at, result: "Skipped").save()
 
         when:
-        r.delete(flush: true)
+        tr.delete()
 
         then:
-        TestCase.findById(tc.id) != null
+        AutomatedTest.get(at.id) != null
     }
 }

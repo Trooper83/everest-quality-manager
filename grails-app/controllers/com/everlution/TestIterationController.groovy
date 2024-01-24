@@ -66,14 +66,6 @@ class TestIterationController {
                 return
             }
 
-            try {
-                if (testIteration.result != 'ToDo') {
-                    testResultService.save(new TestResult(testCase: testIteration.testCase, result: testIteration.result))
-                }
-            } catch (ValidationException ignored) {
-                flash.error = "An error occurred saving the Test Result"
-            }
-
             request.withFormat {
                 form multipartForm {
                     flash.message = message(code: 'default.updated.message', args: [message(code: 'testIteration.label', default: 'Test Iteration'), testIteration.id])
