@@ -7,10 +7,7 @@ class AutomatedTest {
     String name
     Project project
 
-    static hasMany = [testResults: TestResult]
-
     static mapping = {
-        testResults cascade: "none"
         project cascade: "none"
     }
 

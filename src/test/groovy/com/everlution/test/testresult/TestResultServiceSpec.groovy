@@ -38,4 +38,34 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         then:
         thrown(ValidationException)
     }
+
+    void "createAndSave returns empty list when no results passed in"() {
+        expect:
+        false
+    }
+
+    void "createAndSave ... null project"() {
+        expect:
+        false
+    }
+
+    void "createAndSave ... null results"() {
+        expect:
+        false
+    }
+
+    void "createAndSave returns test results"() {
+        expect:
+        false
+    }
+
+    void "createAndSave throws validation exception when automated test has errors"() {
+        expect:
+        false
+    }
+
+    void "createAndSave throws validation exception when result has errors"() {
+        expect:
+        false
+    }
 }

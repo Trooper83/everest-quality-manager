@@ -75,6 +75,7 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.5'
     implementation 'org.apache.tomcat:tomcat-jdbc:10.1.9'
     console 'org.grails:grails-console:5.3.2'
+    //implementation "org.grails.plugins:spring-security-rest:3.0.1"
     profile 'org.grails.profiles:web:5.0.5'
     //Migration of h2 to v2 is difficult (https://h2database.com/html/migration-to-v2.html)
     runtimeOnly 'com.h2database:h2:1.4.200'

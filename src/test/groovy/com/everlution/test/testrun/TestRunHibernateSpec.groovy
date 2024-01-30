@@ -80,4 +80,19 @@ class TestRunHibernateSpec extends HibernateSpec {
         then:
         TestResult.get(tr.id) == null
     }
+
+    void "save rollsback when unsuccessful test result"() {
+        expect:
+        false
+    }
+
+    void "save rollsback when unsuccessful test run"() {
+        expect:
+        false
+    }
+
+    void "save rollsback when unsuccessful automated test"() {
+        expect:
+        false
+    }
 }

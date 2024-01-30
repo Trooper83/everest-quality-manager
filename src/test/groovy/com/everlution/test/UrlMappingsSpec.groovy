@@ -9,6 +9,7 @@ import com.everlution.TestCaseController
 import com.everlution.TestCycleController
 import com.everlution.TestGroupController
 import com.everlution.TestIterationController
+import com.everlution.TestRunController
 import com.everlution.UrlMappings
 import grails.plugin.springsecurity.LoginController
 import grails.testing.web.UrlMappingsUnitTest
@@ -272,5 +273,12 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
         verifyUrlMapping("/project/123/stepTemplate/getRelatedTemplates", controller: 'stepTemplate', action: 'getRelatedTemplates') {
             projectId = 123
         }
+    }
+
+    void "verify testRun forward and reverse mappings"() {
+        mockController(TestRunController)
+
+        expect:
+        verifyUrlMapping("/api/testRuns", controller: 'testRun', action: 'save')
     }
 }
