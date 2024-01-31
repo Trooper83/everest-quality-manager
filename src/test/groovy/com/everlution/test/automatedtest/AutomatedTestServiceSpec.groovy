@@ -69,7 +69,7 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         thrown(ValidationException)
     }
 
-    void "findOrSave throws validation exception when project fullName null"() {
+    void "findOrSave throws validation exception when fullName null"() {
         when:
         Project p = new Project(name: "124", code: "124").save()
         service.findOrSave(p, null)

@@ -1,18 +1,32 @@
 package com.everlution.test.testrun
 
+import com.everlution.Project
+import com.everlution.TestRun
 import com.everlution.TestRunService
+import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
+import grails.validation.ValidationException
 import spock.lang.Specification
 
-class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRunService>{
+class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRunService>, DataTest {
+
+    def setupSpec() {
+        mockDomains(TestRun, Project)
+    }
 
     void "returns new with valid instance"() {
-        expect:"fix me"
-            true == false
+        when:
+        def t = service.save(new TestRun(name: "name", project: new Project()))
+
+        then:
+        t != null
     }
 
     void "throws validation exception with invalid instance"() {
-        expect:"fix me"
-        true == false
+        when:
+        service.save(new TestRun(name: "", project: null))
+
+        then:
+        thrown(ValidationException)
     }
 }

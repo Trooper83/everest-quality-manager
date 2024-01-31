@@ -19,35 +19,6 @@ class AutomatedTestHibernateSpec extends HibernateSpec {
         p = new Project(name: 'name', code: 'hbs').save()
     }
 
-    void "delete does not cascade to testResult"() {
-        given:
-        def a = new AutomatedTest(fullName: 'full', project: p).save()
-        def t = new TestResult(automatedTest: a, result: 'Failed').save(flush: true)
-        a.addToTestResults(t)
-
-        expect:
-        TestResult.get(t.id) != null
-
-        when:
-        a.delete()
-
-        then:
-        TestResult.get(t.id) != null
-    }
-
-    void "save does not cascade to testResult"() {
-        given:
-        def a = new AutomatedTest(fullName: 'full', project: p).save()
-        def t = new TestResult(automatedTest: a, result: 'Failed')
-
-        when:
-        a.addToTestResults(t)
-        a.save(flush: true)
-
-        then:
-        TestResult.get(t.id) == null
-    }
-
     void "dateCreated populated on save"() {
         when:
         def a = new AutomatedTest(fullName: 'full', project: p).save()

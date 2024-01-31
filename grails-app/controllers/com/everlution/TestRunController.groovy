@@ -8,6 +8,8 @@ import static org.springframework.http.HttpStatus.*
 @Transactional(readOnly = true)
 class TestRunController {
 
+    static allowedMethods = [save: "POST"]
+
     TestResultService testResultService
     TestRunService testRunService
 
@@ -20,9 +22,9 @@ class TestRunController {
         else {
             try {
                 def results = testResultService.createAndSave(testRunCmd.project, testRunCmd.testResults)
-                def testRun = new TestRun(name: testRunCmd.name, project: testRunCmd.project, testResults: results)
-                testRunService.save(testRun)
-                render text: "TestRun ${testRun.id} created", status: CREATED
+                def t = new TestRun(name: testRunCmd.name, project: testRunCmd.project, testResults: results)
+                def tr = testRunService.save(t)
+                render text: "TestRun ${tr.id} created", status: CREATED
             }
             catch(Exception ignored) {
                 respond [:], status: BAD_REQUEST, formats: ['json']
