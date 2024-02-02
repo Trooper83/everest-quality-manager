@@ -88,6 +88,7 @@ dependencies {
     testImplementation 'org.gebish:geb-spock:6.0'
     testImplementation "com.github.javafaker:javafaker:1.0.2"
     implementation  'org.springframework.boot:spring-boot-starter-tomcat:2.7.2'
+    testImplementation 'com.konghq:unirest-java:3.14.5'
     testImplementation 'org.seleniumhq.selenium:selenium-remote-driver:3.141.59'
     testImplementation 'org.seleniumhq.selenium:selenium-api:3.141.59'
     testImplementation 'org.seleniumhq.selenium:selenium-support:3.141.59'

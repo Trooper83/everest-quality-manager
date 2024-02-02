@@ -1,6 +1,8 @@
 package com.everlution.test.service
 
+import com.everlution.AutomatedTestService
 import com.everlution.ProjectService
+import com.everlution.TestResult
 import com.everlution.TestResultService
 import com.everlution.TestRunResult
 import grails.gorm.transactions.Rollback
@@ -12,6 +14,7 @@ import spock.lang.Specification
 @Rollback
 class TestResultServiceSpec extends Specification {
 
+    AutomatedTestService automatedTestService
     ProjectService projectService
     TestResultService testResultService
 
@@ -33,5 +36,30 @@ class TestResultServiceSpec extends Specification {
 
         then:
         thrown(ValidationException)
+    }
+
+    void "save persists instance"() {
+        given:
+        def p = projectService.list(max:1).first()
+        def a = automatedTestService.findOrSave(p, "create this or find one")
+
+        when:
+        def t = testResultService.save(new TestResult(automatedTest: a, result: "Passed"))
+
+        then:
+        t.id != null
+    }
+
+    void "findAllByAutomatedTest returns results"() {
+        given:
+        def p = projectService.list(max:1).first()
+        def a = automatedTestService.findOrSave(p, "create this or find one")
+        def t = testResultService.save(new TestResult(automatedTest: a, result: "Passed"))
+
+        when:
+        def results = testResultService.findAllByAutomatedTest(a)
+
+        then:
+        results.contains(t)
     }
 }

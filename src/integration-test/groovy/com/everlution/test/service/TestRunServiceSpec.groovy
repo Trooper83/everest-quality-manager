@@ -25,4 +25,17 @@ class TestRunServiceSpec extends Specification {
         then:
         tr.id != null
     }
+
+    void "get returns instance"() {
+        given:
+        def p = projectService.list(max:1).first()
+        def t = new TestRun(name: "name of the run to find", project: p)
+        def tr = testRunService.save(t)
+
+        when:
+        def found = testRunService.get(tr.id)
+
+        then:
+        found != null
+    }
 }

@@ -29,4 +29,23 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         then:
         thrown(ValidationException)
     }
+
+    void "get returns instance"() {
+        given:
+        def t = service.save(new TestRun(name: "name", project: new Project()))
+
+        when:
+        def found = service.get(t.id)
+
+        then:
+        found != null
+    }
+
+    void "get returns null when not found"() {
+        when:
+        def t = service.get(null)
+
+        then:
+        t == null
+    }
 }

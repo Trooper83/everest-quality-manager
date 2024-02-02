@@ -4,7 +4,7 @@ import grails.gorm.services.Service
 import grails.validation.ValidationException
 
 @Service(TestResult)
-abstract class TestResultService implements ITestRunService {
+abstract class TestResultService implements ITestResultService {
 
     AutomatedTestService automatedTestService
 
