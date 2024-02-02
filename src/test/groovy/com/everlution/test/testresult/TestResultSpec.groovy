@@ -89,4 +89,39 @@ class TestResultSpec extends Specification implements DomainUnitTest<TestResult>
         !domain.validate(["result"])
         domain.errors["result"].code == "not.inList"
     }
+
+    void "failureCause can be null"() {
+        when:
+        domain.failureCause = null
+
+        then:
+        domain.validate(["failureCause"])
+    }
+
+    void "failureCause can be blank"() {
+        when:
+        domain.failureCause = ""
+
+        then:
+        domain.validate(["name"])
+    }
+
+    void "failureCause cannot exceed 500 characters"() {
+        when: "for a string of 501 characters"
+        String str = "a" * 501
+        domain.failureCause = str
+
+        then: "name validation fails"
+        !domain.validate(["failureCause"])
+        domain.errors["failureCause"].code == "maxSize.exceeded"
+    }
+
+    void "failureCause validates with 499 characters"() {
+        when: "for a string of 499 characters"
+        String str = "a" * 499
+        domain.failureCause = str
+
+        then: "name validation passes"
+        domain.validate(["failureCause"])
+    }
 }

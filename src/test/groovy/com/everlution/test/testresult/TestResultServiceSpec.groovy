@@ -87,11 +87,13 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         }
 
         when:
-        def results = service.createAndSave(p, [new TestRunResult(testName: "fullName", result: "Passed")])
+        def results = service.
+                createAndSave(p, [new TestRunResult(testName: "fullName", result: "Failed", failureCause: "I failed")])
 
         then:
-        results.first().result == "Passed"
+        results.first().result == "Failed"
         results.first().automatedTest == a
+        results.first().failureCause == "I failed"
     }
 
     void "createAndSave throws validation exception when automated test has errors"() {

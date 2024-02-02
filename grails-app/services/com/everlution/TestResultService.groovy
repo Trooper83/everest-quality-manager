@@ -12,7 +12,7 @@ abstract class TestResultService implements ITestResultService {
         List testResults = []
         results?.forEach( r -> {
             def test = automatedTestService.findOrSave(project, r.testName)
-            def tr = new TestResult(automatedTest: test, result: r.result)
+            def tr = new TestResult(automatedTest: test, result: r.result, failureCause: r.failureCause)
             testResults.add(save(tr))
         })
         return testResults

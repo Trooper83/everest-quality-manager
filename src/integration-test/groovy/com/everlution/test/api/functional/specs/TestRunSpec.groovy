@@ -149,7 +149,7 @@ class TestRunSpec extends Specification {
         when:
         def r = Unirest.post(url)
                 .header("Content-Type", "application/json")
-                .body("{\"project\": \"${p.id}\", \"name\": \"Functional Testing Test Run\", \"testResults\": [{\"testName\":\"functional happy path testing\", \"result\": \"Passed\"}, {\"testName\":\"functional happy path testing II\", \"result\": \"Failed\"}]}")
+                .body("{\"project\": \"${p.id}\", \"name\": \"Functional Testing Test Run\", \"testResults\": [{\"testName\":\"functional happy path testing\", \"result\": \"Passed\"}, {\"testName\":\"functional happy path testing II\", \"result\": \"Failed\", \"failureCause\": \"just because\"}]}")
                 .asString()
 
         then:
@@ -160,6 +160,7 @@ class TestRunSpec extends Specification {
         def atResults = testResultService.findAllByAutomatedTest(at)
         atResults.size() == 1
         atResults.first().result == "Failed"
+        atResults.first().failureCause == "just because"
         def start = r.body.indexOf(" ")
         def end = r.body.lastIndexOf(" ")
         def id = r.body.substring(start + 1, end)
