@@ -20,4 +20,16 @@ class TestRunSpec extends Specification {
         r.status == 201
         r.body ==~ /TestRun \d+ created/
     }
+
+    void "401 when user not authenticated"() {
+        given:
+        def baseUrl = "http://localhost:8080/api/testRuns"
+        def payload = "{\"project\": \"1\", \"name\": \"testing\"}"
+
+        when:
+        def r = new TestRunsService(baseUrl, "").createTestRun(payload)
+
+        then:
+        r.status == 401
+    }
 }
