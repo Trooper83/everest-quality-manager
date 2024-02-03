@@ -3,7 +3,7 @@ package com.everlution.test.ui.functional.specs.releaseplan.create
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.releaseplan.CreateReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage

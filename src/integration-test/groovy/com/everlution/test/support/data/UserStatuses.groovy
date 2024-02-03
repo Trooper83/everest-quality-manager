@@ -1,4 +1,4 @@
-package com.everlution.test.ui.support.data
+package com.everlution.test.support.data
 
 enum UserStatuses {
     ACCOUNT_EXPIRED("accountExpired"), ACCOUNT_LOCKED("accountLocked"), ENABLED("enabled"),

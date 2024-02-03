@@ -1,6 +1,6 @@
 package com.everlution.test.ui.functional.specs.scenario.edit
 
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage

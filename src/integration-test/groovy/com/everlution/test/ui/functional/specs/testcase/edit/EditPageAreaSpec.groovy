@@ -8,7 +8,7 @@ import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import geb.spock.GebSpec

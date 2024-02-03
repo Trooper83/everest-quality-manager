@@ -2,7 +2,7 @@ package com.everlution.test.ui.functional.specs.testiteration
 
 import com.everlution.*
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
@@ -75,6 +75,6 @@ class ExecutePageSpec extends GebSpec {
 
         then:
         def show = at ExecuteTestIterationPage
-        show.resultOptions*.text() == ["ToDo", "Pass", "Fail"]
+        show.resultOptions*.text() == ["ToDo", "Passed", "Failed"]
     }
 }

@@ -7,7 +7,7 @@ import com.everlution.StepTemplate
 import com.everlution.StepTemplateService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.stepTemplate.ListStepTemplatePage
 import com.everlution.test.ui.support.pages.stepTemplate.ShowStepTemplatePage

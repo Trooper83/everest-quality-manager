@@ -13,9 +13,9 @@ class TestRunController {
     TestResultService testResultService
     TestRunService testRunService
 
-    @Secured("IS_AUTHENTICATED_ANONYMOUSLY")//TODO: remove this
+    @Secured("ROLE_BASIC")
     @Transactional
-    def save(TestRunCmd testRunCmd) { //TODO: need to secure this endpoint
+    def save(TestRunCmd testRunCmd) {
         if(testRunCmd.hasErrors()) {
             respond [:], status: BAD_REQUEST, formats: ['json']
         }

@@ -4,7 +4,7 @@ import com.everlution.Bug
 import com.everlution.BugService
 import com.everlution.PersonService
 import com.everlution.ProjectService
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage

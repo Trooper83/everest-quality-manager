@@ -12,7 +12,7 @@ import com.everlution.TestGroup
 import com.everlution.TestGroupService
 import com.everlution.TestIterationService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -393,10 +393,10 @@ class ShowPageSpec extends GebSpec {
         testCaseService.save(testCase2)
         testCycleService.addTestIterations(testCycle, [testCase, testCase1, testCase2])
         def iter = testCycle.testIterations.first()
-        iter.result = 'Pass'
+        iter.result = 'Passed'
         testIterationService.save(iter)
         def iteration = testCycle.testIterations[2]
-        iteration.result = 'Fail'
+        iteration.result = 'Failed'
         testIterationService.save(iteration)
 
         and: "login as a basic user"

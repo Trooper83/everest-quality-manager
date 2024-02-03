@@ -1,7 +1,7 @@
 package com.everlution.test.ui.e2e.specs.project
 
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage

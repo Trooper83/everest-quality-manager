@@ -1,4 +1,4 @@
-package com.everlution.test.ui.support.data
+package com.everlution.test.support.data
 
 enum SecurityRoles {
 
