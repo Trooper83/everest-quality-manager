@@ -2,9 +2,9 @@ package com.everlution.test.ui.functional.specs.admin.user
 
 import com.everlution.PersonService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.SecurityRoles
-import com.everlution.test.ui.support.data.UserStatuses
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.SecurityRoles
+import com.everlution.test.support.data.UserStatuses
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.admin.user.CreateUserPage

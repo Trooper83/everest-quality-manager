@@ -5,7 +5,7 @@ import com.everlution.BugService
 import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -132,11 +132,11 @@ class ListSpec extends GebSpec {
 
         when:
         def bugsPage = at ListBugPage
-        bugsPage.search('bug')
+        bugsPage.searchModule.search('bug')
 
         then:
         bugsPage.listTable.rowCount > 0
-        bugsPage.nameInput.text == 'bug'
+        bugsPage.searchModule.nameInput.text == 'bug'
     }
 
     void "clicking name column directs to show page"() {
@@ -240,7 +240,7 @@ class ListSpec extends GebSpec {
 
         and:
         def page = to(ListBugPage, id)
-        page.search('Bug')
+        page.searchModule.search('Bug')
 
         when:
         page.scrollToBottom()
@@ -260,7 +260,7 @@ class ListSpec extends GebSpec {
 
         and:
         def page = to(ListBugPage, id)
-        page.search('Bug')
+        page.searchModule.search('Bug')
 
         when:
         page.listTable.sortColumn('Name')
@@ -314,5 +314,28 @@ class ListSpec extends GebSpec {
 
         then:
         !page.listTable.isPaginationButtonDisplayed('Previous')
+    }
+
+    void "reset button reloads results"() {
+        given:
+        def id = setupData()
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def page = to(ListBugPage, id)
+        page.searchModule.search('bug')
+
+        expect:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == 'bug'
+
+        when:
+        page.searchModule.resetSearch()
+
+        then:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == ''
     }
 }

@@ -5,7 +5,7 @@ import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -106,11 +106,11 @@ class ListSpec extends GebSpec {
 
         when:
         def page = at ListScenarioPage
-        page.search('scenario')
+        page.searchModule.search('scenario')
 
         then:
         page.listTable.rowCount > 0
-        page.nameInput.text == 'scenario'
+        page.searchModule.nameInput.text == 'scenario'
     }
 
     void "delete message displays after scenario deleted"() {
@@ -137,5 +137,28 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         def listPage = at ListScenarioPage
         listPage.statusMessage.text() ==~ /Scenario \d+ deleted/
+    }
+
+    void "reset button reloads results"() {
+        given: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list page"
+        def project = projectService.list(max: 1).first()
+        def page = to(ListScenarioPage, project.id)
+        page.searchModule.search('scenario')
+
+        expect:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == 'scenario'
+
+        when:
+        page.searchModule.resetSearch()
+
+        then:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == ''
     }
 }

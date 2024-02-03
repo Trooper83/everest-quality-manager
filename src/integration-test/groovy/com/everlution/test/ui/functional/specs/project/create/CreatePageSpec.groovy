@@ -1,7 +1,6 @@
 package com.everlution.test.ui.functional.specs.project.create
 
-import com.everlution.test.ui.support.data.Credentials
-
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import geb.spock.GebSpec

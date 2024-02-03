@@ -4,7 +4,7 @@ import com.everlution.PersonService
 import com.everlution.ProjectService
 import com.everlution.StepTemplate
 import com.everlution.StepTemplateService
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -101,11 +101,11 @@ class ListSpec extends GebSpec {
 
         when:
         def page = at ListStepTemplatePage
-        page.search('step')
+        page.searchModule.search('step')
 
         then:
         page.listTable.rowCount > 0
-        page.nameInput.text == 'step'
+        page.searchModule.nameInput.text == 'step'
     }
 
     void "reset button reloads results"() {
@@ -124,18 +124,18 @@ class ListSpec extends GebSpec {
 
         and:
         def page = at ListStepTemplatePage
-        page.search('step')
+        page.searchModule.search('step')
 
         expect:
         page.listTable.rowCount > 0
-        page.nameInput.text == 'step'
+        page.searchModule.nameInput.text == 'step'
 
         when:
-        page.resetSearch()
+        page.searchModule.resetSearch()
 
         then:
         page.listTable.rowCount > 0
-        page.nameInput.text == ''
+        page.searchModule.nameInput.text == ''
     }
 
     void "delete message displays after template deleted"() {

@@ -12,7 +12,7 @@ import com.everlution.TestCycle
 import com.everlution.TestCycleService
 import com.everlution.TestGroup
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
@@ -66,12 +66,12 @@ class ExecuteIterationSpec extends GebSpec {
         page.resultSelect().selectedText == "ToDo"
 
         when:
-        page.setResult("Pass", "Some notes")
+        page.setResult("Passed", "Some notes")
 
         then:
         def show = at ShowTestIterationPage
         show.statusMessage.text() ==~ /Test Iteration \S+ updated/
-        show.resultValue.text() == "Pass"
+        show.resultValue.text() == "Passed"
         show.notesValue.text() == "Some notes"
         show.executedByValue.text() == Credentials.BASIC.email
 

@@ -114,7 +114,7 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         domain.validate(["result"])
 
         where:
-        value << ["ToDo", "Pass", "Fail"]
+        value << ["ToDo", "Passed", "Failed"]
     }
 
     void "result fails validation with value not in list"() {

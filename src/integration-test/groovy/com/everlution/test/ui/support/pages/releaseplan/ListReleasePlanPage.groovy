@@ -9,18 +9,4 @@ class ListReleasePlanPage extends ListPage {
     static String convertToPath(Long id) {
         "/project/${id}/releasePlans"
     }
-
-    static content = {
-        nameInput { $("#name").module(TextInput) }
-        searchButton { $("#searchButton") }
-    }
-
-    /**
-     * performs a search
-     * @param name - name to search for
-     */
-    void search(String name) {
-        nameInput << name
-        searchButton.click()
-    }
 }

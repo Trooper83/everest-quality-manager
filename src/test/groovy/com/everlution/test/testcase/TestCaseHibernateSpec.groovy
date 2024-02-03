@@ -9,6 +9,7 @@ import com.everlution.TestCase
 import com.everlution.TestCycle
 import com.everlution.TestGroup
 import com.everlution.TestIteration
+import com.everlution.TestResult
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.InvalidDataAccessApiUsageException

@@ -16,6 +16,7 @@ class UrlMappings {
             "/testCases"(controller: "testCase", action: "testCases")
             "/testGroups"(controller: "testGroup", action: "testGroups")
         }
+        "/api/testRuns"(controller: "testRun", action: "save")
 
         "/$controller/$action?/$id?(.$format)?"{
             constraints {

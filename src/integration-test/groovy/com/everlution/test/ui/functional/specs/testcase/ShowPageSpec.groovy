@@ -7,7 +7,7 @@ import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.TestCycleService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage

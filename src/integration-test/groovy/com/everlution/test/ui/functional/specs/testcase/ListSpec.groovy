@@ -5,7 +5,7 @@ import com.everlution.ProjectService
 import com.everlution.TestCase
 import com.everlution.TestCaseService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -114,11 +114,11 @@ class ListSpec extends GebSpec {
 
         when:
         def page = at ListTestCasePage
-        page.search('test')
+        page.searchModule.search('test')
 
         then:
         page.listTable.rowCount > 0
-        page.nameInput.text == 'test'
+        page.searchModule.nameInput.text == 'test'
     }
 
     void "delete message displays after test case deleted"() {
@@ -146,5 +146,28 @@ class ListSpec extends GebSpec {
         then: "at list page and message displayed"
         at ListTestCasePage
         listPage.statusMessage.text() ==~ /TestCase \d+ deleted/
+    }
+
+    void "reset button reloads results"() {
+        given: "login as a read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and: "go to list page"
+        def project = projectService.list(max: 1).first()
+        def page = to(ListTestCasePage, project.id)
+        page.searchModule.search('test')
+
+        expect:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == 'test'
+
+        when:
+        page.searchModule.resetSearch()
+
+        then:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == ''
     }
 }

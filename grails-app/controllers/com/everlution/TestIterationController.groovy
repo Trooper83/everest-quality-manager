@@ -12,6 +12,7 @@ class TestIterationController {
 
     SpringSecurityService springSecurityService
     TestIterationService testIterationService
+    TestResultService testResultService
 
     static allowedMethods = [update: "PUT"]
 

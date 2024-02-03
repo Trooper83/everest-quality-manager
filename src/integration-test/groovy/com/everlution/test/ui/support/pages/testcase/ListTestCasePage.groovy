@@ -10,19 +10,4 @@ class ListTestCasePage extends ListPage {
     static String convertToPath(Long projectId) {
         "/project/${projectId}/testCases"
     }
-
-    static content = {
-        nameInput { $("#name").module(TextInput) }
-        sideBar { module SideBarModule}
-        searchButton { $("#searchButton") }
-    }
-
-    /**
-     * performs a search
-     * @param name - name to search for
-     */
-    void search(String name) {
-        nameInput << name
-        searchButton.click()
-    }
 }

@@ -33,7 +33,9 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 	[pattern: '/**/images/**',   filters: 'none'],
 	[pattern: '/**/favicon.ico', filters: 'none'],
 	[pattern: '/**/favicon.png', filters: 'none'],
-	[pattern: '/**',             filters: 'JOINED_FILTERS']
+	[pattern: '/api/**', filters: 'JOINED_FILTERS, -anonymousAuthenticationFilter, -exceptionTranslationFilter,' +
+			'-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'],
+	[pattern: '/**', filters: 'JOINED_FILTERS, -restTokenValidationFilter,-restExceptionTranslationFilter']
 ]
 
 /*
@@ -50,3 +52,15 @@ grails.plugin.springsecurity.roleHierarchy = '''
    ROLE_BASIC > ROLE_READ_ONLY
 '''
 
+//grails spring security rest plugin
+grails.plugin.springsecurity.rest.token.validation.active = false
+grails.plugin.springsecurity.rest.login.active = true
+grails.plugin.springsecurity.rest.login.endpointUrl = '/api/login'
+grails.plugin.springsecurity.rest.login.failureStatusCode = 401
+grails.plugin.springsecurity.rest.login.useJsonCredentials = true
+grails.plugin.springsecurity.rest.login.usernamePropertyName = 'username'
+grails.plugin.springsecurity.rest.login.passwordPropertyName = 'password'
+grails.plugin.springsecurity.rest.login.useRequestParamsCredentials = false
+grails.plugin.springsecurity.rest.token.storage.jwt.useSignedJwt = true
+grails.plugin.springsecurity.rest.token.storage.jwt.secret = 'i80Nm41D3nledZ3PpE11n6nR0ZzybL1nD6uarD1an3dGuy'
+grails.plugin.springsecurity.rest.token.storage.jwt.expiration = 3600

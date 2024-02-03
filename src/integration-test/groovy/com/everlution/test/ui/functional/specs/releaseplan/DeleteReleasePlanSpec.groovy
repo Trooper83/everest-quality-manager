@@ -5,7 +5,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.ReleasePlan
 import com.everlution.ReleasePlanService
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage

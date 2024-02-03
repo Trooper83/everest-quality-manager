@@ -30,7 +30,7 @@ class TestIteration {
         name blank: false, maxSize: 255, nullable: false
         notes blank: true, maxSize: 1000, nullable: true
         person nullable: true
-        result blank: false, nullable: false, inList: ["ToDo", "Pass", "Fail"]
+        result blank: false, nullable: false, inList: ["ToDo", "Passed", "Failed"]
         steps nullable: false
         testCase nullable: false
         testCycle nullable: false

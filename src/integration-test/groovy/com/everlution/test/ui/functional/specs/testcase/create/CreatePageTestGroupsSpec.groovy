@@ -1,7 +1,7 @@
 package com.everlution.test.ui.functional.specs.testcase.create
 
 import com.everlution.*
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import geb.spock.GebSpec

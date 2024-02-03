@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-version "2.0.4" //set tomcat to testImplementation
+version "3.0.0"
 group "com.everlution.everest"
 
 apply plugin:"idea"
@@ -75,6 +75,7 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.5'
     implementation 'org.apache.tomcat:tomcat-jdbc:10.1.9'
     console 'org.grails:grails-console:5.3.2'
+    implementation "org.grails.plugins:spring-security-rest:3.0.1"
     profile 'org.grails.profiles:web:5.0.5'
     //Migration of h2 to v2 is difficult (https://h2database.com/html/migration-to-v2.html)
     runtimeOnly 'com.h2database:h2:1.4.200'
@@ -86,7 +87,8 @@ dependencies {
     testImplementation 'org.grails:grails-web-testing-support:2.6.1'
     testImplementation 'org.gebish:geb-spock:6.0'
     testImplementation "com.github.javafaker:javafaker:1.0.2"
-    testImplementation  'org.springframework.boot:spring-boot-starter-tomcat:2.7.2'
+    implementation  'org.springframework.boot:spring-boot-starter-tomcat:2.7.2'
+    testImplementation 'com.konghq:unirest-java:3.14.5'
     testImplementation 'org.seleniumhq.selenium:selenium-remote-driver:3.141.59'
     testImplementation 'org.seleniumhq.selenium:selenium-api:3.141.59'
     testImplementation 'org.seleniumhq.selenium:selenium-support:3.141.59'

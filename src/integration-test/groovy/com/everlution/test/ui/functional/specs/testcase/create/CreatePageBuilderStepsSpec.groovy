@@ -9,7 +9,7 @@ import com.everlution.ProjectService
 import com.everlution.Relationship
 import com.everlution.StepTemplate
 import com.everlution.StepTemplateService
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
 import geb.spock.GebSpec

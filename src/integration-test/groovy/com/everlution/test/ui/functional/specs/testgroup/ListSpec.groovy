@@ -5,7 +5,7 @@ import com.everlution.ProjectService
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
@@ -69,11 +69,11 @@ class ListSpec extends GebSpec {
     void "search returns results"() {
         when:
         def page = at ListTestGroupPage
-        page.search('test')
+        page.searchModule.search('test')
 
         then:
         page.listTable.rowCount > 0
-        page.nameInput.text == 'test'
+        page.searchModule.nameInput.text == 'test'
     }
 
     void "delete message displays after group deleted"() {
@@ -113,5 +113,22 @@ class ListSpec extends GebSpec {
         then:
         at ListTestGroupPage
         !page.listTable.isValueInColumn('Name', found)
+    }
+
+    void "reset button reloads results"() {
+        given: "login as a read only user"
+        def page = browser.page(ListTestGroupPage)
+        page.searchModule.search('test')
+
+        expect:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == 'test'
+
+        when:
+        page.searchModule.resetSearch()
+
+        then:
+        page.listTable.rowCount > 0
+        page.searchModule.nameInput.text == ''
     }
 }

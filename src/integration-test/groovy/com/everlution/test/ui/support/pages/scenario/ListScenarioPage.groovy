@@ -10,18 +10,4 @@ class ListScenarioPage extends ListPage {
     static convertToPath(Long projectId) {
         "/project/${projectId}/scenarios"
     }
-
-    static content = {
-        nameInput { $("#name").module(TextInput) }
-        searchButton { $("#searchButton") }
-    }
-
-    /**
-     * performs a search
-     * @param name - name to search for
-     */
-    void search(String name) {
-        nameInput << name
-        searchButton.click()
-    }
 }

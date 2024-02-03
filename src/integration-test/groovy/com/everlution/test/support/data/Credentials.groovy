@@ -1,4 +1,4 @@
-package com.everlution.test.ui.support.data
+package com.everlution.test.support.data
 
 enum Credentials {
     ACCOUNT_EXPIRED("expired@accountexpired.com", "!Password#2022"),

@@ -4,7 +4,7 @@ import com.everlution.Person
 import com.everlution.Project
 import com.everlution.TestCase
 import com.everlution.TestCaseService
-import com.everlution.TestGroup
+import com.everlution.TestResult
 import com.everlution.command.RemovedItems
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -18,7 +18,7 @@ class TestCaseServiceSpec extends Specification implements ServiceUnitTest<TestC
     @Shared Project project
 
     def setupSpec() {
-        mockDomains(TestCase, Person, Project)
+        mockDomains(TestCase, Person, Project, TestResult)
     }
 
     def setup() {

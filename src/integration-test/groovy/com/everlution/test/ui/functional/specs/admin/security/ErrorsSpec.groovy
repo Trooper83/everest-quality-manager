@@ -1,6 +1,6 @@
 package com.everlution.test.ui.functional.specs.admin.security
 
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.DeniedPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec

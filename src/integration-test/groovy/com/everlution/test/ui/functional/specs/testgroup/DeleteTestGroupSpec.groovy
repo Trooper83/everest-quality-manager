@@ -4,7 +4,7 @@ import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.TestGroup
 import com.everlution.TestGroupService
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage

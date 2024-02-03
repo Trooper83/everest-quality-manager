@@ -8,7 +8,7 @@ import com.everlution.ProjectService
 import com.everlution.Scenario
 import com.everlution.ScenarioService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.ui.support.data.Credentials
+import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.EditScenarioPage
 import geb.spock.GebSpec
