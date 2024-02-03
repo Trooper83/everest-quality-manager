@@ -59,8 +59,8 @@
                 <div class="card-header hstack">
                     <h1 class="me-auto">Testing Progress</h1>
                     <g:set var="todo" value="${testCycle.testIterations.count {it.result == 'ToDo'}}" />
-                    <g:set var="pass" value="${testCycle.testIterations.count {it.result == 'Pass'}}" />
-                    <g:set var="fail" value="${testCycle.testIterations.count {it.result == 'Fail'}}" />
+                    <g:set var="pass" value="${testCycle.testIterations.count {it.result == 'Passed'}}" />
+                    <g:set var="fail" value="${testCycle.testIterations.count {it.result == 'Failed'}}" />
                     <g:set var="total" value="${testCycle.testIterations.size()}" />
                     <g:multiProgressBar total="${total}" todo="${todo}" passed="${pass}" failed="${fail}"/>
                 </div>

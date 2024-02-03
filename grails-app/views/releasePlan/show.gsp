@@ -87,8 +87,8 @@
                                         </button>
                                     </h2>
                                     <g:set var="todo" value="${cycle.testIterations.count {it.result == 'ToDo'}}" />
-                                    <g:set var="pass" value="${cycle.testIterations.count {it.result == 'Pass'}}" />
-                                    <g:set var="fail" value="${cycle.testIterations.count {it.result == 'Fail'}}" />
+                                    <g:set var="pass" value="${cycle.testIterations.count {it.result == 'Passed'}}" />
+                                    <g:set var="fail" value="${cycle.testIterations.count {it.result == 'Failed'}}" />
                                     <g:set var="total" value="${cycle.testIterations.size()}" />
                                     <p class="me-2 fw-bold">Progress:</p>
                                     <g:multiProgressBar total="${total}" todo="${todo}" passed="${pass}" failed="${fail}"/>

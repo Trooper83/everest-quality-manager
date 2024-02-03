@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-version "2.0.4" //set tomcat to testImplementation
+version "3.0.0"
 group "com.everlution.everest"
 
 apply plugin:"idea"
