@@ -38,7 +38,6 @@ class BootStrap {
         new Role(authority: "ROLE_BASIC").save(failOnError: true)
         new Role(authority: "ROLE_READ_ONLY").save(failOnError: true)
         new Role(authority: "ROLE_PROJECT_ADMIN").save(failOnError: true)
-        new Role(authority: "ROLE_ORG_ADMIN").save(failOnError: true)
         def appAdminRole = new Role(authority: "ROLE_APP_ADMIN").save(failOnError: true)
         def appAdminUser = new Person(email: "app_admin@appadmin.com", password: "!Password#2022").save(failOnError: true)
 
