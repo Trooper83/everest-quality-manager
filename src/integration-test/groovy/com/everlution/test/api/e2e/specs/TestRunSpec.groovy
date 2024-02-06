@@ -9,9 +9,9 @@ class TestRunSpec extends Specification {
 
     void "201 when test run created no results"() {
         given:
-        def baseUrl = "http://localhost:8080/api/testRuns"
+        def baseUrl = "http://localhost:8080"
         def token = new AuthService(baseUrl).login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def payload = "{\"project\": \"1\", \"name\": \"testing\"}"
+        def payload = "{\"project\": \"24\", \"name\": \"testing\"}"
 
         when:
         def r = new TestRunsService(baseUrl, token).createTestRun(payload)
@@ -23,8 +23,8 @@ class TestRunSpec extends Specification {
 
     void "401 when user not authenticated"() {
         given:
-        def baseUrl = "http://localhost:8080/api/testRuns"
-        def payload = "{\"project\": \"1\", \"name\": \"testing\"}"
+        def baseUrl = "http://localhost:8080"
+        def payload = "{\"project\": \"24\", \"name\": \"testing\"}"
 
         when:
         def r = new TestRunsService(baseUrl, "").createTestRun(payload)
