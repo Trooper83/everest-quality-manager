@@ -18,17 +18,16 @@ class TestRunController {
     def save(TestRunCmd testRunCmd) {
         if(testRunCmd.hasErrors()) {
             respond [:], status: BAD_REQUEST, formats: ['json']
+            return
         }
-        else {
-            try {
-                def results = testResultService.createAndSave(testRunCmd.project, testRunCmd.testResults)
-                def t = new TestRun(name: testRunCmd.name, project: testRunCmd.project, testResults: results)
-                def tr = testRunService.save(t)
-                render text: "TestRun ${tr.id} created", status: CREATED
-            }
-            catch(Exception ignored) {
-                respond [:], status: BAD_REQUEST, formats: ['json']
-            }
+        try {
+            def results = testResultService.createAndSave(testRunCmd.project, testRunCmd.testResults)
+            def t = new TestRun(name: testRunCmd.name, project: testRunCmd.project, testResults: results)
+            def tr = testRunService.save(t)
+            render contentType: "application/json", text: "TestRun ${tr.id} created", status: CREATED
+        }
+        catch(Exception ignored) {
+            respond [:], status: BAD_REQUEST, formats: ['json']
         }
     }
 }

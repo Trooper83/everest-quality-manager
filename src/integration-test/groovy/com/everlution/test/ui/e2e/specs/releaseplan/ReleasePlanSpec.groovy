@@ -69,16 +69,17 @@ class ReleasePlanSpec extends GebSpec {
         cycle.addTestsByGroup()
 
         and:
+        int row = (int) Math.round(cycle.testsTable.rowCount / 2)
         cycle.scrollToBottom()
-        cycle.testsTable.clickCell("", 0)
+        cycle.testsTable.clickCell("", row)
 
         when:
         def page = browser.page(ExecuteTestIterationPage)
-        page.setResult("Pass", "Some notes")
+        page.setResult("Passed", "Some notes")
 
         then:
         def iteration = at ShowTestIterationPage
-        iteration.resultValue.text() == "Pass"
+        iteration.resultValue.text() == "Passed"
         iteration.notesValue.text() == "Some notes"
     }
 
