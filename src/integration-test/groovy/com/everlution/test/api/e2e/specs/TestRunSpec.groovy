@@ -7,11 +7,14 @@ import spock.lang.Specification
 
 class TestRunSpec extends Specification {
 
+    def baseUrl = "https://www.everlution.everestquality.com"
+    def projectId = "7" //prod: 7, int: 24
+
     void "201 when test run created no results"() {
         given:
-        def baseUrl = "http://localhost:8080"
+
         def token = new AuthService(baseUrl).login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def payload = "{\"project\": \"24\", \"name\": \"testing\"}"
+        def payload = "{\"project\": \"${projectId}\", \"name\": \"testing\"}"
 
         when:
         def r = new TestRunsService(baseUrl, token).createTestRun(payload)
@@ -23,8 +26,7 @@ class TestRunSpec extends Specification {
 
     void "401 when user not authenticated"() {
         given:
-        def baseUrl = "http://localhost:8080"
-        def payload = "{\"project\": \"24\", \"name\": \"testing\"}"
+        def payload = "{\"project\": \"${projectId}\", \"name\": \"testing\"}"
 
         when:
         def r = new TestRunsService(baseUrl, "").createTestRun(payload)
