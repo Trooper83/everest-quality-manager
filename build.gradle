@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-version "3.0.0"
+version "3.0.1"
 group "com.everlution.everest"
 
 apply plugin:"idea"
@@ -89,6 +89,7 @@ dependencies {
     testImplementation "com.github.javafaker:javafaker:1.0.2"
     implementation  'org.springframework.boot:spring-boot-starter-tomcat:2.7.2'
     testImplementation 'com.konghq:unirest-java:3.14.5'
+    testImplementation 'com.konghq:unirest-object-mappers-gson:3.14.5'
     testImplementation 'org.seleniumhq.selenium:selenium-remote-driver:3.141.59'
     testImplementation 'org.seleniumhq.selenium:selenium-api:3.141.59'
     testImplementation 'org.seleniumhq.selenium:selenium-support:3.141.59'
@@ -118,6 +119,7 @@ tasks.withType(GroovyCompile) {
 tasks.withType(Test) {
     useJUnitPlatform()
     systemProperty "geb.env", "chrome"
+    systemProperty "sendResults", "false"
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 }
 

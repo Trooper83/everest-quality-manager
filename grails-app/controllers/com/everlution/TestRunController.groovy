@@ -24,7 +24,7 @@ class TestRunController {
             def results = testResultService.createAndSave(testRunCmd.project, testRunCmd.testResults)
             def t = new TestRun(name: testRunCmd.name, project: testRunCmd.project, testResults: results)
             def tr = testRunService.save(t)
-            render contentType: "application/json", text: "TestRun ${tr.id} created", status: CREATED
+            render text: "TestRun ${tr.id} created", contentType: "application/json", status: CREATED
         }
         catch(Exception ignored) {
             respond [:], status: BAD_REQUEST, formats: ['json']

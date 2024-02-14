@@ -3,8 +3,10 @@ package com.everlution.test.api.e2e.specs
 import com.everlution.test.api.support.services.AuthService
 import com.everlution.test.api.support.services.TestRunsService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import spock.lang.Specification
 
+@SendResults
 class TestRunSpec extends Specification {
 
     def baseUrl = "https://www.everlution.everestquality.com"
@@ -15,6 +17,21 @@ class TestRunSpec extends Specification {
 
         def token = new AuthService(baseUrl).login(Credentials.BASIC.email, Credentials.BASIC.password)
         def payload = "{\"project\": \"${projectId}\", \"name\": \"testing\"}"
+
+        when:
+        def r = new TestRunsService(baseUrl, token).createTestRun(payload)
+
+        then:
+        r.status == 201
+        r.body ==~ /TestRun \d+ created/
+    }
+
+    void "201 when automated test exists"() {
+        given:
+        def token = new AuthService(baseUrl).login(Credentials.BASIC.email, Credentials.BASIC.password)
+        def payload = "{\"project\": \"${projectId}\", \"name\": \"E2E Test Run\", " +
+                "\"testResults\": [{\"testName\":\"transactional testing\", \"result\": \"Passed\"}, " +
+                "{\"testName\":\"transactional testing\", \"result\": \"Passed\"}]}"
 
         when:
         def r = new TestRunsService(baseUrl, token).createTestRun(payload)

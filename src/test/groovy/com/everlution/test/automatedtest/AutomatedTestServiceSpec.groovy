@@ -14,12 +14,6 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         mockDomains(AutomatedTest, Project)
     }
 
-    def setup() {
-    }
-
-    def cleanup() {
-    }
-
     void "findOrSave returns new instance when not found"() {
         when:
         def p = new Project(name: "123", code: "123").save()
@@ -89,5 +83,77 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
 
         then:
         first != second
+    }
+
+    void "save persists instance"() {
+        when:
+        Project p = new Project(name: "125", code: "125").save()
+        def a = service.save(new AutomatedTest(project: p, fullName: "testing 123"))
+
+        then:
+        a != null
+        a instanceof AutomatedTest
+    }
+
+    void "save throws validationexception"() {
+        when:
+        service.save(new AutomatedTest(project: null, fullName: "testing 123"))
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "save throws validation exception when full name not unique in project"() {
+        when:
+        Project p = new Project(name: "125", code: "125").save()
+        service.save(new AutomatedTest(project: p, fullName: "testing 123"))
+        service.save(new AutomatedTest(project: p, fullName: "testing 123"))
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "findByProjectAndFullName returns automated test"() {
+        given:
+        Project p = new Project(name: "125", code: "126").save()
+        def a = new AutomatedTest(project: p, fullName: "should be found").save(flush: true)
+
+        expect:
+        a != null
+
+        when:
+        def found = service.findByProjectAndFullName(p, "should be found")
+
+        then:
+        found != null
+        found == a
+    }
+
+    void "findByProjectAndFullName returns null when fullName not found"(String name) {
+        given:
+        Project p = new Project(name: "127", code: "127").save()
+        def a = new AutomatedTest(project: p, fullName: "should be found").save(flush: true)
+
+        expect:
+        a != null
+
+        when:
+        def found = service.findByProjectAndFullName(p, name)
+
+        then:
+        found == null
+        noExceptionThrown()
+
+        where:
+        name << ["should not be found", null, "", " "]
+    }
+
+    void "findByProjectAndFullName returns null when project null"() {
+        when:
+        def found = service.findByProjectAndFullName(null, "should be found")
+
+        then:
+        found == null
+        noExceptionThrown()
     }
 }
