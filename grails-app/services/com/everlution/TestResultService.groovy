@@ -1,6 +1,7 @@
 package com.everlution
 
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 import grails.validation.ValidationException
 
 @Service(TestResult)
@@ -8,6 +9,7 @@ abstract class TestResultService implements ITestResultService {
 
     AutomatedTestService automatedTestService
 
+    @Transactional
     List<TestResult> createAndSave(Project project, List<TestRunResult> results) throws ValidationException {
         List testResults = []
         results?.forEach( r -> {

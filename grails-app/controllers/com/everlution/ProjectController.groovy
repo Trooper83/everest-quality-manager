@@ -223,14 +223,14 @@ class ProjectController {
 
         List<ReleasePlan> previous = List.copyOf(releasePlans)
         def previousRelease = previous
-                .findAll {it.releaseDate != null & it.releaseDate < now }
+                .findAll {it.releaseDate != null & it.releaseDate <= now }
                 .findAll {it.status == 'Released' }
                 .max { it.releaseDate }
 
 
         List<ReleasePlan> next = List.copyOf(releasePlans)
         def nextRelease = next
-                .findAll {it.plannedDate != null & it.plannedDate > now }
+                .findAll {it.plannedDate != null & it.plannedDate >= now }
                 .findAll {it.status != 'Released' }
                 .min { it.plannedDate }
         return [ nextRelease: nextRelease, previousRelease: previousRelease ]

@@ -563,7 +563,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.nextRelease == plan
     }
 
-    void "home action returns strips out released plans for next release plan"() {
+    void "home action returns released plans for next release plan"() {
         given:
         def project = new Project()
         controller.projectService = Mock(ProjectService) {
@@ -647,7 +647,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.previousRelease == plan
     }
 
-    void "home action returns strips out future plans for previous release plan"() {
+    void "home action strips out future plans for previous release plan"() {
         given:
         def project = new Project()
         controller.projectService = Mock(ProjectService) {
@@ -674,6 +674,37 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:"A model is populated containing the domain instance"
         model.previousRelease == null
+    }
+
+    void "home action returns previous and future release plans when date is today"() {
+        given:
+        def project = new Project()
+        controller.projectService = Mock(ProjectService) {
+            1 * get(2) >> project
+        }
+        controller.bugService = Mock(BugService) {
+            1 * countByProject(project) >> 0
+        }
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * countByProject(project) >> 0
+        }
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * countByProject(project) >> 0
+        }
+        def date = new Date().from(Instant.now())
+        def futureDate = new Date().from(Instant.now().plus(1, ChronoUnit.MINUTES))
+        def released = new ReleasePlan(releaseDate: date, status: 'Released')
+        def future = new ReleasePlan(plannedDate: futureDate, status: 'In Progress')
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * findAllByProject(project, [:]) >> new SearchResult([released, future], 2)
+        }
+
+        when:
+        controller.home(2)
+
+        then:
+        model.previousRelease == released
+        model.nextRelease == future
     }
 
     void "show action with a null id"() {

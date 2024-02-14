@@ -97,8 +97,8 @@ class HomePageSpec extends GebSpec {
         given: "a project with a release plan"
         def person = personService.list(max:1).first()
         def project = projectService.list(max: 1).first()
-        def futureDate = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
-        def pastDate = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def futureDate = new Date().from(Instant.now().plus(1, ChronoUnit.MINUTES))
+        def pastDate = new Date().from(Instant.now().minus(1, ChronoUnit.MINUTES))
         def nextPlan = new ReleasePlan(name: "next plan", project: project, status: "ToDo", plannedDate: futureDate,
                 person: person)
         def previousPlan = new ReleasePlan(name: "previous plan", project: project, status: "Released",

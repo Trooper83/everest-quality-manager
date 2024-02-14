@@ -1,12 +1,14 @@
 package com.everlution.test.api.functional.specs
 
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import grails.testing.mixin.integration.Integration
 import kong.unirest.Unirest
 import spock.lang.Shared
 import spock.lang.Specification
 
 @Integration
+@SendResults
 class LoginSpec extends Specification {
 
     @Shared String url

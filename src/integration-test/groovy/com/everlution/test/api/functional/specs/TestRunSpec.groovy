@@ -6,6 +6,7 @@ import com.everlution.TestResultService
 import com.everlution.TestRunService
 import com.everlution.test.api.support.services.AuthService
 import com.everlution.test.api.support.services.TestRunsService
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.support.data.Credentials
 import grails.testing.mixin.integration.Integration
 import kong.unirest.Unirest
@@ -13,6 +14,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Integration
+@SendResults
 class TestRunSpec extends Specification {
 
     @Shared String baseUrl
