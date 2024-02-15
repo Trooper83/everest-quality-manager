@@ -3,7 +3,7 @@ package com.everlution.test.api.functional.specs
 import com.everlution.AutomatedTestService
 import com.everlution.ProjectService
 import com.everlution.TestResultService
-import com.everlution.TestRunService
+import com.everlution.ITestRunService
 import com.everlution.test.api.support.services.AuthService
 import com.everlution.test.api.support.services.TestRunsService
 import com.everlution.test.support.results.SendResults
@@ -22,7 +22,7 @@ class TestRunSpec extends Specification {
     AutomatedTestService automatedTestService
     ProjectService projectService
     TestResultService testResultService
-    TestRunService testRunService
+    ITestRunService testRunService
 
     def setup() {
         baseUrl = "http://localhost:${serverPort}"
@@ -141,9 +141,9 @@ class TestRunSpec extends Specification {
         given:
         def token = new AuthService(baseUrl).login(Credentials.BASIC.email, Credentials.BASIC.password)
         def p = projectService.list(max:1).first()
-        def a = automatedTestService.findOrSave(p, "transactional testing")
+        def a = automatedTestService.findOrSave(p, "transactional testing999")
         String str = "a" * 256 //exceeds testRun.name maxSize
-        def payload = "{\"project\": \"${p.id}\", \"name\": \"${str}\", \"testResults\": [{\"testName\":\"transactional testing\", \"result\": \"Passed\"}]}"
+        def payload = "{\"project\": \"${p.id}\", \"name\": \"${str}\", \"testResults\": [{\"testName\":\"transactional testing999\", \"result\": \"Passed\"}]}"
 
         when:
         def r = new TestRunsService(baseUrl, token).createTestRun(payload)

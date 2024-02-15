@@ -9,8 +9,8 @@ import spock.lang.Specification
 @SendResults
 class TestRunSpec extends Specification {
 
-    def baseUrl = "https://www.everlution.everestquality.com"
-    def projectId = "7" //prod: 7, int: 24
+    def baseUrl = "http://localhost:8080"//"https://www.everlution.everestquality.com"
+    def projectId = "24" //prod: 7, int: 24
 
     void "201 when test run created no results"() {
         given:
