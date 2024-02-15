@@ -3,7 +3,7 @@ package com.everlution.test.api.functional.specs
 import com.everlution.AutomatedTestService
 import com.everlution.ProjectService
 import com.everlution.TestResultService
-import com.everlution.ITestRunService
+import com.everlution.TestRunService
 import com.everlution.test.api.support.services.AuthService
 import com.everlution.test.api.support.services.TestRunsService
 import com.everlution.test.support.results.SendResults
@@ -22,7 +22,7 @@ class TestRunSpec extends Specification {
     AutomatedTestService automatedTestService
     ProjectService projectService
     TestResultService testResultService
-    ITestRunService testRunService
+    TestRunService testRunService
 
     def setup() {
         baseUrl = "http://localhost:${serverPort}"
