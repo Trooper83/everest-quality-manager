@@ -61,14 +61,14 @@ class TestRunControllerSpec extends Specification implements ControllerUnitTest<
 
     void "201 when null results provided"() {
         given:
+        def p = new Project(name: "name 123", code: "987").save()
+        def cmd = new TestRunCmd(name: "Name", project: p, testResults: null)
         controller.testResultService = Mock(TestResultService) {
             1 * createAndSave(_,_) >> []
         }
         controller.testRunService = Mock(TestRunService) {
-            1 * save(_) >> new TestRun()
+            1 * save(_) >> new TestRun(name: "name", project: p)
         }
-        def p = new Project(name: "name 123", code: "987").save()
-        def cmd = new TestRunCmd(name: "Name", project: p, testResults: null)
 
         when:
         request.method = "POST"
