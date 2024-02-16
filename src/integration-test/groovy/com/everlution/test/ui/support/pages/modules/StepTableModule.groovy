@@ -60,13 +60,6 @@ class StepTableModule extends Module {
     }
 
     /**
-     * adds a new row with ALT+n
-     */
-    void addRowHotKey() {
-        addRowButton << Keys.chord(Keys.ALT, 'n')
-    }
-
-    /**
      * edits a test step
      * @param index - the index of the row to edit
      * @param action - the updated action value

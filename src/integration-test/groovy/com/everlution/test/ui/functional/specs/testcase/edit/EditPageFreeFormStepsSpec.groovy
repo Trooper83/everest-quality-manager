@@ -74,7 +74,7 @@ class EditPageFreeFormStepsSpec extends GebSpec {
         and: "add a row"
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.scrollToBottom()
-        page.stepsTable.addRowHotKey()
+        page.stepsTable.addRow()
 
         expect: "row count is 2"
         page.stepsTable.getStepsCount() == 2
