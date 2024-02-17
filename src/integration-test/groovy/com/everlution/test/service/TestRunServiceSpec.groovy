@@ -2,9 +2,11 @@ package com.everlution.test.service
 
 import com.everlution.ProjectService
 import com.everlution.TestRun
+import com.everlution.TestRunResult
 import com.everlution.TestRunService
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
+import grails.validation.ValidationException
 import spock.lang.Specification
 
 @Rollback
@@ -37,5 +39,32 @@ class TestRunServiceSpec extends Specification {
 
         then:
         found != null
+    }
+
+    void "createAndSave returns test run"() {
+        when:
+        def p = projectService.list(max:1).first()
+        def t = testRunService.createAndSave("name", p, [])
+
+        then:
+        t != null
+    }
+
+    void "createAndSave throws validation exception when test result invalid"() {
+        when:
+        def p = projectService.list(max:1).first()
+        def t = testRunService.createAndSave("name", p, [new TestRunResult(testName: "test", result: "I should fail")])
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "createAndSave throws validation exception when automated test invalid"() {
+        when:
+        def p = projectService.list(max:1).first()
+        def t = testRunService.createAndSave("name", p, [new TestRunResult(testName: "", result: "Failed")])
+
+        then:
+        thrown(ValidationException)
     }
 }
