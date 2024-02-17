@@ -107,4 +107,43 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         then:
         thrown(ValidationException)
     }
+
+    void "findAllByProject returns all test runs in project"() {
+        given:
+        def p = new Project(name: "find me 123", code: "fm123").save()
+        def t1 = new TestRun(name: "test run 123", project: p).save()
+        def t2 = new TestRun(name: "test run 1234", project: p).save(flush: true)
+
+        when:
+        def r = service.findAllByProject(p)
+
+        then:
+        r.size() == 2
+        r.containsAll([t1, t2])
+    }
+
+    void "findAllByProject returns only test runs in project"() {
+        given:
+        def p1 = new Project(name: "find me 123", code: "fm123").save()
+        def p2 = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t1 = new TestRun(name: "test run 123", project: p1).save()
+        def t2 = new TestRun(name: "test run 1234", project: p2).save(flush: true)
+
+        when:
+        def r = service.findAllByProject(p1)
+
+        then:
+        r.size() == 1
+        r.contains(t1)
+        !r.contains(t2)
+    }
+
+    void "findAllByProject returns empty list when project null"() {
+        when:
+        def r = service.findAllByProject(null)
+
+        then:
+        noExceptionThrown()
+        r.empty
+    }
 }

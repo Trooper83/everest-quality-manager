@@ -62,9 +62,34 @@ class TestRunServiceSpec extends Specification {
     void "createAndSave throws validation exception when automated test invalid"() {
         when:
         def p = projectService.list(max:1).first()
-        def t = testRunService.createAndSave("name", p, [new TestRunResult(testName: "", result: "Failed")])
+        testRunService.createAndSave("name", p, [new TestRunResult(testName: "", result: "Failed")])
 
         then:
         thrown(ValidationException)
+    }
+
+    void "findAllByProject returns empty list when project null"() {
+        when:
+        def r = testRunService.findAllByProject(null)
+
+        then:
+        r.empty
+        noExceptionThrown()
+    }
+
+    void "findAllByProject returns test runs in project"() {
+        given:
+        def p = projectService.list(max: 1).first()
+        def r = testRunService.createAndSave("test run 999", p, [])
+
+        expect:
+        r != null
+
+        when:
+        def tr = testRunService.findAllByProject(p)
+
+        then:
+        tr.size() == 1
+        tr.contains(r)
     }
 }
