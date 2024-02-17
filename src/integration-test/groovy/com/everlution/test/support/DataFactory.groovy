@@ -93,7 +93,7 @@ class DataFactory {
      * creates fake data to populate a release plan instance
      */
     static Map<String, String> releasePlan() {
-        return [name: faker.name().title()]
+        return [name: faker.name().title(), notes: faker.lorem().sentence(20)]
     }
 
     /**

@@ -62,6 +62,12 @@
                                 </p>
                             </div>
                         </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="notes-label" class="col-4 fw-bold">Notes</p>
+                                <p class="col" id="notes" aria-labelledby="notes-label">${releasePlan.notes}</p>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>

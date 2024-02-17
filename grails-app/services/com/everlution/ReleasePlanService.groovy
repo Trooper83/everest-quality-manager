@@ -56,6 +56,7 @@ abstract class ReleasePlanService implements IReleasePlanService {
         def nextRelease = next
                 .findAll {it.plannedDate != null }
                 .findAll {it.status != 'Released' }
+                .findAll { it.status != 'Canceled' }
                 .min { it.plannedDate }
         return [ nextRelease: nextRelease, previousRelease: previousRelease ]
     }

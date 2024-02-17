@@ -12,6 +12,7 @@ class EditReleasePlanPage extends EditPage {
 
     static content = {
         nameInput { $("#name") }
+        notesInput { $("#notes") }
         plannedDateDaySelect { $("#plannedDate_day").module(Select) }
         plannedDateMonthSelect { $("#plannedDate_month").module(Select) }
         plannedDateYearSelect { $("#plannedDate_year").module(Select) }
@@ -25,7 +26,7 @@ class EditReleasePlanPage extends EditPage {
     /**
      * edits a plan with the supplied data
      */
-    void editReleasePlan(String name, String status, String plannedDate, String releaseDate) {
+    void editReleasePlan(String name, String status, String plannedDate, String releaseDate, String notes) {
         nameInput = name
         def plannedDateList = plannedDate.replace(',', '').split(' ')
         def releaseDateList = releaseDate.replace(',', '').split(' ')
@@ -36,6 +37,7 @@ class EditReleasePlanPage extends EditPage {
         releaseDateDaySelect.selected = releaseDateList[1]
         releaseDateMonthSelect.selected = releaseDateList[0]
         releaseDateYearSelect.selected = releaseDateList[2]
+        notesInput << notes
         updateButton.click()
     }
 }

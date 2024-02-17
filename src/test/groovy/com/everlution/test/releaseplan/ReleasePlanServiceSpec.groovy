@@ -310,4 +310,20 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         then:
         plans.previousRelease == plan
     }
+
+    void "getPrevNextRelease does not return canceled plans"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def plan = new ReleasePlan(name: "second plan", project: p, status: "Canceled", person: person, plannedDate: date).save(flush: true)
+
+        expect:
+        plan != null
+
+        when:
+        def plans = service.getPrevNextPlans(p)
+
+        then:
+        plans.nextRelease == null
+    }
 }
