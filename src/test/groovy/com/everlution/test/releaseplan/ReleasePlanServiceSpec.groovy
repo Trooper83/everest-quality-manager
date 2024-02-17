@@ -11,6 +11,9 @@ import grails.validation.ValidationException
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
 class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<ReleasePlanService>, DataTest {
 
     @Shared Person person
@@ -221,5 +224,90 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         ''          | 2
         'not found' | 0
         'plan'      | 2
+    }
+
+    void "getPrevNextRelease returns next release"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date1 = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
+        def date2 = new Date().from(Instant.now().plus(11, ChronoUnit.DAYS))
+        def p1 = new ReleasePlan(name: "first plan", project: p, status: "Planning", person: person, plannedDate: date1).save()
+        def p2 = new ReleasePlan(name: "second plan", project: p, status: "ToDo", person: person, plannedDate: date2).save(flush: true)
+
+        expect:
+        p1 != null
+        p2 != null
+
+        when:
+        def plans = service.getPrevNextPlans(p)
+
+        then:
+        plans.nextRelease == p1
+    }
+
+    void "getPrevNextRelease returns previous release"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date1 = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def date2 = new Date().from(Instant.now().minus(11, ChronoUnit.DAYS))
+        def p1 = new ReleasePlan(name: "first plan", project: p, status: "Released", person: person, releaseDate: date1).save()
+        def p2 = new ReleasePlan(name: "second plan", project: p, status: "Released", person: person, releaseDate: date2).save(flush: true)
+
+        expect:
+        p1 != null
+        p2 != null
+
+        when:
+        def plans = service.getPrevNextPlans(p)
+
+        then:
+        plans.previousRelease == p1
+    }
+
+    void "getPrevNextRelease returns null"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+
+        expect:
+        p != null
+
+        when:
+        def plans = service.getPrevNextPlans(p)
+
+        then:
+        plans.nextRelease == null
+        plans.previousRelease == null
+    }
+
+    void "getPrevNextRelease returns next release even if in past"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def plan = new ReleasePlan(name: "second plan", project: p, status: "Planning", person: person, plannedDate: date).save(flush: true)
+
+        expect:
+        plan != null
+
+        when:
+        def plans = service.getPrevNextPlans(p)
+
+        then:
+        plans.nextRelease == plan
+    }
+
+    void "getPrevNextRelease returns previous release even if in future"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
+        def plan = new ReleasePlan(name: "second plan", project: p, status: "Released", person: person, releaseDate: date).save(flush: true)
+
+        expect:
+        plan != null
+
+        when:
+        def plans = service.getPrevNextPlans(p)
+
+        then:
+        plans.previousRelease == plan
     }
 }

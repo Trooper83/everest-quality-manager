@@ -52,10 +52,9 @@ class ProjectController {
         def bugCount = bugService.countByProject(project)
         def testCaseCount = testCaseService.countByProject(project)
         def scenarioCount = scenarioService.countByProject(project)
-        def releasePlans = releasePlanService.findAllByProject(project, [:])
-        def plans = getPlans(releasePlans.results)
+        def releasePlans = releasePlanService.getPrevNextPlans(project)
         respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
-                bugCount: bugCount, nextRelease: plans.nextRelease, previousRelease: plans.previousRelease]
+                bugCount: bugCount, nextRelease: releasePlans.nextRelease, previousRelease: releasePlans.previousRelease]
     }
 
     /**
@@ -212,27 +211,5 @@ class ProjectController {
         request.withFormat {
             '*'{ render status: INTERNAL_SERVER_ERROR }
         }
-    }
-
-    /**
-     * gets the next and previous release plans
-     */
-    private LinkedHashMap<String, ReleasePlan> getPlans(List<ReleasePlan> releasePlans) {
-
-        def now = new Date()
-
-        List<ReleasePlan> previous = List.copyOf(releasePlans)
-        def previousRelease = previous
-                .findAll {it.releaseDate != null & it.releaseDate <= now }
-                .findAll {it.status == 'Released' }
-                .max { it.releaseDate }
-
-
-        List<ReleasePlan> next = List.copyOf(releasePlans)
-        def nextRelease = next
-                .findAll {it.plannedDate != null & it.plannedDate >= now }
-                .findAll {it.status != 'Released' }
-                .min { it.plannedDate }
-        return [ nextRelease: nextRelease, previousRelease: previousRelease ]
     }
 }
