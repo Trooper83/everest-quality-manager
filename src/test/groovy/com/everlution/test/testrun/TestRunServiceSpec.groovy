@@ -146,4 +146,69 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         noExceptionThrown()
         r.empty
     }
+
+    void "findAllInProjectByName returns test run"(String q) {
+        given:
+        def p = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t = new TestRun(name: "First test run 123", project: p).save(flush: true)
+
+        expect:
+        t != null
+
+        when:
+        def results = service.findAllInProjectByName(p, q, [:])
+
+        then:
+        results.first().name == "First test run 123"
+
+        where:
+        q << ['first', 'fi', 'irs', 't te', 'FIRST', 'n 123']
+    }
+
+    void "findAllInProjectByName with string returns tests"(String s, int size) {
+        given:
+        def p = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t = new TestRun(name: "First test run 123", project: p).save()
+        def t1 = new TestRun(name: "Second test run 123", project: p).save()
+
+        expect:
+        t != null
+
+        when:
+        def results = service.findAllInProjectByName(p, s, [:])
+
+        then:
+        results.size() == size
+
+        where:
+        s           | size
+        ''          | 2
+        'not found' | 0
+        'test'      | 2
+    }
+
+    void "findAllInProjectByName with null project returns empty list"() {
+        when:
+        def r = service.findAllInProjectByName(null, "string", [:])
+
+        then:
+        r.empty
+        noExceptionThrown()
+    }
+
+    void "findAllInProjectByName returns only test runs in project"() {
+        given:
+        def p1 = new Project(name: "find me 123", code: "fm123").save()
+        def p2 = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t1 = new TestRun(name: "test run 123", project: p1).save()
+        def t2 = new TestRun(name: "test run 1234", project: p2).save(flush: true)
+
+        when:
+        def r = service.findAllInProjectByName(p1, "test", [:])
+
+        then:
+        r.size() == 1
+        r.contains(t1)
+        !r.contains(t2)
+    }
 }

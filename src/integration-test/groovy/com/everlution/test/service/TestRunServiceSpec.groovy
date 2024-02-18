@@ -92,4 +92,29 @@ class TestRunServiceSpec extends Specification {
         tr.size() == 1
         tr.contains(r)
     }
+
+    void "findAllInProjectByName returns empty list when project null"() {
+        when:
+        def r = testRunService.findAllInProjectByName(null, "test", [:])
+
+        then:
+        r.empty
+        noExceptionThrown()
+    }
+
+    void "findAllInProjectByName returns test runs in project"() {
+        given:
+        def p = projectService.list(max: 1).first()
+        def r = testRunService.createAndSave("test run 999", p, [])
+
+        expect:
+        r != null
+
+        when:
+        def tr = testRunService.findAllInProjectByName(p, "run", [:])
+
+        then:
+        tr.size() == 1
+        tr.contains(r)
+    }
 }

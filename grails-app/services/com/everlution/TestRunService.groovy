@@ -32,4 +32,8 @@ abstract class TestRunService implements ITestRunService {
         }
         save(new TestRun(name: name, project: project, testResults: testResults))
     }
+
+    List<TestRun> findAllInProjectByName(Project project, String name, Map args) {
+        return TestRun.findAllByProjectAndNameIlike(project, "%${name}%", args)
+    }
 }

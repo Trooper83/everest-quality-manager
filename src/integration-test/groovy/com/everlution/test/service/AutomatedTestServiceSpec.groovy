@@ -84,4 +84,48 @@ class AutomatedTestServiceSpec extends Specification {
         found != null
         found == a
     }
+
+    void "findAllByProject returns tests"() {
+        given:
+        def p = projectService.list(max:1).first()
+        def a = new AutomatedTest(project: p, fullName: "find me")
+        automatedTestService.save(a)
+
+        when:
+        def tests = automatedTestService.findAllByProject(p)
+
+        then:
+        tests.contains(a)
+    }
+
+    void "findAllByProject returns empty list when project null"() {
+        when:
+        def t = automatedTestService.findAllByProject(null)
+
+        then:
+        t.empty
+        noExceptionThrown()
+    }
+
+    void "findAllInProjectByFullName returns tests"() {
+        given:
+        def p = projectService.list(max:1).first()
+        def a = new AutomatedTest(project: p, fullName: "find me")
+        automatedTestService.save(a)
+
+        when:
+        def tests = automatedTestService.findAllInProjectByFullName(p, "find", [:])
+
+        then:
+        tests.contains(a)
+    }
+
+    void "findAllInProjectByFullName returns empty list when project null"() {
+        when:
+        def t = automatedTestService.findAllInProjectByFullName(null, "", [:])
+
+        then:
+        t.empty
+        noExceptionThrown()
+    }
 }
