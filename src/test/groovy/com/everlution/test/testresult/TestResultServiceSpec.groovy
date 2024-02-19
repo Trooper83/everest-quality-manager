@@ -36,4 +36,95 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         then:
         r.contains(tr)
     }
+
+    void "getResultsForAutomatedTest does not throw exception when null"() {
+        when:
+        service.getResultsForAutomatedTest(null)
+
+        then:
+        noExceptionThrown()
+    }
+
+    void "getResultsForAutomatedTest sets zero for all numbers when no results found"() {
+        when:
+        def a = service.getResultsForAutomatedTest(null)
+
+        then:
+        a.total == 0
+        a.passTotal == 0
+        a.failTotal == 0
+        a.skipTotal == 0
+        a.recentPassTotal == 0
+        a.recentFailTotal == 0
+        a.recentSkipTotal == 0
+        a.recentResults.empty
+    }
+
+    void "getResultsForAutomatedTest returns correct numbers"() {
+        given:
+        def p = new Project(name: 'testing results999', code: 'tr9').save()
+        def at = new AutomatedTest(project: p, fullName: 'full name999').save()
+        def tr = new TestResult(automatedTest: at, result: "Passed").save()
+        def tr1 = new TestResult(automatedTest: at, result: "Failed").save()
+        def tr2 = new TestResult(automatedTest: at, result: "Skipped").save()
+        def tr3 = new TestResult(automatedTest: at, result: "Passed").save()
+        def tr4 = new TestResult(automatedTest: at, result: "Failed").save()
+        def tr5 = new TestResult(automatedTest: at, result: "Skipped").save(flush: true)
+
+        when:
+        def found = service.getResultsForAutomatedTest(at)
+
+        then:
+        found.recentResults.containsAll([tr,tr1,tr2,tr3,tr4,tr5])
+        found.total == 6
+        found.passTotal == 2
+        found.failTotal == 2
+        found.skipTotal == 2
+        found.recentPassTotal == 2
+        found.recentFailTotal == 2
+        found.recentSkipTotal == 2
+    }
+
+    void "getResultsForAutomatedTest returns correct numbers when more than 20 results found"() {
+        given:
+        def p = new Project(name: 'testing results9999999', code: 'tr999').save()
+        def at = new AutomatedTest(project: p, fullName: 'full name999').save()
+        int i = 0
+        while(i < 4) {
+            new TestResult(automatedTest: at, result: "Passed").save()
+            new TestResult(automatedTest: at, result: "Passed").save()
+            new TestResult(automatedTest: at, result: "Passed").save()
+            new TestResult(automatedTest: at, result: "Failed").save()
+            new TestResult(automatedTest: at, result: "Skipped").save()
+            i++
+        }
+        currentSession.flush()
+        int j = 0
+        def expected = []
+        def first = new TestResult(automatedTest: at, result: "Skipped").save()
+        while(j < 4) {
+            expected.add(new TestResult(automatedTest: at, result: "Passed").save())
+            expected.add(new TestResult(automatedTest: at, result: "Failed").save())
+            expected.add(new TestResult(automatedTest: at, result: "Failed").save())
+            expected.add(new TestResult(automatedTest: at, result: "Skipped").save())
+            expected.add(new TestResult(automatedTest: at, result: "Skipped").save())
+            j++
+        }
+        currentSession.flush()
+
+        when:
+        def found = service.getResultsForAutomatedTest(at)
+
+        then:
+        found.recentResults.containsAll(expected)
+        !found.recentResults.contains(first)
+        found.recentResults.size() == 20
+        found.total == 41
+        found.passTotal == 16
+        found.failTotal == 12
+        found.skipTotal == 13
+        found.recentPassTotal == 4
+        found.recentFailTotal == 8
+        found.recentSkipTotal == 8
+    }
 }
