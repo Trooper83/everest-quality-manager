@@ -92,7 +92,7 @@ class AutomatedTestServiceSpec extends Specification {
         automatedTestService.save(a)
 
         when:
-        def tests = automatedTestService.findAllByProject(p)
+        def tests = automatedTestService.findAllByProject(p, [:]).results
 
         then:
         tests.contains(a)
@@ -100,10 +100,10 @@ class AutomatedTestServiceSpec extends Specification {
 
     void "findAllByProject returns empty list when project null"() {
         when:
-        def t = automatedTestService.findAllByProject(null)
+        def t = automatedTestService.findAllByProject(null, [:])
 
         then:
-        t.empty
+        t.results.empty
         noExceptionThrown()
     }
 
@@ -117,7 +117,7 @@ class AutomatedTestServiceSpec extends Specification {
         def tests = automatedTestService.findAllInProjectByFullName(p, "find", [:])
 
         then:
-        tests.contains(a)
+        tests.results.contains(a)
     }
 
     void "findAllInProjectByFullName returns empty list when project null"() {
@@ -125,7 +125,7 @@ class AutomatedTestServiceSpec extends Specification {
         def t = automatedTestService.findAllInProjectByFullName(null, "", [:])
 
         then:
-        t.empty
+        t.results.empty
         noExceptionThrown()
     }
 }

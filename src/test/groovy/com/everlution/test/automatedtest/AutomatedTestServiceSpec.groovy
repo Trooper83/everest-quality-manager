@@ -164,7 +164,7 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         def t2 = new AutomatedTest(fullName: "second name", project: p).save(flush: true)
 
         when:
-        def r = service.findAllByProject(p)
+        def r = service.findAllByProject(p, [:]).results
 
         then:
         r.size() == 2
@@ -179,7 +179,7 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         def t2 = new AutomatedTest(fullName: "second name", project: p2).save(flush: true)
 
         when:
-        def r = service.findAllByProject(p1)
+        def r = service.findAllByProject(p1, [:]).results
 
         then:
         r.size() == 1
@@ -189,7 +189,7 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
 
     void "findAllByProject returns empty list when project null"() {
         when:
-        def r = service.findAllByProject(null)
+        def r = service.findAllByProject(null, [:]).results
 
         then:
         noExceptionThrown()
@@ -205,7 +205,7 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         t != null
 
         when:
-        def results = service.findAllInProjectByFullName(p, q, [:])
+        def results = service.findAllInProjectByFullName(p, q, [:]).results
 
         then:
         results.first().fullName == "First test 123"
@@ -214,7 +214,7 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         q << ['first', 'fi', 'irs', 't te', 'FIRST', 't 123']
     }
 
-    void "findAllInProjectByFullName with string returns tests"(String s, int size) {
+    void "findAllInProjectByFullName with string returns tests"(String s, int size, int count) {
         given:
         def p = new Project(name: "dont find me 123", code: "dfm12").save()
         def t = new AutomatedTest(fullName: "First test 123", project: p).save(flush: true)
@@ -225,21 +225,22 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         t1 != null
 
         when:
-        def results = service.findAllInProjectByFullName(p, s, [:])
+        def r = service.findAllInProjectByFullName(p, s, [:])
 
         then:
-        results.size() == size
+        r.results.size() == size
+        r.count == count
 
         where:
-        s           | size
-        ''          | 2
-        'not found' | 0
-        'test'      | 2
+        s           | size | count
+        ''          | 2    | 2
+        'not found' | 0    | 0
+        'test'      | 2    | 2
     }
 
     void "findAllInProjectByFullName with null project returns empty list"() {
         when:
-        def r = service.findAllInProjectByFullName(null, "string", [:])
+        def r = service.findAllInProjectByFullName(null, "string", [:]).results
 
         then:
         r.empty
@@ -254,7 +255,7 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         def t1 = new AutomatedTest(fullName: "Second test 123", project: p2).save(flush: true)
 
         when:
-        def r = service.findAllInProjectByFullName(p1, "test", [:])
+        def r = service.findAllInProjectByFullName(p1, "test", [:]).results
 
         then:
         r.size() == 1

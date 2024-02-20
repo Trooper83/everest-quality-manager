@@ -9,6 +9,18 @@ abstract class TestRunService implements ITestRunService {
 
     AutomatedTestService automatedTestService
 
+    SearchResult findAllByProject(Project project, Map args) {
+        int c = TestRun.countByProject(project)
+        List t = TestRun.findAllByProject(project, args)
+        return new SearchResult(t, c)
+    }
+
+    SearchResult findAllInProjectByName(Project project, String name, Map args) {
+        int c = TestRun.countByProjectAndNameIlike(project, "%${name}%")
+        List t = TestRun.findAllByProjectAndNameIlike(project, "%${name}%", args)
+        return new SearchResult(t, c)
+    }
+
     @Transactional
     TestRun save(TestRun testRun) {
         if(!testRun.validate()) {
@@ -31,9 +43,5 @@ abstract class TestRunService implements ITestRunService {
             testResults.add(tr)
         }
         save(new TestRun(name: name, project: project, testResults: testResults))
-    }
-
-    List<TestRun> findAllInProjectByName(Project project, String name, Map args) {
-        return TestRun.findAllByProjectAndNameIlike(project, "%${name}%", args)
     }
 }

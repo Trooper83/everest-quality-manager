@@ -70,10 +70,10 @@ class TestRunServiceSpec extends Specification {
 
     void "findAllByProject returns empty list when project null"() {
         when:
-        def r = testRunService.findAllByProject(null)
+        def r = testRunService.findAllByProject(null, [:])
 
         then:
-        r.empty
+        r.results.empty
         noExceptionThrown()
     }
 
@@ -86,7 +86,7 @@ class TestRunServiceSpec extends Specification {
         r != null
 
         when:
-        def tr = testRunService.findAllByProject(p)
+        def tr = testRunService.findAllByProject(p, [:]).results
 
         then:
         tr.size() == 1
@@ -98,7 +98,7 @@ class TestRunServiceSpec extends Specification {
         def r = testRunService.findAllInProjectByName(null, "test", [:])
 
         then:
-        r.empty
+        r.results.empty
         noExceptionThrown()
     }
 
@@ -111,7 +111,7 @@ class TestRunServiceSpec extends Specification {
         r != null
 
         when:
-        def tr = testRunService.findAllInProjectByName(p, "run", [:])
+        def tr = testRunService.findAllInProjectByName(p, "run", [:]).results
 
         then:
         tr.size() == 1

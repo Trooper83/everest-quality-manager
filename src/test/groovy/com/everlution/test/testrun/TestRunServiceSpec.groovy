@@ -115,7 +115,7 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         def t2 = new TestRun(name: "test run 1234", project: p).save(flush: true)
 
         when:
-        def r = service.findAllByProject(p)
+        def r = service.findAllByProject(p, [:]).results
 
         then:
         r.size() == 2
@@ -130,7 +130,7 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         def t2 = new TestRun(name: "test run 1234", project: p2).save(flush: true)
 
         when:
-        def r = service.findAllByProject(p1)
+        def r = service.findAllByProject(p1, [:]).results
 
         then:
         r.size() == 1
@@ -140,7 +140,7 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
 
     void "findAllByProject returns empty list when project null"() {
         when:
-        def r = service.findAllByProject(null)
+        def r = service.findAllByProject(null, [:]).results
 
         then:
         noExceptionThrown()
@@ -156,7 +156,7 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         t != null
 
         when:
-        def results = service.findAllInProjectByName(p, q, [:])
+        def results = service.findAllInProjectByName(p, q, [:]).results
 
         then:
         results.first().name == "First test run 123"
@@ -165,7 +165,7 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         q << ['first', 'fi', 'irs', 't te', 'FIRST', 'n 123']
     }
 
-    void "findAllInProjectByName with string returns tests"(String s, int size) {
+    void "findAllInProjectByName with string returns tests"(String s, int size, int count) {
         given:
         def p = new Project(name: "dont find me 123", code: "dfm12").save()
         def t = new TestRun(name: "First test run 123", project: p).save()
@@ -175,21 +175,22 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         t != null
 
         when:
-        def results = service.findAllInProjectByName(p, s, [:])
+        def r = service.findAllInProjectByName(p, s, [:])
 
         then:
-        results.size() == size
+        r.results.size() == size
+        r.count == count
 
         where:
-        s           | size
-        ''          | 2
-        'not found' | 0
-        'test'      | 2
+        s           | size | count
+        ''          | 2    | 2
+        'not found' | 0    | 0
+        'test'      | 2    | 2
     }
 
     void "findAllInProjectByName with null project returns empty list"() {
         when:
-        def r = service.findAllInProjectByName(null, "string", [:])
+        def r = service.findAllInProjectByName(null, "string", [:]).results
 
         then:
         r.empty
@@ -204,7 +205,7 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         def t2 = new TestRun(name: "test run 1234", project: p2).save(flush: true)
 
         when:
-        def r = service.findAllInProjectByName(p1, "test", [:])
+        def r = service.findAllInProjectByName(p1, "test", [:]).results
 
         then:
         r.size() == 1

@@ -7,8 +7,16 @@ import grails.validation.ValidationException
 @Service(AutomatedTest)
 abstract class AutomatedTestService implements IAutomatedTestService {
 
-    List<AutomatedTest> findAllInProjectByFullName(Project project, String fullName, Map args) {
-        AutomatedTest.findAllByProjectAndFullNameIlike(project, "%${fullName}%", args)
+    SearchResult findAllByProject(Project project, Map args) {
+        int c = AutomatedTest.countByProject(project)
+        List a = AutomatedTest.findAllByProject(project, args)
+        return new SearchResult(a, c)
+    }
+
+    SearchResult findAllInProjectByFullName(Project project, String fullName, Map args) {
+        int c = AutomatedTest.countByProjectAndFullNameIlike(project, "%${fullName}%")
+        List a = AutomatedTest.findAllByProjectAndFullNameIlike(project, "%${fullName}%", args)
+        return new SearchResult(a, c)
     }
 
     @Transactional
