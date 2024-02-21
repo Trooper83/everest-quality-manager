@@ -128,4 +128,26 @@ class AutomatedTestServiceSpec extends Specification {
         t.results.empty
         noExceptionThrown()
     }
+
+    void "get returns AutomatedTest"() {
+        given:
+        def p = projectService.list(max:1).first()
+        def a = new AutomatedTest(project: p, fullName: "find me")
+        automatedTestService.save(a)
+
+        when:
+        def test = automatedTestService.get(a.id)
+
+        then:
+        test != null
+    }
+
+    void "get returns null when not found"() {
+        when:
+        def t = automatedTestService.get(999999999)
+
+        then:
+        t == null
+        noExceptionThrown()
+    }
 }

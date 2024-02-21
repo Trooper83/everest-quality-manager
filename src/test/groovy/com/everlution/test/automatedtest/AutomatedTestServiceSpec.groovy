@@ -262,4 +262,25 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         r.contains(t)
         !r.contains(t1)
     }
+
+    void "get returns AutomatedTest"() {
+        given:
+        def p1 = new Project(name: "find me 123", code: "fm123").save()
+        def t1 = new AutomatedTest(fullName: "Second test 123", project: p1).save(flush: true)
+
+        when:
+        def a = service.get(t1.id)
+
+        then:
+        a != null
+    }
+
+    void "get returns null when not found"() {
+        when:
+        def a = service.get(null)
+
+        then:
+        noExceptionThrown()
+        a == null
+    }
 }
