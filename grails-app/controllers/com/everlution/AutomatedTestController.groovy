@@ -11,6 +11,7 @@ class AutomatedTestController {
 
     AutomatedTestService automatedTestService
     ProjectService projectService
+    TestResultService testResultService
 
     @Secured("ROLE_READ_ONLY")
     def automatedTests(Long projectId, Integer max) {
@@ -33,7 +34,9 @@ class AutomatedTestController {
 
     @Secured("ROLE_READ_ONLY")
     def show(Long id) {
-        respond automatedTestService.get(id), view: "show"
+        def test = automatedTestService.get(id)
+        def resultModel = testResultService.getResultsForAutomatedTest(test)
+        respond test, view: "show", model: [resultModel: resultModel]
     }
 
     /**

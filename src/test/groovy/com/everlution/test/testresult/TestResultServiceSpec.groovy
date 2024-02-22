@@ -4,6 +4,7 @@ import com.everlution.AutomatedTest
 import com.everlution.Project
 import com.everlution.TestResult
 import com.everlution.TestResultService
+import com.everlution.TestRun
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
@@ -27,7 +28,8 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         given:
         def p = new Project(name: 'testing results999', code: 'tr9').save()
         def at = new AutomatedTest(project: p, fullName: 'full name999').save()
-        def tr = new TestResult(automatedTest: at, result: "Passed").save()
+        def t = new TestRun(name: "test run", project: p).save()
+        def tr = new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
         currentSession.flush()
 
         when:
@@ -64,12 +66,13 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         given:
         def p = new Project(name: 'testing results999', code: 'tr9').save()
         def at = new AutomatedTest(project: p, fullName: 'full name999').save()
-        def tr = new TestResult(automatedTest: at, result: "Passed").save()
-        def tr1 = new TestResult(automatedTest: at, result: "Failed").save()
-        def tr2 = new TestResult(automatedTest: at, result: "Skipped").save()
-        def tr3 = new TestResult(automatedTest: at, result: "Passed").save()
-        def tr4 = new TestResult(automatedTest: at, result: "Failed").save()
-        def tr5 = new TestResult(automatedTest: at, result: "Skipped").save(flush: true)
+        def t = new TestRun(name: "test run", project: p).save()
+        def tr = new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
+        def tr1 = new TestResult(automatedTest: at, result: "Failed", testRun: t).save()
+        def tr2 = new TestResult(automatedTest: at, result: "Skipped", testRun: t).save()
+        def tr3 = new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
+        def tr4 = new TestResult(automatedTest: at, result: "Failed", testRun: t).save()
+        def tr5 = new TestResult(automatedTest: at, result: "Skipped", testRun: t).save(flush: true)
 
         when:
         def found = service.getResultsForAutomatedTest(at)
@@ -89,25 +92,26 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         given:
         def p = new Project(name: 'testing results9999999', code: 'tr999').save()
         def at = new AutomatedTest(project: p, fullName: 'full name999').save()
+        def t = new TestRun(project: p, name: "test run name").save()
         int i = 0
         while(i < 4) {
-            new TestResult(automatedTest: at, result: "Passed").save()
-            new TestResult(automatedTest: at, result: "Passed").save()
-            new TestResult(automatedTest: at, result: "Passed").save()
-            new TestResult(automatedTest: at, result: "Failed").save()
-            new TestResult(automatedTest: at, result: "Skipped").save()
+            new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
+            new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
+            new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
+            new TestResult(automatedTest: at, result: "Failed", testRun: t).save()
+            new TestResult(automatedTest: at, result: "Skipped", testRun: t).save()
             i++
         }
         currentSession.flush()
         int j = 0
         def expected = []
-        def first = new TestResult(automatedTest: at, result: "Skipped").save()
+        def first = new TestResult(automatedTest: at, result: "Skipped", testRun: t).save()
         while(j < 4) {
-            expected.add(new TestResult(automatedTest: at, result: "Passed").save())
-            expected.add(new TestResult(automatedTest: at, result: "Failed").save())
-            expected.add(new TestResult(automatedTest: at, result: "Failed").save())
-            expected.add(new TestResult(automatedTest: at, result: "Skipped").save())
-            expected.add(new TestResult(automatedTest: at, result: "Skipped").save())
+            expected.add(new TestResult(automatedTest: at, result: "Passed", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "Failed", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "Failed", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "Skipped", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "Skipped", testRun: t).save())
             j++
         }
         currentSession.flush()

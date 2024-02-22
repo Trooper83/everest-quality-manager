@@ -89,7 +89,7 @@ class TestRunServiceSpec extends Specification {
         def tr = testRunService.findAllByProject(p, [:]).results
 
         then:
-        tr.size() == 1
+        tr.size() == 2
         tr.contains(r)
     }
 
@@ -114,7 +114,7 @@ class TestRunServiceSpec extends Specification {
         def tr = testRunService.findAllInProjectByName(p, "run", [:]).results
 
         then:
-        tr.size() == 1
+        tr.size() == 2
         tr.contains(r)
     }
 }

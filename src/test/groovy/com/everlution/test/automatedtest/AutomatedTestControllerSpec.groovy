@@ -2,10 +2,12 @@ package com.everlution.test.automatedtest
 
 import com.everlution.AutomatedTest
 import com.everlution.AutomatedTestController
+import com.everlution.AutomatedTestResultsViewModel
 import com.everlution.AutomatedTestService
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.SearchResult
+import com.everlution.TestResultService
 import grails.testing.web.controllers.ControllerUnitTest
 import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.Specification
@@ -149,6 +151,10 @@ class AutomatedTestControllerSpec extends Specification implements ControllerUni
         controller.automatedTestService = Mock(AutomatedTestService) {
             1 * get(2) >> new AutomatedTest()
         }
+        controller.testResultService = Mock(TestResultService) {
+            1 * getResultsForAutomatedTest(_) >>
+                    new AutomatedTestResultsViewModel(0,0,0,0,0,0,0,0,[])
+        }
 
         when:"a domain instance is passed to the show action"
         controller.show(2)
@@ -157,10 +163,32 @@ class AutomatedTestControllerSpec extends Specification implements ControllerUni
         view == "show"
     }
 
+    void "show action returns correct model"() {
+        given:
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * get(2) >> new AutomatedTest()
+        }
+        controller.testResultService = Mock(TestResultService) {
+            1 * getResultsForAutomatedTest(_) >>
+                    new AutomatedTestResultsViewModel(0,0,0,0,0,0,0,0,[])
+        }
+
+        when:"a domain instance is passed to the show action"
+        controller.show(2)
+
+        then:
+        model.automatedTest != null
+        model.resultModel != null
+    }
+
     void "show action with a null id"() {
         given:
         controller.automatedTestService = Mock(AutomatedTestService) {
             1 * get(null) >> null
+        }
+        controller.testResultService = Mock(TestResultService) {
+            1 * getResultsForAutomatedTest(_) >>
+                    new AutomatedTestResultsViewModel(0,0,0,0,0,0,0,0,[])
         }
 
         when:"The show action is executed with a null domain"

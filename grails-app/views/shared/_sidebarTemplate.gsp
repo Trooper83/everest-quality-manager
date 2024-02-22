@@ -28,6 +28,9 @@
                     </sec:ifAnyGranted>
                     <div class="dropdown-divider"></div>
                     <li class="nav-item">
+                        <g:link class="nav-link" uri="/project/${params.projectId}/automatedTests">Automated Tests</g:link>
+                    </li>
+                    <li class="nav-item">
                         <g:link class="nav-link" uri="/project/${params.projectId}/bugs">Bugs</g:link>
                     </li>
                     <li class="nav-item">
