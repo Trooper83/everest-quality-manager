@@ -131,4 +131,27 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         found.recentFailTotal == 8
         found.recentSkipTotal == 8
     }
+
+    void "findAllByTestRun returns results"() {
+        given:
+        def p = new Project(name: "project name", code: "pcdr1").save()
+        def t = new TestRun(project: p, name: "testrun name").save()
+        def a = new AutomatedTest(project: p, fullName: "this is my full name").save()
+        def r = new TestResult(result: "Passed", automatedTest: a, testRun: t).save(flush: true)
+
+        when:
+        def found = service.findAllByTestRun(t, [:])
+
+        then:
+        found.contains(r)
+    }
+
+    void "findAllByTestRun returns empty list when none found"() {
+        when:
+        def r = service.findAllByTestRun(null, [:])
+
+        then:
+        r.empty
+        noExceptionThrown()
+    }
 }

@@ -260,7 +260,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         view == "show"
     }
 
-    void "Test the show action with a null id"() {
+    void "show action with a null id"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getWithPaginatedTests(null, params) >> new GroupWithPaginatedTests(null, [])
@@ -273,7 +273,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         response.status == 404
     }
 
-    void "show action with a valid id returns a test group"() {
+    void "show action with a valid id returns a test group and tests"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
             1 * getWithPaginatedTests(2, params) >> new GroupWithPaginatedTests(new TestGroup(), [])
@@ -284,6 +284,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
 
         then:"A model is populated containing the domain instance"
         model.testGroup instanceof TestGroup
+        model.tests != null
     }
 
     void "show action param max"(Integer max, int expected) {

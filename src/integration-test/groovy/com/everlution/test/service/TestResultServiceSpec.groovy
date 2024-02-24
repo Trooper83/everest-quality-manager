@@ -56,4 +56,18 @@ class TestResultServiceSpec extends Specification {
         results.recentFailTotal == 1
         results.recentSkipTotal == 1
     }
+
+    void "findAllByTestRun returns results"() {
+        given:
+        def p = projectService.list(max:1).first()
+        def a = automatedTestService.findOrSave(p, "create this or find one")
+        def t = new TestResult(automatedTest: a, result: "Passed")
+        def r = testRunService.save(new TestRun(name: "name", project: p, testResults: [t]))
+
+        when:
+        def results = testResultService.findAllByTestRun(r, [:])
+
+        then:
+        results.contains(t)
+    }
 }

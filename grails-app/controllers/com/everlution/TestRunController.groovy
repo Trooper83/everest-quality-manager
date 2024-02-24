@@ -34,8 +34,10 @@ class TestRunController {
     }
 
     @Secured("ROLE_READ_ONLY")
-    def show(Long id) {
-        respond testRunService.get(id), view: "show"
+    def show(Long id, Integer max) {
+        params.max = Math.min(max ?: 25, 100)
+        def runResults = testRunService.getWithPaginatedResults(id, params)
+        respond runResults.testRun, view: "show", model: [results: runResults.results]
     }
 
     @Secured("ROLE_BASIC")

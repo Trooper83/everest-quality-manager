@@ -1,6 +1,9 @@
 package com.everlution.test.service
 
+import com.everlution.AutomatedTest
+import com.everlution.AutomatedTestService
 import com.everlution.ProjectService
+import com.everlution.TestResult
 import com.everlution.TestRun
 import com.everlution.TestRunResult
 import com.everlution.TestRunService
@@ -13,6 +16,7 @@ import spock.lang.Specification
 @Integration
 class TestRunServiceSpec extends Specification {
 
+    AutomatedTestService automatedTestService
     ProjectService projectService
     TestRunService testRunService
 
@@ -116,5 +120,20 @@ class TestRunServiceSpec extends Specification {
         then:
         tr.size() == 2
         tr.contains(r)
+    }
+
+    void "getWithPaginatedResults returns run and results"() {
+        given:
+        def p = projectService.list(max: 1).first()
+        def a = automatedTestService.save(new AutomatedTest(project: p, fullName: "getWithPaginatedResults"))
+        def r = new TestResult(automatedTest: a, result: "Failed")
+        def t = testRunService.save(new TestRun(project: p, name: "getWithPaginatedResults", testResults: [r]))
+
+        when:
+        def found = testRunService.getWithPaginatedResults(t.id, [:])
+
+        then:
+        found.testRun == t
+        found.results.contains(r)
     }
 }

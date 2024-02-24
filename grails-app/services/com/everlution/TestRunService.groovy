@@ -8,6 +8,7 @@ import grails.validation.ValidationException
 abstract class TestRunService implements ITestRunService {
 
     AutomatedTestService automatedTestService
+    TestResultService testResultService
 
     SearchResult findAllByProject(Project project, Map args) {
         int c = TestRun.countByProject(project)
@@ -43,5 +44,16 @@ abstract class TestRunService implements ITestRunService {
             testResults.add(tr)
         }
         save(new TestRun(name: name, project: project, testResults: testResults))
+    }
+
+    @Transactional
+    RunWithPaginatedResults getWithPaginatedResults(Serializable id, Map params) {
+        def run = get(id)
+        List<TestResult> resultsList = []
+        if (run) {
+            def results = testResultService.findAllByTestRun(run, params)
+            resultsList.addAll(results)
+        }
+        return new RunWithPaginatedResults(run, resultsList)
     }
 }

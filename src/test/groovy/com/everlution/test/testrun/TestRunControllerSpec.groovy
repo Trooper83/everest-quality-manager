@@ -2,6 +2,7 @@ package com.everlution.test.testrun
 
 import com.everlution.Project
 import com.everlution.ProjectService
+import com.everlution.RunWithPaginatedResults
 import com.everlution.SearchResult
 import com.everlution.TestRun
 import com.everlution.TestRunController
@@ -130,7 +131,7 @@ class TestRunControllerSpec extends Specification implements ControllerUnitTest<
     void "show invalid methods"(String method) {
         when:
         request.method = method
-        controller.show(null)
+        controller.show(null, null)
 
         then:
         status == 405
@@ -142,24 +143,38 @@ class TestRunControllerSpec extends Specification implements ControllerUnitTest<
     void "show action renders show view"() {
         given:
         controller.testRunService = Mock(TestRunService) {
-            1 * get(2) >> new TestRun()
+            1 * getWithPaginatedResults(_, _) >> new RunWithPaginatedResults(new TestRun(), [])
         }
 
         when:"a domain instance is passed to the show action"
-        controller.show(2)
+        controller.show(2, null)
 
         then:
         view == "show"
     }
 
+    void "show action returns correct model"() {
+        given:
+        controller.testRunService = Mock(TestRunService) {
+            1 * getWithPaginatedResults(_, _) >> new RunWithPaginatedResults(new TestRun(), [])
+        }
+
+        when:"a domain instance is passed to the show action"
+        controller.show(2, null)
+
+        then:
+        model.testRun != null
+        model.results != null
+    }
+
     void "show action with a null id"() {
         given:
         controller.testRunService = Mock(TestRunService) {
-            1 * get(null) >> null
+            1 * getWithPaginatedResults(_, _) >> new RunWithPaginatedResults(null, [])
         }
 
         when:"The show action is executed with a null domain"
-        controller.show(null)
+        controller.show(null, null)
 
         then:"A 404 error is returned"
         response.status == 404

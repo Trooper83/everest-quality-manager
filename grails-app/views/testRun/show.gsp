@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="layout" content="main"/>
+    <g:set var="entityName" value="${message(code: 'testRun.label', default: 'Test Run')}"/>
+    <title><g:message code="default.show.label" args="[entityName]" /></title>
+</head>
+<body>
+<div class="container">
+    <g:set var="project" value="${testRun.project}"/>
+    <div class="row">
+        <g:render template="/shared/sidebarTemplate" model="['name':project.name, 'code':project.code]"/>
+        <main class="col-md-9 col-lg-10 ms-sm-auto mt-3">
+            <g:render template="/shared/messagesTemplate" bean="${testRun}" var="entity"/>
+            <div class="card mt-3">
+                <div class="card-header hstack gap-1">
+                    <h1 class="me-auto">
+                        <g:message code="default.show.label" args="[entityName]"/>
+                    </h1>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="name-label" class="col-4 fw-bold">Name</p>
+                                <p class="col" id="name" aria-labelledby="name-label">${testRun.name}</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p id="executed-label" class="col-4 fw-bold">Date Executed</p>
+                                <p class="col" id="executed" aria-labelledby="executed-label" data-name="createdDateValue">${testRun.dateCreated}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h1 class="me-auto">Test Run Statistics</h1>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col fw-bold">Total</p>
+                                <p class="col fw-bold">Pass %</p>
+                                <p class="col fw-bold">Passed</p>
+                                <p class="col fw-bold">Failed</p>
+                                <p class="col fw-bold">Skipped</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <p class="col" id="total">${testRun.testResults.size()}</p>
+                                <p class="col" id="passPercent">
+                                    <g:if test="${testRun.testResults.size() < 1}">
+                                        0
+                                    </g:if>
+                                    <g:else>
+                                        ${String.format("%.2f", ((testRun.testResults.count {it.result == 'Passed'} / testRun.testResults.size()) * 100))}
+                                    </g:else>
+                                </p>
+                                <p class="col" id="pass">${testRun.testResults.count {it.result == 'Passed'}}</p>
+                                <p class="col" id="fail">${testRun.testResults.count {it.result == 'Failed'}}</p>
+                                <p class="col" id="skip">${testRun.testResults.count {it.result == 'Skipped'}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <h1 class="mt-3">Test Results</h1>
+            <table class="table table-light table-bordered mt-3">
+                <thead class="thead-light">
+                <tr>
+                    <g:columnSort domain="testRun" projectId="${testRun.project.id}" property="automatedTest" title="Automated Test"
+                                  isTopLevel="false" itemId="${testRun.id}"/>
+                    <g:columnSort domain="testRun" projectId="${testRun.project.id}" property="result" title="Result"
+                                  isTopLevel="false" itemId="${testRun.id}"/>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each var="result" in="${results}">
+                    <tr>
+                        <td><g:link uri="/project/${project.id}/automatedTest/show/${result.automatedTest.id}">${result.automatedTest.fullName}</g:link></td>
+                        <td>
+                            <g:if test="${result.result == 'Passed'}">
+                                <span class="badge text-bg-success">${result.result}</span>
+                            </g:if>
+                            <g:elseif test="${result.result == 'Failed'}">
+                                <span class="badge text-bg-danger">${result.result}</span>
+                            </g:elseif>
+                            <g:else>
+                                <span class="badge text-bg-secondary">${result.result}</span>
+                            </g:else>
+                        </td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
+            <g:pagination domain="testRun" projectId="${project.id}" total="${testRun.testResults.size() ?: 0}"
+                          isTopLevel="false" itemId="${testRun.id}"/>
+        </main>
+    </div>
+</div>
+<asset:javascript src="time.js"/>
+</body>
+</html>

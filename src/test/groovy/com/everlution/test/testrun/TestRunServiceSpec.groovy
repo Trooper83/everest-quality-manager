@@ -3,6 +3,7 @@ package com.everlution.test.testrun
 import com.everlution.AutomatedTest
 import com.everlution.AutomatedTestService
 import com.everlution.Project
+import com.everlution.TestResult
 import com.everlution.TestRun
 import com.everlution.TestRunResult
 import com.everlution.TestRunService
@@ -211,5 +212,66 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         r.size() == 1
         r.contains(t1)
         !r.contains(t2)
+    }
+
+    void "getWithPaginatedResults param values"(String max, String offset) {
+        when:
+        def p = new Project(name: "dont find me 123", code: "dfm12").save()
+        new TestRun(name: "First test run 123", project: p).save()
+        def params = ['max':max, 'offset':offset]
+        service.getWithPaginatedResults(1, params)
+
+        then:
+        noExceptionThrown()
+
+        where:
+        max   | offset
+        '0'   | '0'
+        '1'   | '0'
+        '50'  | '0'
+        '101' | '0'
+        '-1'  | '0'
+        null  | '0'
+        null  | null
+        '10'  | null
+        '10'  | '1'
+        '10'  | '-1'
+        '10'  | '100'
+        '100' | '100'
+    }
+
+    void "getWithPaginatedResults returns null run when not found"() {
+        when:
+        def params = ['max': '1', 'offset': '1']
+        def found = service.getWithPaginatedResults(111, params)
+
+        then:
+        !found.testRun
+        noExceptionThrown()
+    }
+
+    void "getWithPaginatedResults returns empty list group when not found"() {
+        when:
+        def params = ['max': '1', 'offset': '1']
+        def found = service.getWithPaginatedResults(111, params)
+
+        then:
+        found.results.empty
+        noExceptionThrown()
+    }
+
+    void "getWithPaginatedResults returns run and list of results"() {
+        given:
+        def p = new Project(name: "dont find me 123", code: "dfm12").save()
+        def a = new AutomatedTest(fullName: "fullname of the test", project: p).save()
+        def t = new TestRun(name: "First test run 123", project: p).save()
+        def r = new TestResult(result: "Failed", testRun: t, automatedTest: a).save(flush:true)
+
+        when:
+        def results = service.getWithPaginatedResults(t.id, [:])
+
+        then:
+        results.results.contains(r)
+        results.testRun == t
     }
 }
