@@ -5,6 +5,7 @@ import com.everlution.AutomatedTestService
 import com.everlution.ProjectService
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.automatedtest.ListAutomatedTestPage
+import com.everlution.test.ui.support.pages.automatedtest.ShowAutomatedTestPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage

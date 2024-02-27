@@ -57,7 +57,7 @@
                                 <p class="col" id="allTimeTotal">${resultModel.total}</p>
                                 <p class="col" id="allTimePassPercent">
                                     <g:if test="${resultModel.total < 1}">
-                                        0
+                                        0.00
                                     </g:if>
                                     <g:else>
                                         ${String.format("%.2f", ((resultModel.passTotal / resultModel.total) * 100))}
@@ -74,7 +74,7 @@
                                 <p class="col" id="recentTotal">${resultModel.recentTotal}</p>
                                 <p class="col" id="recentPassPercent">
                                     <g:if test="${resultModel.total < 1}">
-                                        0
+                                        0.00
                                     </g:if>
                                     <g:else>
                                         ${String.format("%.2f", ((resultModel.recentPassTotal / resultModel.recentTotal) * 100))}
