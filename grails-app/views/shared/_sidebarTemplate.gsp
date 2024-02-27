@@ -48,6 +48,9 @@
                     <li class="nav-item">
                         <g:link class="nav-link" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
                     </li>
+                    <li class="nav-item">
+                        <g:link class="nav-link" uri="/project/${params.projectId}/testRuns">Test Runs</g:link>
+                    </li>
                     <div class="dropdown-divider"></div>
                 </g:if>
                 <g:else>

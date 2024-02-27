@@ -119,7 +119,7 @@ class TestRunControllerSpec extends Specification implements ControllerUnitTest<
         setToken(params)
         request.method = 'POST'
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         controller.testRuns(1, 10)
 
         then:"model is correct"

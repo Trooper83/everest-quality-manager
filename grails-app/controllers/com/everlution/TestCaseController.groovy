@@ -36,7 +36,7 @@ class TestCaseController {
             searchResults = testCaseService.findAllByProject(project, params)
 
         } else { // perform search
-            searchResults = testCaseService.findAllInProjectByName(project, params.name, params)
+            searchResults = testCaseService.findAllInProjectByName(project, params.searchTerm, params)
 
         }
         respond searchResults.results, model: [testCaseCount: searchResults.count, project: project], view: 'testCases'

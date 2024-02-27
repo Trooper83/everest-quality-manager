@@ -1,33 +1,29 @@
-package com.everlution.test.ui.functional.specs.bug
+package com.everlution.test.ui.functional.specs.automatedtest
 
-import com.everlution.Bug
-import com.everlution.BugService
-import com.everlution.PersonService
+import com.everlution.AutomatedTest
+import com.everlution.AutomatedTestService
 import com.everlution.ProjectService
-import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.support.data.Credentials
-import com.everlution.test.ui.support.pages.bug.ListBugPage
-import com.everlution.test.ui.support.pages.bug.ShowBugPage
+import com.everlution.test.ui.support.pages.automatedtest.ListAutomatedTestPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
-class ListSpec extends GebSpec {
+class AutomatedTestListSpec extends GebSpec {
 
-    BugService bugService
-    PersonService personService
+    AutomatedTestService automatedTestService
     ProjectService projectService
 
     private Long setupData() {
-        def person = personService.list(max:1).first()
         def project = projectService.list(max:1).first()
 
-        if (bugService.findAllByProject(project, [:]).count <= 25) {
+        if (automatedTestService.findAllByProject(project, [:]).count <= 25) {
             for (int i = 0; i <= 26; i++) {
-                def b = new Bug(name: "Pagination Bug ${i}", person: person, project: project, status: "Open")
-                bugService.save(b)
+                def t = new AutomatedTest(fullName: "Pagination ATest ${i}", project: project)
+                automatedTestService.save(t)
             }
         }
         return project.id
@@ -43,15 +39,15 @@ class ListSpec extends GebSpec {
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 0)
 
-        and: "go to the lists bug page"
+        and:
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Bugs')
+        projectHomePage.sideBar.goToProjectDomain('Automated Tests')
 
         when: "go to list page"
-        def page = at ListBugPage
+        def page = at ListAutomatedTestPage
 
         then: "correct headers are displayed"
-        page.listTable.getHeaders() == ["Name", "Created By", "Platform", "Area", "Status", "Created", "Updated"]
+        page.listTable.getHeaders() == ["Full Name", "Name", "Created"]
     }
 
     void "sort parameters correctly set in url"(String column, String propName) {
@@ -62,7 +58,7 @@ class ListSpec extends GebSpec {
 
         and:
         def projId = projectService.list(max:1).first().id
-        def page = to(ListBugPage, projId)
+        def page = to(ListAutomatedTestPage, projId)
 
         and:
         page.listTable.sortColumn(column)
@@ -80,40 +76,9 @@ class ListSpec extends GebSpec {
 
         where:
         column       | propName
+        'Full Name'  | 'fullName'
         'Name'       | 'name'
-        'Created By' | 'person'
-        'Platform'   | 'platform'
-        'Area'       | 'area'
-        'Status'     | 'status'
         'Created'    | 'dateCreated'
-        'Updated'    | 'lastUpdated'
-    }
-
-    void "delete message displays after bug deleted"() {
-        given: "login as a basic user"
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
-
-        and: "go to the lists bug page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Bugs')
-
-        and: "go to list page"
-        def page = at ListBugPage
-        page.listTable.clickCell('Name', 0)
-
-        when: "delete bug"
-        def showPage = browser.page(ShowBugPage)
-        showPage.delete()
-
-        then: "at list page and message displayed"
-        def listPage = at ListBugPage
-        listPage.statusMessage.text() ==~ /Bug \d+ deleted/
     }
 
     void "search text field retains search value"() {
@@ -128,49 +93,53 @@ class ListSpec extends GebSpec {
 
         and:
         def page = at ProjectHomePage
-        page.sideBar.goToProjectDomain('Bugs')
+        page.sideBar.goToProjectDomain('Automated Tests')
 
         when:
-        def bugsPage = at ListBugPage
-        bugsPage.searchModule.search('bug')
+        def list = at ListAutomatedTestPage
+        list.searchModule.search('auto test')
 
         then:
-        bugsPage.listTable.rowCount > 0
-        bugsPage.searchModule.searchInput.text == 'bug'
+        list.searchModule.searchInput.text == 'auto test'
+    }
+
+    void "search lists automated tests"() {
+        given: "login as a project admin user"
+        def p = projectService.list(max:1).first()
+        automatedTestService.save(new AutomatedTest(project: p, fullName: "auto test search"))
+
+        and:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        when:
+        def list = to(ListAutomatedTestPage, p.id)
+        list.searchModule.search('auto test')
+
+        then:
+        list.listTable.rowCount > 0
     }
 
     void "clicking name column directs to show page"() {
         given: "login as a read only user"
+        def p = projectService.list(max:1).first()
+        automatedTestService.save(new AutomatedTest(project: p, fullName: "auto test direction"))
+
+        and:
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
 
         and: "go to list page"
         def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/bugs"
+        def listPage = to(ListAutomatedTestPage, project.id)
 
         when: "click first scenario in list"
-        def listPage = browser.page(ListBugPage)
-        listPage.listTable.clickCell("Name", 0)
+        listPage.listTable.clickCell("Full Name", 0)
 
         then: "at show page"
-        at ShowBugPage
-    }
-
-    void "pagination next button not displayed"() {
-        given:
-        def id = setupData()
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def page = to(ListBugPage, id)
-
-        when:
-        page.scrollToBottom()
-        page.listTable.goToPage("2")
-
-        then:
-        !page.listTable.isPaginationButtonDisplayed('Next')
+        at ShowAutomatedTestPage
     }
 
     void "pagination works for results"() {
@@ -179,16 +148,16 @@ class ListSpec extends GebSpec {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def page = to(ListBugPage, id)
+        def page = to(ListAutomatedTestPage, id)
 
         when:
-        def found = page.listTable.getValueInColumn(0, 'Name')
+        def found = page.listTable.getValueInColumn(0, 'Full Name')
         page.scrollToBottom()
         page.listTable.goToPage('2')
 
         then:
-        at ListBugPage
-        !page.listTable.isValueInColumn('Name', found)
+        at ListAutomatedTestPage
+        !page.listTable.isValueInColumn('Full Name', found)
     }
 
     void "pagination params remain set with sorting"() {
@@ -197,14 +166,14 @@ class ListSpec extends GebSpec {
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def page = to(ListBugPage, id)
+        def page = to(ListAutomatedTestPage, id)
 
         and:
         page.scrollToBottom()
         page.listTable.goToPage('2')
 
         when:
-        page.listTable.sortColumn('Name')
+        page.listTable.sortColumn('Full Name')
 
         then:
         currentUrl.contains('max=25')
@@ -219,15 +188,15 @@ class ListSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
-        def page = to(ListBugPage, id)
-        page.listTable.sortColumn('Name')
+        def page = to(ListAutomatedTestPage, id)
+        page.listTable.sortColumn('Full Name')
 
         when:
         page.scrollToBottom()
         page.listTable.goToPage('2')
 
         then:
-        currentUrl.contains('sort=name')
+        currentUrl.contains('sort=fullName')
         currentUrl.contains('order=asc')
     }
 
@@ -239,15 +208,15 @@ class ListSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
-        def page = to(ListBugPage, id)
-        page.searchModule.search('Bug')
+        def page = to(ListAutomatedTestPage, id)
+        page.searchModule.search('pagination')
 
         when:
         page.scrollToBottom()
         page.listTable.goToPage('2')
 
         then:
-        currentUrl.contains('searchTerm=Bug')
+        currentUrl.contains('searchTerm=pagination')
         currentUrl.contains('isSearch=true')
     }
 
@@ -259,61 +228,15 @@ class ListSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
-        def page = to(ListBugPage, id)
-        page.searchModule.search('Bug')
+        def page = to(ListAutomatedTestPage, id)
+        page.searchModule.search('pagination')
 
         when:
-        page.listTable.sortColumn('Name')
+        page.listTable.sortColumn('Full Name')
 
         then:
-        currentUrl.contains("searchTerm=Bug")
+        currentUrl.contains("searchTerm=pagination")
         currentUrl.contains('isSearch=true')
-    }
-
-    void "pagination previous button displayed"() {
-        given:
-        def id = setupData()
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def page = to(ListBugPage, id)
-
-        when:
-        page.scrollToBottom()
-        page.listTable.goToPage('2')
-
-        then:
-        page.listTable.isPaginationButtonDisplayed('Previous')
-    }
-
-    void "pagination next button displayed"() {
-        given:
-        def id = setupData()
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def page = to(ListBugPage, id)
-
-        when:
-        page.scrollToBottom()
-
-        then:
-        page.listTable.isPaginationButtonDisplayed('Next')
-    }
-
-    void "pagination previous button not displayed"() {
-        given:
-        def id = setupData()
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-        def page = to(ListBugPage, id)
-
-        when:
-        page.scrollToBottom()
-
-        then:
-        !page.listTable.isPaginationButtonDisplayed('Previous')
     }
 
     void "reset button reloads results"() {
@@ -324,12 +247,12 @@ class ListSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and:
-        def page = to(ListBugPage, id)
-        page.searchModule.search('bug')
+        def page = to(ListAutomatedTestPage, id)
+        page.searchModule.search('pagination')
 
         expect:
         page.listTable.rowCount > 0
-        page.searchModule.searchInput.text == 'bug'
+        page.searchModule.searchInput.text == 'pagination'
 
         when:
         page.searchModule.resetSearch()

@@ -26,7 +26,7 @@ class AutomatedTestController {
         if(!params.isSearch) { // load view
             searchResult = automatedTestService.findAllByProject(project, params)
         } else {
-            searchResult =  automatedTestService.findAllInProjectByFullName(project, params.fullName, params)
+            searchResult =  automatedTestService.findAllInProjectByFullName(project, params.searchTerm, params)
         }
 
         respond searchResult.results, model: [automatedTestCount: searchResult.count, project: project], view: 'automatedTests'

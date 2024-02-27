@@ -31,7 +31,7 @@ class ProjectController {
             respond projects, model:[projectCount: count]
 
         } else { // perform search
-            def results = projectService.findAllByNameIlike(params.name, params)
+            def results = projectService.findAllByNameIlike(params.searchTerm, params)
             render view:'projects', model: [projectList: results.results, projectCount: results.count]
         }
     }

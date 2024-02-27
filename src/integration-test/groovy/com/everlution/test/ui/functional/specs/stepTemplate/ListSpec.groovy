@@ -105,7 +105,7 @@ class ListSpec extends GebSpec {
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'step'
+        page.searchModule.searchInput.text == 'step'
     }
 
     void "reset button reloads results"() {
@@ -128,14 +128,14 @@ class ListSpec extends GebSpec {
 
         expect:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'step'
+        page.searchModule.searchInput.text == 'step'
 
         when:
         page.searchModule.resetSearch()
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == ''
+        page.searchModule.searchInput.text == ''
     }
 
     void "delete message displays after template deleted"() {

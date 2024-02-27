@@ -3,7 +3,6 @@ package com.everlution.test.ui.functional.specs.project
 import com.everlution.Project
 import com.everlution.ProjectService
 import com.everlution.test.support.data.Credentials
-import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -128,13 +127,13 @@ class ListSpec extends GebSpec {
 
         expect:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'project'
+        page.searchModule.searchInput.text == 'project'
 
         when:
         page.searchModule.resetSearch()
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == ''
+        page.searchModule.searchInput.text == ''
     }
 }

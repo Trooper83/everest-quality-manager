@@ -27,7 +27,7 @@ class TestRunController {
         if(!params.isSearch) { // load view
             searchResult = testRunService.findAllByProject(project, params)
         } else {
-            searchResult =  testRunService.findAllInProjectByName(project, params.name, params)
+            searchResult =  testRunService.findAllInProjectByName(project, params.searchTerm, params)
         }
 
         respond searchResult.results, model: [testRunCount: searchResult.count, project: project], view: 'testRuns'

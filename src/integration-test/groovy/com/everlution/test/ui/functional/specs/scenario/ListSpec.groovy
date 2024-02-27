@@ -110,7 +110,7 @@ class ListSpec extends GebSpec {
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'scenario'
+        page.searchModule.searchInput.text == 'scenario'
     }
 
     void "delete message displays after scenario deleted"() {
@@ -152,13 +152,13 @@ class ListSpec extends GebSpec {
 
         expect:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'scenario'
+        page.searchModule.searchInput.text == 'scenario'
 
         when:
         page.searchModule.resetSearch()
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == ''
+        page.searchModule.searchInput.text == ''
     }
 }

@@ -125,7 +125,7 @@ class AutomatedTestControllerSpec extends Specification implements ControllerUni
         setToken(params)
         request.method = 'POST'
         params.isSearch = 'true'
-        params.fullName = 'test'
+        params.searchTerm = 'test'
         controller.automatedTests(1, 10)
 
         then:"model is correct"

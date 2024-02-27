@@ -87,7 +87,7 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
 
         when:"action is executed"
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         controller.testGroups(1, 10)
 
         then:"model is correct"

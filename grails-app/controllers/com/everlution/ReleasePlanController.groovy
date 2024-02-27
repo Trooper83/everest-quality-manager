@@ -64,7 +64,7 @@ class ReleasePlanController {
             searchResults = releasePlanService.findAllByProject(project, params)
 
         } else { // perform search
-            searchResults = releasePlanService.findAllInProjectByName(project, params.name, params)
+            searchResults = releasePlanService.findAllInProjectByName(project, params.searchTerm, params)
         }
         respond searchResults.results, model: [releasePlanCount: searchResults.count, project: project], view: 'releasePlans'
     }

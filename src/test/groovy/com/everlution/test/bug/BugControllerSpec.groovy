@@ -117,7 +117,7 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         when:"action is executed"
         setToken(params)
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         controller.bugs(1, 10)
 
         then:"model is correct"

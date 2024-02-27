@@ -412,7 +412,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when: "call action"
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         setToken(params)
         controller.projects()
 
@@ -428,7 +428,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when: "call action"
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         setToken(params)
         controller.projects()
 
