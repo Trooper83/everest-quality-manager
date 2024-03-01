@@ -55,7 +55,7 @@
                                 <p class="col" id="total">${testRun.testResults.size()}</p>
                                 <p class="col" id="passPercent">
                                     <g:if test="${testRun.testResults.size() < 1}">
-                                        0
+                                        0.00
                                     </g:if>
                                     <g:else>
                                         ${String.format("%.2f", ((testRun.testResults.count {it.result == 'Passed'} / testRun.testResults.size()) * 100))}
@@ -77,29 +77,65 @@
                                   isTopLevel="false" itemId="${testRun.id}"/>
                     <g:columnSort domain="testRun" projectId="${testRun.project.id}" property="result" title="Result"
                                   isTopLevel="false" itemId="${testRun.id}"/>
+                    <th>Link To Test</th>
                 </tr>
                 </thead>
                 <tbody>
-                <g:each var="result" in="${results}">
-                    <tr>
-                        <td><g:link uri="/project/${project.id}/automatedTest/show/${result.automatedTest.id}">${result.automatedTest.fullName}</g:link></td>
-                        <td>
-                            <g:if test="${result.result == 'Passed'}">
-                                <span class="badge text-bg-success">${result.result}</span>
-                            </g:if>
-                            <g:elseif test="${result.result == 'Failed'}">
+                <g:each status="i" var="result" in="${results}">
+                    <g:if test="${result.result == 'Failed'}">
+                        <tr>
+                            <td class="col-8">
+                                <button class="btn btn-link" type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#failedCause-${i}">${result.automatedTest.fullName}
+                                </button>
+                                <div class="collapse" id="failedCause-${i}">
+                                    <div class="card">
+                                        <div class="card-body bg-dark text-danger" data-test-id="failureCause">
+                                            ${result.failureCause}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-2 align-middle">
                                 <span class="badge text-bg-danger">${result.result}</span>
-                            </g:elseif>
-                            <g:else>
-                                <span class="badge text-bg-secondary">${result.result}</span>
-                            </g:else>
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="col-2 align-middle">
+                                <button class="btn btn-link">
+                                    <g:link uri="/project/${project.id}/automatedTest/show/${result.automatedTest.id}">
+                                    <asset:image src="icons/link-45deg.svg" alt="link" width="20" height="20"/>
+                                    </g:link>
+                                </button>
+                            </td>
+                        </tr>
+                    </g:if>
+                    <g:else>
+                        <tr>
+                            <td class="col-8 align-middle">${result.automatedTest.fullName}</td>
+                            <td class="col-2 align-middle">
+                                <g:if test="${result.result == 'Passed'}">
+                                    <span class="badge text-bg-success">${result.result}</span>
+                                </g:if>
+                                <g:else>
+                                    <span class="badge text-bg-secondary">${result.result}</span>
+                                </g:else>
+                            </td>
+                            <td class="col-2 align-middle">
+                                <button class="btn btn-link">
+                                    <g:link uri="/project/${project.id}/automatedTest/show/${result.automatedTest.id}">
+                                        <asset:image src="icons/link-45deg.svg" alt="link" width="20" height="20"/>
+                                    </g:link>
+                                </button>
+                            </td>
+                        </tr>
+                    </g:else>
                 </g:each>
                 </tbody>
             </table>
-            <g:pagination domain="testRun" projectId="${project.id}" total="${testRun.testResults.size() ?: 0}"
+            <ul class="pagination mb-5">
+                <g:pagination domain="testRun" projectId="${testRun.project.id}" total="${testRun.testResults.size() ?: 0}"
                           isTopLevel="false" itemId="${testRun.id}"/>
+            </ul>
         </main>
     </div>
 </div>

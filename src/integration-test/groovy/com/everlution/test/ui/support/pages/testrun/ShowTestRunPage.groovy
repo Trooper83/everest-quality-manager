@@ -11,6 +11,13 @@ class ShowTestRunPage extends ShowPage {
     }
 
     static content = {
+        failedCauseElement(required: false) { $("[data-test-id=failureCause]") }
+        passPercentValue { $("#passPercent") }
         resultsTable { module TableModule }
+    }
+
+    void expandFailureCause() {
+        def cells = $("tbody tr")[0].find("td")
+        cells[0].find("button").click()
     }
 }

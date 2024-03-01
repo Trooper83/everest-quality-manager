@@ -10,12 +10,14 @@ abstract class TestRunService implements ITestRunService {
     AutomatedTestService automatedTestService
     TestResultService testResultService
 
+    @Transactional
     SearchResult findAllByProject(Project project, Map args) {
         int c = TestRun.countByProject(project)
         List t = TestRun.findAllByProject(project, args)
         return new SearchResult(t, c)
     }
 
+    @Transactional
     SearchResult findAllInProjectByName(Project project, String name, Map args) {
         int c = TestRun.countByProjectAndNameIlike(project, "%${name}%")
         List t = TestRun.findAllByProjectAndNameIlike(project, "%${name}%", args)
