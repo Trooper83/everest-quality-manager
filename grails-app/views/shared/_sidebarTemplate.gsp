@@ -26,32 +26,41 @@
                             </div>
                         </li>
                     </sec:ifAnyGranted>
-                    <div class="dropdown-divider"></div>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/automatedTests">Automated Tests</g:link>
-                    </li>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/bugs">Bugs</g:link>
-                    </li>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/releasePlans">Release Plans</g:link>
-                    </li>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
-                    </li>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/stepTemplates">Step Templates</g:link>
-                    </li>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/testCases">Test Cases</g:link>
-                    </li>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
-                    </li>
-                    <li class="nav-item">
-                        <g:link class="nav-link" uri="/project/${params.projectId}/testRuns">Automated Test Runs</g:link>
-                    </li>
-                    <div class="dropdown-divider"></div>
+                    <ul class="list-group list-group-flush border-end mt-3 border-top border-bottom">
+                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Automated Testing</div>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/automatedTests">Automated Tests</g:link>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/testRuns">Test Runs</g:link>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">BDD Testing</div>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Bug Management</div>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/bugs">Bugs</g:link>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Manual Testing</div>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/testCases">Test Cases</g:link>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/testGroups">Test Groups</g:link>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/stepTemplates">Step Templates</g:link>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Releases</div>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/releasePlans">Release Plans</g:link>
+                            </div>
+                        </li>
+                    </ul>
                 </g:if>
                 <g:else>
                     <li class="nav-item">
