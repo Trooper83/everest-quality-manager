@@ -25,7 +25,7 @@ class TestResultHibernateSpec extends HibernateSpec {
         when:
         def at = new AutomatedTest(fullName: 'fullname', project: project).save()
         def tr = new TestRun(name: "test run", project: project).save()
-        TestResult r = new TestResult(automatedTest: at, result: 'Passed', testRun: tr).save()
+        TestResult r = new TestResult(automatedTest: at, result: 'PASSED', testRun: tr).save()
 
         then:
         r.dateCreated != null
@@ -35,7 +35,7 @@ class TestResultHibernateSpec extends HibernateSpec {
         given:
         def at = new AutomatedTest(fullName: "fullname", project: project)
         def t = new TestRun(name: "test run", project: project).save()
-        def tr = new TestResult(automatedTest: at, result: "Skipped", testRun: t)
+        def tr = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t)
 
         expect:
         at.id == null
@@ -51,7 +51,7 @@ class TestResultHibernateSpec extends HibernateSpec {
         given:
         def at = new AutomatedTest(fullName: "fullname", project: project).save()
         def t = new TestRun(name: "test run", project: project).save()
-        def tr = new TestResult(automatedTest: at, result: "Skipped", testRun: t).save()
+        def tr = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
 
         when:
         tr.delete()

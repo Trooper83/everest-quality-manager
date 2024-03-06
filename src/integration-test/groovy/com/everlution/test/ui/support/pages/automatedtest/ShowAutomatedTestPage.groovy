@@ -11,8 +11,16 @@ class ShowAutomatedTestPage extends ShowPage {
     }
 
     static content = {
-        allTimePassValue { $("#allTimePassPercent") }
-        recentPassValue { $("#recentPassPercent") }
+        allTimeFailValue { $("#allTimeFail") }
+        allTimePassValue { $("#allTimePass") }
+        allTimePassPercentValue { $("#allTimePassPercent") }
+        allTimeSkipValue { $("#allTimeSkip") }
+        allTimeTotalValue { $("#allTimeTotal") }
+        recentFailValue { $("#recentFail") }
+        recentPassValue { $("#recentPass") }
+        recentSkipValue { $("#recentSkip") }
+        recentTotalValue { $("#recentTotal") }
+        recentPassPercentValue { $("#recentPassPercent") }
         resultsTable { module TableModule }
     }
 }

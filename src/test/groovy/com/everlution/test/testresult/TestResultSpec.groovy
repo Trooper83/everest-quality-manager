@@ -16,8 +16,8 @@ class TestResultSpec extends Specification implements DomainUnitTest<TestResult>
         def project = new Project(name: "tc domain project321", code: "td5").save()
         def at = new AutomatedTest(fullName: "First test", project: project).save()
         def t = new TestRun(name: "name", project: project).save()
-        new TestResult(automatedTest: at, result: 'Passed', testRun: t).save()
-        new TestResult(automatedTest: at, result: 'Passed', testRun: t).save()
+        new TestResult(automatedTest: at, result: 'PASSED', testRun: t).save()
+        new TestResult(automatedTest: at, result: 'PASSED', testRun: t).save()
 
         expect:
         TestResult.count() == 2
@@ -80,7 +80,7 @@ class TestResultSpec extends Specification implements DomainUnitTest<TestResult>
         domain.validate(["result"])
 
         where:
-        value << ["Passed", "Failed", "Skipped"]
+        value << ["PASSED", "FAILED", "SKIPPED"]
     }
 
     void "result value not in list"() {

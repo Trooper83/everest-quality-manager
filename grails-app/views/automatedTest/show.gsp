@@ -102,10 +102,10 @@
                     <tr>
                         <td><g:link uri="/project/${project.id}/testRun/show/${result.testRun.id}">${result.testRun.name}</g:link></td>
                         <td>
-                            <g:if test="${result.result == 'Passed'}">
+                            <g:if test="${result.result == 'PASSED'}">
                                 <span class="badge text-bg-success">${result.result}</span>
                             </g:if>
-                            <g:elseif test="${result.result == 'Failed'}">
+                            <g:elseif test="${result.result == 'FAILED'}">
                                 <span class="badge text-bg-danger">${result.result}</span>
                             </g:elseif>
                             <g:else>

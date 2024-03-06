@@ -109,6 +109,20 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         thrown(ValidationException)
     }
 
+    void "createdAndSave converts testResult result to upper"() {
+        given:
+        def p = new Project(name: "create and save upper", code: "casu").save()
+        new AutomatedTest(fullName: "create and save upper test", project: p).save()
+        def r = new TestRunResult(testName: "create and save upper test", result:  "failed")
+        currentSession.flush()
+
+        when:
+        def created = service.createAndSave("Create and Save Upper test", p, [r])
+
+        then:
+        created.testResults.first().result == "FAILED"
+    }
+
     void "findAllByProject returns all test runs in project"() {
         given:
         def p = new Project(name: "find me 123", code: "fm123").save()

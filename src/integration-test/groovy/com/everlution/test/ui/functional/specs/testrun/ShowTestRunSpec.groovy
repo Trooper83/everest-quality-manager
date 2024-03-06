@@ -29,9 +29,9 @@ class ShowTestRunSpec extends GebSpec {
         and:
         def proj = projectService.list(max:1).first()
         def a = automatedTestService.save(new AutomatedTest(fullName: "pass percent test", project: proj))
-        def tr = new TestResult(result: "Failed", automatedTest: a)
-        def tr1 = new TestResult(result: "Passed", automatedTest: a)
-        def tr2 = new TestResult(result: "Skipped", automatedTest: a)
+        def tr = new TestResult(result: "FAILED", automatedTest: a)
+        def tr1 = new TestResult(result: "PASSED", automatedTest: a)
+        def tr2 = new TestResult(result: "SKIPPED", automatedTest: a)
         def r = testRunService.save(new TestRun(name: "sorting test run show page", project: proj,
                 testResults: [tr, tr1, tr2]))
 
@@ -68,7 +68,7 @@ class ShowTestRunSpec extends GebSpec {
         and:
         def proj = projectService.list(max:1).first()
         def a = automatedTestService.save(new AutomatedTest(fullName: "link goes to test", project: proj))
-        def tr = new TestResult(result: "Failed", automatedTest: a)
+        def tr = new TestResult(result: "FAILED", automatedTest: a)
         def r = testRunService.save(new TestRun(name: "Linking test run", project: proj,
                 testResults: [tr]))
 
@@ -89,7 +89,7 @@ class ShowTestRunSpec extends GebSpec {
         and:
         def proj = projectService.list(max:1).first()
         def a = automatedTestService.save(new AutomatedTest(fullName: "Failure cause collapsed", project: proj))
-        def tr = new TestResult(result: "Failed", automatedTest: a)
+        def tr = new TestResult(result: "FAILED", automatedTest: a)
         def r = testRunService.save(new TestRun(name: "Linking test run", project: proj,
                 testResults: [tr]))
 
@@ -144,7 +144,7 @@ class ShowTestRunSpec extends GebSpec {
         def results = []
         int i = 0
         while(i < 27) {
-            def r = new TestResult(result: "Passed", automatedTest: a)
+            def r = new TestResult(result: "PASSED", automatedTest: a)
             results.add(r)
             i++
         }
@@ -165,5 +165,62 @@ class ShowTestRunSpec extends GebSpec {
         then:
         at ShowTestRunPage
         page.resultsTable.rowCount != c
+    }
+
+    void "test run stats are correct"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and:
+        def proj = projectService.list(max:1).first()
+        def a = automatedTestService.save(new AutomatedTest(fullName: "Test run stats are correct", project: proj))
+        def tr = [
+                new TestResult(result: "FAILED", automatedTest: a),
+                new TestResult(result: "SKIPPED", automatedTest: a),
+                new TestResult(result: "SKIPPED", automatedTest: a),
+                new TestResult(result: "PASSED", automatedTest: a),
+                new TestResult(result: "PASSED", automatedTest: a),
+                new TestResult(result: "PASSED", automatedTest: a)
+        ]
+        def r = testRunService.save(new TestRun(name: "Test stats test run", project: proj,
+                testResults: tr))
+
+        when:
+        def page = to(ShowTestRunPage, proj.id, r.id)
+
+        then:
+        page.totalValue.text() == "6"
+        page.passPercentValue.text() == "50.00"
+        page.passValue.text() == "3"
+        page.failValue.text() == "1"
+        page.skipValue.text() == "2"
+    }
+
+    void "test result row has correct result color"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and:
+        def proj = projectService.list(max:1).first()
+        def a = automatedTestService.save(new AutomatedTest(fullName: "Test row colors", project: proj))
+        def tr = [
+                new TestResult(result: "FAILED", automatedTest: a),
+                new TestResult(result: "SKIPPED", automatedTest: a),
+                new TestResult(result: "PASSED", automatedTest: a)
+        ]
+        def r = testRunService.save(new TestRun(name: "Test row colors test run", project: proj,
+                testResults: tr))
+
+        when:
+        to(ShowTestRunPage, proj.id, r.id)
+
+        then:
+        $("span", text: "PASSED").hasClass("text-bg-success")
+        $("span", text: "SKIPPED").hasClass("text-bg-secondary")
+        $("span", text: "FAILED").hasClass("text-bg-danger")
     }
 }

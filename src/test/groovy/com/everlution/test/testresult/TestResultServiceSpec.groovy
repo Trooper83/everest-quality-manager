@@ -29,7 +29,7 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         def p = new Project(name: 'testing results999', code: 'tr9').save()
         def at = new AutomatedTest(project: p, fullName: 'full name999').save()
         def t = new TestRun(name: "test run", project: p).save()
-        def tr = new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
+        def tr = new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
         currentSession.flush()
 
         when:
@@ -67,12 +67,12 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         def p = new Project(name: 'testing results999', code: 'tr9').save()
         def at = new AutomatedTest(project: p, fullName: 'full name999').save()
         def t = new TestRun(name: "test run", project: p).save()
-        def tr = new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
-        def tr1 = new TestResult(automatedTest: at, result: "Failed", testRun: t).save()
-        def tr2 = new TestResult(automatedTest: at, result: "Skipped", testRun: t).save()
-        def tr3 = new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
-        def tr4 = new TestResult(automatedTest: at, result: "Failed", testRun: t).save()
-        def tr5 = new TestResult(automatedTest: at, result: "Skipped", testRun: t).save(flush: true)
+        def tr = new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+        def tr1 = new TestResult(automatedTest: at, result: "FAILED", testRun: t).save()
+        def tr2 = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
+        def tr3 = new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+        def tr4 = new TestResult(automatedTest: at, result: "FAILED", testRun: t).save()
+        def tr5 = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save(flush: true)
 
         when:
         def found = service.getResultsForAutomatedTest(at)
@@ -95,23 +95,23 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         def t = new TestRun(project: p, name: "test run name").save()
         int i = 0
         while(i < 4) {
-            new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
-            new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
-            new TestResult(automatedTest: at, result: "Passed", testRun: t).save()
-            new TestResult(automatedTest: at, result: "Failed", testRun: t).save()
-            new TestResult(automatedTest: at, result: "Skipped", testRun: t).save()
+            new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "FAILED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
             i++
         }
         currentSession.flush()
         int j = 0
         def expected = []
-        def first = new TestResult(automatedTest: at, result: "Skipped", testRun: t).save()
+        def first = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
         while(j < 4) {
-            expected.add(new TestResult(automatedTest: at, result: "Passed", testRun: t).save())
-            expected.add(new TestResult(automatedTest: at, result: "Failed", testRun: t).save())
-            expected.add(new TestResult(automatedTest: at, result: "Failed", testRun: t).save())
-            expected.add(new TestResult(automatedTest: at, result: "Skipped", testRun: t).save())
-            expected.add(new TestResult(automatedTest: at, result: "Skipped", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "PASSED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "FAILED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "FAILED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save())
             j++
         }
         currentSession.flush()
@@ -137,7 +137,7 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         def p = new Project(name: "project name", code: "pcdr1").save()
         def t = new TestRun(project: p, name: "testrun name").save()
         def a = new AutomatedTest(project: p, fullName: "this is my full name").save()
-        def r = new TestResult(result: "Passed", automatedTest: a, testRun: t).save(flush: true)
+        def r = new TestResult(result: "PASSED", automatedTest: a, testRun: t).save(flush: true)
 
         when:
         def found = service.findAllByTestRun(t, [:])

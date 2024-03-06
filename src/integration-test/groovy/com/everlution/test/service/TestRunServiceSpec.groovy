@@ -126,7 +126,7 @@ class TestRunServiceSpec extends Specification {
         given:
         def p = projectService.list(max: 1).first()
         def a = automatedTestService.save(new AutomatedTest(project: p, fullName: "getWithPaginatedResults"))
-        def r = new TestResult(automatedTest: a, result: "Failed")
+        def r = new TestResult(automatedTest: a, result: "FAILED")
         def t = testRunService.save(new TestRun(project: p, name: "getWithPaginatedResults", testResults: [r]))
 
         when:

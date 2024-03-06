@@ -58,12 +58,12 @@
                                         0.00
                                     </g:if>
                                     <g:else>
-                                        ${String.format("%.2f", ((testRun.testResults.count {it.result == 'Passed'} / testRun.testResults.size()) * 100))}
+                                        ${String.format("%.2f", ((testRun.testResults.count {it.result == 'PASSED'} / testRun.testResults.size()) * 100))}
                                     </g:else>
                                 </p>
-                                <p class="col" id="pass">${testRun.testResults.count {it.result == 'Passed'}}</p>
-                                <p class="col" id="fail">${testRun.testResults.count {it.result == 'Failed'}}</p>
-                                <p class="col" id="skip">${testRun.testResults.count {it.result == 'Skipped'}}</p>
+                                <p class="col" id="pass">${testRun.testResults.count {it.result == 'PASSED'}}</p>
+                                <p class="col" id="fail">${testRun.testResults.count {it.result == 'FAILED'}}</p>
+                                <p class="col" id="skip">${testRun.testResults.count {it.result == 'SKIPPED'}}</p>
                             </div>
                         </li>
                     </ul>
@@ -82,7 +82,7 @@
                 </thead>
                 <tbody>
                 <g:each status="i" var="result" in="${results}">
-                    <g:if test="${result.result == 'Failed'}">
+                    <g:if test="${result.result == 'FAILED'}">
                         <tr>
                             <td class="col-8">
                                 <button class="btn btn-link" type="button"
@@ -113,7 +113,7 @@
                         <tr>
                             <td class="col-8 align-middle">${result.automatedTest.fullName}</td>
                             <td class="col-2 align-middle">
-                                <g:if test="${result.result == 'Passed'}">
+                                <g:if test="${result.result == 'PASSED'}">
                                     <span class="badge text-bg-success">${result.result}</span>
                                 </g:if>
                                 <g:else>

@@ -12,7 +12,11 @@ class ShowTestRunPage extends ShowPage {
 
     static content = {
         failedCauseElement(required: false) { $("[data-test-id=failureCause]") }
+        failValue { $("#fail") }
+        passValue { $("#pass") }
         passPercentValue { $("#passPercent") }
+        skipValue { $("#skip") }
+        totalValue { $("#total") }
         resultsTable { module TableModule }
     }
 

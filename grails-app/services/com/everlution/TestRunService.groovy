@@ -42,7 +42,7 @@ abstract class TestRunService implements ITestRunService {
                 test = automatedTestService.findOrSave(project, r.testName)
                 tests.add(test)
             }
-            def tr = new TestResult(automatedTest: test, result: r.result, failureCause: r.failureCause)
+            def tr = new TestResult(automatedTest: test, result: r.result.toUpperCase(), failureCause: r.failureCause)
             testResults.add(tr)
         }
         save(new TestRun(name: name, project: project, testResults: testResults))

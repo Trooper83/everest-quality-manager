@@ -23,7 +23,7 @@ class TestResultServiceSpec extends Specification {
         given:
         def p = projectService.list(max:1).first()
         def a = automatedTestService.findOrSave(p, "create this or find one")
-        def t = new TestResult(automatedTest: a, result: "Passed")
+        def t = new TestResult(automatedTest: a, result: "PASSED")
         testRunService.save(new TestRun(name: "name", project: p, testResults: [t]))
 
         when:
@@ -37,9 +37,9 @@ class TestResultServiceSpec extends Specification {
         given:
         def p = projectService.list(max:1).first()
         def a = automatedTestService.findOrSave(p, "create this or find one")
-        def t = new TestResult(automatedTest: a, result: "Passed")
-        def t1 = new TestResult(automatedTest: a, result: "Failed")
-        def t2 = new TestResult(automatedTest: a, result: "Skipped")
+        def t = new TestResult(automatedTest: a, result: "PASSED")
+        def t1 = new TestResult(automatedTest: a, result: "FAILED")
+        def t2 = new TestResult(automatedTest: a, result: "SKIPPED")
         testRunService.save(new TestRun(name: "name", project: p, testResults: [t,t1,t2]))
 
         when:
@@ -61,7 +61,7 @@ class TestResultServiceSpec extends Specification {
         given:
         def p = projectService.list(max:1).first()
         def a = automatedTestService.findOrSave(p, "create this or find one")
-        def t = new TestResult(automatedTest: a, result: "Passed")
+        def t = new TestResult(automatedTest: a, result: "PASSED")
         def r = testRunService.save(new TestRun(name: "name", project: p, testResults: [t]))
 
         when:

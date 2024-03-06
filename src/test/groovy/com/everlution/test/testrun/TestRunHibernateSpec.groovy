@@ -51,7 +51,7 @@ class TestRunHibernateSpec extends HibernateSpec {
         given:
         def p = new Project(name: "name", code: "ooo").save()
         def at = new AutomatedTest(fullName: "full name", project: p).save()
-        def tr = new TestResult(automatedTest: at, result: "Failed")
+        def tr = new TestResult(automatedTest: at, result: "FAILED")
         def run = new TestRun(name: "name", project: p).addToTestResults(tr)
 
         when:
@@ -65,7 +65,7 @@ class TestRunHibernateSpec extends HibernateSpec {
         given:
         def p = new Project(name: "name", code: "ooo").save()
         def at = new AutomatedTest(fullName: "full name", project: p).save()
-        def tr = new TestResult(automatedTest: at, result: "Failed")
+        def tr = new TestResult(automatedTest: at, result: "FAILED")
         def run = new TestRun(name: "name", project: p).addToTestResults(tr)
         run.save()
 
