@@ -9,6 +9,7 @@ import static org.springframework.http.HttpStatus.*
 
 class ProjectController {
 
+    AutomatedTestService automatedTestService
     BugService bugService
     ProjectService projectService
     ReleasePlanService releasePlanService
@@ -49,12 +50,14 @@ class ProjectController {
             notFound()
             return
         }
+        def autoTestCount = automatedTestService.countByProject(project)
         def bugCount = bugService.countByProject(project)
         def testCaseCount = testCaseService.countByProject(project)
         def scenarioCount = scenarioService.countByProject(project)
         def releasePlans = releasePlanService.getPrevNextPlans(project)
         respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
-                bugCount: bugCount, nextRelease: releasePlans.nextRelease, previousRelease: releasePlans.previousRelease]
+                bugCount: bugCount, nextRelease: releasePlans.nextRelease, previousRelease: releasePlans.previousRelease,
+                automatedTestCount: autoTestCount]
     }
 
     /**

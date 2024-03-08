@@ -32,13 +32,13 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card bg-light h-100" style="max-width: 18rem;" id="scenarioCard">
+                        <div class="card bg-light h-100" style="max-width: 18rem;" id="autoTestCard">
                             <div class="card-header bg-secondary"></div>
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <g:link uri="/project/${project.id}/scenarios">Scenarios</g:link>
+                                    <g:link uri="/project/${project.id}/automatedTests">Automated Tests</g:link>
                                 </h5>
-                                <p class="card-text">Count in project: ${scenarioCount}</p>
+                                <p class="card-text">Count in project: ${automatedTestCount}</p>
                             </div>
                         </div>
                     </div>

@@ -108,11 +108,11 @@ class ListSpec extends GebSpec {
         def listPage = to ListProjectPage
 
         when:
-        listPage.search('bootstrap')
+        listPage.searchModule.search('bootstrap')
 
         then: "at show page"
         listPage.projectTable.rowCount > 0
-        listPage.nameInput.text == 'bootstrap'
+        listPage.searchModule.searchInput.text == 'bootstrap'
     }
 
     void "reset button reloads results"() {

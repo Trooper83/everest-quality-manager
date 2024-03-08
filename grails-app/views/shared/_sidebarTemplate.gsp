@@ -31,13 +31,8 @@
                             <div class="ms-2 me-auto">
                                 <div class="fw-bold">Automated Testing</div>
                                 <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/automatedTests">Automated Tests</g:link>
-                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/testRuns">Test Runs</g:link>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-start bg-light">
-                            <div class="ms-2 me-auto">
-                                <div class="fw-bold">BDD Testing</div>
                                 <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/scenarios">Scenarios</g:link>
+                                <g:link class="nav-link text-black-50" uri="/project/${params.projectId}/testRuns">Test Runs</g:link>
                             </div>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-start bg-light">

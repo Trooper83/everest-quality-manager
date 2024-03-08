@@ -3,6 +3,7 @@ package com.everlution.test.service
 import com.everlution.AutomatedTest
 import com.everlution.AutomatedTestService
 import com.everlution.ProjectService
+import com.everlution.test.support.DataFactory
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import grails.validation.ValidationException
@@ -149,5 +150,20 @@ class AutomatedTestServiceSpec extends Specification {
         then:
         t == null
         noExceptionThrown()
+    }
+
+    void "countByProject returns number of tests in project"() {
+        given:
+        def p = DataFactory.createProject()
+        def a = new AutomatedTest(project: p, fullName: "count me")
+        def a1 = new AutomatedTest(project: p, fullName: "count me 123")
+        automatedTestService.save(a)
+        automatedTestService.save(a1)
+
+        when:
+        def c = automatedTestService.countByProject(p)
+
+        then:
+        c == 2
     }
 }

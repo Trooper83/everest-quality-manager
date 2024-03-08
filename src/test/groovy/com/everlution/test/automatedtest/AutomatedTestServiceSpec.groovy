@@ -283,4 +283,26 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         noExceptionThrown()
         a == null
     }
+
+    void "countByProject returns number of tests in project"() {
+        given:
+        def p = new Project(name: "counting 123", code: "c123").save()
+        new AutomatedTest(fullName: "counting 1", project: p).save()
+        new AutomatedTest(fullName: "counting 2", project: p).save(flush: true)
+
+        when:
+        def c = service.countByProject(p)
+
+        then:
+        c == 2
+    }
+
+    void "countByProject returns 0 when project null"() {
+        when:
+        def c = service.countByProject(null)
+
+        then:
+        noExceptionThrown()
+        c == 0
+    }
 }

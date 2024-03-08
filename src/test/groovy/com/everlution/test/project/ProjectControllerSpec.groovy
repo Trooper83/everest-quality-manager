@@ -1,5 +1,6 @@
 package com.everlution.test.project
 
+import com.everlution.AutomatedTestService
 import com.everlution.BugService
 import com.everlution.Project
 import com.everlution.ProjectController
@@ -452,6 +453,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.testCaseService = Mock(TestCaseService) {
             1 * countByProject(project) >> 0
         }
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * countByProject(project) >> 0
+        }
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * getPrevNextPlans(project) >> new LinkedHashMap<>()
         }
@@ -496,6 +500,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
                     "previousRelease": new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
                     "nextRelease": new ReleasePlan(status: 'Released', releaseDate: pastDate) ]
         }
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * countByProject(project) >> 0
+        }
 
         when:"A domain instance is passed to the home action"
         controller.home(2)
@@ -505,6 +512,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.bugCount == 0
         model.scenarioCount == 0
         model.testCaseCount == 0
+        model.automatedTestCount == 0
         model.nextRelease != null
         model.previousRelease != null
     }
@@ -526,6 +534,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * getPrevNextPlans(project) >> [:]
+        }
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * countByProject(project) >> 0
         }
 
         when:"A domain instance is passed to the home action"
@@ -552,6 +563,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * getPrevNextPlans(project) >> [:]
+        }
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * countByProject(project) >> 0
         }
 
         when:"A domain instance is passed to the home action"

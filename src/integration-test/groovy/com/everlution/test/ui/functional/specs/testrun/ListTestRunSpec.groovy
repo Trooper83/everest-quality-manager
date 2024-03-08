@@ -42,7 +42,7 @@ class ListTestRunSpec extends GebSpec {
 
         and:
         def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Automated Test Runs')
+        projectHomePage.sideBar.goToProjectDomain('Test Runs')
 
         when: "go to list page"
         def page = at ListTestRunPage
@@ -93,7 +93,7 @@ class ListTestRunSpec extends GebSpec {
 
         and:
         def page = at ProjectHomePage
-        page.sideBar.goToProjectDomain('Automated Test Runs')
+        page.sideBar.goToProjectDomain('Test Runs')
 
         when:
         def list = at ListTestRunPage
