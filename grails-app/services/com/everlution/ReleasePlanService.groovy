@@ -39,6 +39,29 @@ abstract class ReleasePlanService implements IReleasePlanService {
     }
 
     /**
+     * gets the next and previous release plans
+     */
+    LinkedHashMap<String, ReleasePlan> getPrevNextPlans(Project project) {
+
+        def releasePlans = findAllByProject(project, [:]).results
+
+        List<ReleasePlan> previous = List.copyOf(releasePlans)
+        def previousRelease = previous
+                .findAll {it.releaseDate != null }
+                .findAll {it.status == 'Released' }
+                .max { it.releaseDate }
+
+
+        List<ReleasePlan> next = List.copyOf(releasePlans)
+        def nextRelease = next
+                .findAll {it.plannedDate != null }
+                .findAll {it.status != 'Released' }
+                .findAll { it.status != 'Canceled' }
+                .min { it.plannedDate }
+        return [ nextRelease: nextRelease, previousRelease: previousRelease ]
+    }
+
+    /**
      * removes a test cycle from a release plan
      * @param releasePlan
      * @param testCycle

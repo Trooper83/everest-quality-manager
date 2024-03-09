@@ -4,6 +4,7 @@ import com.everlution.AutomatedTest
 import com.everlution.Person
 import com.everlution.Project
 import com.everlution.TestResult
+import com.everlution.TestRun
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
@@ -23,7 +24,8 @@ class TestResultHibernateSpec extends HibernateSpec {
     void "dateCreated populated on save"() {
         when:
         def at = new AutomatedTest(fullName: 'fullname', project: project).save()
-        TestResult r = new TestResult(automatedTest: at, result: 'Passed').save()
+        def tr = new TestRun(name: "test run", project: project).save()
+        TestResult r = new TestResult(automatedTest: at, result: 'PASSED', testRun: tr).save()
 
         then:
         r.dateCreated != null
@@ -32,7 +34,8 @@ class TestResultHibernateSpec extends HibernateSpec {
     void "save does not cascade to automatedTest"() {
         given:
         def at = new AutomatedTest(fullName: "fullname", project: project)
-        def tr = new TestResult(automatedTest: at, result: "Skipped")
+        def t = new TestRun(name: "test run", project: project).save()
+        def tr = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t)
 
         expect:
         at.id == null
@@ -47,7 +50,8 @@ class TestResultHibernateSpec extends HibernateSpec {
     void "delete does not cascade to automatedTest"() {
         given:
         def at = new AutomatedTest(fullName: "fullname", project: project).save()
-        def tr = new TestResult(automatedTest: at, result: "Skipped").save()
+        def t = new TestRun(name: "test run", project: project).save()
+        def tr = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
 
         when:
         tr.delete()

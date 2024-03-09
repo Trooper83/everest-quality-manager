@@ -9,12 +9,14 @@ class UrlMappings {
         "/project/edit/$projectId"(controller: "project", action: "edit")
         "/project/show/$projectId"(controller: "project", action: "show")
         group "/project/$projectId", {
+            "/automatedTests"(controller: "automatedTest", action: "automatedTests")
             "/bugs"(controller: "bug", action: "bugs")
             "/releasePlans"(controller: "releasePlan", action: "releasePlans")
             "/scenarios"(controller: "scenario", action: "scenarios")
             "/stepTemplates"(controller: "stepTemplate", action: "stepTemplates")
             "/testCases"(controller: "testCase", action: "testCases")
             "/testGroups"(controller: "testGroup", action: "testGroups")
+            "/testRuns"(controller: "testRun", action: "testRuns")
         }
         "/api/testRuns"(controller: "testRun", action: "save")
 

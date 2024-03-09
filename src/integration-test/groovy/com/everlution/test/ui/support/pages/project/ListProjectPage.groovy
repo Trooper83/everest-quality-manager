@@ -9,17 +9,6 @@ class ListProjectPage extends ListPage {
     static at = { title == "Projects List" }
 
     static content = {
-        nameInput { $("#name").module(TextInput) }
-        searchButton { $("#searchButton") }
         projectTable { module TableModule }
-    }
-
-    /**
-     * performs a search
-     * @param name - name to search for
-     */
-    void search(String name) {
-        nameInput << name
-        searchButton.click()
     }
 }

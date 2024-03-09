@@ -94,7 +94,7 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         when:"action is executed"
         params.isSearch = 'true'
         setToken(params)
-        params.name = 'test'
+        params.searchTerm = 'test'
         controller.testCases(1, 10)
 
         then:"model is correct"

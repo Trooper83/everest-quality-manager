@@ -5,6 +5,7 @@ class TestRun {
     Date dateCreated
     String name
     Project project
+    Collection testResults
 
     static hasMany = [testResults: TestResult]
 

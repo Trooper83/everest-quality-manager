@@ -41,7 +41,7 @@ class StepTemplateController {
             searchResult = stepTemplateService.findAllInProject(project, params)
 
         } else { // perform search
-            searchResult = stepTemplateService.findAllInProjectByName(project, params.name, params)
+            searchResult = stepTemplateService.findAllInProjectByName(project, params.searchTerm, params)
         }
         respond searchResult.results, model: [stepTemplateCount: searchResult.count, project: project], view: 'stepTemplates'
     }

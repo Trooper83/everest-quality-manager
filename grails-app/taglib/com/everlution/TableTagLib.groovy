@@ -75,7 +75,7 @@ class TableTagLib implements TagLibrary {
         if (params.order) linkParams.order = params.order
         if (params.isSearch) {
             linkParams.isSearch = params.isSearch
-            linkParams.name = params.name
+            linkParams.searchTerm = params.searchTerm
         }
 
         // determine paging variables
@@ -228,7 +228,7 @@ class TableTagLib implements TagLibrary {
         Map linkParams = [:]
         if (params.isSearch) {
             linkParams.isSearch = params.isSearch
-            linkParams.name = params.name
+            linkParams.searchTerm = params.searchTerm
         }
         linkParams.sort = property
 

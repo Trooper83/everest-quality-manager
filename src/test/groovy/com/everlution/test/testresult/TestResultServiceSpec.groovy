@@ -1,127 +1,18 @@
 package com.everlution.test.testresult
 
 import com.everlution.AutomatedTest
-import com.everlution.AutomatedTestService
 import com.everlution.Project
 import com.everlution.TestResult
 import com.everlution.TestResultService
-import com.everlution.TestRunResult
+import com.everlution.TestRun
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
-import grails.validation.ValidationException
 import spock.lang.Specification
 
 class TestResultServiceSpec extends Specification implements ServiceUnitTest<TestResultService>, DataTest {
 
     def setupSpec() {
         mockDomains(AutomatedTest, TestResult, Project)
-    }
-
-    void "save with valid object returns instance"() {
-        given:
-        def p = new Project(name: 'testing results', code: 'trs')
-        def at = new AutomatedTest(project: p, fullName: 'full name')
-        def tr = new TestResult(automatedTest: at, result: "Passed")
-
-        when:
-        def saved = service.save(tr)
-
-        then:
-        saved instanceof TestResult
-    }
-
-    void "save with invalid object throws validation exception"() {
-        given:
-        def tr = new TestResult()
-
-        when:
-        service.save(tr)
-
-        then:
-        thrown(ValidationException)
-    }
-
-    void "createAndSave returns empty list when no results passed in"() {
-        given:
-        def p = new Project(name: "name", code: "nme").save()
-
-        when:
-        def r = service.createAndSave(p, [])
-
-        then:
-        r.empty
-    }
-
-    void "createAndSave throws validation exception with null project"() {
-        given:
-        service.automatedTestService = Mock(AutomatedTestService) {
-            1 * findOrSave(_,_) >> {
-                def a = new AutomatedTest()
-                throw new ValidationException("Invalid", a.errors)
-            }
-        }
-        when:
-        service.createAndSave(null, [new TestRunResult(testName: "123", result: "Passed")])
-
-        then:
-        thrown(ValidationException)
-    }
-
-    void "createAndSave with null results returns empty list"() {
-        given:
-        def p = new Project(name: "name", code: "nme").save()
-
-        when:
-        def r = service.createAndSave(p, null)
-
-        then:
-        r.empty
-    }
-
-    void "createAndSave returns test result with properties populated"() {
-        given:
-        def p = new Project(name: "name", code: "nme").save()
-        def a = new AutomatedTest(project: p, fullName: "fullName").save()
-        service.automatedTestService = Mock(AutomatedTestService) {
-            1 * findOrSave(_,_) >> a
-        }
-
-        when:
-        def results = service.
-                createAndSave(p, [new TestRunResult(testName: "fullName", result: "Failed", failureCause: "I failed")])
-
-        then:
-        results.first().result == "Failed"
-        results.first().automatedTest == a
-        results.first().failureCause == "I failed"
-    }
-
-    void "createAndSave throws validation exception when automated test has errors"() {
-        given:
-        def p = new Project(name: "name", code: "nme").save()
-        service.automatedTestService = Mock(AutomatedTestService) {
-            1 * findOrSave(_,_) >> null
-        }
-
-        when:
-        service.createAndSave(p, [new TestRunResult(testName: "fullName", result: "Passed")])
-
-        then:
-        thrown(ValidationException)
-    }
-
-    void "createAndSave throws validation exception when result has errors"() {
-        given:
-        def p = new Project(name: "name", code: "nme").save()
-        service.automatedTestService = Mock(AutomatedTestService) {
-            1 * findOrSave(_,_) >> new AutomatedTest(project: p, fullName: "fullname 123")
-        }
-
-        when:
-        service.createAndSave(p, [new TestRunResult(testName: "fullName", result: "should fail")])
-
-        then:
-        thrown(ValidationException)
     }
 
     void "findAllByAutomatedTest returns empty list when none found"() {
@@ -137,7 +28,8 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
         given:
         def p = new Project(name: 'testing results999', code: 'tr9').save()
         def at = new AutomatedTest(project: p, fullName: 'full name999').save()
-        def tr = new TestResult(automatedTest: at, result: "Passed").save()
+        def t = new TestRun(name: "test run", project: p).save()
+        def tr = new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
         currentSession.flush()
 
         when:
@@ -145,5 +37,121 @@ class TestResultServiceSpec extends Specification implements ServiceUnitTest<Tes
 
         then:
         r.contains(tr)
+    }
+
+    void "getResultsForAutomatedTest does not throw exception when null"() {
+        when:
+        service.getResultsForAutomatedTest(null)
+
+        then:
+        noExceptionThrown()
+    }
+
+    void "getResultsForAutomatedTest sets zero for all numbers when no results found"() {
+        when:
+        def a = service.getResultsForAutomatedTest(null)
+
+        then:
+        a.total == 0
+        a.passTotal == 0
+        a.failTotal == 0
+        a.skipTotal == 0
+        a.recentPassTotal == 0
+        a.recentFailTotal == 0
+        a.recentSkipTotal == 0
+        a.recentResults.empty
+    }
+
+    void "getResultsForAutomatedTest returns correct numbers"() {
+        given:
+        def p = new Project(name: 'testing results999', code: 'tr9').save()
+        def at = new AutomatedTest(project: p, fullName: 'full name999').save()
+        def t = new TestRun(name: "test run", project: p).save()
+        def tr = new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+        def tr1 = new TestResult(automatedTest: at, result: "FAILED", testRun: t).save()
+        def tr2 = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
+        def tr3 = new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+        def tr4 = new TestResult(automatedTest: at, result: "FAILED", testRun: t).save()
+        def tr5 = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save(flush: true)
+
+        when:
+        def found = service.getResultsForAutomatedTest(at)
+
+        then:
+        found.recentResults.containsAll([tr,tr1,tr2,tr3,tr4,tr5])
+        found.total == 6
+        found.passTotal == 2
+        found.failTotal == 2
+        found.skipTotal == 2
+        found.recentPassTotal == 2
+        found.recentFailTotal == 2
+        found.recentSkipTotal == 2
+    }
+
+    void "getResultsForAutomatedTest returns correct numbers when more than 20 results found"() {
+        given:
+        def p = new Project(name: 'testing results9999999', code: 'tr999').save()
+        def at = new AutomatedTest(project: p, fullName: 'full name999').save()
+        def t = new TestRun(project: p, name: "test run name").save()
+        int i = 0
+        while(i < 4) {
+            new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "PASSED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "FAILED", testRun: t).save()
+            new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
+            i++
+        }
+        currentSession.flush()
+        int j = 0
+        def expected = []
+        def first = new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save()
+        while(j < 4) {
+            expected.add(new TestResult(automatedTest: at, result: "PASSED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "FAILED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "FAILED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save())
+            expected.add(new TestResult(automatedTest: at, result: "SKIPPED", testRun: t).save())
+            j++
+        }
+        currentSession.flush()
+
+        when:
+        def found = service.getResultsForAutomatedTest(at)
+
+        then:
+        found.recentResults.containsAll(expected)
+        !found.recentResults.contains(first)
+        found.recentResults.size() == 20
+        found.total == 41
+        found.passTotal == 16
+        found.failTotal == 12
+        found.skipTotal == 13
+        found.recentPassTotal == 4
+        found.recentFailTotal == 8
+        found.recentSkipTotal == 8
+    }
+
+    void "findAllByTestRun returns results"() {
+        given:
+        def p = new Project(name: "project name", code: "pcdr1").save()
+        def t = new TestRun(project: p, name: "testrun name").save()
+        def a = new AutomatedTest(project: p, fullName: "this is my full name").save()
+        def r = new TestResult(result: "PASSED", automatedTest: a, testRun: t).save(flush: true)
+
+        when:
+        def found = service.findAllByTestRun(t, [:])
+
+        then:
+        found.contains(r)
+    }
+
+    void "findAllByTestRun returns empty list when none found"() {
+        when:
+        def r = service.findAllByTestRun(null, [:])
+
+        then:
+        r.empty
+        noExceptionThrown()
     }
 }

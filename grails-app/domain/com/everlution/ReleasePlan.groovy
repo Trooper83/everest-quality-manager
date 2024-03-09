@@ -5,6 +5,7 @@ class ReleasePlan {
     Date dateCreated
     Date lastUpdated
     String name
+    String notes
     Date plannedDate
     Person person
     Project project
@@ -22,11 +23,12 @@ class ReleasePlan {
 
     static constraints = {
         name nullable: false, blank: false, maxSize: 500
+        notes nullable: true, blank: true, maxSize: 1000
         person nullable: false
         plannedDate nullable: true
         project nullable: false
         releaseDate nullable: true
-        status blank: false, nullable: false, inList: ["ToDo", "Planning", "In Progress", "Released"]
+        status blank: false, nullable: false, inList: ["Canceled", "ToDo", "Planning", "In Progress", "Released"]
         testCycles nullable: true
     }
 }

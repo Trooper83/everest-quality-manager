@@ -37,6 +37,6 @@ class EditPageSpec extends GebSpec {
     void "status options are correct"() {
         expect:
         def page = browser.page(EditReleasePlanPage)
-        page.statusSelectOptions*.text() == ['ToDo', 'Planning', 'In Progress', 'Released']
+        page.statusSelectOptions*.text() == ['ToDo', 'Planning', 'In Progress', 'Released', 'Canceled']
     }
 }

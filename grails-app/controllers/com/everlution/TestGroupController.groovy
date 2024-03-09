@@ -30,7 +30,7 @@ class TestGroupController {
             testGroupResults = testGroupService.findAllByProject(project, params)
 
         } else { // perform search
-            testGroupResults = testGroupService.findAllInProjectByName(project, params.name, params)
+            testGroupResults = testGroupService.findAllInProjectByName(project, params.searchTerm, params)
         }
         respond testGroupResults.results, model: [testGroupCount: testGroupResults.count, project: project], view: 'testGroups'
     }

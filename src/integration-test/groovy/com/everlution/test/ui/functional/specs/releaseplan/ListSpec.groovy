@@ -104,7 +104,7 @@ class ListSpec extends GebSpec {
 
         then:
         plansPage.listTable.rowCount > 0
-        plansPage.searchModule.nameInput.text == 'plan'
+        plansPage.searchModule.searchInput.text == 'plan'
     }
 
     void "delete message displays after plan deleted"() {
@@ -144,13 +144,13 @@ class ListSpec extends GebSpec {
 
         expect:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'plan'
+        page.searchModule.searchInput.text == 'plan'
 
         when:
         page.searchModule.resetSearch()
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == ''
+        page.searchModule.searchInput.text == ''
     }
 }

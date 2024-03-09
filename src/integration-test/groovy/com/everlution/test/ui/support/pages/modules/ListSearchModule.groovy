@@ -6,7 +6,7 @@ import geb.module.TextInput
 class ListSearchModule extends Module {
 
     static content = {
-        nameInput { $("#name").module(TextInput) }
+        searchInput { $("#searchTerm").module(TextInput) }
         resetLink { $("#resetLink") }
         searchButton { $("#searchButton") }
     }
@@ -20,10 +20,9 @@ class ListSearchModule extends Module {
 
     /**
      * performs a search
-     * @param name - name to search for
      */
-    void search(String name) {
-        nameInput << name
+    void search(String term) {
+        searchInput << term
         searchButton.click()
     }
 }

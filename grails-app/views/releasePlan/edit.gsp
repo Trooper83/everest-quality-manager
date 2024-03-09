@@ -30,7 +30,7 @@
                         <div class="col-4 mb-3">
                             <label class="form-label" for="status">Status</label>
                             <g:select class="form-select" name="status" value="${releasePlan.status}"
-                                      from="${['ToDo', 'Planning', 'In Progress', 'Released']}"/>
+                                      from="${['ToDo', 'Planning', 'In Progress', 'Released', 'Canceled']}"/>
                         </div>
                         <div class="col-6 date-picker mb-3">
                             <label class="form-label" style="display:block" for="plannedDate">Planned Date</label>
@@ -43,6 +43,11 @@
                             <g:datePicker name="releaseDate" default="none" precision="day"
                                           value="${releasePlan.releaseDate}"
                                           noSelection="['':'']" relativeYears="[0..1]"/>
+                        </div>
+                        <div class="col-8 mb-3">
+                            <label class="form-label" for="notes">Notes</label>
+                            <g:textArea class="form-control" name="notes" value="${releasePlan.notes}"
+                                  maxLength="1000"></g:textArea>
                         </div>
                     </div>
                     <div class="card-footer">

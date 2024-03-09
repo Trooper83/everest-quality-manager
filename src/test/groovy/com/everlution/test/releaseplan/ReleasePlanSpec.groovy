@@ -164,7 +164,7 @@ class ReleasePlanSpec extends Specification implements DomainUnitTest<ReleasePla
         domain.validate(["status"])
 
         where:
-        value << ["ToDo", "Planning", "In Progress", "Released"]
+        value << ["ToDo", "Planning", "In Progress", "Released", "Canceled"]
     }
 
     void "status does not validate with value not in list"() {
@@ -174,5 +174,40 @@ class ReleasePlanSpec extends Specification implements DomainUnitTest<ReleasePla
         then:
         !domain.validate(["status"])
         domain.errors["status"].code == "not.inList"
+    }
+
+    void "notes can be null"() {
+        when:
+        domain.notes = null
+
+        then:
+        domain.validate(["notes"])
+    }
+
+    void "notes can be blank"() {
+        when:
+        domain.notes = ""
+
+        then:
+        domain.validate(["notes"])
+    }
+
+    void "notes cannot exceed 1000 characters"() {
+        when:
+        String str = "a" * 1001
+        domain.notes = str
+
+        then:
+        !domain.validate(["notes"])
+        domain.errors["notes"].code == "maxSize.exceeded"
+    }
+
+    void "notes validates with 1000 characters"() {
+        when:
+        String str = "a" * 1000
+        domain.notes = str
+
+        then:
+        domain.validate(["notes"])
     }
 }

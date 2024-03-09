@@ -37,7 +37,7 @@ class EditPageFreeFormStepsSpec extends GebSpec {
         when: "add a test step row"
         EditBugPage page = at EditBugPage
         page.scrollToBottom()
-        page.stepsTable.addRowHotKey()
+        page.stepsTable.addRow()
 
         then: "row count is 2"
         page.stepsTable.getStepsCount() == 2

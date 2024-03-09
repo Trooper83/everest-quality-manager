@@ -121,12 +121,12 @@ class TableTagLibSpec extends Specification implements TagLibUnitTest<TableTagLi
     void "search params retained when present"() {
         when:
         params.isSearch = true
-        params.name = 'search for me'
+        params.searchTerm = 'search for me'
         def found = applyTemplate("<g:pagination domain='bug' projectId='1' total='11'/>")
 
         then:
         found.contains('isSearch=true')
-        found.contains('name=search for me')
+        found.contains('searchTerm=search for me')
     }
 
     void "sort params retained when present"() {
@@ -251,12 +251,12 @@ class TableTagLibSpec extends Specification implements TagLibUnitTest<TableTagLi
         params.order = 'asc'
         params.sort = 'testing'
         params.isSearch = 'true'
-        params.name = 'searchName'
+        params.searchTerm = 'searchName'
         def found = applyTemplate("<g:columnSort title='headers' property='testing' projectId='1' domain='bug'/>")
 
         then:
         found.contains("isSearch=true")
-        found.contains("name=searchName")
+        found.contains("searchTerm=searchName")
     }
 
     void "pagination params are retained"() {

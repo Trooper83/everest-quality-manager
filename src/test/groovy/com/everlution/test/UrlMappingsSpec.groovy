@@ -1,5 +1,6 @@
 package com.everlution.test
 
+import com.everlution.AutomatedTestController
 import com.everlution.BugController
 import com.everlution.ProjectController
 import com.everlution.ReleasePlanController
@@ -280,5 +281,33 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
 
         expect:
         verifyUrlMapping("/api/testRuns", controller: 'testRun', action: 'save')
+    }
+
+    void "verify automatedTest forward and reverse mappings"() {
+        mockController(AutomatedTestController)
+
+        expect:
+        verifyUrlMapping("/project/123/automatedTests", controller: 'automatedTest', action: 'automatedTests') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/automatedTest/show/321", controller: 'automatedTest', action: 'show') {
+            projectId = 123
+            id = 321
+        }
+    }
+
+    void "verify testRun forward and reverse mappings"() {
+        mockController(TestRunController)
+
+        expect:
+        verifyUrlMapping("/api/testRuns", controller: 'testRun', action: 'save')
+
+        verifyUrlMapping("/project/123/testRuns", controller: 'testRun', action: 'testRuns') {
+            projectId = 123
+        }
+        verifyUrlMapping("/project/123/testRun/show/321", controller: 'testRun', action: 'show') {
+            projectId = 123
+            id = 321
+        }
     }
 }

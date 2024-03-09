@@ -37,7 +37,7 @@ class BugController {
 
 
         } else { // perform search
-            searchResult = bugService.findAllInProjectByName(project, params.name, params)
+            searchResult = bugService.findAllInProjectByName(project, params.searchTerm, params)
         }
         respond searchResult.results, model: [bugCount: searchResult.count, project: project], view: 'bugs'
     }

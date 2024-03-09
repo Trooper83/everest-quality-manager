@@ -7,6 +7,8 @@ class ResultsExtension implements IAnnotationDrivenExtension<SendResults> {
 
     @Override
     void visitSpecAnnotation(SendResults annotations, SpecInfo spec) {
-        spec.addListener(new ResultsListener())
+        if(System.getProperty("sendResults") == "true") {
+            spec.addListener(new ResultsListener())
+        }
     }
 }

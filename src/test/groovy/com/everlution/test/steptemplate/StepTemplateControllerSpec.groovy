@@ -125,7 +125,7 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
         when:"action is executed"
         setToken(params)
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         controller.stepTemplates(1, 10)
 
         then:"model is correct"

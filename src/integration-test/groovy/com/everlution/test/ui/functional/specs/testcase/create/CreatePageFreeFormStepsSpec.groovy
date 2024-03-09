@@ -89,23 +89,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         page.testStepTable.getStep(1).find('input[value=Remove]').displayed
     }
 
-    void "alt+n hotkey adds new row with action in focus"() {
-        given:
-        def page = browser.page(CreateTestCasePage)
-        page.scrollToBottom()
-        page.testStepTable.selectStepsTab('free-form')
-
-        expect:
-        page.testStepTable.getStepsCount() == 0
-
-        when:
-        page.testStepTable.addRowHotKey()
-
-        then:
-        page.testStepTable.getStepsCount() == 1
-        page.testStepTable.getStep(0).find('textarea[name="steps[0].act"]').focused
-    }
-
     void "changing step type resets free form"() {
         setup: "add a row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)

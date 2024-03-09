@@ -73,7 +73,7 @@ class ListSpec extends GebSpec {
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'test'
+        page.searchModule.searchInput.text == 'test'
     }
 
     void "delete message displays after group deleted"() {
@@ -122,13 +122,13 @@ class ListSpec extends GebSpec {
 
         expect:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'test'
+        page.searchModule.searchInput.text == 'test'
 
         when:
         page.searchModule.resetSearch()
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == ''
+        page.searchModule.searchInput.text == ''
     }
 }

@@ -156,4 +156,153 @@ class AutomatedTestServiceSpec extends Specification implements ServiceUnitTest<
         found == null
         noExceptionThrown()
     }
+
+    void "findAllByProject returns all tests in project"() {
+        given:
+        def p = new Project(name: "find me 123", code: "fm123").save()
+        def t1 = new AutomatedTest(fullName: "first name", project: p).save()
+        def t2 = new AutomatedTest(fullName: "second name", project: p).save(flush: true)
+
+        when:
+        def r = service.findAllByProject(p, [:]).results
+
+        then:
+        r.size() == 2
+        r.containsAll([t1, t2])
+    }
+
+    void "findAllByProject returns only tests in project"() {
+        given:
+        def p1 = new Project(name: "find me 123", code: "fm123").save()
+        def p2 = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t1 = new AutomatedTest(fullName: "first name", project: p1).save()
+        def t2 = new AutomatedTest(fullName: "second name", project: p2).save(flush: true)
+
+        when:
+        def r = service.findAllByProject(p1, [:]).results
+
+        then:
+        r.size() == 1
+        r.contains(t1)
+        !r.contains(t2)
+    }
+
+    void "findAllByProject returns empty list when project null"() {
+        when:
+        def r = service.findAllByProject(null, [:]).results
+
+        then:
+        noExceptionThrown()
+        r.empty
+    }
+
+    void "findAllInProjectByFullName returns test run"(String q) {
+        given:
+        def p = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t = new AutomatedTest(fullName: "First test 123", project: p).save(flush: true)
+
+        expect:
+        t != null
+
+        when:
+        def results = service.findAllInProjectByFullName(p, q, [:]).results
+
+        then:
+        results.first().fullName == "First test 123"
+
+        where:
+        q << ['first', 'fi', 'irs', 't te', 'FIRST', 't 123']
+    }
+
+    void "findAllInProjectByFullName with string returns tests"(String s, int size, int count) {
+        given:
+        def p = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t = new AutomatedTest(fullName: "First test 123", project: p).save(flush: true)
+        def t1 = new AutomatedTest(fullName: "Second test 123", project: p).save(flush: true)
+
+        expect:
+        t != null
+        t1 != null
+
+        when:
+        def r = service.findAllInProjectByFullName(p, s, [:])
+
+        then:
+        r.results.size() == size
+        r.count == count
+
+        where:
+        s           | size | count
+        ''          | 2    | 2
+        'not found' | 0    | 0
+        'test'      | 2    | 2
+    }
+
+    void "findAllInProjectByFullName with null project returns empty list"() {
+        when:
+        def r = service.findAllInProjectByFullName(null, "string", [:]).results
+
+        then:
+        r.empty
+        noExceptionThrown()
+    }
+
+    void "findAllInProjectByFullName returns only test runs in project"() {
+        given:
+        def p1 = new Project(name: "find me 123", code: "fm123").save()
+        def p2 = new Project(name: "dont find me 123", code: "dfm12").save()
+        def t = new AutomatedTest(fullName: "First test 123", project: p1).save()
+        def t1 = new AutomatedTest(fullName: "Second test 123", project: p2).save(flush: true)
+
+        when:
+        def r = service.findAllInProjectByFullName(p1, "test", [:]).results
+
+        then:
+        r.size() == 1
+        r.contains(t)
+        !r.contains(t1)
+    }
+
+    void "get returns AutomatedTest"() {
+        given:
+        def p1 = new Project(name: "find me 123", code: "fm123").save()
+        def t1 = new AutomatedTest(fullName: "Second test 123", project: p1).save(flush: true)
+
+        when:
+        def a = service.get(t1.id)
+
+        then:
+        a != null
+    }
+
+    void "get returns null when not found"() {
+        when:
+        def a = service.get(null)
+
+        then:
+        noExceptionThrown()
+        a == null
+    }
+
+    void "countByProject returns number of tests in project"() {
+        given:
+        def p = new Project(name: "counting 123", code: "c123").save()
+        new AutomatedTest(fullName: "counting 1", project: p).save()
+        new AutomatedTest(fullName: "counting 2", project: p).save(flush: true)
+
+        when:
+        def c = service.countByProject(p)
+
+        then:
+        c == 2
+    }
+
+    void "countByProject returns 0 when project null"() {
+        when:
+        def c = service.countByProject(null)
+
+        then:
+        noExceptionThrown()
+        c == 0
+    }
 }

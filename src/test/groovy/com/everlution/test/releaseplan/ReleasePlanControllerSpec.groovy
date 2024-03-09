@@ -111,7 +111,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         when:"action is executed"
         setToken(params)
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         controller.releasePlans(1, 10)
 
         then:"model is correct"

@@ -136,7 +136,7 @@ class ListSpec extends GebSpec {
 
         then:
         bugsPage.listTable.rowCount > 0
-        bugsPage.searchModule.nameInput.text == 'bug'
+        bugsPage.searchModule.searchInput.text == 'bug'
     }
 
     void "clicking name column directs to show page"() {
@@ -247,7 +247,7 @@ class ListSpec extends GebSpec {
         page.listTable.goToPage('2')
 
         then:
-        currentUrl.contains('name=Bug')
+        currentUrl.contains('searchTerm=Bug')
         currentUrl.contains('isSearch=true')
     }
 
@@ -266,7 +266,7 @@ class ListSpec extends GebSpec {
         page.listTable.sortColumn('Name')
 
         then:
-        currentUrl.contains("name=Bug")
+        currentUrl.contains("searchTerm=Bug")
         currentUrl.contains('isSearch=true')
     }
 
@@ -329,13 +329,13 @@ class ListSpec extends GebSpec {
 
         expect:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == 'bug'
+        page.searchModule.searchInput.text == 'bug'
 
         when:
         page.searchModule.resetSearch()
 
         then:
         page.listTable.rowCount > 0
-        page.searchModule.nameInput.text == ''
+        page.searchModule.searchInput.text == ''
     }
 }

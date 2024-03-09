@@ -1,5 +1,6 @@
 package com.everlution.test.project
 
+import com.everlution.AutomatedTestService
 import com.everlution.BugService
 import com.everlution.Project
 import com.everlution.ProjectController
@@ -412,7 +413,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when: "call action"
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         setToken(params)
         controller.projects()
 
@@ -428,7 +429,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when: "call action"
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         setToken(params)
         controller.projects()
 
@@ -452,8 +453,11 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.testCaseService = Mock(TestCaseService) {
             1 * countByProject(project) >> 0
         }
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * countByProject(project) >> 0
+        }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * getPrevNextPlans(project) >> new LinkedHashMap<>()
         }
 
         when:"a domain instance is passed to the home action"
@@ -492,8 +496,12 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * countByProject(project) >> 0
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, params) >> new SearchResult([ new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
-                                               new ReleasePlan(status: 'Released', releaseDate: pastDate) ], 2)
+            1 * getPrevNextPlans(project) >> [
+                    "previousRelease": new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
+                    "nextRelease": new ReleasePlan(status: 'Released', releaseDate: pastDate) ]
+        }
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * countByProject(project) >> 0
         }
 
         when:"A domain instance is passed to the home action"
@@ -504,6 +512,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.bugCount == 0
         model.scenarioCount == 0
         model.testCaseCount == 0
+        model.automatedTestCount == 0
         model.nextRelease != null
         model.previousRelease != null
     }
@@ -524,65 +533,10 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * countByProject(project) >> 0
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, params) >> new SearchResult([], 0)
+            1 * getPrevNextPlans(project) >> [:]
         }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.nextRelease == null
-    }
-
-    void "home action returns correct plan for next release plan"() {
-        given:
-        def project = new Project()
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
+        controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
-        }
-        controller.scenarioService = Mock(ScenarioService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        def plan = new ReleasePlan(plannedDate: futureDate, status: 'ToDo')
-        def date = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
-        def plan1 = new ReleasePlan(plannedDate: date, status: 'ToDo')
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
-        }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.nextRelease == plan
-    }
-
-    void "home action returns released plans for next release plan"() {
-        given:
-        def project = new Project()
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.scenarioService = Mock(ScenarioService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        def plan = new ReleasePlan(plannedDate: futureDate, status: 'Released')
-        def date = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
-        def plan1 = new ReleasePlan(plannedDate: date, status: 'Released')
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
         }
 
         when:"A domain instance is passed to the home action"
@@ -608,7 +562,10 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * countByProject(project) >> 0
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, [:]) >> new SearchResult([], 0)
+            1 * getPrevNextPlans(project) >> [:]
+        }
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * countByProject(project) >> 0
         }
 
         when:"A domain instance is passed to the home action"
@@ -616,95 +573,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:"A model is populated containing the domain instance"
         model.previousRelease == null
-    }
-
-    void "home action returns correct plan for previous release plan"() {
-        given:
-        def project = new Project()
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.scenarioService = Mock(ScenarioService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        def plan = new ReleasePlan(releaseDate: pastDate, status: 'Released')
-        def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
-        def plan1 = new ReleasePlan(releaseDate: date, status: 'Released')
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
-        }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.previousRelease == plan
-    }
-
-    void "home action strips out future plans for previous release plan"() {
-        given:
-        def project = new Project()
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.scenarioService = Mock(ScenarioService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        def plan = new ReleasePlan(releaseDate: pastDate, status: 'ToDo')
-        def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
-        def plan1 = new ReleasePlan(releaseDate: date, status: 'ToDo')
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, [:]) >> new SearchResult([plan, plan1], 2)
-        }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.previousRelease == null
-    }
-
-    void "home action returns previous and future release plans when date is today"() {
-        given:
-        def project = new Project()
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.scenarioService = Mock(ScenarioService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        def date = new Date().from(Instant.now())
-        def futureDate = new Date().from(Instant.now().plus(1, ChronoUnit.MINUTES))
-        def released = new ReleasePlan(releaseDate: date, status: 'Released')
-        def future = new ReleasePlan(plannedDate: futureDate, status: 'In Progress')
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * findAllByProject(project, [:]) >> new SearchResult([released, future], 2)
-        }
-
-        when:
-        controller.home(2)
-
-        then:
-        model.previousRelease == released
-        model.nextRelease == future
     }
 
     void "show action with a null id"() {

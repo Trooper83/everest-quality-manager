@@ -13,6 +13,7 @@ class CreateReleasePlanPage extends CreatePage {
 
     static content = {
         nameInput { $("#name") }
+        notesInput { $("#notes") }
         plannedDateDaySelect { $("#plannedDate_day").module(Select) }
         plannedDateMonthSelect { $("#plannedDate_month").module(Select) }
         plannedDateYearSelect { $("#plannedDate_year").module(Select) }
@@ -20,6 +21,7 @@ class CreateReleasePlanPage extends CreatePage {
         releaseDateMonthSelect { $("#releaseDate_month").module(Select) }
         releaseDateYearSelect { $("#releaseDate_year").module(Select) }
         statusSelect { $("#status").module(Select) }
+        statusSelectOptions { $("#status > option")}
     }
 
     /**
@@ -34,7 +36,7 @@ class CreateReleasePlanPage extends CreatePage {
     /**
      * creates a plan with the supplied data
      */
-    void createReleasePlan(String name, String status, String plannedDate, String releaseDate) {
+    void createReleasePlan(String name, String status, String plannedDate, String releaseDate, String notes) {
         def plannedDateList = plannedDate.replace(',', '').split(' ')
         def releaseDateList = releaseDate.replace(',', '').split(' ')
         nameInput << name
@@ -45,6 +47,7 @@ class CreateReleasePlanPage extends CreatePage {
         releaseDateDaySelect.selected = releaseDateList[1]
         releaseDateMonthSelect.selected = releaseDateList[0]
         releaseDateYearSelect.selected = releaseDateList[2]
+        notesInput << notes
         createButton.click()
     }
 }

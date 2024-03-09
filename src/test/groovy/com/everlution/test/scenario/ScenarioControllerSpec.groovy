@@ -111,7 +111,7 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         when:"action is executed"
         setToken(params)
         params.isSearch = 'true'
-        params.name = 'test'
+        params.searchTerm = 'test'
         controller.scenarios(1, null)
 
         then:"model is correct"

@@ -32,7 +32,7 @@ class ScenarioController {
             searchResults = scenarioService.findAllByProject(project, params)
 
         } else { // perform search
-            searchResults = scenarioService.findAllInProjectByName(project, params.name, params)
+            searchResults = scenarioService.findAllInProjectByName(project, params.searchTerm, params)
         }
         respond searchResults.results, model: [scenarioCount: searchResults.count, project: project], view: 'scenarios'
     }

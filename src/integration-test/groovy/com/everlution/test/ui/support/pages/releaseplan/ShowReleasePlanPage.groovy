@@ -14,6 +14,7 @@ class ShowReleasePlanPage extends ShowPage {
     static content = {
         addTestCycleButton(required: false) { $("#addTestCycleBtn") }
         nameValue { $("#name") }
+        notesValue { $("#notes") }
         plannedDateValue { $("#plannedDate") }
         releaseDateValue { $("#releaseDate") }
         statusValue { $("#status") }

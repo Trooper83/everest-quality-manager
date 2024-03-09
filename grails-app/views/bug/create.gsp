@@ -83,7 +83,6 @@
         </main>
     </div>
 </div>
-</div>
 <asset:javascript src="step.js"/>
 </body>
 </html>
