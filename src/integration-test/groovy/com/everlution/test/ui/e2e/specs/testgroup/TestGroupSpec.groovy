@@ -2,6 +2,7 @@ package com.everlution.test.ui.e2e.specs.testgroup
 
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -11,6 +12,7 @@ import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage
 import com.everlution.test.ui.support.pages.testgroup.ShowTestGroupPage
 import geb.spock.GebSpec
 
+@SendResults
 class TestGroupSpec extends GebSpec {
 
     def group = DataFactory.testGroup()

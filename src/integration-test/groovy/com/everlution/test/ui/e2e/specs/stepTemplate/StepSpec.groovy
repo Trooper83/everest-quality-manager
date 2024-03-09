@@ -2,6 +2,7 @@ package com.everlution.test.ui.e2e.specs.stepTemplate
 
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
@@ -15,6 +16,7 @@ import com.everlution.test.ui.support.pages.testcase.ListTestCasePage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 
+@SendResults
 class StepSpec extends GebSpec {
 
     def step = DataFactory.step()

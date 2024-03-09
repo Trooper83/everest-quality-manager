@@ -3,12 +3,14 @@ package com.everlution.test.ui.e2e.specs.person
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.data.SecurityRoles
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.admin.user.CreateUserPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.person.ProfilePage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 
+@SendResults
 class ProfileSpec extends GebSpec {
 
     def person

@@ -2,6 +2,7 @@ package com.everlution.test.ui.e2e.specs.bug
 
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.bug.EditBugPage
 import com.everlution.test.ui.support.pages.bug.ListBugPage
@@ -12,6 +13,7 @@ import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.github.javafaker.Faker
 import geb.spock.GebSpec
 
+@SendResults
 class BugSpec extends GebSpec {
 
     Faker faker = new Faker()

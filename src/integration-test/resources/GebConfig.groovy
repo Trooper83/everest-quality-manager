@@ -23,7 +23,7 @@ environments {
         }
     }
 
-    // run via “./gradlew -Dgeb.env=integrated iT”
+    // run via “./gradlew -Dgeb.env=prod iT”
     prod {
         baseUrl = "https://www.everlution.everestquality.com"
         driver = {
@@ -35,6 +35,15 @@ environments {
     // run via “./gradlew -Dgeb.env=local iT”
     local {
         baseUrl = "http://localhost:8080"
+        driver = {
+            ChromeOptions o = new ChromeOptions()
+            //o.addArguments('headless')
+            new ChromeDriver(o)
+        }
+    }
+    // run via “./gradlew -Dgeb.env=integrated iT”
+    integrated {
+        baseUrl = "http://192.168.1.234:8080/"
         driver = {
             ChromeOptions o = new ChromeOptions()
             //o.addArguments('headless')

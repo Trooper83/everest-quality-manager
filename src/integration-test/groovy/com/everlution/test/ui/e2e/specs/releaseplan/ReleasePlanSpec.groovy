@@ -2,6 +2,7 @@ package com.everlution.test.ui.e2e.specs.releaseplan
 
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -14,10 +15,11 @@ import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPa
 import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 
+@SendResults
 class ReleasePlanSpec extends GebSpec {
 
     String futureDate
-    String name
+    Map<String,  String> plan
     String pastDate
 
     def setup() {
@@ -31,21 +33,21 @@ class ReleasePlanSpec extends GebSpec {
         def projectHomePage = at ProjectHomePage
         projectHomePage.sideBar.goToCreate("Release Plan")
 
-        name = DataFactory.releasePlan().name
+        plan = DataFactory.releasePlan()
         futureDate = DataFactory.getFutureDate(10)
         pastDate = DataFactory.getPastDate(0)
-        browser.page(CreateReleasePlanPage)
-                .createReleasePlan(name, "ToDo", pastDate, futureDate)
+        browser.page(CreateReleasePlanPage).createReleasePlan(plan.name, "ToDo", pastDate, futureDate, plan.notes)
     }
 
     void "release plan is created and data persists"() {
         expect: "at show page"
         def show = at ShowReleasePlanPage
         verifyAll {
-            show.nameValue.text() == name
+            show.nameValue.text() == plan.name
             show.statusValue.text() == "ToDo"
             show.plannedDateValue.text() == pastDate
             show.releaseDateValue.text() == futureDate
+            show.notesValue.text() == plan.notes
         }
     }
 
@@ -90,16 +92,16 @@ class ReleasePlanSpec extends GebSpec {
         when:
         def future = DataFactory.getFutureDate(11)
         def past = DataFactory.getPastDate(1)
-        browser.page(EditReleasePlanPage)
-                .editReleasePlan(name + ' edited', 'Planning', past, future)
+        browser.page(EditReleasePlanPage).editReleasePlan(plan.name + ' edited', 'Planning', past, future, plan.notes)
 
         then:
         def showPage = at ShowReleasePlanPage
         verifyAll {
-            showPage.nameValue.text() == name + ' edited'
+            showPage.nameValue.text() == plan.name + ' edited'
             showPage.statusValue.text() == "Planning"
             showPage.plannedDateValue.text() == past
             showPage.releaseDateValue.text() == future
+            showPage.notesValue.text() == plan.notes
         }
     }
 
@@ -109,6 +111,6 @@ class ReleasePlanSpec extends GebSpec {
 
         then:
         def list = at ListReleasePlanPage
-        !list.listTable.isValueInColumn('Name', name)
+        !list.listTable.isValueInColumn('Name', plan.name)
     }
 }
