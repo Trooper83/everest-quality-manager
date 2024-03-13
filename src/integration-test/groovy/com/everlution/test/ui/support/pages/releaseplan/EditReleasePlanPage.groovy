@@ -37,7 +37,7 @@ class EditReleasePlanPage extends EditPage {
         releaseDateDaySelect.selected = releaseDateList[1]
         releaseDateMonthSelect.selected = releaseDateList[0]
         releaseDateYearSelect.selected = releaseDateList[2]
-        notesInput << notes
+        notesInput = notes
         updateButton.click()
     }
 }

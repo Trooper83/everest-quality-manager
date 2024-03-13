@@ -10,7 +10,7 @@ import spock.lang.Specification
 class TestRunSpec extends Specification {
 
     def baseUrl = "http://localhost:8080"//"https://www.everlution.everestquality.com"
-    def projectId = "24" //prod: 7, int: 24
+    def projectId = "6" //prod: 7, int: 6
 
     void "201 when test run created no results"() {
         given:
@@ -30,8 +30,8 @@ class TestRunSpec extends Specification {
         given:
         def token = new AuthService(baseUrl).login(Credentials.BASIC.email, Credentials.BASIC.password)
         def payload = "{\"project\": \"${projectId}\", \"name\": \"E2E Test Run\", " +
-                "\"testResults\": [{\"testName\":\"transactional testing\", \"result\": \"Passed\"}, " +
-                "{\"testName\":\"transactional testing\", \"result\": \"Passed\"}]}"
+                "\"testResults\": [{\"testName\":\"transactional testing\", \"result\": \"PASSED\"}, " +
+                "{\"testName\":\"transactional testing\", \"result\": \"PASSED\"}]}"
 
         when:
         def r = new TestRunsService(baseUrl, token).createTestRun(payload)
