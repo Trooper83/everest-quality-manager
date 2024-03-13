@@ -92,7 +92,7 @@ class ReleasePlanSpec extends GebSpec {
         when:
         def future = DataFactory.getFutureDate(11)
         def past = DataFactory.getPastDate(1)
-        browser.page(EditReleasePlanPage).editReleasePlan(plan.name + ' edited', 'Planning', past, future, plan.notes)
+        browser.page(EditReleasePlanPage).editReleasePlan(plan.name + ' edited', 'Planning', past, future, 'These are the notes')
 
         then:
         def showPage = at ShowReleasePlanPage
@@ -101,7 +101,7 @@ class ReleasePlanSpec extends GebSpec {
             showPage.statusValue.text() == "Planning"
             showPage.plannedDateValue.text() == past
             showPage.releaseDateValue.text() == future
-            showPage.notesValue.text() == plan.notes
+            showPage.notesValue.text() == 'These are the notes'
         }
     }
 

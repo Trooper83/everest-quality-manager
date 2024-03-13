@@ -43,7 +43,7 @@ environments {
     }
     // run via “./gradlew -Dgeb.env=integrated iT”
     integrated {
-        baseUrl = "http://192.168.1.234:8080/"
+        baseUrl = "http://localhost:8080/"
         driver = {
             ChromeOptions o = new ChromeOptions()
             //o.addArguments('headless')
