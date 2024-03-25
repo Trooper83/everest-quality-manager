@@ -1,9 +1,9 @@
 package com.everlution.test.api.functional.specs
 
-import com.everlution.AutomatedTestService
-import com.everlution.ProjectService
-import com.everlution.TestResultService
-import com.everlution.TestRunService
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.services.project.ProjectService
+import com.everlution.services.testresult.TestResultService
+import com.everlution.services.testrun.TestRunService
 import com.everlution.test.api.support.services.AuthService
 import com.everlution.test.api.support.services.TestRunsService
 import com.everlution.test.support.results.SendResults

@@ -1,9 +1,9 @@
 package com.everlution.test.testrun
 
-import com.everlution.AutomatedTest
-import com.everlution.Project
-import com.everlution.TestResult
-import com.everlution.TestRun
+import com.everlution.domains.AutomatedTest
+import com.everlution.domains.Project
+import com.everlution.domains.TestResult
+import com.everlution.domains.TestRun
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 

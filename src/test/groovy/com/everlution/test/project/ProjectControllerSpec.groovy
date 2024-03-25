@@ -1,16 +1,16 @@
 package com.everlution.test.project
 
-import com.everlution.AutomatedTestService
-import com.everlution.BugService
-import com.everlution.Project
-import com.everlution.ProjectController
-import com.everlution.ProjectService
-import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanService
-import com.everlution.ScenarioService
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.services.bug.BugService
+import com.everlution.domains.Project
+import com.everlution.controllers.ProjectController
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.ReleasePlan
+import com.everlution.services.releaseplan.ReleasePlanService
+import com.everlution.services.scenario.ScenarioService
 import com.everlution.SearchResult
-import com.everlution.TestCaseService
-import com.everlution.command.RemovedItems
+import com.everlution.services.testcase.TestCaseService
+import com.everlution.controllers.command.RemovedItems
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException

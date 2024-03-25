@@ -1,10 +1,10 @@
 package com.everlution.test.ui.functional.specs.bug.edit
 
-import com.everlution.Bug
-import com.everlution.BugService
-import com.everlution.PersonService
-import com.everlution.ProjectService
-import com.everlution.Step
+import com.everlution.domains.Bug
+import com.everlution.services.bug.BugService
+import com.everlution.services.person.PersonService
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.Step
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage

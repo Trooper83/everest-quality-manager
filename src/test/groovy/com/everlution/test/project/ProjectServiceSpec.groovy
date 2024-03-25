@@ -1,8 +1,8 @@
 package com.everlution.test.project
 
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.command.RemovedItems
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.controllers.command.RemovedItems
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

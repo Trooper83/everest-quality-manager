@@ -1,7 +1,7 @@
 package com.everlution.test.step
 
-import com.everlution.Project
-import com.everlution.Step
+import com.everlution.domains.Project
+import com.everlution.domains.Step
 import grails.test.hibernate.HibernateSpec
 import spock.lang.Shared
 

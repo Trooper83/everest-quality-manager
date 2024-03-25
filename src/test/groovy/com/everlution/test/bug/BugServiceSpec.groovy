@@ -1,10 +1,10 @@
 package com.everlution.test.bug
 
-import com.everlution.Bug
-import com.everlution.BugService
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.command.RemovedItems
+import com.everlution.domains.Bug
+import com.everlution.services.bug.BugService
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.controllers.command.RemovedItems
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

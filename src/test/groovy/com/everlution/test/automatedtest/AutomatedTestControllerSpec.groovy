@@ -1,13 +1,13 @@
 package com.everlution.test.automatedtest
 
-import com.everlution.AutomatedTest
-import com.everlution.AutomatedTestController
 import com.everlution.AutomatedTestResultsViewModel
-import com.everlution.AutomatedTestService
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.controllers.AutomatedTestController
+import com.everlution.domains.AutomatedTest
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.SearchResult
-import com.everlution.TestResultService
+import com.everlution.services.testresult.TestResultService
 import grails.testing.web.controllers.ControllerUnitTest
 import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import spock.lang.Specification

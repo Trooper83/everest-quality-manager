@@ -1,15 +1,15 @@
 package com.everlution.test.ui.functional.specs.testiteration
 
-import com.everlution.PersonService
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanService
-import com.everlution.TestCase
-import com.everlution.TestCaseService
-import com.everlution.TestCycle
-import com.everlution.TestCycleService
-import com.everlution.TestGroup
+import com.everlution.services.person.PersonService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.ReleasePlan
+import com.everlution.services.releaseplan.ReleasePlanService
+import com.everlution.domains.TestCase
+import com.everlution.services.testcase.TestCaseService
+import com.everlution.domains.TestCycle
+import com.everlution.services.testcycle.TestCycleService
+import com.everlution.domains.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage

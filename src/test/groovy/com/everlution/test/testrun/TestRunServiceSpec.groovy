@@ -1,12 +1,12 @@
 package com.everlution.test.testrun
 
-import com.everlution.AutomatedTest
-import com.everlution.AutomatedTestService
-import com.everlution.Project
-import com.everlution.TestResult
-import com.everlution.TestRun
+import com.everlution.domains.AutomatedTest
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.domains.Project
+import com.everlution.domains.TestResult
+import com.everlution.domains.TestRun
 import com.everlution.TestRunResult
-import com.everlution.TestRunService
+import com.everlution.services.testrun.TestRunService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

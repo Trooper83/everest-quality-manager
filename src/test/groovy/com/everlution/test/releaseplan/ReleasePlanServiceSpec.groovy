@@ -1,10 +1,10 @@
 package com.everlution.test.releaseplan
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanService
-import com.everlution.TestCycle
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.services.releaseplan.ReleasePlanService
+import com.everlution.domains.TestCycle
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

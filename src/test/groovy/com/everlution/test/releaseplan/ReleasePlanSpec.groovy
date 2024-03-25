@@ -1,8 +1,8 @@
 package com.everlution.test.releaseplan
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ReleasePlan
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

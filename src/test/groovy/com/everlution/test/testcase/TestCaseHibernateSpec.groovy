@@ -1,21 +1,22 @@
 package com.everlution.test.testcase
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ReleasePlan
-import com.everlution.Step
-import com.everlution.StepTemplate
-import com.everlution.TestCase
-import com.everlution.TestCycle
-import com.everlution.TestGroup
-import com.everlution.TestIteration
-import com.everlution.TestResult
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.domains.Step
+import com.everlution.domains.StepTemplate
+import com.everlution.domains.TestCase
+import com.everlution.domains.TestCycle
+import com.everlution.domains.TestGroup
+import com.everlution.domains.TestIteration
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
 
 class TestCaseHibernateSpec extends HibernateSpec {
+
+    List<Class> getDomainClasses() { [ReleasePlan, Project, Person, TestCase] }
 
     @Shared Person person
     @Shared Project project

@@ -1,6 +1,6 @@
 package com.everlution.test.admin.user
 
-import com.everlution.SpringSecurityUiService
+import com.everlution.services.person.SpringSecurityUiService
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Ignore
 import spock.lang.Specification

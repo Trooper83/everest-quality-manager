@@ -1,15 +1,12 @@
 package com.everlution.test.bug
 
-import com.everlution.Bug
-import com.everlution.BugController
-import com.everlution.BugService
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.domains.Bug
+import com.everlution.controllers.BugController
+import com.everlution.services.bug.BugService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.SearchResult
-import com.everlution.Step
-import com.everlution.TestGroupService
-import com.everlution.command.RemovedItems
+import com.everlution.controllers.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest

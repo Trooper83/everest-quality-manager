@@ -1,14 +1,12 @@
 package com.everlution.test.testiteration
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ReleasePlan
-import com.everlution.TestCycle
-import com.everlution.TestIteration
-import com.everlution.TestIterationController
-import com.everlution.TestIterationService
-import com.everlution.TestResult
-
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.domains.TestCycle
+import com.everlution.domains.TestIteration
+import com.everlution.controllers.TestIterationController
+import com.everlution.services.testiteration.TestIterationService
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DataTest
 import grails.testing.web.controllers.ControllerUnitTest

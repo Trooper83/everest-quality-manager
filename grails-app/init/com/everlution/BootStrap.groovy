@@ -1,5 +1,23 @@
 package com.everlution
 
+import com.everlution.domains.Area
+import com.everlution.domains.AutomatedTest
+import com.everlution.domains.Bug
+import com.everlution.domains.Environment
+import com.everlution.domains.Link
+import com.everlution.domains.Person
+import com.everlution.domains.PersonRole
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.domains.Role
+import com.everlution.domains.Scenario
+import com.everlution.domains.Step
+import com.everlution.domains.StepTemplate
+import com.everlution.domains.TestCase
+import com.everlution.domains.TestCycle
+import com.everlution.domains.TestGroup
+import com.everlution.domains.TestResult
+import com.everlution.domains.TestRun
 import grails.gorm.transactions.Transactional
 
 class BootStrap {
@@ -74,7 +92,6 @@ class BootStrap {
             it.flush()
             it.clear()
         }
-
     }
 
     @Transactional

@@ -1,11 +1,11 @@
 package com.everlution.test.testgroup
 
-import com.everlution.Person
-import com.everlution.Project
+import com.everlution.domains.Person
+import com.everlution.domains.Project
 import com.everlution.SearchResult
-import com.everlution.TestCase
-import com.everlution.TestGroup
-import com.everlution.TestGroupService
+import com.everlution.domains.TestCase
+import com.everlution.domains.TestGroup
+import com.everlution.services.testgroup.TestGroupService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

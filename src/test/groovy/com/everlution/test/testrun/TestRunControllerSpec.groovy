@@ -1,13 +1,13 @@
 package com.everlution.test.testrun
 
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.RunWithPaginatedResults
 import com.everlution.SearchResult
-import com.everlution.TestRun
-import com.everlution.TestRunController
-import com.everlution.TestRunService
-import com.everlution.command.TestRunCmd
+import com.everlution.domains.TestRun
+import com.everlution.controllers.TestRunController
+import com.everlution.services.testrun.TestRunService
+import com.everlution.controllers.command.TestRunCmd
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import org.grails.web.servlet.mvc.SynchronizerTokensHolder

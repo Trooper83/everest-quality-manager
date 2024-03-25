@@ -1,6 +1,6 @@
 package com.everlution.test.environment
 
-import com.everlution.Environment
+import com.everlution.domains.Environment
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

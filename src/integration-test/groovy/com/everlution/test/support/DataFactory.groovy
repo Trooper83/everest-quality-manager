@@ -1,9 +1,9 @@
 package com.everlution.test.support
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ReleasePlan
-import com.everlution.TestCycle
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.domains.TestCycle
 import com.github.javafaker.Faker
 
 import java.time.LocalDate

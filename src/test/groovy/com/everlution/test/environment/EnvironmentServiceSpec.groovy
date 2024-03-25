@@ -1,7 +1,7 @@
 package com.everlution.test.environment
 
-import com.everlution.Environment
-import com.everlution.EnvironmentService
+import com.everlution.domains.Environment
+import com.everlution.services.environment.EnvironmentService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification

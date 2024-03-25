@@ -1,14 +1,13 @@
 package com.everlution.test.testcase
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.SearchResult
-import com.everlution.Step
-import com.everlution.TestCase
-import com.everlution.TestCaseController
-import com.everlution.TestCaseService
-import com.everlution.command.RemovedItems
+import com.everlution.domains.TestCase
+import com.everlution.controllers.TestCaseController
+import com.everlution.services.testcase.TestCaseService
+import com.everlution.controllers.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest

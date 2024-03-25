@@ -1,8 +1,8 @@
 package com.everlution.test.ui.functional.specs.automatedtest
 
-import com.everlution.AutomatedTest
-import com.everlution.AutomatedTestService
-import com.everlution.ProjectService
+import com.everlution.domains.AutomatedTest
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.services.project.ProjectService
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.automatedtest.ListAutomatedTestPage
 import com.everlution.test.ui.support.pages.automatedtest.ShowAutomatedTestPage

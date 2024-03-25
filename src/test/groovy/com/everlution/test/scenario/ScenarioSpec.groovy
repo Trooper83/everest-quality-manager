@@ -1,10 +1,10 @@
 package com.everlution.test.scenario
 
-import com.everlution.Area
-import com.everlution.Environment
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.Scenario
+import com.everlution.domains.Area
+import com.everlution.domains.Environment
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.Scenario
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

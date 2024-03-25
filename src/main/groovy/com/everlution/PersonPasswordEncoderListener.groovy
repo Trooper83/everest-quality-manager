@@ -1,5 +1,6 @@
 package com.everlution
 
+import com.everlution.domains.Person
 import grails.plugin.springsecurity.SpringSecurityService
 import org.grails.datastore.mapping.engine.event.AbstractPersistenceEvent
 import org.grails.datastore.mapping.engine.event.PreInsertEvent

@@ -1,6 +1,6 @@
 package com.everlution.test.ui.e2e.specs.testcase
 
-import com.everlution.Step
+import com.everlution.domains.Step
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.results.SendResults

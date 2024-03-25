@@ -1,9 +1,9 @@
 package com.everlution.test.project
 
-import com.everlution.Area
-import com.everlution.Environment
-import com.everlution.Project
-import com.everlution.TestGroup
+import com.everlution.domains.Area
+import com.everlution.domains.Environment
+import com.everlution.domains.Project
+import com.everlution.domains.TestGroup
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

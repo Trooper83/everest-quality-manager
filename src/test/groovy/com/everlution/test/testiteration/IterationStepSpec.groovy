@@ -1,6 +1,6 @@
 package com.everlution.test.testiteration
 
-import com.everlution.IterationStep
+import com.everlution.domains.IterationStep
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

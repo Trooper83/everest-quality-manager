@@ -1,11 +1,11 @@
 package com.everlution.test.service
 
-import com.everlution.Person
-import com.everlution.Project
+import com.everlution.domains.Person
+import com.everlution.domains.Project
 import com.everlution.Relationship
-import com.everlution.Link
-import com.everlution.LinkService
-import com.everlution.StepTemplate
+import com.everlution.domains.Link
+import com.everlution.services.link.LinkService
+import com.everlution.domains.StepTemplate
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared

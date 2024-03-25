@@ -1,9 +1,9 @@
 package com.everlution.test.scenario
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.Scenario
-import com.everlution.ScenarioService
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.Scenario
+import com.everlution.services.scenario.ScenarioService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

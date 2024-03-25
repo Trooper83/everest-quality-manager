@@ -1,8 +1,8 @@
 package com.everlution.test.ui.functional.specs.admin.user
 
-import com.everlution.Person
-import com.everlution.PersonService
-import com.everlution.SpringSecurityUiService
+import com.everlution.domains.Person
+import com.everlution.services.person.PersonService
+import com.everlution.services.person.SpringSecurityUiService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.SecurityRoles
 import com.everlution.test.support.data.UserStatuses

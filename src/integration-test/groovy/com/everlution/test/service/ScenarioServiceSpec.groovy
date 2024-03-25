@@ -1,11 +1,11 @@
 package com.everlution.test.service
 
-import com.everlution.Person
-import com.everlution.PersonService
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.Scenario
-import com.everlution.ScenarioService
+import com.everlution.domains.Person
+import com.everlution.services.person.PersonService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.Scenario
+import com.everlution.services.scenario.ScenarioService
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import grails.validation.ValidationException

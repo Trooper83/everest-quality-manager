@@ -1,8 +1,8 @@
 package com.everlution.test.automatedtest
 
-import com.everlution.AutomatedTest
-import com.everlution.AutomatedTestService
-import com.everlution.Project
+import com.everlution.domains.AutomatedTest
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.domains.Project
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

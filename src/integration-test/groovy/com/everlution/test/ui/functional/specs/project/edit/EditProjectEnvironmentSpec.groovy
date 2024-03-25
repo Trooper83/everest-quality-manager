@@ -1,6 +1,17 @@
 package com.everlution.test.ui.functional.specs.project.edit
 
-import com.everlution.*
+import com.everlution.domains.Bug
+import com.everlution.domains.Environment
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.Scenario
+import com.everlution.domains.TestCase
+import com.everlution.services.bug.BugService
+import com.everlution.services.environment.EnvironmentService
+import com.everlution.services.person.PersonService
+import com.everlution.services.project.ProjectService
+import com.everlution.services.scenario.ScenarioService
+import com.everlution.services.testcase.TestCaseService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage

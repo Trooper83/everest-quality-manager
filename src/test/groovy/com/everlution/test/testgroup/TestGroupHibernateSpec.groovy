@@ -1,9 +1,9 @@
 package com.everlution.test.testgroup
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.TestCase
-import com.everlution.TestGroup
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.TestCase
+import com.everlution.domains.TestGroup
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.Shared

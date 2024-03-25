@@ -1,6 +1,6 @@
 package com.everlution.test.ui.support.pages.testcase
 
-import com.everlution.Step
+import com.everlution.domains.Step
 import com.everlution.test.ui.support.pages.common.CreatePage
 import com.everlution.test.ui.support.pages.modules.SideBarModule
 import com.everlution.test.ui.support.pages.modules.StepTableModule

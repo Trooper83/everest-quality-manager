@@ -1,8 +1,8 @@
 package com.everlution.test.steptemplate
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.StepTemplate
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.StepTemplate
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

@@ -1,10 +1,10 @@
 package com.everlution.test.testresult
 
-import com.everlution.AutomatedTest
-import com.everlution.Project
-import com.everlution.TestResult
-import com.everlution.TestResultService
-import com.everlution.TestRun
+import com.everlution.domains.AutomatedTest
+import com.everlution.domains.Project
+import com.everlution.domains.TestResult
+import com.everlution.services.testresult.TestResultService
+import com.everlution.domains.TestRun
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification

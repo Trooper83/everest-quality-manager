@@ -1,11 +1,11 @@
 package com.everlution.test.link
 
-import com.everlution.Person
-import com.everlution.Project
+import com.everlution.domains.Person
+import com.everlution.domains.Project
 import com.everlution.Relationship
-import com.everlution.Step
-import com.everlution.Link
-import com.everlution.LinkService
+import com.everlution.domains.Step
+import com.everlution.domains.Link
+import com.everlution.services.link.LinkService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

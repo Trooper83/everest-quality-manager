@@ -1,8 +1,8 @@
 package com.everlution.test.security
 
-import com.everlution.Person
-import com.everlution.PersonRole
-import com.everlution.Role
+import com.everlution.domains.Person
+import com.everlution.domains.PersonRole
+import com.everlution.domains.Role
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 

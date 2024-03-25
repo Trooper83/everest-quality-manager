@@ -1,8 +1,8 @@
 package com.everlution.test.scenario
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.Scenario
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.Scenario
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared

@@ -1,7 +1,7 @@
 package com.everlution.test.testrun
 
-import com.everlution.Project
-import com.everlution.TestRun
+import com.everlution.domains.Project
+import com.everlution.domains.TestRun
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

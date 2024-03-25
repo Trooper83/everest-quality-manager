@@ -1,9 +1,9 @@
 package com.everlution.test.releaseplan
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ReleasePlan
-import com.everlution.TestCycle
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.domains.TestCycle
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared

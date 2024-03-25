@@ -1,12 +1,12 @@
 package com.everlution.test.testiteration
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ReleasePlan
-import com.everlution.TestCase
-import com.everlution.TestCycle
-import com.everlution.TestIteration
-import com.everlution.TestIterationService
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.domains.TestCase
+import com.everlution.domains.TestCycle
+import com.everlution.domains.TestIteration
+import com.everlution.services.testiteration.TestIterationService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

@@ -1,12 +1,12 @@
 package com.everlution.test.testgroup
 
 import com.everlution.GroupWithPaginatedTests
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.SearchResult
-import com.everlution.TestGroup
-import com.everlution.TestGroupController
-import com.everlution.TestGroupService
+import com.everlution.domains.TestGroup
+import com.everlution.controllers.TestGroupController
+import com.everlution.services.testgroup.TestGroupService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException

@@ -1,7 +1,7 @@
 package com.everlution.test.security
 
-import com.everlution.Person
-import com.everlution.PersonService
+import com.everlution.domains.Person
+import com.everlution.services.person.PersonService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification

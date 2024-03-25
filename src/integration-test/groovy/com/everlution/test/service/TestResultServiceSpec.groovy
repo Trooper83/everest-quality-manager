@@ -1,11 +1,11 @@
 package com.everlution.test.service
 
-import com.everlution.AutomatedTestService
-import com.everlution.ProjectService
-import com.everlution.TestResult
-import com.everlution.TestResultService
-import com.everlution.TestRun
-import com.everlution.TestRunService
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.TestResult
+import com.everlution.services.testresult.TestResultService
+import com.everlution.domains.TestRun
+import com.everlution.services.testrun.TestRunService
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import spock.lang.Specification

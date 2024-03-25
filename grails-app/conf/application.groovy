@@ -2,9 +2,9 @@
 
 // Added by the Spring Security Core plugin:
 grails.plugin.springsecurity.successHandler.defaultTargetUrl = '/projects'
-grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.everlution.Person'
-grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.everlution.PersonRole'
-grails.plugin.springsecurity.authority.className = 'com.everlution.Role'
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.everlution.domains.Person'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.everlution.domains.PersonRole'
+grails.plugin.springsecurity.authority.className = 'com.everlution.domains.Role'
 grails.plugin.springsecurity.userLookup.usernamePropertyName = 'email'
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	[pattern: '/',               access: ['permitAll']],

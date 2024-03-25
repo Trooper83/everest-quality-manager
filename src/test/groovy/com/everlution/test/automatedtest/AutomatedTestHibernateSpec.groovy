@@ -1,10 +1,10 @@
 package com.everlution.test.automatedtest
 
-import com.everlution.AutomatedTest
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.TestCase
-import com.everlution.TestResult
+import com.everlution.domains.AutomatedTest
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.TestCase
+import com.everlution.domains.TestResult
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared

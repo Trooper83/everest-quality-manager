@@ -1,13 +1,12 @@
 package com.everlution.test.scenario
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.Scenario
-import com.everlution.ScenarioController
-import com.everlution.ScenarioService
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.Scenario
+import com.everlution.controllers.ScenarioController
+import com.everlution.services.scenario.ScenarioService
 import com.everlution.SearchResult
-import com.everlution.TestGroupService
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest

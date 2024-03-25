@@ -5,7 +5,7 @@
 | ----------- |----------|
 |Grails     | 6.0.0    |
 |Postgres   | 7.5 (16) |
-|JDK        | 11       |
+|JDK        | 17       |
 |Gradle    | 7.3      |
 
 ## Database 

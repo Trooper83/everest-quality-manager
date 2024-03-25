@@ -1,17 +1,16 @@
 package com.everlution.test.ui.functional.specs.testcase.edit
 
-import com.everlution.Link
-import com.everlution.LinkService
-import com.everlution.Person
-import com.everlution.PersonService
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.domains.Link
+import com.everlution.services.link.LinkService
+import com.everlution.domains.Person
+import com.everlution.services.person.PersonService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.Relationship
-import com.everlution.Step
-import com.everlution.StepTemplate
-import com.everlution.StepTemplateService
-import com.everlution.TestCase
-import com.everlution.TestCaseService
+import com.everlution.domains.StepTemplate
+import com.everlution.services.steptemplate.StepTemplateService
+import com.everlution.domains.TestCase
+import com.everlution.services.testcase.TestCaseService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage

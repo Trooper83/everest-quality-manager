@@ -1,6 +1,6 @@
 package com.everlution.test.taglib
 
-import com.everlution.TableTagLib
+import com.everlution.taglibs.TableTagLib
 import grails.testing.web.taglib.TagLibUnitTest
 import org.grails.taglib.GrailsTagException
 import spock.lang.Specification

@@ -1,9 +1,9 @@
 package com.everlution.test.ui.functional.specs.testgroup
 
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.TestGroup
-import com.everlution.TestGroupService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.TestGroup
+import com.everlution.services.testgroup.TestGroupService
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testgroup.ListTestGroupPage

@@ -1,11 +1,11 @@
 package com.everlution.test.testcase
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.TestCase
-import com.everlution.TestCaseService
-import com.everlution.TestResult
-import com.everlution.command.RemovedItems
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.TestCase
+import com.everlution.services.testcase.TestCaseService
+import com.everlution.domains.TestResult
+import com.everlution.controllers.command.RemovedItems
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

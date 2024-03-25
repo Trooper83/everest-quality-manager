@@ -1,12 +1,12 @@
 package com.everlution.test.steptemplate
 
-import com.everlution.Link
-import com.everlution.Person
-import com.everlution.Project
+import com.everlution.domains.Link
+import com.everlution.domains.Person
+import com.everlution.domains.Project
 import com.everlution.Relationship
-import com.everlution.Step
-import com.everlution.StepTemplate
-import com.everlution.StepTemplateService
+import com.everlution.domains.Step
+import com.everlution.domains.StepTemplate
+import com.everlution.services.steptemplate.StepTemplateService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Shared

@@ -1,13 +1,12 @@
 package com.everlution.test.releaseplan
 
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanController
-import com.everlution.ReleasePlanService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.ReleasePlan
+import com.everlution.controllers.ReleasePlanController
+import com.everlution.services.releaseplan.ReleasePlanService
 import com.everlution.SearchResult
-import com.everlution.TestCycle
-import com.everlution.TestGroupService
+import com.everlution.domains.TestCycle
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest

@@ -1,11 +1,11 @@
 package com.everlution.test.testcase
 
-import com.everlution.Area
-import com.everlution.Environment
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.TestCase
-import com.everlution.TestGroup
+import com.everlution.domains.Area
+import com.everlution.domains.Environment
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.TestCase
+import com.everlution.domains.TestGroup
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification

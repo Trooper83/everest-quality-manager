@@ -1,10 +1,10 @@
 package com.everlution.test.step
 
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.Step
-import com.everlution.StepService
-import com.everlution.StepTemplate
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.Step
+import com.everlution.services.step.StepService
+import com.everlution.domains.StepTemplate
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import grails.validation.ValidationException

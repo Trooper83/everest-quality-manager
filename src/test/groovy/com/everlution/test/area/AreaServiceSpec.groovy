@@ -1,7 +1,7 @@
 package com.everlution.test.area
 
-import com.everlution.Area
-import com.everlution.AreaService
+import com.everlution.domains.Area
+import com.everlution.services.area.AreaService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification

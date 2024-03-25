@@ -1,8 +1,7 @@
 package com.everlution.test.link
 
-import com.everlution.Project
-import com.everlution.Step
-import com.everlution.Link
+import com.everlution.domains.Project
+import com.everlution.domains.Link
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 

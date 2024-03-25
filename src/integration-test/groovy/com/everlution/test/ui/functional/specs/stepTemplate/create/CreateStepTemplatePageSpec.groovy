@@ -1,8 +1,8 @@
 package com.everlution.test.ui.functional.specs.stepTemplate.create
 
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.StepTemplateService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.services.steptemplate.StepTemplateService
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.stepTemplate.CreateStepTemplatePage

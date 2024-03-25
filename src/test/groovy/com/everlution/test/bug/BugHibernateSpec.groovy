@@ -1,15 +1,17 @@
 package com.everlution.test.bug
 
-import com.everlution.Bug
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.Step
-import com.everlution.StepTemplate
+import com.everlution.domains.Bug
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.Step
+import com.everlution.domains.StepTemplate
 import grails.test.hibernate.HibernateSpec
 import org.springframework.dao.InvalidDataAccessApiUsageException
 import spock.lang.Shared
 
 class BugHibernateSpec extends HibernateSpec {
+
+    List<Class> getDomainClasses() { [Bug, Project, Person] }
 
     @Shared Person person
     @Shared Project project

@@ -1,16 +1,16 @@
 package com.everlution.test.steptemplate
 
-import com.everlution.Link
-import com.everlution.LinkService
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.domains.Link
+import com.everlution.services.link.LinkService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.RelatedStepTemplates
 import com.everlution.SearchResult
-import com.everlution.StepTemplate
-import com.everlution.StepTemplateController
-import com.everlution.StepTemplateService
-import com.everlution.command.LinksCmd
-import com.everlution.command.RemovedItems
+import com.everlution.domains.StepTemplate
+import com.everlution.controllers.StepTemplateController
+import com.everlution.services.steptemplate.StepTemplateService
+import com.everlution.controllers.command.LinksCmd
+import com.everlution.controllers.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException

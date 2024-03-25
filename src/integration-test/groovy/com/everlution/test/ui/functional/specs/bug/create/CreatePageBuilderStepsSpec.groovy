@@ -1,6 +1,14 @@
 package com.everlution.test.ui.functional.specs.bug.create
 
-import com.everlution.*
+import com.everlution.Relationship
+import com.everlution.domains.Link
+import com.everlution.domains.Person
+import com.everlution.domains.StepTemplate
+import com.everlution.domains.Project
+import com.everlution.services.link.LinkService
+import com.everlution.services.person.PersonService
+import com.everlution.services.project.ProjectService
+import com.everlution.services.steptemplate.StepTemplateService
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage

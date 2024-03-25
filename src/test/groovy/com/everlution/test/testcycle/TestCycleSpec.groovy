@@ -1,9 +1,8 @@
 package com.everlution.test.testcycle
 
-import com.everlution.Environment
-import com.everlution.Project
-import com.everlution.ReleasePlan
-import com.everlution.TestCycle
+import com.everlution.domains.Project
+import com.everlution.domains.ReleasePlan
+import com.everlution.domains.TestCycle
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
