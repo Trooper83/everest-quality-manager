@@ -1,11 +1,12 @@
 # Everest Test Case & Bug Tracking Tool
 
 ## Versions
-| Tool        | Version     |
-| ----------- | ----------- |
-|Grails     |5.3.3          |
-|Postgres   |7.5            |
-|JDK        |11             |
+| Tool        | Version  |
+| ----------- |----------|
+|Grails     | 6.0.0    |
+|Postgres   | 7.5 (16) |
+|JDK        | 11       |
+|Gradle    | 7.3      |
 
 ## Database 
 
@@ -53,7 +54,10 @@ grails -Dgrails.env={env} dbm-changelog-sync
 3. Download code from repo
 
 ### Upgrading Gradle
-To upgrade the gradle version locally modify the version number in the url of `./gradle/wrapper/gradle-wrapper.properties`
+Run the following command
+```bash
+gradle wrapper --gradle-version 8.6
+```
 
 --------
 ## Customer Installs

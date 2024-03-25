@@ -172,10 +172,10 @@ class TestRunSpec extends Specification {
         r.status == 201
         def aResults = testResultService.findAllByAutomatedTest(a)
         aResults.size() == 1
-        aResults.first().result == "Passed"
+        aResults.first().result == "PASSED"
         def atResults = testResultService.findAllByAutomatedTest(at)
         atResults.size() == 1
-        atResults.first().result == "Failed"
+        atResults.first().result == "FAILED"
         atResults.first().failureCause == "just because"
         def start = r.body.indexOf(" ")
         def end = r.body.lastIndexOf(" ")
