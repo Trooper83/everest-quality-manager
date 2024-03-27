@@ -35,6 +35,24 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         view == "show"
     }
 
+    void "show action invalid method returns 405"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'DELETE'     | _
+        'POST'       | _
+        'PATCH'      | _
+        'PUT'        | _
+    }
+
     void "show action with null id returns 404"() {
         given:
         controller.testIterationService = Mock(TestIterationService) {
@@ -98,6 +116,24 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
 
         then:"A model is populated containing the domain instance"
         model.testIteration instanceof TestIteration
+    }
+
+    void "execute action invalid method returns 405"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.execute(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod   | _
+        'DELETE'     | _
+        'POST'       | _
+        'PATCH'      | _
+        'PUT'        | _
     }
 
     void "update returns 404 with null id"() {

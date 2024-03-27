@@ -119,6 +119,34 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         model.project != null
     }
 
+    void "releasePlans action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.releasePlans(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PATCH", "PUT"]
+    }
+
+    void "create action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.create(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["POST", "DELETE", "PATCH", "PUT"]
+    }
+
     void "create action returns create view"() {
         given: "mock service"
         controller.projectService = Mock(ProjectService) {
@@ -176,6 +204,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         'GET'        | _
         'DELETE'     | _
         'PUT'        | _
+        'PATCH'      | _
     }
 
     void "save action with a null instance"() {
@@ -294,6 +323,34 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
 
         then:"A model is populated containing the domain instance"
         model.releasePlan instanceof ReleasePlan
+    }
+
+    void "show action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["POST", "DELETE", "PATCH", "PUT"]
+    }
+
+    void "edit action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.edit(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["POST", "DELETE", "PATCH", "PUT"]
     }
 
     void "edit action with a null id returns 404"() {
@@ -450,6 +507,34 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         then:"The edit view is rendered again with the correct model"
         model.releasePlan != null
         view == 'edit'
+    }
+
+    void "update action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.update(null,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "POST", "DELETE", "PATCH"]
+    }
+
+    void "delete action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.delete(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "POST", "PATCH", "PUT"]
     }
 
     void "delete action with invalid method returns 405"(String httpMethod) {
@@ -643,6 +728,7 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         'GET'        | _
         'DELETE'     | _
         'PUT'        | _
+        'PATCH'      | _
     }
 }
 

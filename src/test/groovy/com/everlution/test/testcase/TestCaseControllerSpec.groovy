@@ -125,6 +125,34 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         101  | 100
     }
 
+    void "testCases action returns 405 for unsupported method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.testCases(1, 1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["PUT", "DELETE", "PATCH"]
+    }
+
+    void "create action returns 405 for unsupported method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.create(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["POST", "PUT", "DELETE", "PATCH"]
+    }
+
     void "create action returns the correct view"() {
         given: "mock project service"
         controller.projectService = Mock(ProjectService) {
@@ -333,6 +361,34 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         model.testCase instanceof TestCase
     }
 
+    void "show action returns 405 for unsupported method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["POST", "PUT", "DELETE", "PATCH"]
+    }
+
+    void "edit action returns 405 for unsupported method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.edit(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["POST", "PUT", "DELETE", "PATCH"]
+    }
+
     void "test the edit action with a null id"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {
@@ -490,6 +546,20 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         view == '/testCase/edit'
     }
 
+    void "update action returns 405 for unsupported method"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.update(null, null, null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "POST", "DELETE", "PATCH"]
+    }
+
     void "test the delete action method"(String httpMethod) {
         given:
         request.method = httpMethod
@@ -616,9 +686,3 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         flash.error == "Test Case has associated Test Iterations and cannot be deleted"
     }
 }
-
-
-
-
-
-

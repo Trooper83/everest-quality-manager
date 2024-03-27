@@ -17,7 +17,8 @@ class BugController {
     ProjectService projectService
     SpringSecurityService springSecurityService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", show: "GET", bugs: ["GET", "POST"],
+                                create: "GET", edit: "GET"]
 
     /**
      * lists all bugs or perform search

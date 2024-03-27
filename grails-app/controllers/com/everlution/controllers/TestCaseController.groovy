@@ -18,7 +18,8 @@ class TestCaseController {
     SpringSecurityService springSecurityService
     TestCaseService testCaseService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", create: "GET", show: "GET", edit: "GET",
+                                testCases: ["GET", "POST"]]
 
     /**
      * lists all test cases

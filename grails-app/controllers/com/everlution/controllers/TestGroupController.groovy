@@ -12,7 +12,8 @@ class TestGroupController {
     ProjectService projectService
     TestGroupService testGroupService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", testGroups: ["GET", "POST"],
+                                show: "GET", create: "GET", edit: "GET"]
 
     /**
      * lists all groups

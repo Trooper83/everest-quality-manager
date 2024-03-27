@@ -16,7 +16,8 @@ class ReleasePlanController {
     ReleasePlanService releasePlanService
     SpringSecurityService springSecurityService
 
-    static allowedMethods = [addTestCycle: "POST", save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [addTestCycle: "POST", save: "POST", update: "PUT", delete: "DELETE",
+                                releasePlans: ["GET", "POST"], create: "GET", edit: "GET", show: "GET"]
 
     /**
      * adds a new testCycle

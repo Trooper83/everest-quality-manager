@@ -17,7 +17,7 @@ class TestCycleController {
     TestIterationService testIterationService
     TestGroupService testGroupService
 
-    static allowedMethods = [addTests: "POST"]
+    static allowedMethods = [addTests: "POST", show: "GET"]
 
     /**
      * adds iterations to test cycle

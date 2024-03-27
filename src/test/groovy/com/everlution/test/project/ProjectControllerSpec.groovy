@@ -55,6 +55,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.project != null
     }
 
+    void "create action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.create()
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
     void "test save action returns 405 with not allowed method types"(String httpMethod) {
         given:
         request.method = httpMethod
@@ -134,20 +148,34 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         view == 'create'
     }
 
-    void "Test the edit action with a null id"() {
+    void "edit action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.edit(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
+    void "edit action with a null id"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * get(null) >> null
         }
 
-        when:"The show action is executed with a null domain"
+        when:"show action is executed with a null domain"
         controller.edit(null)
 
         then:"A 404 error is returned"
         response.status == 404
     }
 
-    void "Test the edit action with a valid id"() {
+    void "edit action with a valid id"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * get(2) >> new Project()
@@ -171,6 +199,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:
         view == "edit"
+    }
+
+    void "update action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.update(null, null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "DELETE", "PATCH", "POST"]
     }
 
     void "test the update action method"(String httpMethod) {
@@ -210,7 +252,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         flash.message == "default.not.found.message"
     }
 
-    void "Test the update action correctly persists"() {
+    void "update action correctly persists"() {
         given:
         controller.projectService = Mock(ProjectService) {
             1 * saveUpdate(_ as Project, _ as RemovedItems)
@@ -232,7 +274,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.flash.message == "default.updated.message"
     }
 
-    void "Test the update action with an invalid instance"() {
+    void "update action with an invalid instance"() {
         given:
         def proj = new Project()
         proj.id = 1
@@ -255,7 +297,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         view == '/project/edit'
     }
 
-    void "Test the update action with constraint violation"() {
+    void "update action with constraint violation"() {
         given:
         Project proj = new Project(name: "test", code: "ccc").save()
         params.id = proj.id
@@ -277,6 +319,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.flash.error == "Removed entity has associated items and cannot be deleted"
         view == '/project/edit'
         params.projectId != null
+    }
+
+    void "delete action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.delete(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "PUT", "PATCH", "POST"]
     }
 
     void "test the delete action method"(String httpMethod) {
@@ -353,6 +409,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         flash.error == "Project has associated items and cannot be deleted"
         view == 'show'
         params.projectId != null
+    }
+
+    void "projects action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.projects(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH"]
     }
 
     void "projects action renders projects view"() {
@@ -436,6 +506,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         then:"The model is correct"
         model.projectList
         model.projectCount == 1
+    }
+
+    void "home action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.home(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
     }
 
     void "home action renders home view"() {
@@ -573,6 +657,20 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:"A model is populated containing the domain instance"
         model.previousRelease == null
+    }
+
+    void "show action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
     }
 
     void "show action with a null id"() {

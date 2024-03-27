@@ -67,6 +67,20 @@ class TestCycleControllerSpec extends Specification implements ControllerUnitTes
         view == 'show'
     }
 
+    void "show action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ['POST', 'DELETE', 'PUT', 'PATCH']
+    }
+
     void "show action model populates only test groups with test cases"() {
         given:
         def group1 = new TestGroup(name: "group 1").save()

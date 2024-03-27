@@ -40,6 +40,20 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
         params[SynchronizerTokensHolder.TOKEN_KEY] = token.generateToken(params[SynchronizerTokensHolder.TOKEN_URI])
     }
 
+    void "stepTemplates action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.stepTemplates(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH"]
+    }
+
     void "stepTemplates action param max"(Integer max, int expected) {
         given:
         controller.stepTemplateService = Mock(StepTemplateService) {
@@ -172,6 +186,20 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
 
         then:"not found"
         response.status == 404
+    }
+
+    void "create action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.create(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
     }
 
     void "save action returns 405 with not allowed method types"(String httpMethod) {
@@ -390,6 +418,34 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
         then:"A model is populated containing the domain instance and relations"
         model.stepTemplate instanceof StepTemplate
         model.containsKey('relations')
+    }
+
+    void "show action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
+    void "edit action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.edit(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
     }
 
     void "edit action with a null id"() {
@@ -659,6 +715,34 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
 
         then:"The edit view is rendered again with the correct model"
         model.linkedMap instanceof Map
+    }
+
+    void "update action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.update(null, null, null, null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "DELETE", "PATCH", "POST"]
+    }
+
+    void "delete action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.delete(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "PUT", "PATCH", "POST"]
     }
 
     void "test the delete action method"(String httpMethod) {

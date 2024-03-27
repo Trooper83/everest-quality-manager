@@ -23,7 +23,8 @@ class ProjectController {
     ScenarioService scenarioService
     TestCaseService testCaseService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", projects: ["GET", "POST"],
+                                create: "GET", show: "GET", edit: "GET", home: "GET"]
 
     /**
      * lists all projects or perform search

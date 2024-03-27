@@ -123,6 +123,34 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         model.project != null
     }
 
+    void "bugs action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.bugs(null, null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH"]
+    }
+
+    void "create action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.create(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
     void "test the create action returns the correct view"() {
         given: "mock project service"
         controller.projectService = Mock(ProjectService) {
@@ -258,6 +286,20 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         view == 'create'
     }
 
+    void "show action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
     void "show action renders show view"() {
         given:
         controller.bugService = Mock(BugService) {
@@ -297,6 +339,20 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         model.bug instanceof Bug
     }
 
+    void "edit action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.edit(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
     void "edit action with a null id"() {
         given:
         controller.bugService = Mock(BugService) {
@@ -334,6 +390,20 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
 
         then:
         view == "edit"
+    }
+
+    void "update action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.update(null, null, null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "DELETE", "PATCH", "POST"]
     }
 
     void "update action method"(String httpMethod) {
@@ -450,6 +520,20 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         then:"The edit view is rendered again with the correct model"
         model.bug instanceof Bug
         view == '/bug/edit'
+    }
+
+    void "delete action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.delete(1, 1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "PUT", "PATCH", "POST"]
     }
 
     void "test the delete action method"(String httpMethod) {

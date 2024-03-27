@@ -42,6 +42,20 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         view == 'testGroups'
     }
 
+    void "testGroups action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.testGroups(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH"]
+    }
+
     void "test groups action returns the correct model"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
@@ -117,6 +131,20 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         1    | 1
         99   | 99
         101  | 100
+    }
+
+    void "create action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.create(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "POST", "PATCH"]
     }
 
     void "create action returns create view"() {
@@ -273,6 +301,20 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         response.status == 404
     }
 
+    void "show action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "POST", "PATCH"]
+    }
+
     void "show action with a valid id returns a test group and tests"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {
@@ -318,6 +360,20 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
 
         then:"A 404 error is returned"
         response.status == 404
+    }
+
+    void "edit action method type"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.edit(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "POST", "PATCH"]
     }
 
     void "edit action renders edit view"() {

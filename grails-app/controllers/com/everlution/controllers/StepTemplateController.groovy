@@ -23,7 +23,8 @@ class StepTemplateController {
     SpringSecurityService springSecurityService
     StepTemplateService stepTemplateService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", search: "GET", getRelatedTemplates: "GET"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", search: "GET", getRelatedTemplates: "GET",
+                                stepTemplates: ["GET", "POST"], create: "GET", show: "GET", edit: "GET"]
 
     /**
      * lists all templates or perform search

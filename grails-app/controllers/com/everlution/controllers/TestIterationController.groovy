@@ -18,7 +18,7 @@ class TestIterationController {
     TestIterationService testIterationService
     TestResultService testResultService
 
-    static allowedMethods = [update: "PUT"]
+    static allowedMethods = [update: "PUT", show: "GET", execute: "GET"]
 
     /**
      * displays the execute view

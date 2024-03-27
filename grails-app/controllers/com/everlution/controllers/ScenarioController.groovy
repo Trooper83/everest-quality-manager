@@ -15,7 +15,8 @@ class ScenarioController {
     ScenarioService scenarioService
     SpringSecurityService springSecurityService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", scenarios: ["GET", "POST"],
+                                create: "GET", show: "GET", edit: "GET"]
 
     /**
      * lists all scenarios

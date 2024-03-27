@@ -119,6 +119,34 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         model.project != null
     }
 
+    void "scenarios action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.scenarios(1,1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH"]
+    }
+
+    void "create action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.create(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
     void "test the create action returns the correct view"() {
         given: "mock service"
         controller.projectService = Mock(ProjectService) {
@@ -273,6 +301,20 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         view == 'create'
     }
 
+    void "show action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.show(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
     void "show action renders show view"() {
         given:
         controller.scenarioService = Mock(ScenarioService) {
@@ -349,6 +391,34 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         view == "edit"
+    }
+
+    void "edit action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.edit(1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["DELETE", "PUT", "PATCH", "POST"]
+    }
+
+    void "update action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.update(null, null)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "DELETE", "PATCH", "POST"]
     }
 
     void "test the update action method"(String httpMethod) {
@@ -557,6 +627,20 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
 
         then:"A 404 is returned"
         response.status == 404
+    }
+
+    void "delete action returns 405 with not allowed method types"(String httpMethod) {
+        given:
+        request.method = httpMethod
+
+        when:
+        controller.delete(1, 1)
+
+        then:
+        response.status == 405
+
+        where:
+        httpMethod << ["GET", "PUT", "PATCH", "POST"]
     }
 }
 
