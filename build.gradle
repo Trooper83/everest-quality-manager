@@ -122,7 +122,7 @@ test {
 integrationTest {
     useJUnitPlatform()
     systemProperty "geb.env", "chrome"
-    systemProperty "sendResults", "true"
+    systemProperty "sendResults", "false"
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 }
 
