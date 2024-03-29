@@ -1,10 +1,9 @@
 package com.everlution.test.ui.functional.specs.bug.create
 
-import com.everlution.PersonService
-import com.everlution.ProjectService
-import com.everlution.Step
-import com.everlution.StepTemplate
-import com.everlution.StepTemplateService
+import com.everlution.services.person.PersonService
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.StepTemplate
+import com.everlution.services.steptemplate.StepTemplateService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.support.data.Credentials

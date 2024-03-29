@@ -1,6 +1,6 @@
 package com.everlution.test.ui.functional.specs.releaseplan.edit
 
-import com.everlution.PersonService
+import com.everlution.services.person.PersonService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage

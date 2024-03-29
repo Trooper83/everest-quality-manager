@@ -1,8 +1,8 @@
 package com.everlution.test.service
 
-import com.everlution.AutomatedTest
-import com.everlution.AutomatedTestService
-import com.everlution.ProjectService
+import com.everlution.domains.AutomatedTest
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration

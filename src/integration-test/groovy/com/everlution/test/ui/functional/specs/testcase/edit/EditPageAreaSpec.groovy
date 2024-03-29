@@ -1,12 +1,12 @@
 package com.everlution.test.ui.functional.specs.testcase.edit
 
-import com.everlution.Area
-import com.everlution.Person
-import com.everlution.PersonService
-import com.everlution.Project
-import com.everlution.ProjectService
-import com.everlution.TestCase
-import com.everlution.TestCaseService
+import com.everlution.domains.Area
+import com.everlution.domains.Person
+import com.everlution.services.person.PersonService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.TestCase
+import com.everlution.services.testcase.TestCaseService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.common.LoginPage

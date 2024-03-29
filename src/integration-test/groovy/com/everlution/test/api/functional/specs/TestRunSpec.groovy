@@ -1,9 +1,9 @@
 package com.everlution.test.api.functional.specs
 
-import com.everlution.AutomatedTestService
-import com.everlution.ProjectService
-import com.everlution.TestResultService
-import com.everlution.TestRunService
+import com.everlution.services.automatedtest.AutomatedTestService
+import com.everlution.services.project.ProjectService
+import com.everlution.services.testresult.TestResultService
+import com.everlution.services.testrun.TestRunService
 import com.everlution.test.api.support.services.AuthService
 import com.everlution.test.api.support.services.TestRunsService
 import com.everlution.test.support.results.SendResults
@@ -172,10 +172,10 @@ class TestRunSpec extends Specification {
         r.status == 201
         def aResults = testResultService.findAllByAutomatedTest(a)
         aResults.size() == 1
-        aResults.first().result == "Passed"
+        aResults.first().result == "PASSED"
         def atResults = testResultService.findAllByAutomatedTest(at)
         atResults.size() == 1
-        atResults.first().result == "Failed"
+        atResults.first().result == "FAILED"
         atResults.first().failureCause == "just because"
         def start = r.body.indexOf(" ")
         def end = r.body.lastIndexOf(" ")

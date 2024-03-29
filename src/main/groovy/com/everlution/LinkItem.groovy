@@ -1,5 +1,7 @@
 package com.everlution
 
+import com.everlution.domains.StepTemplate
+
 class LinkItem {
 
     LinkItem(Long id, StepTemplate template) {

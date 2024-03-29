@@ -1,6 +1,6 @@
 package com.everlution.test.ui.functional.specs.admin.user
 
-import com.everlution.PersonService
+import com.everlution.services.person.PersonService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.SecurityRoles
 import com.everlution.test.support.data.UserStatuses

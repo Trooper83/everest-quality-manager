@@ -1,5 +1,7 @@
 package com.everlution
 
+import com.everlution.domains.StepTemplate
+
 class RelatedStepTemplates {
 
     RelatedStepTemplates(StepTemplate template, List<StepTemplate> relatedStepTemplates) {

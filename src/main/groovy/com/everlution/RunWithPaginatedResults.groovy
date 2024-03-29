@@ -1,5 +1,7 @@
 package com.everlution
 
+import com.everlution.domains.TestRun
+
 class RunWithPaginatedResults {
 
     TestRun testRun

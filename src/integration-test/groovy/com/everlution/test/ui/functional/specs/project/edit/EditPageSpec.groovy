@@ -1,7 +1,7 @@
 package com.everlution.test.ui.functional.specs.project.edit
 
-import com.everlution.Project
-import com.everlution.ProjectService
+import com.everlution.domains.Project
+import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 
@@ -34,7 +34,7 @@ class EditPageSpec extends GebSpec {
 
         then: "message displayed"
         page.errorMessages.text() ==
-                "Property [areas] with value [[com.everlution.Area : (unsaved), com.everlution.Area : (unsaved)]] does not pass custom validation"
+                "Property [areas] with value [[com.everlution.domains.Area : (unsaved), com.everlution.domains.Area : (unsaved)]] does not pass custom validation"
     }
 
     void "error message displayed when adding two envs with the same name to project"() {
@@ -46,6 +46,6 @@ class EditPageSpec extends GebSpec {
 
         then: "message displayed"
         page.errorMessages.text() ==
-                "Property [environments] with value [[com.everlution.Environment : (unsaved), com.everlution.Environment : (unsaved)]] does not pass custom validation"
+                "Property [environments] with value [[com.everlution.domains.Environment : (unsaved), com.everlution.domains.Environment : (unsaved)]] does not pass custom validation"
     }
 }

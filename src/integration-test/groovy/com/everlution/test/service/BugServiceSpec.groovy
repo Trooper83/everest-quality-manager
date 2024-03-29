@@ -1,12 +1,12 @@
 package com.everlution.test.service
 
-import com.everlution.Bug
-import com.everlution.BugService
-import com.everlution.StepService
-import com.everlution.Person
-import com.everlution.Project
-import com.everlution.Step
-import com.everlution.command.RemovedItems
+import com.everlution.domains.Bug
+import com.everlution.services.bug.BugService
+import com.everlution.services.step.StepService
+import com.everlution.domains.Person
+import com.everlution.domains.Project
+import com.everlution.domains.Step
+import com.everlution.controllers.command.RemovedItems
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import grails.validation.ValidationException

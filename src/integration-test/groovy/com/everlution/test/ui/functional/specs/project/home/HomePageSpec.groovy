@@ -1,9 +1,9 @@
 package com.everlution.test.ui.functional.specs.project.home
 
-import com.everlution.PersonService
-import com.everlution.ProjectService
-import com.everlution.ReleasePlan
-import com.everlution.ReleasePlanService
+import com.everlution.services.person.PersonService
+import com.everlution.services.project.ProjectService
+import com.everlution.domains.ReleasePlan
+import com.everlution.services.releaseplan.ReleasePlanService
 import com.everlution.test.support.data.Credentials
 
 import com.everlution.test.ui.support.pages.common.LoginPage
