@@ -1,5 +1,6 @@
 package com.everlution.services.person
 
+import com.everlution.domains.PersonRole
 import grails.gorm.transactions.Transactional
 
 /**
