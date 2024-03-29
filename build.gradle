@@ -10,14 +10,16 @@ buildscript {
     }
 }
 
+plugins {
+    id 'idea'
+    id 'war'
+    id 'org.grails.grails-web' version '6.0.0'
+    id 'com.bertramlabs.asset-pipeline' version '4.3.0'
+    id 'org.grails.grails-gsp' version '6.0.0'
+}
+
 version "3.0.2"
 group "com.everlution.everest"
-
-apply plugin:"idea"
-apply plugin:"war"
-apply plugin:"org.grails.grails-web"
-apply plugin:"com.bertramlabs.asset-pipeline"
-apply plugin:"org.grails.grails-gsp"
 
 repositories {
     maven { url "https://repo.grails.org/grails/core" }
@@ -49,7 +51,6 @@ configurations.configureEach {
 }
 
 dependencies {
-    //sprint-boot-* v3.x.x and above require > java v11
     developmentOnly('org.springframework.boot:spring-boot-devtools:2.7.18')
     implementation 'org.springframework.boot:spring-boot-starter-logging:2.7.18'
     implementation 'org.springframework.boot:spring-boot-autoconfigure:2.7.18'
@@ -72,7 +73,7 @@ dependencies {
     implementation "org.grails.plugins:events"
     implementation 'org.grails.plugins:hibernate5:8.1.0'
     implementation 'org.hibernate:hibernate-core:5.6.1.Final'
-    implementation 'org.grails.plugins:gsp:6.2.1'
+    implementation 'org.grails.plugins:gsp:6.0.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
     implementation 'org.apache.tomcat:tomcat-jdbc:10.1.19'
     console 'org.grails:grails-console:6.1.2'
@@ -108,20 +109,22 @@ bootRun {
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
 
-tasks.withType(GroovyCompile).configureEach {
-    configure(groovyOptions) {
-        forkOptions.jvmArgs = ['-Xmx1024m']
+compileGroovy {
+    configure {
+        groovyOptions.forkOptions.jvmArgs = ['-Xmx1024m']
     }
 }
 
+test {
+    useJUnitPlatform()
+}
 
-tasks.withType(Test).configureEach {
+integrationTest {
     useJUnitPlatform()
     systemProperty "geb.env", "chrome"
     systemProperty "sendResults", "false"
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 }
-
 
 assets {
     minifyJs = true
