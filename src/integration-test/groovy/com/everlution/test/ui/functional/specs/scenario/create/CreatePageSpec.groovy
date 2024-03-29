@@ -2,11 +2,13 @@ package com.everlution.test.ui.functional.specs.scenario.create
 
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.CreateScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class CreatePageSpec extends GebSpec {
 

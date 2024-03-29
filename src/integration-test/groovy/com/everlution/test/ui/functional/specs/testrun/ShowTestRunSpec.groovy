@@ -7,12 +7,14 @@ import com.everlution.domains.TestResult
 import com.everlution.domains.TestRun
 import com.everlution.services.testrun.TestRunService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.automatedtest.ShowAutomatedTestPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testrun.ShowTestRunPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class ShowTestRunSpec extends GebSpec {
 

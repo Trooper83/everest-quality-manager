@@ -4,6 +4,7 @@ import com.everlution.domains.Bug
 import com.everlution.services.bug.BugService
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.ListBugPage
@@ -13,6 +14,7 @@ import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class ListSpec extends GebSpec {
 

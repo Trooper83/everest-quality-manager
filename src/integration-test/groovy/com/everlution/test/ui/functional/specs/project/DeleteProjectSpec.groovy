@@ -3,12 +3,14 @@ package com.everlution.test.ui.functional.specs.project
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class DeleteProjectSpec extends GebSpec {
 

@@ -5,12 +5,14 @@ import com.everlution.services.bug.BugService
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class DeleteBugSpec extends GebSpec {
 

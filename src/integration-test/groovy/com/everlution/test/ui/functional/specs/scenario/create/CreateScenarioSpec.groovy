@@ -6,12 +6,14 @@ import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.CreateScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class CreateScenarioSpec extends GebSpec {
 

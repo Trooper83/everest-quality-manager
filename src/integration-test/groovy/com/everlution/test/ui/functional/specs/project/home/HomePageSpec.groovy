@@ -5,7 +5,7 @@ import com.everlution.services.project.ProjectService
 import com.everlution.domains.ReleasePlan
 import com.everlution.services.releaseplan.ReleasePlanService
 import com.everlution.test.support.data.Credentials
-
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
@@ -18,6 +18,7 @@ import spock.lang.Shared
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+@SendResults
 @Integration
 class HomePageSpec extends GebSpec {
 

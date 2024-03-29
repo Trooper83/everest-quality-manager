@@ -4,6 +4,7 @@ import com.everlution.domains.AutomatedTest
 import com.everlution.services.automatedtest.AutomatedTestService
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.automatedtest.ListAutomatedTestPage
 import com.everlution.test.ui.support.pages.automatedtest.ShowAutomatedTestPage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -12,6 +13,7 @@ import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class AutomatedTestListSpec extends GebSpec {
 

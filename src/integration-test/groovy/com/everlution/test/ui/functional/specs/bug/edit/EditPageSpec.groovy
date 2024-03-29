@@ -6,6 +6,7 @@ import com.everlution.domains.Person
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.ui.support.pages.bug.EditBugPage
@@ -16,6 +17,7 @@ import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class EditPageSpec extends GebSpec {
 
