@@ -121,9 +121,23 @@ test {
 
 integrationTest {
     useJUnitPlatform()
+
     systemProperty "geb.env", "chrome"
     systemProperty "sendResults", "false"
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
+
+    def env = "prod"
+    String baseUrl, projectId
+
+    if(env == "prod") {
+        baseUrl = "https://www.everlution.everestquality.com"
+        projectId = "7"
+    } else {
+        baseUrl = "http://localhost:8080"
+        projectId = "6"
+    }
+    systemProperty "apiBaseUrl", baseUrl
+    systemProperty "apiProjectId", projectId
 }
 
 assets {
