@@ -108,9 +108,9 @@ class TestResultSpec extends Specification implements DomainUnitTest<TestResult>
         domain.validate(["name"])
     }
 
-    void "failureCause cannot exceed 500 characters"() {
-        when: "for a string of 501 characters"
-        String str = "a" * 501
+    void "failureCause cannot exceed 2500 characters"() {
+        when: "for a string of 2501 characters"
+        String str = "a" * 2501
         domain.failureCause = str
 
         then: "name validation fails"
@@ -118,9 +118,9 @@ class TestResultSpec extends Specification implements DomainUnitTest<TestResult>
         domain.errors["failureCause"].code == "maxSize.exceeded"
     }
 
-    void "failureCause validates with 499 characters"() {
-        when: "for a string of 499 characters"
-        String str = "a" * 499
+    void "failureCause validates with 2500 characters"() {
+        when: "for a string of 2500 characters"
+        String str = "a" * 2500
         domain.failureCause = str
 
         then: "name validation passes"

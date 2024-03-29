@@ -15,7 +15,7 @@ class TestResult {
 
     static constraints = {
         automatedTest nullable: false
-        failureCause nullable: true, blank: true, maxSize: 500
+        failureCause nullable: true, blank: true, maxSize: 2500
         result blank: false, nullable: false, inList: ["FAILED", "PASSED", "SKIPPED"]
         testRun nullable: false
     }

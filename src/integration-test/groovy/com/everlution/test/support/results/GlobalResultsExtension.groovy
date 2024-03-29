@@ -17,7 +17,7 @@ class GlobalResultsExtension implements IGlobalExtension {
                 }
             }}
 
-            def payload = new TestRunResults(name: "TestRun Testing", project: 7, testResults: r)
+            def payload = new TestRunResults(name: "TestRun Testing", project: 25, testResults: r)
             def baseUrl = "https://www.everlution.everestquality.com/api"
             def token = Unirest.post(baseUrl + "/login")
                     .body("{\"username\": \"basic@basic.com\",\"password\": \"!Password#2022\"}")

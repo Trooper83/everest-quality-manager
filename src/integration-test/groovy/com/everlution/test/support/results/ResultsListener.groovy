@@ -10,7 +10,13 @@ class ResultsListener extends AbstractRunListener {
 
     @Override
     void error(ErrorInfo error) {
-        def cause = error.exception.condition.rendering
+        String cause
+        try {
+            cause = error.exception
+        } catch (MissingPropertyException ignored) {
+            cause = null
+        }
+
         def name =
                 "${error.method.parent.package}.${error.method.parent.name}.${error.method.name} _iteration_${error.method.iteration.iterationIndex}"
         ResultStore.addResult(new TestRunResult(testName: name, result: "Failed", failureCause: cause))
