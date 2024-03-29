@@ -8,12 +8,14 @@ import com.everlution.domains.Step
 import com.everlution.domains.TestCase
 import com.everlution.services.testcase.TestCaseService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.EditTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
+@SendResults
 @Integration
 class EditPageFreeFormStepsSpec extends GebSpec {
 

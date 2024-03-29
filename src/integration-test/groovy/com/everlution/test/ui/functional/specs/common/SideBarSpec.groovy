@@ -1,6 +1,7 @@
 package com.everlution.test.ui.functional.specs.common
 
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.bug.ListBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -14,6 +15,7 @@ import geb.Page
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class SideBarSpec extends GebSpec {
 

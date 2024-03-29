@@ -14,6 +14,7 @@ import com.everlution.services.scenario.ScenarioService
 import com.everlution.services.testcase.TestCaseService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
@@ -21,6 +22,7 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
+@SendResults
 @Integration
 class EditProjectEnvironmentSpec extends GebSpec {
 

@@ -1,12 +1,13 @@
 package com.everlution.test.ui.functional.specs.common
 
 import com.everlution.test.support.data.Credentials
-
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class AuthSpec extends GebSpec {
 

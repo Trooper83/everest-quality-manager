@@ -7,6 +7,7 @@ import com.everlution.domains.ReleasePlan
 import com.everlution.services.releaseplan.ReleasePlanService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -16,6 +17,7 @@ import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class EditReleasePlanSpec extends GebSpec {
 

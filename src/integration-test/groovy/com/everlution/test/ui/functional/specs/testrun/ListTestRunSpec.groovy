@@ -4,6 +4,7 @@ import com.everlution.services.project.ProjectService
 import com.everlution.domains.TestRun
 import com.everlution.services.testrun.TestRunService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
@@ -12,6 +13,7 @@ import com.everlution.test.ui.support.pages.testrun.ShowTestRunPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class ListTestRunSpec extends GebSpec {
 

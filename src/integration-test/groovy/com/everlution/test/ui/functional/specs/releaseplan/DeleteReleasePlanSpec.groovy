@@ -6,6 +6,7 @@ import com.everlution.services.project.ProjectService
 import com.everlution.domains.ReleasePlan
 import com.everlution.services.releaseplan.ReleasePlanService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.releaseplan.ListReleasePlanPage
 import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
@@ -13,6 +14,7 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
+@SendResults
 @Integration
 class DeleteReleasePlanSpec extends GebSpec {
 

@@ -6,6 +6,7 @@ import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.github.javafaker.Faker
@@ -13,6 +14,7 @@ import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
+@SendResults
 @Integration
 class CreatePageFreeFormStepsSpec extends GebSpec {
 

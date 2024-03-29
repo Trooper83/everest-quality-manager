@@ -13,6 +13,7 @@ import com.everlution.services.testcycle.TestCycleService
 import com.everlution.domains.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
 import com.everlution.test.ui.support.pages.testiteration.ExecuteTestIterationPage
@@ -22,6 +23,7 @@ import grails.testing.mixin.integration.Integration
 
 import java.text.SimpleDateFormat
 
+@SendResults
 @Integration
 class ExecuteIterationSpec extends GebSpec {
 

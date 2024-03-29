@@ -5,12 +5,14 @@ import com.everlution.services.person.SpringSecurityUiService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.UserStatuses
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.admin.user.EditUserPage
 import com.everlution.test.ui.support.pages.admin.user.SearchUserPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class SearchUserSpec extends GebSpec {
 

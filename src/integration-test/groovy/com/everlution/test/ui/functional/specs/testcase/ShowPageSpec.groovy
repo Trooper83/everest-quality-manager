@@ -8,6 +8,7 @@ import com.everlution.services.testcase.TestCaseService
 import com.everlution.services.testcycle.TestCycleService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.testcase.CreateTestCasePage
@@ -18,6 +19,7 @@ import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class ShowPageSpec extends GebSpec {
 

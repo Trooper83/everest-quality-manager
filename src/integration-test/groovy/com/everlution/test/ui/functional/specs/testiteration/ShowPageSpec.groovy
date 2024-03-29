@@ -12,6 +12,7 @@ import com.everlution.services.testcycle.TestCycleService
 import com.everlution.domains.TestGroup
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.testcase.ShowTestCasePage
 import com.everlution.test.ui.support.pages.testcycle.ShowTestCyclePage
@@ -19,6 +20,7 @@ import com.everlution.test.ui.support.pages.testiteration.ShowTestIterationPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class ShowPageSpec extends GebSpec {
 

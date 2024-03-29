@@ -5,12 +5,14 @@ import com.everlution.services.project.ProjectService
 import com.everlution.domains.Scenario
 import com.everlution.services.scenario.ScenarioService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.scenario.ListScenarioPage
 import com.everlution.test.ui.support.pages.scenario.ShowScenarioPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
+@SendResults
 @Integration
 class DeleteScenarioSpec extends GebSpec {
 

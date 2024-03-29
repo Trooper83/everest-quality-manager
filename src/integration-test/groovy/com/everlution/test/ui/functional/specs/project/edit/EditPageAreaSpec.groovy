@@ -2,12 +2,14 @@ package com.everlution.test.ui.functional.specs.project.edit
 
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
+@SendResults
 @Integration
 class EditPageAreaSpec extends GebSpec {
 
