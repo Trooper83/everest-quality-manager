@@ -67,7 +67,7 @@ dependencies {
     implementation 'org.grails.plugins:cache:7.0.0'
     implementation "org.grails.plugins:async"
     implementation 'org.grails.plugins:scaffolding:5.0.1'
-    implementation 'org.grails.plugins:spring-security-core:6.1.1'
+    implementation 'org.grails.plugins:spring-security-core:6.0.0'
     implementation 'org.grails.plugins:spring-security-ui:4.0.0.M1'
     implementation "org.grails.plugins:spring-security-rest:3.0.1"
     implementation "org.grails.plugins:events"
@@ -126,7 +126,7 @@ integrationTest {
     systemProperty "sendResults", "false"
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 
-    def env = "prod"
+    def env = "int"
     String baseUrl, projectId
 
     if(env == "prod") {
