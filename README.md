@@ -1,5 +1,8 @@
 # Everest Test Case & Bug Tracking Tool
 
+## Creating Runnable Jar
+- Run `bootJar` gradle task
+
 ## Versions
 | Tool        | Version  |
 | ----------- |----------|
