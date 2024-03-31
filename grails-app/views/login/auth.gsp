@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="en" class="no-js">
 <head>
     <meta charset="utf-8">
@@ -30,12 +29,12 @@
                             <div class="form-group mt-3">
                                 <label for="email">Email address</label>
                                 <input type="email" id="email" name="${usernameParameter ?: 'username'}" class="form-control"
-                                       required="" autofocus="">
+                                       required="" autofocus=""/>
                             </div>
                             <div class="form-group mt-3">
                                 <label for="password">Password</label>
                                 <input type="password" id="password" name="${passwordParameter ?: 'password'}" class="form-control"
-                                       required="">
+                                       required=""/>
                             </div>
                             <div class="d-grid gap-2 col-6 mx-auto mt-4">
                                 <button class="btn btn-primary" type="submit" id="submit">Login</button>
