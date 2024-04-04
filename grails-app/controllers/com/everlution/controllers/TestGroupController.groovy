@@ -29,6 +29,10 @@ class TestGroupController {
         }
 
         params.max = Math.min(max ?: 25, 100)
+        if(!params.sort) {
+            params.sort = 'dateCreated'
+            params.order = 'desc'
+        }
         def testGroupResults
         if(!params.isSearch) { // load view
             testGroupResults = testGroupService.findAllByProject(project, params)

@@ -86,6 +86,42 @@ class BugControllerSpec extends Specification implements ControllerUnitTest<BugC
         model.project != null
     }
 
+    void "bugs action sets sort and order when not included in params"() {
+        given:
+        controller.bugService = Mock(BugService) {
+            1 * findAllByProject(_, params) >> new SearchResult([new Bug()], 1)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The action is executed"
+        controller.bugs(1, null)
+
+        then:"The model is correct"
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "bugs action retains sort and order when included in params"() {
+        given:
+        controller.bugService = Mock(BugService) {
+            1 * findAllByProject(_, params) >> new SearchResult([new Bug()], 1)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The action is executed"
+        params.sort = 'testSort'
+        params.order = 'testOrder'
+        controller.bugs(1, null)
+
+        then:"The model is correct"
+        controller.params.sort == 'testSort'
+        controller.params.order == 'testOrder'
+    }
+
     void "bugs action returns not found with invalid project"() {
         given:
         controller.bugService = Mock(BugService) {

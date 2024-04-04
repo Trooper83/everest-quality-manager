@@ -85,6 +85,42 @@ class ScenarioControllerSpec extends Specification implements ControllerUnitTest
         model.project
     }
 
+    void "scenarios action sets sort and order when not in params"() {
+        given:
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllByProject(_, params) >> new SearchResult([new Scenario()], 1)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"action is executed"
+        controller.scenarios(1, null)
+
+        then:
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "scenarios action retains sort and order when in params"() {
+        given:
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * findAllByProject(_, params) >> new SearchResult([new Scenario()], 1)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"action is executed"
+        params.sort = 'testSort'
+        params.order = 'testOrder'
+        controller.scenarios(1, null)
+
+        then:
+        controller.params.sort == 'testSort'
+        controller.params.order == 'testOrder'
+    }
+
     void "scenarios action returns not found with invalid project"() {
         given:
         controller.projectService = Mock(ProjectService) {

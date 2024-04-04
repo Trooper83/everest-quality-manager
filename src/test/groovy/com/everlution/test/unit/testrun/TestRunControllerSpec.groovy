@@ -72,6 +72,42 @@ class TestRunControllerSpec extends Specification implements ControllerUnitTest<
         view == 'testRuns'
     }
 
+    void "testRuns action sets order and sort params when not found"() {
+        given:
+        controller.testRunService = Mock(TestRunService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when: "call action"
+        controller.testRuns(1, 10)
+
+        then:
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "testRuns action retains sort and order params"() {
+        given:
+        controller.testRunService = Mock(TestRunService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when: "call action"
+        params.sort = 'testSort'
+        params.order = 'testOrder'
+        controller.testRuns(1, 10)
+
+        then:
+        controller.params.sort == 'testSort'
+        controller.params.order == 'testOrder'
+    }
+
     void "testRuns action returns the correct model"() {
         given:
         controller.testRunService = Mock(TestRunService) {

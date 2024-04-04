@@ -25,6 +25,10 @@ class AutomatedTestController {
         }
 
         params.max = Math.min(max ?: 25, 100)
+        if(!params.sort) {
+            params.sort = 'dateCreated'
+            params.order = 'desc'
+        }
         def searchResult
         if(!params.isSearch) { // load view
             searchResult = automatedTestService.findAllByProject(project, params)

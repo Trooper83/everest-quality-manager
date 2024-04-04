@@ -277,7 +277,7 @@ class TableTagLibSpec extends Specification implements TagLibUnitTest<TableTagLi
         def found = applyTemplate("<g:columnSort title='headers' property='testing' domain='project'/>")
 
         then:
-        found == '<th><a href=/projects?sort=testing&order=asc>headers</a></th>'
+        found == '<th class="sortable"><a href="/projects?sort=testing&order=asc">headers</a></th>'
     }
 
     void "columnSort href is correct when user domain"() {
@@ -285,7 +285,7 @@ class TableTagLibSpec extends Specification implements TagLibUnitTest<TableTagLi
         def found = applyTemplate("<g:columnSort title='headers' property='testing' domain='user'/>")
 
         then:
-        found == '<th><a href=/user/search?sort=testing&order=asc>headers</a></th>'
+        found == '<th class="sortable"><a href="/user/search?sort=testing&order=asc">headers</a></th>'
     }
 
     void "columnSort href is correct when not project or user domain"() {
@@ -293,7 +293,7 @@ class TableTagLibSpec extends Specification implements TagLibUnitTest<TableTagLi
         def found = applyTemplate("<g:columnSort title='headers' property='testing' domain='bug' projectId='1'/>")
 
         then:
-        found == '<th><a href=/project/1/bugs?sort=testing&order=asc>headers</a></th>'
+        found == '<th class="sortable"><a href="/project/1/bugs?sort=testing&order=asc">headers</a></th>'
     }
 
     void "columnSort href is correct when testGroup and TestCycle domain and not toplevel"(String domain) {
@@ -301,9 +301,39 @@ class TableTagLibSpec extends Specification implements TagLibUnitTest<TableTagLi
         def found = applyTemplate("<g:columnSort projectId='1' itemId='1' domain='${domain}' isTopLevel='false' title='headers' property='testing'/>")
 
         then:
-        found == "<th><a href=/project/1/${domain}/show/1?sort=testing&order=asc>headers</a></th>"
+        found == '<th class="sortable"><a href="/project/1/' + domain + '/show/1?sort=testing&order=asc">headers</a></th>'
 
         where:
         domain << ['testGroup', 'testCycle', 'testCase']
+    }
+
+    void "class is correct when property equals sort param"() {
+        when:
+        params.sort = 'testing'
+        params.order = 'desc'
+        def found = applyTemplate("<g:columnSort title='headers' property='testing' domain='project'/>")
+
+        then:
+        found == '<th class="sortable sorted desc"><a href="/projects?sort=testing&order=asc">headers</a></th>'
+    }
+
+    void "url order inverts when property equals sort param"() {
+        when:
+        params.sort = 'testing'
+        params.order = 'desc'
+        def found = applyTemplate("<g:columnSort title='headers' property='testing' domain='project'/>")
+
+        then:
+        found == '<th class="sortable sorted desc"><a href="/projects?sort=testing&order=asc">headers</a></th>'
+    }
+
+    void "class is correct when property does not equals sort param"() {
+        when:
+        params.sort = 'testing'
+        params.order = 'asc'
+        def found = applyTemplate("<g:columnSort title='headers' property='notTesting' domain='project'/>")
+
+        then:
+        found == '<th class="sortable"><a href="/projects?sort=notTesting&order=asc">headers</a></th>'
     }
 }

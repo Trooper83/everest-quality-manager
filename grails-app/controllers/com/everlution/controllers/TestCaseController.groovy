@@ -36,6 +36,10 @@ class TestCaseController {
         }
 
         params.max = Math.min(max ?: 25, 100)
+        if(!params.sort) {
+            params.sort = 'dateCreated'
+            params.order = 'desc'
+        }
         def searchResults
         if(!params.isSearch) { // load view
             searchResults = testCaseService.findAllByProject(project, params)

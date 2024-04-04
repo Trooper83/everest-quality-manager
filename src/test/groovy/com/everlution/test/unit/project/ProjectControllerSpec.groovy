@@ -475,6 +475,38 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         101  | 100
     }
 
+    void "projects action sets sort and order when not included in params"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 0
+        }
+
+        when:"The index action is executed"
+        controller.projects()
+
+        then:"The model is correct"
+        controller.params.sort == 'name'
+        controller.params.order == 'asc'
+    }
+
+    void "projects action retains sort and order when included in params"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 0
+        }
+
+        when:"The index action is executed"
+        params.sort = 'testingSort'
+        params.order = 'testingOrder'
+        controller.projects()
+
+        then:"The model is correct"
+        controller.params.sort == 'testingSort'
+        controller.params.order == 'testingOrder'
+    }
+
     void "projects with search renders projects view"() {
         given:
         controller.projectService = Mock(ProjectService) {

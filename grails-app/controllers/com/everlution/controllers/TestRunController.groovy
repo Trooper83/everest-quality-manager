@@ -25,6 +25,10 @@ class TestRunController {
         }
 
         params.max = Math.min(max ?: 25, 100)
+        if(!params.sort) {
+            params.sort = 'dateCreated'
+            params.order = 'desc'
+        }
         def searchResult
         if(!params.isSearch) { // load view
             searchResult = testRunService.findAllByProject(project, params)

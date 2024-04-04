@@ -17,7 +17,7 @@
     </div>
     <h1><g:message code="default.list.label" args="[entityName]" /></h1>
     <g:form class="row mt-3" action="projects" controller="project" params="['isSearch': 'true']" useToken="true">
-        <div class="col-lg-4 hstack gap-3">
+        <div class="col-lg-6 hstack gap-3">
             <g:textField class="form-control" name="searchTerm" autocomplete="off" placeholder="Project Name"
                          value="${params.searchTerm}"/>
             <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
