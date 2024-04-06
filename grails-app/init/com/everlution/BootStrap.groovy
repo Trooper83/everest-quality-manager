@@ -182,7 +182,8 @@ class BootStrap {
         new AutomatedTest(project: project, fullName: "com.everlution.myfirsttest", name: "My First Test").save(failOnError: true)
         def a = new AutomatedTest(project: project, fullName: "com.everlution.mysecondtest", name: "My Second Test").save(failOnError: true)
         def r1 = new TestResult(result: "PASSED", automatedTest: a)
-        def r2 = new TestResult(result: "FAILED", automatedTest:  a, failureCause: "some really long string\n with breaks to see how it renders")
+        def failureCause = "Condition not satisfied:\n\nr.status == 401\n| |      |\n| 400    false\n<kong.unirest.StringResponse"
+        def r2 = new TestResult(result: "FAILED", automatedTest:  a, failureCause: failureCause)
         def r3 = new TestResult(result: "SKIPPED", automatedTest:  a)
         new TestRun(name: "Bootstrapped Test Run", project: project, testResults: [r1, r2, r3]).save(failOnError: true)
     }

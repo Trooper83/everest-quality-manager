@@ -92,7 +92,7 @@
                                 <div class="collapse" id="failedCause-${i}">
                                     <div class="card">
                                         <div class="card-body bg-dark text-danger" data-test-id="failureCause">
-                                            ${result.failureCause}
+                                            <g:failureCause value="${result.failureCause}" />
                                         </div>
                                     </div>
                                 </div>

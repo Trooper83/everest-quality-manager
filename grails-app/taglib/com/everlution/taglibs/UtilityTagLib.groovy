@@ -81,4 +81,25 @@ class UtilityTagLib implements TagLibrary {
 
         writer << sb
     }
+
+    /**
+     * tag for retaining line breaks in failure cause of results
+     *
+     * &lt;g:failureCause value=<value>"/&gt;<br/>
+     *
+     * @attr value - the failureCause to render
+     */
+    Closure failureCause = { Map attrsMap ->
+        TypeConvertingMap attrs = (TypeConvertingMap) attrsMap
+        def writer = out
+        if (attrs.value == null) {
+            throwTagError("Tag [failureCause] is missing required attribute [value]")
+        }
+
+        def v = attrs.getProperty('value').toString()
+
+        def vfmt = v.replace("\n", "<br />")
+
+        writer << vfmt
+    }
 }

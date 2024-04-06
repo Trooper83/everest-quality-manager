@@ -124,4 +124,22 @@ class UtilityTagLibSpec extends Specification implements TagLibUnitTest<UtilityT
                 .append(end)
         return sb
     }
+
+    void "failureCause tag throws error when value not provided"() {
+        when:
+        tagLib.failureCause()
+
+        then:
+        def e = thrown(GrailsTagException)
+        e.message == "Tag [failureCause] is missing required attribute [value]"
+    }
+
+    void "failureCause replaces line breaks with html breaks"() {
+        when:
+        def found = applyTemplate("<g:failureCause value='testing \n should be replaced with html break'/>")
+
+
+        then:
+        found == 'testing <br /> should be replaced with html break'
+    }
 }

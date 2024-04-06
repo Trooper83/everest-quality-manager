@@ -225,4 +225,25 @@ class ShowTestRunSpec extends GebSpec {
         $("span", text: "SKIPPED").hasClass("text-bg-secondary")
         $("span", text: "FAILED").hasClass("text-bg-danger")
     }
+
+    void "failureCause parsed with html breaks"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and:
+        def proj = projectService.list(max:1).first()
+        def a = automatedTestService.save(new AutomatedTest(fullName: "Failure cause parsed with breaks", project: proj))
+        def tr = new TestResult(result: "FAILED", automatedTest: a, failureCause: "This test failed \n with line breaks")
+        def r = testRunService.save(new TestRun(name: "Failing test run", project: proj,
+                testResults: [tr]))
+
+        when:
+        def page = to(ShowTestRunPage, proj.id, r.id)
+        page.expandFailureCause()
+
+        then:
+        page.failedCauseElement.text() == 'This test failed\nwith line breaks'
+    }
 }

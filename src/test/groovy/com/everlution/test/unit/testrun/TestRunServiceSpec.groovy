@@ -123,6 +123,42 @@ class TestRunServiceSpec extends Specification implements ServiceUnitTest<TestRu
         created.testResults.first().result == "FAILED"
     }
 
+    void "createdAndSave sets failureCause to null if exceeding 2500 chars"() {
+        given:
+        def p = new Project(name: "create and save upper", code: "casu").save()
+        new AutomatedTest(fullName: "create and save upper test", project: p).save()
+        def r = new TestRunResult(testName: "create and save upper test", result:  "failed")
+        String f = 'a' * 2501
+        r.failureCause = f
+        currentSession.flush()
+
+        expect:
+        r.failureCause.length() == 2501
+
+        when:
+        def created = service.createAndSave("Create and Save failure cause exceeds test", p, [r])
+
+        then:
+        created.testResults.first().failureCause == null
+    }
+
+    void "createdAndSave does not throw null pointer when failureCause null"() {
+        given:
+        def p = new Project(name: "create and save upper", code: "casu").save()
+        new AutomatedTest(fullName: "create and save npe", project: p).save()
+        def r = new TestRunResult(testName: "create and save npe", result:  "failed")
+        currentSession.flush()
+
+        expect:
+        r.failureCause == null
+
+        when:
+        service.createAndSave("Create and Save failure cause exceeds test", p, [r])
+
+        then:
+        noExceptionThrown()
+    }
+
     void "findAllByProject returns all test runs in project"() {
         given:
         def p = new Project(name: "find me 123", code: "fm123").save()
