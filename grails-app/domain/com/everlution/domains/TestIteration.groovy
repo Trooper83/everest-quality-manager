@@ -3,34 +3,28 @@ package com.everlution.domains
 class TestIteration {
 
     Date dateCreated
-    Date dateExecuted
     Date lastUpdated
     String name
-    String notes
-    Person person
-    String result
     TestCase testCase
     TestCycle testCycle
     List steps
+    List results
     String verify
 
     static belongsTo = [ TestCycle ]
 
-    static hasMany = [ steps: IterationStep ]
+    static hasMany = [ steps: IterationStep, results: TestIterationResult ]
 
     static mapping = {
-        person cascade: "none"
+        results cascade: "all-delete-orphan"
         steps cascade: "all-delete-orphan"
         testCase cascade: "none"
         testCycle cascade: "none"
     }
 
     static constraints = {
-        dateExecuted nullable: true
         name blank: false, maxSize: 255, nullable: false
-        notes blank: true, maxSize: 1000, nullable: true
-        person nullable: true
-        result blank: false, nullable: false, inList: ["ToDo", "Passed", "Failed"]
+        results nullable: true
         steps nullable: false
         testCase nullable: false
         testCycle nullable: false

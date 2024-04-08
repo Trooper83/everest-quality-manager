@@ -1,5 +1,6 @@
 package com.everlution.test.service
 
+import com.everlution.domains.TestIterationResult
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.ReleasePlan
@@ -26,7 +27,7 @@ class TestIterationServiceSpec extends Specification {
         def testCase = new TestCase(name: "name of test case", project: project, person: person).save()
         def plan = new ReleasePlan(name: "plan", project: project, status: "ToDo", person: person).save()
         def cycle = new TestCycle(name: "name of cycle", releasePlan: plan).save()
-        new TestIteration(name: "name of test iteration", testCase: testCase, result: "ToDo", steps: [],
+        new TestIteration(name: "name of test iteration", testCase: testCase, steps: [],
                 testCycle: cycle)
     }
 
@@ -57,6 +58,20 @@ class TestIterationServiceSpec extends Specification {
     }
 
     void "save throws exception with validation fail"() {
+        given:
+        def r = new TestIterationResult(result: "test")
+        def i = setupData()
+        testIterationService.save(i)
+
+        when:
+        i.addToResults(r)
+        testIterationService.save(i)
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "save throws exception when result fails validation"() {
         when:
         testIterationService.save(new TestIteration())
 

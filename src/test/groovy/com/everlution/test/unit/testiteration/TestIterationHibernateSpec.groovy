@@ -7,7 +7,9 @@ import com.everlution.domains.ReleasePlan
 import com.everlution.domains.TestCase
 import com.everlution.domains.TestCycle
 import com.everlution.domains.TestIteration
+import com.everlution.domains.TestIterationResult
 import grails.test.hibernate.HibernateSpec
+import grails.validation.ValidationException
 import spock.lang.Shared
 
 class TestIterationHibernateSpec extends HibernateSpec {
@@ -32,7 +34,7 @@ class TestIterationHibernateSpec extends HibernateSpec {
 
     void "delete iteration with test case deletes iteration"() {
         given:
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [],
+        def iteration = new TestIteration(name: "test name", testCase: testCase, steps: [],
             testCycle: testCycle).save()
 
         expect:
@@ -50,7 +52,7 @@ class TestIterationHibernateSpec extends HibernateSpec {
         def testStep = new IterationStep(action: "do something", result: "something happened123")
         def testStep1 = new IterationStep(action: "I did something", result: "something happened231")
         def testStep2 = new IterationStep(action: "something happened", result: "something happened321")
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo",
+        def iteration = new TestIteration(name: "test name", testCase: testCase,
                 steps: [testStep, testStep1, testStep2], testCycle: testCycle).save()
 
         when:
@@ -60,5 +62,48 @@ class TestIterationHibernateSpec extends HibernateSpec {
         found.steps[0].id == testStep.id
         found.steps[1].id == testStep1.id
         found.steps[2].id == testStep2.id
+    }
+
+    void "save cascades to results"() {
+        when:
+        def r = new TestIterationResult(person: person, result: "PASSED")
+        new TestIteration(name: "test iteration name", testCase: testCase,
+                steps: [], testCycle: testCycle, results: [r]).save()
+
+        then:
+        r.id != null
+    }
+
+    void "delete cascades to results"() {
+        given:
+        def r = new TestIterationResult(person: person, result: "PASSED")
+        def t = new TestIteration(name: "test iteration name", testCase: testCase,
+                steps: [], testCycle: testCycle, results: [r]).save()
+
+        expect:
+        TestIterationResult.get(r.id) != null
+
+        when:
+        t.delete()
+
+        then:
+        TestIterationResult.get(r.id) == null
+    }
+
+    void "result order persists"() {
+        given:
+        def r = new TestIterationResult(person: person, result: "PASSED")
+        def r1 = new TestIterationResult(person: person, result: "FAILED")
+        def r2 = new TestIterationResult(person: person, result: "SKIPPED")
+        def t = new TestIteration(name: "test iteration name", testCase: testCase,
+                steps: [], testCycle: testCycle, results: [r, r1, r2]).save()
+
+        when:
+        def found = TestIteration.get(t.id)
+
+        then:
+        found.results[0].id == r.id
+        found.results[1].id == r1.id
+        found.results[2].id == r2.id
     }
 }

@@ -57,9 +57,8 @@ class TestIterationController {
                 return
             }
 
-            def person = springSecurityService.getCurrentUser() as Person
-            testIteration.person = person
-            testIteration.dateExecuted = new Date()
+            //def person = springSecurityService.getCurrentUser() as Person
+            //testIteration.person = person
             try {
                 testIterationService.save(testIteration)
             } catch (ValidationException ignored) {
