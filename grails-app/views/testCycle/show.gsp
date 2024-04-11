@@ -58,28 +58,33 @@
             <div class="card mt-3">
                 <div class="card-header hstack">
                     <h1 class="me-auto">Testing Progress</h1>
-                    <g:set var="todo" value="${testCycle.testIterations.count {it.result == 'ToDo'}}" />
-                    <g:set var="pass" value="${testCycle.testIterations.count {it.result == 'Passed'}}" />
-                    <g:set var="fail" value="${testCycle.testIterations.count {it.result == 'Failed'}}" />
+                    <g:set var="unexecuted" value="${testCycle.testIterations.count {it.results.empty}}" />
+                    <g:set var="stripped" value="${testCycle.testIterations.findAll { !it.results.empty }}"/>
+                    <g:set var="pass" value="${stripped.count {it.results.last().result == 'PASSED'}}" />
+                    <g:set var="fail" value="${stripped.count {it.results.last().result == 'FAILED'}}" />
+                    <g:set var="skip" value="${stripped.count {it.results.last().result == 'SKIPPED'}}" />
                     <g:set var="total" value="${testCycle.testIterations.size()}" />
-                    <g:multiProgressBar total="${total}" todo="${todo}" passed="${pass}" failed="${fail}"/>
+                    <g:multiProgressBar total="${total}" unexecuted="${unexecuted}" passed="${pass}"
+                                        failed="${fail}" skipped="${skip}"/>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item border-bottom">
                             <div class="row">
-                                <p class="col-3 fw-bold">Todo</p>
-                                <p class="col-3 fw-bold">Passed</p>
-                                <p class="col-3 fw-bold">Failed</p>
-                                <p class="col-3 fw-bold">Total</p>
+                                <p class="col fw-bold">UnExecuted</p>
+                                <p class="col fw-bold">Passed</p>
+                                <p class="col fw-bold">Failed</p>
+                                <p class="col fw-bold">Skipped</p>
+                                <p class="col fw-bold">Total</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">
                             <div class="row">
-                                <p class="col-3" id="todo">${todo}</p>
-                                <p class="col-3" id="pass">${pass}</p>
-                                <p class="col-3" id="fail">${fail}</p>
-                                <p class="col-3" id="total">${total}</p>
+                                <p class="col" id="unexecuted">${unexecuted}</p>
+                                <p class="col" id="pass">${pass}</p>
+                                <p class="col" id="fail">${fail}</p>
+                                <p class="col" id="skip">${skip}</p>
+                                <p class="col" id="total">${total}</p>
                             </div>
                         </li>
                     </ul>
@@ -90,27 +95,37 @@
                     <table class="table table-light table-bordered">
                         <thead class="thead-light">
                         <tr>
-                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="id" title="Id"
-                                          isTopLevel="false" itemId="${testCycle.id}"/>
                             <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="name" title="Name"
                                           isTopLevel="false" itemId="${testCycle.id}"/>
-                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="result" title="Result"
-                                          isTopLevel="false" itemId="${testCycle.id}"/>
-                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="person" title="Executed By"
-                                          isTopLevel="false" itemId="${testCycle.id}"/>
-                            <g:columnSort domain="testCycle" projectId="${testCycle.releasePlan.project.id}" property="dateExecuted" title="Executed Date"
-                                          isTopLevel="false" itemId="${testCycle.id}"/>
+                            <th>Result</th>
+                            <th>Executed By</th>
+                            <th>Executed Date</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <g:each var="iteration" in="${iterations}">
+                            <g:set var="currentResult" value="${iteration.results.empty ? null : iteration.results.last()}"/>
                             <tr>
-                                <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/show/${iteration.id}">${iteration.id}</g:link></td>
-                                <td>${iteration.name}</td>
-                                <td>${iteration.result}</td>
-                                <td>${iteration.person?.email}</td>
-                                <td data-name="executedDateValue">${iteration.dateExecuted}</td>
+                                <td><g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/show/${iteration.id}">${iteration.name}</g:link></td>
+                                <td>
+                                    <g:if test="${currentResult}">
+                                        <g:if test="${currentResult.result == 'PASSED'}">
+                                            <span class="badge text-bg-success">${currentResult.result}</span>
+                                        </g:if>
+                                        <g:elseif test="${currentResult.result == 'FAILED'}">
+                                            <span class="badge text-bg-danger">${currentResult.result}</span>
+                                        </g:elseif>
+                                        <g:else>
+                                            <span class="badge text-bg-warning">${currentResult.result}</span>
+                                        </g:else>
+                                    </g:if>
+                                    <g:else>
+                                        <span class="badge text-bg-secondary">UNEXECUTED</span>
+                                    </g:else>
+                                </td>
+                                <td data-name="executedBy">${currentResult?.person?.email}</td>
+                                <td data-name="executedDateValue">${currentResult?.dateCreated}</td>
                                 <td>
                                     <sec:ifAnyGranted roles="ROLE_BASIC">
                                         <g:link uri="/project/${testCycle.releasePlan.project.id}/testIteration/execute/${iteration.id}">Execute</g:link>

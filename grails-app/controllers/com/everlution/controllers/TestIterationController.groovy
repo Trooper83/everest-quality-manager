@@ -2,6 +2,7 @@ package com.everlution.controllers
 
 import com.everlution.domains.Person
 import com.everlution.domains.TestIteration
+import com.everlution.domains.TestIterationResult
 import com.everlution.services.testiteration.TestIterationService
 import com.everlution.services.testresult.TestResultService
 import grails.plugin.springsecurity.SpringSecurityService
@@ -57,8 +58,8 @@ class TestIterationController {
                 return
             }
 
-            //def person = springSecurityService.getCurrentUser() as Person
-            //testIteration.person = person
+            def person = springSecurityService.getCurrentUser() as Person
+            testIteration.results.last().person = person
             try {
                 testIterationService.save(testIteration)
             } catch (ValidationException ignored) {

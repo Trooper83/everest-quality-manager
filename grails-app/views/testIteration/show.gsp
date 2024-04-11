@@ -18,7 +18,7 @@
                         <g:message code="default.show.label" args="[entityName]"/>
                     </h1>
                     <sec:ifAnyGranted roles="ROLE_BASIC">
-                        <g:link class="btn btn-secondary btn-sm" role="button"
+                        <g:link class="btn btn-primary" role="button"
                                 uri="/project/${this.testIteration.testCycle.releasePlan.project.id}/testIteration/execute/${this.testIteration.id}">
                             Execute
                         </g:link>
@@ -30,18 +30,6 @@
                             <div class="row">
                                 <p class="col-4 fw-bold">Name</p>
                                 <p class="col" id="name">${testIteration.name}</p>
-                            </div>
-                        </li>
-                        <li class="list-group-item border-bottom">
-                            <div class="row">
-                                <p class="col-4 fw-bold">Executed By</p>
-                                <p class="col" id="executedBy">${testIteration.person?.email}</p>
-                            </div>
-                        </li>
-                        <li class="list-group-item border-bottom">
-                            <div class="row">
-                                <p class="col-4 fw-bold">Date Executed</p>
-                                <p class="col" data-name="executedDateValue" id="dateExecuted">${testIteration.dateExecuted}</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">
@@ -64,18 +52,6 @@
                                         ${testIteration.testCycle.name}
                                     </g:link>
                                 </p>
-                            </div>
-                        </li>
-                        <li class="list-group-item border-bottom">
-                            <div class="row">
-                                <p class="col-4 fw-bold">Notes</p>
-                                <p class="col" id="notes">${testIteration.notes}</p>
-                            </div>
-                        </li>
-                        <li class="list-group-item border-bottom">
-                            <div class="row">
-                                <p class="col-4 fw-bold">Result</p>
-                                <p class="col" id="result">${testIteration.result}</p>
                             </div>
                         </li>
                     </ul>
@@ -112,9 +88,39 @@
                     </ul>
                 </div>
             </div>
+            <h1 class="mt-3">Results</h1>
+            <table class="table table-light table-bordered mt-3">
+                <thead class="thead-light">
+                <tr>
+                    <th>Result</th>
+                    <th>Date Executed</th>
+                    <th>Executed By</th>
+                    <th>Notes</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each var="result" in="${testIteration.results.reverse()}">
+                    <tr>
+                        <td>
+                            <g:if test="${result.result == 'PASSED'}">
+                                <span class="badge text-bg-success">${result.result}</span>
+                            </g:if>
+                            <g:elseif test="${result.result == 'FAILED'}">
+                                <span class="badge text-bg-danger">${result.result}</span>
+                            </g:elseif>
+                            <g:else>
+                                <span class="badge text-bg-warning">${result.result}</span>
+                            </g:else>
+                        </td>
+                        <td data-name="createdDateValue">${result.dateCreated}</td>
+                        <td data-name="executedByValue">${result.person.email}</td>
+                        <td class="text-break">${result.notes}</td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
         </main>
     </div>
-</div>
 </div>
 <asset:javascript src="time.js"/>
 </body>

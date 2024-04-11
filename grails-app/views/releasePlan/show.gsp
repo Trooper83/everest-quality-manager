@@ -92,12 +92,15 @@
                                                 data-bs-target="#collapse-${i}">${cycle.name}
                                         </button>
                                     </h2>
-                                    <g:set var="todo" value="${cycle.testIterations.count {it.result == 'ToDo'}}" />
-                                    <g:set var="pass" value="${cycle.testIterations.count {it.result == 'Passed'}}" />
-                                    <g:set var="fail" value="${cycle.testIterations.count {it.result == 'Failed'}}" />
+                                    <g:set var="unexecuted" value="${cycle.testIterations.count {it.results.empty}}" />
+                                    <g:set var="stripped" value="${cycle.testIterations.findAll { !it.results.empty }}"/>
+                                    <g:set var="pass" value="${stripped.count {it.results.last().result == 'PASSED'}}" />
+                                    <g:set var="fail" value="${stripped.count {it.results.last().result == 'FAILED'}}" />
+                                    <g:set var="skip" value="${stripped.count {it.results.last().result == 'SKIPPED'}}" />
                                     <g:set var="total" value="${cycle.testIterations.size()}" />
                                     <p class="me-2 fw-bold">Progress:</p>
-                                    <g:multiProgressBar total="${total}" todo="${todo}" passed="${pass}" failed="${fail}"/>
+                                    <g:multiProgressBar total="${total}" unexecuted="${unexecuted}" passed="${pass}"
+                                                        failed="${fail}" skipped="${skip}"/>
                                 </div>
                                 <div id="collapse-${i}" class="collapse" data-parent="#testCycles">
                                     <div class="card-body" data-test-id="testCycle-content">

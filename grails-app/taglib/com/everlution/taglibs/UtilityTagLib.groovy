@@ -17,9 +17,10 @@ class UtilityTagLib implements TagLibrary {
      * &lt;g:multiProgressBar total="<total>" pass="<pass>"/&gt;<br/>
      *
      * @attr total REQUIRED The total number of results
-     * @attr todo REQUIRED the total number of unexecuted results
+     * @attr unexecuted REQUIRED the total number of unexecuted results
      * @attr failed REQUIRED the total number of failed results
      * @attr passed REQUIRED the total number of passed results
+     * @attr skipped REQUIRED the total number of skipped results
      */
     Closure multiProgressBar = { Map attrsMap ->
         TypeConvertingMap attrs = (TypeConvertingMap) attrsMap
@@ -27,8 +28,8 @@ class UtilityTagLib implements TagLibrary {
         if (attrs.total == null) {
             throwTagError("Tag [multiProgressBar] is missing required attribute [total]")
         }
-        if (attrs.todo == null) {
-            throwTagError("Tag [multiProgressBar] is missing required attribute [todo]")
+        if (attrs.unexecuted == null) {
+            throwTagError("Tag [multiProgressBar] is missing required attribute [unexecuted]")
         }
         if (attrs.passed == null) {
             throwTagError("Tag [multiProgressBar] is missing required attribute [passed]")
@@ -36,24 +37,30 @@ class UtilityTagLib implements TagLibrary {
         if (attrs.failed == null) {
             throwTagError("Tag [multiProgressBar] is missing required attribute [failed]")
         }
+        if (attrs.skipped == null) {
+            throwTagError("Tag [multiProgressBar] is missing required attribute [skipped]")
+        }
 
         def total = attrs.int('total') ?: 0
         def passed = attrs.int('passed') ?: 0
         def failed = attrs.int('failed') ?: 0
-        def todoCount = attrs.int('todo') ?: 0
+        def skipped = attrs.int('skipped') ?: 0
+        def todoCount = attrs.int('unexecuted') ?: 0
 
         def sb = new StringBuilder()
 
-        if (total == (passed + failed + todoCount)) {
+        if (total == (passed + failed + todoCount + skipped)) {
             final DecimalFormat df = new DecimalFormat("0.00")
 
             double passPercent = 0
             double failPercent = 0
             double todoPercent = 0
+            double skipPercent = 0
 
             if (total > 0) {
                 passPercent = (passed / total) * 100
                 failPercent = (failed / total) * 100
+                skipPercent = (skipped / total) * 100
                 todoPercent = (todoCount / total) * 100
             }
 
@@ -66,12 +73,16 @@ class UtilityTagLib implements TagLibrary {
             def todo = "<div class='progress' role='progressbar' aria-label='todo' aria-valuenow='${todoCount}'"
             def todo_1 =
                     " aria-valuemin='0' aria-valuemax='100' style='width: ${df.format(todoPercent)}%'><div class='progress-bar bg-secondary'></div></div>"
+            def skip = "<div class='progress' role='progressbar' aria-label='skipped' aria-valuenow='${skipped}'"
+            def skip_1 = " aria-valuemin='0' aria-valuemax='100' style='width: ${df.format(skipPercent)}%'><div class='progress-bar bg-warning'></div></div>"
             def end = '</div>'
             sb.append(start)
                     .append(pass)
                     .append(pass_1)
                     .append(fail)
                     .append(fail_1)
+                    .append(skip)
+                    .append(skip_1)
                     .append(todo)
                     .append(todo_1)
                     .append(end)

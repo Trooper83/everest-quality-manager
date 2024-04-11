@@ -117,7 +117,7 @@
                                     <span class="badge text-bg-success">${result.result}</span>
                                 </g:if>
                                 <g:else>
-                                    <span class="badge text-bg-secondary">${result.result}</span>
+                                    <span class="badge text-bg-warning">${result.result}</span>
                                 </g:else>
                             </td>
                             <td class="col-2 align-middle">
