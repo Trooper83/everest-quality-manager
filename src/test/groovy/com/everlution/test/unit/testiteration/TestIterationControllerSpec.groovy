@@ -6,6 +6,7 @@ import com.everlution.domains.ReleasePlan
 import com.everlution.domains.TestCycle
 import com.everlution.domains.TestIteration
 import com.everlution.controllers.TestIterationController
+import com.everlution.domains.TestIterationResult
 import com.everlution.services.testiteration.TestIterationService
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.testing.gorm.DataTest
@@ -225,7 +226,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         setToken(params)
-        def iteration = new TestIteration()
+        def iteration = new TestIteration(results: [new TestIterationResult()])
         iteration.id = 1
         def plan = new ReleasePlan()
         def project = new Project()
@@ -241,7 +242,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         controller.flash.message == "default.updated.message"
     }
 
-    void "update action correctly sets person and dateExecuted"() {
+    void "update action correctly sets person on result"() {
         given:
         mockDomain(TestCycle)
         controller.testIterationService = Mock(TestIterationService) {
@@ -256,7 +257,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'PUT'
         setToken(params)
-        def iteration = new TestIteration()
+        def iteration = new TestIteration(results: [new TestIterationResult()])
         iteration.id = 1
         def plan = new ReleasePlan()
         def project = new Project()
@@ -267,20 +268,18 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         iteration.testCycle = cycle
 
         expect:
-        iteration.dateExecuted == null
-        iteration.person == null
+        iteration.results[0].person == null
 
         when:"The save action is executed with a valid instance"
         controller.update(iteration, 1)
 
         then:
-        iteration.dateExecuted != null
-        iteration.person != null
+        iteration.results[0].person != null
     }
 
     void "update action with an invalid instance"() {
         given:
-        def iteration = new TestIteration()
+        def iteration = new TestIteration(results: [new TestIterationResult()])
         iteration.id = 1
         def plan = new ReleasePlan()
         def project = new Project()
@@ -310,5 +309,34 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         then:"The edit view is rendered again with the correct model"
         model.testIteration != null
         view == '/testIteration/execute'
+    }
+
+    void "update with iteration with no results returns error view"() {
+        given:
+        mockDomain(TestCycle)
+
+        controller.springSecurityService = Mock(SpringSecurityService) {
+            1 * getCurrentUser() >> new Person()
+        }
+
+        response.reset()
+        request.contentType = FORM_CONTENT_TYPE
+        request.method = 'PUT'
+        setToken(params)
+        def iteration = new TestIteration()
+        iteration.id = 1
+        def plan = new ReleasePlan()
+        def project = new Project()
+        project.id = 1
+        plan.project = project
+        def cycle = new TestCycle()
+        cycle.releasePlan = plan
+        iteration.testCycle = cycle
+
+        when:"The save action is executed with a valid instance"
+        controller.update(iteration, 1)
+
+        then:
+        status == 500
     }
 }
