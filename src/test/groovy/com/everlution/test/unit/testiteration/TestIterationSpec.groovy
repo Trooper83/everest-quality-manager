@@ -181,4 +181,56 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         then:
         domain.validate(["results"])
     }
+
+    void "lastExecuted can be null"() {
+        when:
+        domain.lastExecuted = null
+
+        then:
+        domain.validate(["dateCreated"])
+    }
+
+    void "lastResult can be blank"() {
+        when:
+        domain.lastResult = ""
+
+        then:
+        domain.validate(["lastResult"])
+    }
+
+    void "lastResult can be null"() {
+        when:
+        domain.lastResult = null
+
+        then:
+        domain.validate(["lastResult"])
+    }
+
+    void "lastResult validates with value in list"(String value) {
+        when:
+        domain.lastResult = value
+
+        then:
+        domain.validate(["lastResult"])
+
+        where:
+        value << ["SKIPPED", "PASSED", "FAILED"]
+    }
+
+    void "lastResult fails validation with value not in list"() {
+        when:
+        domain.lastResult = "test"
+
+        then:
+        !domain.validate(["lastResult"])
+        domain.errors["lastResult"].code == "not.inList"
+    }
+
+    void "lastExecutedBy can be null"() {
+        when:
+        domain.lastExecutedBy = null
+
+        then:
+        domain.validate(["lastExecutedBy"])
+    }
 }

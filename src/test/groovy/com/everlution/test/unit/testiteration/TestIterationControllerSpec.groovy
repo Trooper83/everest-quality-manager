@@ -242,7 +242,7 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         controller.flash.message == "default.updated.message"
     }
 
-    void "update action correctly sets person on result"() {
+    void "update action correctly sets properties on result"() {
         given:
         mockDomain(TestCycle)
         controller.testIterationService = Mock(TestIterationService) {
@@ -267,14 +267,12 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         cycle.releasePlan = plan
         iteration.testCycle = cycle
 
-        expect:
-        iteration.results[0].person == null
-
         when:"The save action is executed with a valid instance"
         controller.update(iteration, 1)
 
         then:
-        iteration.results[0].person != null
+        iteration.lastExecutedBy != null
+        iteration.lastExecuted != null
     }
 
     void "update action with an invalid instance"() {
@@ -309,34 +307,5 @@ class TestIterationControllerSpec extends Specification implements ControllerUni
         then:"The edit view is rendered again with the correct model"
         model.testIteration != null
         view == '/testIteration/execute'
-    }
-
-    void "update with iteration with no results returns error view"() {
-        given:
-        mockDomain(TestCycle)
-
-        controller.springSecurityService = Mock(SpringSecurityService) {
-            1 * getCurrentUser() >> new Person()
-        }
-
-        response.reset()
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        setToken(params)
-        def iteration = new TestIteration()
-        iteration.id = 1
-        def plan = new ReleasePlan()
-        def project = new Project()
-        project.id = 1
-        plan.project = project
-        def cycle = new TestCycle()
-        cycle.releasePlan = plan
-        iteration.testCycle = cycle
-
-        when:"The save action is executed with a valid instance"
-        controller.update(iteration, 1)
-
-        then:
-        status == 500
     }
 }

@@ -90,6 +90,18 @@ class TestIterationHibernateSpec extends HibernateSpec {
         TestIterationResult.get(r.id) == null
     }
 
+    void "delete does not cascade to person"() {
+        given:
+        def t = new TestIteration(name: "test iteration name", testCase: testCase,
+                steps: [], testCycle: testCycle, lastExecutedBy: person).save()
+
+        when:
+        t.delete()
+
+        then:
+        Person.get(person.id) != null
+    }
+
     void "result order persists"() {
         given:
         def r = new TestIterationResult(person: person, result: "PASSED")

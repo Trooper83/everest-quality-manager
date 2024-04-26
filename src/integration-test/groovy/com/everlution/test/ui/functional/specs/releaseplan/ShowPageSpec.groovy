@@ -387,19 +387,25 @@ class ShowPageSpec extends GebSpec {
         def tc = DataFactory.testCase()
         def tc1 = DataFactory.testCase()
         def tc2 = DataFactory.testCase()
+        def tc3 = DataFactory.testCase()
         def testCase = new TestCase(name: tc.name, project: project, person: person)
         def testCase1 = new TestCase(name: tc1.name, project: project, person: person)
         def testCase2 = new TestCase(name: tc2.name, project: project, person: person)
+        def testCase3 = new TestCase(name: tc3.name, project: project, person: person)
         testCaseService.save(testCase)
         testCaseService.save(testCase1)
         testCaseService.save(testCase2)
-        testCycleService.addTestIterations(testCycle, [testCase, testCase1, testCase2])
+        testCaseService.save(testCase3)
+        testCycleService.addTestIterations(testCycle, [testCase, testCase1, testCase2, testCase3])
         def iter = testCycle.testIterations.first()
-        iter.result = 'Passed'
+        iter.lastResult = 'PASSED'
         testIterationService.save(iter)
         def iteration = testCycle.testIterations[2]
-        iteration.result = 'Failed'
+        iteration.lastResult = 'FAILED'
         testIterationService.save(iteration)
+        def iteration1 = testCycle.testIterations[3]
+        iteration1.lastResult = 'SKIPPED'
+        testIterationService.save(iteration1)
 
         and: "login as a basic user"
         to LoginPage
@@ -415,6 +421,7 @@ class ShowPageSpec extends GebSpec {
         progressBar[0].find("[aria-label='passed']").attr('aria-valuenow') == '1'
         progressBar[0].find("[aria-label='failed']").attr('aria-valuenow') == '1'
         progressBar[0].find("[aria-label='todo']").attr('aria-valuenow') == '1'
+        progressBar[0].find("[aria-label='skipped']").attr('aria-valuenow') == '1'
     }
 
     void "empty progress bar displayed when no test iterations are present on cycle"() {

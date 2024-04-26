@@ -60,15 +60,15 @@ class TestIterationController {
 
             try {
                 def person = springSecurityService.getCurrentUser() as Person
-                testIteration.results.last().person = person
+                testIteration.lastExecutedBy = person
+                testIteration.lastExecuted = new Date()
+                def r = new TestIterationResult(result: testIteration.lastResult, person: person, notes: params.notes)
+                testIteration.addToResults(r)
                 testIterationService.save(testIteration)
             } catch (ValidationException ignored) {
                 def t = testIterationService.read(testIteration.id)
                 t.errors = testIteration.errors
                 render view: 'execute', model: [testIteration: t]
-                return
-            } catch (NullPointerException ignored) {
-                error()
                 return
             }
 

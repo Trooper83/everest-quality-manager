@@ -1,16 +1,14 @@
 package com.everlution.test.ui.support.pages.testiteration
 
 import com.everlution.test.ui.support.pages.common.ShowPage
+import com.everlution.test.ui.support.pages.modules.TableModule
 
 class ShowTestIterationPage extends ShowPage {
     static url = "/testIteration/show"
     static at = { title == "TestIteration Details" }
 
     static content = {
-        dateExecutedValue { $("#dateExecuted") }
-        executedByValue { $("#executedBy") }
-        notesValue { $("#notes") }
-        resultValue { $("#result") }
+        resultsTable { module TableModule }
         testCaseLink { $("#testCase") }
         testCycleLink { $("#testCycle") }
     }

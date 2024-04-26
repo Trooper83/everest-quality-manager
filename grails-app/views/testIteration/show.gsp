@@ -92,6 +92,7 @@
             <table class="table table-light table-bordered mt-3">
                 <thead class="thead-light">
                 <tr>
+                    <th>#</th>
                     <th>Result</th>
                     <th>Date Executed</th>
                     <th>Executed By</th>
@@ -99,8 +100,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                <g:each var="result" in="${testIteration.results.reverse()}">
+                <g:each status="i" var="result" in="${testIteration.results.reverse()}">
                     <tr>
+                        <td>${testIteration.results.size() - i}</td>
                         <td>
                             <g:if test="${result.result == 'PASSED'}">
                                 <span class="badge text-bg-success">${result.result}</span>

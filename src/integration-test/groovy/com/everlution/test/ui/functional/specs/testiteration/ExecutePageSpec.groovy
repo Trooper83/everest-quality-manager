@@ -86,6 +86,25 @@ class ExecutePageSpec extends GebSpec {
 
         then:
         def show = at ExecuteTestIterationPage
-        show.resultOptions*.text() == ["ToDo", "Passed", "Failed"]
+        show.resultOptions*.text() == ["", "PASSED", "FAILED", "SKIPPED"]
+    }
+
+    void "result defaults empty"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        go "/project/${project.id}/testCycle/show/${testCycle.id}"
+
+        when:
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
+
+        then:
+        def show = at ExecuteTestIterationPage
+        show.resultSelect().selected == ""
+        show.resultSelect().selectedText == ""
     }
 }

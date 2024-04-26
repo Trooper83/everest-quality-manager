@@ -8,8 +8,8 @@ class ExecuteTestIterationPage extends BasePage {
     static at = { title == "Execute Test" }
 
     static content = {
-        notesTextArea { $("#notes") }
-        resultOptions { $("#result>option") }
+        notesTextArea { $("[data-test-id=notes]") }
+        resultOptions { $("[data-test-id=result]>option") }
         statusMessage { $(".alert-primary") }
         testCaseLink { $("#testCase") }
         testCycleLink { $("#testCycle") }
@@ -17,7 +17,7 @@ class ExecuteTestIterationPage extends BasePage {
     }
 
     Select resultSelect() {
-        $("#result").module(Select)
+        $("[data-test-id=result]").module(Select)
     }
 
     /**
