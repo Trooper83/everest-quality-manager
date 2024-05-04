@@ -24,7 +24,7 @@ class CreatePageSpec extends GebSpec {
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         and: "go to the create page"
-        project = projectService.list(max: 1).first()
+        def project = projectService.list(max: 1).first()
         go "/project/${project.id}/testCase/create"
 
         expect: "correct options populate for executionMethod and type"

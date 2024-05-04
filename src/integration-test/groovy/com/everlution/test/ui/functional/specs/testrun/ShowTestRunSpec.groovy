@@ -91,7 +91,7 @@ class ShowTestRunSpec extends GebSpec {
         and:
         def proj = projectService.list(max:1).first()
         def a = automatedTestService.save(new AutomatedTest(fullName: "Failure cause collapsed", project: proj))
-        def tr = new TestResult(result: "FAILED", automatedTest: a)
+        def tr = new TestResult(result: "FAILED", automatedTest: a, failureCause: "I failed whoopsy")
         def r = testRunService.save(new TestRun(name: "Linking test run", project: proj,
                 testResults: [tr]))
 
@@ -222,7 +222,7 @@ class ShowTestRunSpec extends GebSpec {
 
         then:
         $("span", text: "PASSED").hasClass("text-bg-success")
-        $("span", text: "SKIPPED").hasClass("text-bg-secondary")
+        $("span", text: "SKIPPED").hasClass("text-bg-warning")
         $("span", text: "FAILED").hasClass("text-bg-danger")
     }
 
