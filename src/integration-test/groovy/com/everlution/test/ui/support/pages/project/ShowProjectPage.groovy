@@ -15,6 +15,7 @@ class ShowProjectPage extends BasePage {
         environmentsList { $("#environments") }
         errorsMessage { $(".alert-danger") }
         nameValue { $("#name") }
+        platformsList { $("#platforms") }
         sideBar { module SideBarModule }
         statusMessage { $("div.alert-primary") }
     }
@@ -47,5 +48,13 @@ class ShowProjectPage extends BasePage {
      */
     boolean isEnvironmentDisplayed(String name) {
         return environmentsList.find("p")*.text().contains(name)
+    }
+
+    /**
+     * determines if a platform is displayed
+     * @param name - name of the area to check
+     */
+    boolean isPlatformDisplayed(String name) {
+        return platformsList.find("p")*.text().contains(name)
     }
 }

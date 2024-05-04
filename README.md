@@ -61,7 +61,12 @@ Run the following command
 ```bash
 gradle wrapper --gradle-version 8.6
 ```
-
+### H2 Console
+Using the h2 console simplifies local development and allows viewing a local in memory database. 
+- Uncomment the blocks in the `application.groovy` file
+- Go to /h2-console
+- Set JDBC URL `jdbc:h2:mem:devDb`
+  - This value comes from datasource in `application.yml`
 --------
 ## Customer Installs
 
@@ -104,4 +109,3 @@ docker save --output everest-app.tar everest
  
 docker load --input everest-app.tar
 ```
- 

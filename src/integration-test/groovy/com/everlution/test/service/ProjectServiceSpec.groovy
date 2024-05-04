@@ -1,6 +1,7 @@
 package com.everlution.test.service
 
 import com.everlution.domains.Area
+import com.everlution.domains.Platform
 import com.everlution.services.area.AreaService
 import com.everlution.domains.Bug
 import com.everlution.domains.Environment
@@ -8,6 +9,7 @@ import com.everlution.services.environment.EnvironmentService
 import com.everlution.domains.Person
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
+import com.everlution.services.platform.PlatformService
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.ReleasePlan
 import com.everlution.domains.Scenario
@@ -30,6 +32,7 @@ class ProjectServiceSpec extends Specification {
     AreaService areaService
     EnvironmentService environmentService
     PersonService personService
+    PlatformService platformService
     ProjectService projectService
     SessionFactory sessionFactory
 
@@ -151,6 +154,17 @@ class ProjectServiceSpec extends Specification {
         thrown(ValidationException)
     }
 
+    void "save throws exception with two platforms with same name"() {
+        when:
+        def p = new Platform(name: "env")
+        def pl = new Platform(name: "env")
+        Project project = new Project(name: "testing save project", areas: [p, pl])
+        projectService.save(project)
+
+        then:
+        thrown(ValidationException)
+    }
+
     void "delete throws constraint exception when project has associated scenarios"() {
         given:
         Project project = new Project(name: "Test Case Service Spec Project", code: "ZZD").save()
@@ -242,6 +256,26 @@ class ProjectServiceSpec extends Specification {
         areaService.get(area.id) == null
     }
 
+    void "delete project removes all associated platforms"() {
+        given:
+        def pd = DataFactory.area()
+        def p = new Platform(pd)
+        def pr = DataFactory.project()
+        Project project = new Project(name: pr.name, code: pr.code, platforms: [p]).save()
+
+        expect:
+        project.id != null
+        p.id != null
+
+        when: "delete project"
+        projectService.delete(project.id)
+        sessionFactory.currentSession.flush()
+
+        then: "platform and project are deleted"
+        projectService.get(project.id) == null
+        platformService.get(p.id) == null
+    }
+
     void "saveUpdate throws exception with two areas with same name"() {
         when:
         def area = new Area(name: "area")
@@ -258,6 +292,17 @@ class ProjectServiceSpec extends Specification {
         def env = new Environment(name: "env")
         def env1 = new Environment(name: "env")
         Project project = new Project(name: "testing save project", code: "ccx", environments: [env, env1])
+        projectService.saveUpdate(project, new RemovedItems())
+
+        then:
+        thrown(ValidationException)
+    }
+
+    void "saveUpdate throws exception with two platforms with same name"() {
+        when:
+        def p = new Platform(name: "plat")
+        def pl = new Platform(name: "plat")
+        Project project = new Project(name: "testing save project", code: "ccx", platforms: [p, pl])
         projectService.saveUpdate(project, new RemovedItems())
 
         then:
@@ -290,6 +335,26 @@ class ProjectServiceSpec extends Specification {
 
         then: "area is removed"
         project.areas.size() == 0
+    }
+
+    void "saveUpdate removes platforms"() {
+        given: "project with platform"
+        def p = new Platform(name: "platform name")
+        Project project = new Project(name: "Remove Platform Test", code: "PAT").addToPlatforms(p).save()
+
+        expect:
+        project.platforms.size() == 1
+        p.id != null
+
+        when: "call saveUpdate"
+        def items = new RemovedItems()
+        items.platformIds = [p.id]
+        projectService.saveUpdate(project, items)
+        sessionFactory.currentSession.flush()
+
+        then: "platform is removed"
+        project.platforms.size() == 0
+        platformService.get(p.id) == null
     }
 
     void "delete project removes all associated environments"() {

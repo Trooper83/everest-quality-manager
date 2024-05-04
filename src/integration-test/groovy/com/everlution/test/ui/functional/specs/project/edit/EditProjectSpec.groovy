@@ -59,7 +59,7 @@ class EditProjectSpec extends GebSpec {
         when: "edit the project"
         def edited = DataFactory.project()
         EditProjectPage page = browser.page(EditProjectPage)
-        page.editProject(edited.name, edited.code, [], [])
+        page.editProject(edited.name, edited.code, [], [], [])
 
         then: "at home page and data displayed"
         def showPage = at ShowProjectPage

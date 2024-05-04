@@ -5,6 +5,7 @@ import com.everlution.controllers.command.RemovedItems
 import com.everlution.domains.Project
 import com.everlution.services.area.AreaService
 import com.everlution.services.environment.EnvironmentService
+import com.everlution.services.platform.PlatformService
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
 
@@ -13,6 +14,7 @@ abstract class ProjectService implements IProjectService {
 
     AreaService areaService
     EnvironmentService environmentService
+    PlatformService platformService
 
     /**
      * finds all projects with a name that contains the string
@@ -40,6 +42,10 @@ abstract class ProjectService implements IProjectService {
         for(id in removedItems.environmentIds) {
             def env = environmentService.get(id)
             project.removeFromEnvironments(env)
+        }
+        for(id in removedItems.platformIds) {
+            def platform = platformService.get(id)
+            project.removeFromPlatforms(platform) //TODO: test me
         }
         return save(project)
     }

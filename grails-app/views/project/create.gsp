@@ -62,6 +62,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group col-8 mb-1" id="platforms">
+                            <div class="form-row align-items-end">
+                                <label class="form-label" for="platform">Platforms</label>
+                                <div class="hstack gap-3">
+                                    <g:field class="form-control" maxLength="100" type="text" name="platform" data-toggle="tooltip"
+                                             trigger="manual" title="Platform Name cannot be blank"/>
+                                    <g:field class="btn btn-light border" type="button" name="btnAddPlatform" value="Add"
+                                             onclick="addTag('platform')"/>
+                                </div>
+                            </div>
+                            <div class="row mb-3" id="platformRow">
+                                <div class="col-8">
+                                    <ul class="no-bullets list-inline"></ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <g:submitButton name="create" class="btn btn-primary mt-2" value="Create"/>
