@@ -8,11 +8,11 @@ class ProjectHomePage extends BasePage {
     static at = { title == "Project Home" }
 
     static content = {
-        adminButton(required: false) { $("#adminButton") }
         errorsMessage { $("ul.errors") }
         nextReleaseLink(required: false) { $("#releasePlanCard #nextLink") }
         previousReleaseLink(required: false) { $("#releasePlanCard #previousLink") }
         sideBar { module SideBarModule }
         statusMessage { $("div.message") }
+        viewButton(required: false) { $("#viewButton") }
     }
 }

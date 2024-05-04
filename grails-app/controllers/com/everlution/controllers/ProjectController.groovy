@@ -86,7 +86,7 @@ class ProjectController {
      * @param projectId
      * @return
      */
-    @Secured("ROLE_PROJECT_ADMIN")
+    @Secured("ROLE_BASIC")
     def show(Long projectId) {
         respond projectService.get(projectId), view: "show"
     }

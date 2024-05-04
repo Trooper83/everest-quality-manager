@@ -4,8 +4,10 @@ import com.everlution.test.ui.support.pages.common.BasePage
 import com.everlution.test.ui.support.pages.modules.SideBarModule
 
 class ShowProjectPage extends BasePage {
-    static url = "/show"
     static at = { title == "Project Details" }
+    static convertToPath(Long projectId) {
+        "/project/show/${projectId}"
+    }
 
     static content = {
         areasList { $("#areas") }

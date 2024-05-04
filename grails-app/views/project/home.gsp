@@ -13,10 +13,10 @@
             <div class="card mt-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Project Home</h3>
-                    <sec:ifAnyGranted roles="ROLE_PROJECT_ADMIN">
+                    <sec:ifAnyGranted roles="ROLE_BASIC">
                         <g:link role="button" action="show"
-                                controller="project" id="${project.id}" class="btn btn-secondary ml-3"
-                                elementId="adminButton">View</g:link>
+                                controller="project" id="${project.id}" class="btn btn-primary ml-3"
+                                elementId="viewButton">View</g:link>
                     </sec:ifAnyGranted>
                 </div>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 m-3">
