@@ -2,6 +2,7 @@ package com.everlution.test.ui.functional.specs.testcase.create
 
 import com.everlution.domains.Area
 import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.TestGroup
@@ -51,6 +52,7 @@ class CreateTestCaseSpec extends GebSpec {
         def ed1 = DataFactory.environment()
         def env = new Environment(ed)
         def env1 = new Environment(ed1)
+        def pl = new Platform(DataFactory.area())
         def gd = DataFactory.testGroup()
         def gd1 = DataFactory.testGroup()
         def group = new TestGroup(name: gd.name)
@@ -58,7 +60,7 @@ class CreateTestCaseSpec extends GebSpec {
         def projectData = DataFactory.project()
         def project = projectService.save(
                 new Project(name: projectData.name, code: projectData.code, areas: [area], environments: [env, env1],
-                testGroups: [gd, gd1])
+                testGroups: [gd, gd1], platforms: [pl])
         )
 
         and: "login as a basic user"
@@ -73,7 +75,7 @@ class CreateTestCaseSpec extends GebSpec {
         def tcd = DataFactory.testCase()
         createPage.createFreeFormTestCase(
                 tcd.name, tcd.description, area.name, [env.name, env1.name], [group.name, group1.name],
-                "Automated", "UI", "Web", [], tcd.verify)
+                "Automated", "UI", pl.name, [], tcd.verify)
 
         then: "data is displayed on show page"
         ShowTestCasePage showPage = at ShowTestCasePage
@@ -83,7 +85,7 @@ class CreateTestCaseSpec extends GebSpec {
             showPage.descriptionValue.text() == tcd.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
-            showPage.platformValue.text() == "Web"
+            showPage.platformValue.text() == pl.name
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.areTestGroupsDisplayed([group.name, group1.name])
             showPage.verifyValue.text() == tcd.verify

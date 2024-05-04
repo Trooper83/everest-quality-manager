@@ -42,7 +42,8 @@ class CreatePageSpec extends GebSpec {
         then: "correct options are populated"
         CreateBugPage page = browser.page(CreateBugPage)
         verifyAll {
-            page.platformOptions*.text() == ["", "Testing 123", "Testing 321"]
+            page.platformOptions*.text().containsAll(["Testing 123", "Testing 321"])
+            page.platformOptions*.text().size() == 3
         }
 
         and: "default value is blank"

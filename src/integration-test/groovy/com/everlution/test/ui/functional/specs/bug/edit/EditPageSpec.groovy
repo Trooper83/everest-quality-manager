@@ -48,7 +48,8 @@ class EditPageSpec extends GebSpec {
         then: "correct options are populated"
         def page = browser.page(EditBugPage)
         verifyAll {
-            page.platformOptions*.text() == ["", "Testing 123", "Testing 321"]
+            page.platformOptions*.text().containsAll(["Testing 123", "Testing 321"])
+            page.platformOptions*.text().size() == 3
         }
     }
 

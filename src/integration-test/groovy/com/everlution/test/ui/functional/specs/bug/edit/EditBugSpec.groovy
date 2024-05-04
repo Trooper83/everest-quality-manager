@@ -2,6 +2,7 @@ package com.everlution.test.ui.functional.specs.bug.edit
 
 import com.everlution.domains.Area
 import com.everlution.domains.Bug
+import com.everlution.domains.Platform
 import com.everlution.services.bug.BugService
 import com.everlution.domains.Environment
 import com.everlution.domains.Person
@@ -70,13 +71,14 @@ class EditBugSpec extends GebSpec {
     void "all edit from data saved"() {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
+        def platform = new Platform(DataFactory.area())
         def env = new Environment(DataFactory.environment())
         def projectData = DataFactory.project()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
-                areas: [area], environments: [env]))
+                areas: [area], environments: [env], platforms: [platform]))
         def bugData = DataFactory.bug()
         def bug = bugService.save(new Bug(person: person, name: bugData.name,
-                description: bugData.description, project: project, area: area, platform: "Web", status: "Open",
+                description: bugData.description, project: project, area: area, platform: platform, status: "Open",
                 actual: "actual", expected: "expected", notes: bugData.notes))
 
         when: "login as a basic user"

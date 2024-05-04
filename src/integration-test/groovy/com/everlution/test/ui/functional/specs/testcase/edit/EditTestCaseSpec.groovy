@@ -3,6 +3,7 @@ package com.everlution.test.ui.functional.specs.testcase.edit
 import com.everlution.domains.Area
 import com.everlution.domains.Environment
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
@@ -217,14 +218,15 @@ class EditTestCaseSpec extends GebSpec {
     void "all edit from data saved"() {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
+        def platform = new Platform(DataFactory.area())
         def env = new Environment(DataFactory.environment())
         def group = new TestGroup(name: "test group 1")
         def projectData = DataFactory.project()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
-                areas: [area], environments: [env], testGroups: [group]))
+                areas: [area], environments: [env], testGroups: [group], platforms: [platform]))
         def td = DataFactory.testCase()
         def testCase = new TestCase(name: td.name, description: td.description, person: person, project: project,
-            area: area, executionMethod: "Manual", type: "API", platform: "Web", environments: [env],
+            area: area, executionMethod: "Manual", type: "API", platform: platform, environments: [env],
             testGroups: [group])
         def id = testCaseService.save(testCase).id
 
@@ -239,7 +241,7 @@ class EditTestCaseSpec extends GebSpec {
         when: "edit test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
         def edited = DataFactory.testCase()
-        page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI", "iOS",
+        page.editTestCase(edited.name, edited.description, "", [""], "Automated", "UI", "",
                 [""], "verify added")
 
         then: "data is displayed on show page"
@@ -252,7 +254,7 @@ class EditTestCaseSpec extends GebSpec {
             showPage.descriptionValue.text() == edited.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
-            showPage.platformValue.text() == "iOS"
+            showPage.platformValue.text() == ""
             showPage.verifyValue.text() == "verify added"
         }
     }
