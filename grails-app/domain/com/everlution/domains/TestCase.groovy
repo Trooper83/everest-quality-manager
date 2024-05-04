@@ -10,7 +10,7 @@ class TestCase {
     Date lastUpdated
     String name
     Person person
-    String platform
+    Platform platform
     Project project
     List steps
     List testGroups
@@ -43,7 +43,16 @@ class TestCase {
         executionMethod blank: true, nullable: true, inList: ["Automated", "Manual"]
         name blank: false, maxSize: 255, nullable: false
         person nullable: false
-        platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
+        platform nullable: true, validator: { val, TestCase obj ->
+            if(val == null) {
+                return true
+            }
+            if(obj.project == null || obj.project.platforms == null) {
+                return false
+            }
+            def ids = obj.project.platforms*.id
+            val.id in ids
+        }
         project nullable: false
         steps nullable: true
         type blank: true, nullable: true, inList: ["UI", "API"]

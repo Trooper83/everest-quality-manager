@@ -2,6 +2,7 @@ package com.everlution.test.unit.testcycle
 
 import com.everlution.domains.Environment
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.ReleasePlan
 import com.everlution.domains.Step
@@ -154,11 +155,17 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
     }
 
     void "add test iterations filters out test cases by platform"() {
+        given:
+        def pl = new Platform(name: 'Web')
+        def pl1 = new Platform(name: 'iOS')
+        def pl2 = new Platform(name: 'Android')
+        def pr = new Project(name: 'name of the project', code: 'notp', platforms: [pl, pl1, pl2]).save()
+
         when:
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
-        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
-        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: pr, platform: pl).save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: pr, platform: null).save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: pr, platform: pl1).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: pr, platform: pl2).save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web").save(flush: true)
         service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 

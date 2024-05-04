@@ -4,6 +4,7 @@ import com.everlution.domains.Area
 import com.everlution.domains.Bug
 import com.everlution.domains.Environment
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Shared
@@ -285,32 +286,49 @@ class BugSpec extends Specification implements DomainUnitTest<Bug> {
         domain.validate(["platform"])
     }
 
-    void "platform can be blank"() {
+    void "platform fails to validate when project null"() {
         when:
-        domain.platform = ""
-
-        then:
-        domain.validate(["platform"])
-    }
-
-    void "platform value in list"(String value) {
-        when:
-        domain.platform = value
-
-        then:
-        domain.validate(["platform"])
-
-        where:
-        value << ["Android", "iOS", "Web"]
-    }
-
-    void "platform value not in list"() {
-        when:
-        domain.platform = "test"
+        domain.project = null
+        domain.platform = new Platform(name: "test")
 
         then:
         !domain.validate(["platform"])
-        domain.errors["platform"].code == "not.inList"
+        domain.errors["platform"].code == "validator.invalid"
+    }
+
+    void "platform validates with platform in project"() {
+        when:
+        def pl = new Platform(name: "test platform")
+        def p = new Project(name: "testing project platform", code: "tpa", platforms: [pl]).save()
+        domain.project = p
+        domain.platform = pl
+
+        then:
+        domain.validate(["platform"])
+    }
+
+    void "platform fails to validate for project with no platforms"() {
+        when:
+        def pl = new Platform(name: "test platform").save()
+        def p = new Project(name: "testing project platform", code: "tpa").save()
+        domain.project = p
+        domain.platform = pl
+
+        then:
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "validator.invalid"
+    }
+
+    void "platform not in project fails to validate for project with platforms"() {
+        when:
+        def pl = new Platform(name: "test platform").save()
+        def p = new Project(name: "testing project platforms", code: "tpa", platforms: [new Platform(name: "test")]).save()
+        domain.project = p
+        domain.platform = pl
+
+        then:
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "validator.invalid"
     }
 
     void "status cannot be null"() {

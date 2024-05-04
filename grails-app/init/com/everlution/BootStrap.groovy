@@ -7,6 +7,7 @@ import com.everlution.domains.Environment
 import com.everlution.domains.Link
 import com.everlution.domains.Person
 import com.everlution.domains.PersonRole
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.ReleasePlan
 import com.everlution.domains.Role
@@ -101,8 +102,14 @@ class BootStrap {
         def area1 = new Area(name: "bootstrap area 12")
         def env = new Environment(name: "bootstrap environment")
         def env1 = new Environment(name: "bootstrap environment12")
-        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env]).save(failOnError: true)
-        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1]).save(failOnError: true)
+        def pl = new Platform(name: "Web")
+        def pl1 = new Platform(name: "iOS")
+        def pl2 = new Platform(name: "Web")
+        def pl3 = new Platform(name: "iOS")
+        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env],
+                platforms: [pl, pl1]).save(failOnError: true)
+        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1],
+                platforms: [pl2, pl3]).save(failOnError: true)
 
         Step testStep = new Step(act: "do something", result: "something happened", data: "testing this data").save(failOnError: true)
         Step testStep1 = new Step(act: "do something12", result: "something happened12").save(failOnError: true)

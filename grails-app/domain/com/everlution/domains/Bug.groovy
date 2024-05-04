@@ -12,7 +12,7 @@ class Bug {
     String name
     String notes
     Person person
-    String platform
+    Platform platform
     Project project
     String status
     List steps
@@ -44,7 +44,16 @@ class Bug {
         name blank: false, maxSize: 255, nullable: false
         notes nullable: true, blank: true, maxSize: 500
         person nullable: false
-        platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
+        platform nullable: true, validator: { val, Bug obj ->
+            if(val == null) {
+                return
+            }
+            if(obj.project == null || obj.project.platforms == null) {
+                return false
+            }
+            def ids = obj.project.platforms*.id
+            val.id in ids
+        }
         project nullable: false
         environments nullable: true, validator: { val, Bug obj ->
             if(val == null) {

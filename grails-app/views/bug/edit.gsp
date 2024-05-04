@@ -43,8 +43,9 @@
                             </div>
                             <div class="col-4">
                                 <label class="form-label" for="platform">Platform</label>
-                                <g:select class="form-select" name="platform" from="${['Android', 'iOS', 'Web']}"
-                                          noSelection="${['':'']}" value="${bug.platform}"
+                                <g:select class="form-select" name="platform" from="${bug.project.platforms}"
+                                          noSelection="${[' ':'']}" value="${bug.platform?.id}"
+                                          optionKey="id" optionValue="name"
                                 />
                             </div>
                         </div>

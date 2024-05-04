@@ -68,7 +68,7 @@ abstract class TestCycleService implements ITestCycleService {
             testCases.removeIf(test -> testCycle.testCaseIds.contains(test.id))
         }
         if (testCycle.platform != null) {
-            testCases.removeIf(test -> (test.platform != testCycle.platform & test.platform != null))
+            testCases.removeIf(test -> (test.platform?.name != testCycle.platform & test.platform != null))
         }
         if (testCycle.environ != null) {
             testCases.removeIf(test -> (!test.environments?.contains(testCycle.environ)) & test.environments != null)
