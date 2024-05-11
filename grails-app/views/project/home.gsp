@@ -69,6 +69,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="card bg-light h-100" style="max-width: 18rem;" id="testRunCard">
+                            <div class="card-header bg-secondary"></div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <g:link uri="/project/${project.id}/testRuns">Recent Test Runs</g:link>
+                                </h5>
+                                <ul class="list-group">
+                                <g:each var="run" in="${testRuns}">
+                                    <li class="list-group-item">${run.name}</li>
+                                </g:each>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

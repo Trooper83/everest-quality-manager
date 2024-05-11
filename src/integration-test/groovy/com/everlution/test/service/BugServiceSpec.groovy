@@ -244,4 +244,15 @@ class BugServiceSpec extends Specification {
         thrown(ValidationException)
         stepService.get(step.id) != null
     }
+
+    void "countByProjectAndStatus returns count of bugs"() {
+        given:
+        setupData()
+
+        when:
+        def c = bugService.countByProjectAndStatus(project, "Open")
+
+        then:
+        c == 2
+    }
 }

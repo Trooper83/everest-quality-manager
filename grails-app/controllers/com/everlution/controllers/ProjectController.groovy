@@ -8,6 +8,8 @@ import com.everlution.services.releaseplan.ReleasePlanService
 import com.everlution.services.scenario.ScenarioService
 import com.everlution.services.testcase.TestCaseService
 import com.everlution.controllers.command.RemovedItems
+import com.everlution.services.testresult.TestResultService
+import com.everlution.services.testrun.TestRunService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import org.springframework.dao.DataIntegrityViolationException
@@ -22,6 +24,8 @@ class ProjectController {
     ReleasePlanService releasePlanService
     ScenarioService scenarioService
     TestCaseService testCaseService
+    TestRunService testRunService
+    TestResultService testResultService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", projects: ["GET", "POST"],
                                 create: "GET", show: "GET", edit: "GET", home: "GET"]
@@ -62,14 +66,17 @@ class ProjectController {
             notFound()
             return
         }
+
+        def mostFailedTests = testResultService.getMostFailedTestCount(project)
         def autoTestCount = automatedTestService.countByProject(project)
-        def bugCount = bugService.countByProject(project)
-        def testCaseCount = testCaseService.countByProject(project)
-        def scenarioCount = scenarioService.countByProject(project)
+        def bugCount = bugService.countByProjectAndStatus(project, "Open")
+        def testCaseCount = testCaseService.countByProject(project)//TODO: remove me
+        def scenarioCount = scenarioService.countByProject(project)//Todo: remove me and the imports above
         def releasePlans = releasePlanService.getPrevNextPlans(project)
+        def testRuns = testRunService.findAllByProject(project, [max:10]).results
         respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
                 bugCount: bugCount, nextRelease: releasePlans.nextRelease, previousRelease: releasePlans.previousRelease,
-                automatedTestCount: autoTestCount]
+                automatedTestCount: autoTestCount, testRuns: testRuns, mostFailedTests: mostFailedTests]
     }
 
     /**

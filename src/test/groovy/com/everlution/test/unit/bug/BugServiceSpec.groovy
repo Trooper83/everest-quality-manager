@@ -205,4 +205,50 @@ class BugServiceSpec extends Specification implements ServiceUnitTest<BugService
         bugs.results.size() > 0
         !bugs.results.contains(bug)
     }
+
+    void "countByProjectAndStatus returns number of bugs with status"() {
+        given:
+        def proj = new Project(name: "BugServiceSpec Project1", code: "BP4").save()
+        new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: proj,
+                status: "Open", actual: "actual", expected: "expected").save(flush: true)
+
+        when:
+        def c = service.countByProjectAndStatus(proj, "Open")
+
+        then:
+        c == 1
+    }
+
+    void "countByProjectAndStatus returns number of bugs in project only"() {
+        given:
+        def proj = new Project(name: "BugServiceSpec Project1", code: "BP4").save()
+        new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: proj,
+                status: "Open", actual: "actual", expected: "expected").save(flush: true)
+        new Bug(person: person, description: "Found a bug", name: "Name of the bug", project: project,
+                status: "Open", actual: "actual", expected: "expected").save(flush: true)
+
+        when:
+        def c = service.countByProjectAndStatus(proj, "Open")
+
+        then:
+        c == 1
+    }
+
+    void "countByProjectAndStatus returns zero when project null"() {
+        when:
+        def c = service.countByProjectAndStatus(null, "Open")
+
+        then:
+        c == 0
+        noExceptionThrown()
+    }
+
+    void "countByProjectAndStatus returns zero when status invalid"() {
+        when:
+        def c = service.countByProjectAndStatus(project, "test")
+
+        then:
+        c == 0
+        noExceptionThrown()
+    }
 }

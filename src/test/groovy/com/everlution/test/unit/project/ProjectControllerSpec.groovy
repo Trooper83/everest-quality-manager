@@ -561,7 +561,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
+            1 * countByProjectAndStatus(project, "Open") >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
             1 * countByProject(project) >> 0
@@ -603,7 +603,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
+            1 * countByProjectAndStatus(project, "Open") >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
             1 * countByProject(project) >> 0
@@ -640,7 +640,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
+            1 * countByProjectAndStatus(project, "Open") >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
             1 * countByProject(project) >> 0
@@ -669,7 +669,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
+            1 * countByProjectAndStatus(project, "Open") >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
             1 * countByProject(project) >> 0
