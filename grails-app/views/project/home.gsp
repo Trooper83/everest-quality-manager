@@ -21,17 +21,6 @@
                 </div>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 m-3">
                     <div class="col">
-                        <div class="card bg-light h-100" style="max-width: 18rem;" id="testCaseCard">
-                            <div class="card-header bg-secondary"></div>
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <g:link uri="/project/${project.id}/testCases">Test Cases</g:link>
-                                </h5>
-                                <p class="card-text">Count in project: ${testCaseCount}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
                         <div class="card bg-light h-100" style="max-width: 18rem;" id="autoTestCard">
                             <div class="card-header bg-secondary"></div>
                             <div class="card-body">

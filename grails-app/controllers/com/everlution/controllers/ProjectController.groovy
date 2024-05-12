@@ -67,16 +67,20 @@ class ProjectController {
             return
         }
 
+        // bugs
+        def recentBugs = bugService.findAllByProject(project, [max:10, sort: 'dateCreated', order: 'desc']).results
+        def bugCount = bugService.countByProjectAndStatus(project, "Open")
+        // automated tests
         def mostFailedTests = testResultService.getMostFailedTestCount(project)
         def autoTestCount = automatedTestService.countByProject(project)
-        def bugCount = bugService.countByProjectAndStatus(project, "Open")
-        def testCaseCount = testCaseService.countByProject(project)//TODO: remove me
-        def scenarioCount = scenarioService.countByProject(project)//Todo: remove me and the imports above
-        def releasePlans = releasePlanService.getPrevNextPlans(project)
         def testRuns = testRunService.findAllByProject(project, [max:10]).results
-        respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
-                bugCount: bugCount, nextRelease: releasePlans.nextRelease, previousRelease: releasePlans.previousRelease,
-                automatedTestCount: autoTestCount, testRuns: testRuns, mostFailedTests: mostFailedTests]
+        // release plans
+        def releasePlans = releasePlanService.getPrevNextPlans(project)
+
+        respond project, view: "home", model: [bugCount: bugCount, nextRelease: releasePlans.nextRelease,
+                                               previousRelease: releasePlans.previousRelease,
+                                               automatedTestCount: autoTestCount, testRuns: testRuns,
+                                               mostFailedTests: mostFailedTests, recentBugs: recentBugs]
     }
 
     /**
