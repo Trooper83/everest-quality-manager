@@ -573,8 +573,14 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
         }
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * countByProject(project) >> 0
+        }
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * countByProject(project) >> 0
+        }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> new LinkedHashMap<>()
+            1 * getPlansByStatus(project) >> new LinkedHashMap<>()
         }
         controller.testRunService = Mock(TestRunService) {
             1 * findAllByProject(project, _) >> sr
@@ -612,15 +618,22 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * findAllByProject(project, _) >> sr
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> [
-                    "previousRelease": new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
-                    "nextRelease": new ReleasePlan(status: 'Released', releaseDate: pastDate) ]
+            1 * getPlansByStatus(project) >> [
+                    "released": new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
+                    "next": new ReleasePlan(status: 'Released', releaseDate: pastDate),
+                    "inProgress": new ReleasePlan(status: 'In Progress', plannedDate: futureDate)]
         }
         controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
         }
         controller.testResultService = Mock(TestResultService) {
             1 * getMostFailedTestCount(project) >> []
+        }
+        controller.scenarioService = Mock(ScenarioService) {
+            1 * countByProject(project) >> 0
+        }
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * countByProject(project) >> 0
         }
         controller.testRunService = Mock(TestRunService) {
             1 * findAllByProject(project, _) >> sr
@@ -633,73 +646,12 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.project instanceof Project
         model.bugCount == 0
         model.automatedTestCount == 0
-        model.nextRelease != null
-        model.previousRelease != null
+        model.next != null
+        model.released != null
+        model.current != null
         model.testRuns == []
         model.mostFailedTests == []
         model.recentBugs == []
-    }
-
-    void "home action returns null for next release plan when none matched"() {
-        given:
-        def project = new Project()
-        def sr = new SearchResult([], 0)
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProjectAndStatus(project, 'Open') >> 0
-            1 * findAllByProject(project, _) >> sr
-        }
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> [:]
-        }
-        controller.automatedTestService = Mock(AutomatedTestService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testResultService = Mock(TestResultService) {
-            1 * getMostFailedTestCount(project) >> []
-        }
-        controller.testRunService = Mock(TestRunService) {
-            1 * findAllByProject(project, _) >> sr
-        }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.nextRelease == null
-    }
-
-    void "home action returns null for previous release plan when none matched"() {
-        given:
-        def project = new Project()
-        def sr = new SearchResult([], 0)
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProjectAndStatus(project, 'Open') >> 0
-            1 * findAllByProject(project, _) >> sr
-        }
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> [:]
-        }
-        controller.automatedTestService = Mock(AutomatedTestService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testResultService = Mock(TestResultService) {
-            1 * getMostFailedTestCount(project) >> []
-        }
-        controller.testRunService = Mock(TestRunService) {
-            1 * findAllByProject(project, _) >> sr
-        }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.previousRelease == null
     }
 
     void "show action returns 405 with not allowed method types"(String httpMethod) {

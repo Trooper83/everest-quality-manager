@@ -45,24 +45,33 @@ abstract class ReleasePlanService implements IReleasePlanService {
     /**
      * gets the next and previous release plans
      */
-    LinkedHashMap<String, ReleasePlan> getPrevNextPlans(Project project) {
+    LinkedHashMap<String, List<ReleasePlan>> getPlansByStatus(Project project) {
 
         def releasePlans = findAllByProject(project, [:]).results
 
         List<ReleasePlan> previous = List.copyOf(releasePlans)
-        def previousRelease = previous
+        def released = previous
                 .findAll {it.releaseDate != null }
                 .findAll {it.status == 'Released' }
-                .max { it.releaseDate }
+                .sort { it.releaseDate }
+                .reverse(true)
+                .take(3)
 
-
-        List<ReleasePlan> next = List.copyOf(releasePlans)
-        def nextRelease = next
+        List<ReleasePlan> inProgressCopy = List.copyOf(releasePlans)
+        def inProgress = inProgressCopy
                 .findAll {it.plannedDate != null }
-                .findAll {it.status != 'Released' }
-                .findAll { it.status != 'Canceled' }
-                .min { it.plannedDate }
-        return [ nextRelease: nextRelease, previousRelease: previousRelease ]
+                .findAll {it.releaseDate == null }
+                .findAll {it.status == 'In Progress' }
+                .sort { it.plannedDate }
+                .take(3)
+
+
+        List<ReleasePlan> nextCopy = List.copyOf(releasePlans)
+        def next = nextCopy
+                .findAll {it.status == 'Planning' }
+                .sort { it.dateCreated }
+                .take(3)
+        return [ next: next, released: released, inProgress: inProgress ]
     }
 
     /**

@@ -36,7 +36,7 @@ abstract class TestResultService implements ITestResultService {
     }
 
     List getMostFailedTestCount(Project project) {
-        def r = TestResult.findAll("select t.automatedTest.fullName, count(*) as c from TestResult t " +
+        def r = TestResult.findAll("select t.automatedTest.id, t.automatedTest.fullName, count(*) as c from TestResult t " +
                 "where t.result = ?0 and t.automatedTest.project = ?1 group by t.automatedTest order by c desc",
                 ['FAILED', project], [max:10])
         return r

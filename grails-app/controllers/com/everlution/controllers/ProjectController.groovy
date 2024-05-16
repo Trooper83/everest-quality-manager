@@ -75,12 +75,17 @@ class ProjectController {
         def autoTestCount = automatedTestService.countByProject(project)
         def testRuns = testRunService.findAllByProject(project, [max:10]).results
         // release plans
-        def releasePlans = releasePlanService.getPrevNextPlans(project)
+        def releasePlans = releasePlanService.getPlansByStatus(project)
+        // test cases
+        def testCasesCount = testCaseService.countByProject(project)
+        // scenarios
+        def scenarioCount = scenarioService.countByProject(project)
 
-        respond project, view: "home", model: [bugCount: bugCount, nextRelease: releasePlans.nextRelease,
-                                               previousRelease: releasePlans.previousRelease,
+        respond project, view: "home", model: [bugCount: bugCount, next: releasePlans.next,
+                                               released: releasePlans.released, current: releasePlans.inProgress,
                                                automatedTestCount: autoTestCount, testRuns: testRuns,
-                                               mostFailedTests: mostFailedTests, recentBugs: recentBugs]
+                                               mostFailedTests: mostFailedTests, recentBugs: recentBugs,
+                                               testCaseCount: testCasesCount, scenarioCount: scenarioCount]
     }
 
     /**

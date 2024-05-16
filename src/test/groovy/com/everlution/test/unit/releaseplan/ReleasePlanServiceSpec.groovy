@@ -226,45 +226,74 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         'plan'      | 2
     }
 
-    void "getPrevNextRelease returns next release"() {
+    void "getReleaseByStatus returns next releases"() {
         given:
         def p = new Project(name: "name123", code: "cod22").save()
         def date1 = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
         def date2 = new Date().from(Instant.now().plus(11, ChronoUnit.DAYS))
+        def date3 = new Date().from(Instant.now().plus(12, ChronoUnit.DAYS))
+        def date4 = new Date().from(Instant.now().plus(13, ChronoUnit.DAYS))
         def p1 = new ReleasePlan(name: "first plan", project: p, status: "Planning", person: person, plannedDate: date1).save()
-        def p2 = new ReleasePlan(name: "second plan", project: p, status: "ToDo", person: person, plannedDate: date2).save(flush: true)
-
-        expect:
-        p1 != null
-        p2 != null
+        def p2 = new ReleasePlan(name: "first plan", project: p, status: "Planning", person: person, plannedDate: date2).save()
+        def p3 = new ReleasePlan(name: "first plan", project: p, status: "Planning", person: person, plannedDate: date3).save()
+        new ReleasePlan(name: "first plan", project: p, status: "Planning", person: person, plannedDate: date4).save()
+        new ReleasePlan(name: "second plan", project: p, status: "ToDo", person: person, plannedDate: date4).save(flush: true)
 
         when:
-        def plans = service.getPrevNextPlans(p)
+        def plans = service.getPlansByStatus(p)
 
         then:
-        plans.nextRelease == p1
+        plans.next.size() == 3
+        plans.next.first() == p1
+        plans.next[1] == p2
+        plans.next[2] == p3
     }
 
-    void "getPrevNextRelease returns previous release"() {
+    void "getPlansByStatus returns previous releases"() {
         given:
         def p = new Project(name: "name123", code: "cod22").save()
         def date1 = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
         def date2 = new Date().from(Instant.now().minus(11, ChronoUnit.DAYS))
+        def date3 = new Date().from(Instant.now().minus(12, ChronoUnit.DAYS))
+        def date4 = new Date().from(Instant.now().minus(13, ChronoUnit.DAYS))
         def p1 = new ReleasePlan(name: "first plan", project: p, status: "Released", person: person, releaseDate: date1).save()
-        def p2 = new ReleasePlan(name: "second plan", project: p, status: "Released", person: person, releaseDate: date2).save(flush: true)
-
-        expect:
-        p1 != null
-        p2 != null
+        def p2 = new ReleasePlan(name: "first plan", project: p, status: "Released", person: person, releaseDate: date2).save()
+        def p3 = new ReleasePlan(name: "first plan", project: p, status: "Released", person: person, releaseDate: date3).save()
+        new ReleasePlan(name: "second plan", project: p, status: "Released", person: person, releaseDate: date4).save(flush: true)
 
         when:
-        def plans = service.getPrevNextPlans(p)
+        def plans = service.getPlansByStatus(p)
 
         then:
-        plans.previousRelease == p1
+        plans.released.size() == 3
+        plans.released.first() == p1
+        plans.released[1] == p2
+        plans.released[2] == p3
     }
 
-    void "getPrevNextRelease returns null"() {
+    void "getPlansByStatus returns in progress releases"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date1 = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
+        def date2 = new Date().from(Instant.now().plus(11, ChronoUnit.DAYS))
+        def date3 = new Date().from(Instant.now().plus(12, ChronoUnit.DAYS))
+        def date4 = new Date().from(Instant.now().plus(13, ChronoUnit.DAYS))
+        def p1 = new ReleasePlan(name: "first plan", project: p, status: "In Progress", person: person, plannedDate: date1).save()
+        def p2 = new ReleasePlan(name: "first plan", project: p, status: "In Progress", person: person, plannedDate: date2).save()
+        def p3 = new ReleasePlan(name: "first plan", project: p, status: "In Progress", person: person, plannedDate: date3).save()
+        new ReleasePlan(name: "second plan", project: p, status: "In Progress", person: person, plannedDate: date4).save(flush: true)
+
+        when:
+        def plans = service.getPlansByStatus(p)
+
+        then:
+        plans.inProgress.size() == 3
+        plans.inProgress.first() == p1
+        plans.inProgress[1] == p2
+        plans.inProgress[2] == p3
+    }
+
+    void "getPlansByStatus returns empty list when no plans found"() {
         given:
         def p = new Project(name: "name123", code: "cod22").save()
 
@@ -272,14 +301,15 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         p != null
 
         when:
-        def plans = service.getPrevNextPlans(p)
+        def plans = service.getPlansByStatus(p)
 
         then:
-        plans.nextRelease == null
-        plans.previousRelease == null
+        plans.inProgress.empty
+        plans.released.empty
+        plans.next.empty
     }
 
-    void "getPrevNextRelease returns next release even if in past"() {
+    void "getPlansByStatus returns next release even if in past"() {
         given:
         def p = new Project(name: "name123", code: "cod22").save()
         def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
@@ -289,13 +319,13 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         plan != null
 
         when:
-        def plans = service.getPrevNextPlans(p)
+        def plans = service.getPlansByStatus(p)
 
         then:
-        plans.nextRelease == plan
+        plans.next.first() == plan
     }
 
-    void "getPrevNextRelease returns previous release even if in future"() {
+    void "getPlansByStatus returns previous release even if in future"() {
         given:
         def p = new Project(name: "name123", code: "cod22").save()
         def date = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
@@ -305,13 +335,13 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         plan != null
 
         when:
-        def plans = service.getPrevNextPlans(p)
+        def plans = service.getPlansByStatus(p)
 
         then:
-        plans.previousRelease == plan
+        plans.released.first() == plan
     }
 
-    void "getPrevNextRelease does not return canceled plans"() {
+    void "getPlansByStatus does not return canceled plans"() {
         given:
         def p = new Project(name: "name123", code: "cod22").save()
         def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
@@ -321,9 +351,72 @@ class ReleasePlanServiceSpec extends Specification implements ServiceUnitTest<Re
         plan != null
 
         when:
-        def plans = service.getPrevNextPlans(p)
+        def plans = service.getPlansByStatus(p)
 
         then:
-        plans.nextRelease == null
+        plans.next.empty
+    }
+
+    void "getPlansByStatus does not return todo plans"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def plan = new ReleasePlan(name: "second plan", project: p, status: "ToDo", person: person, plannedDate: date).save(flush: true)
+
+        expect:
+        plan != null
+
+        when:
+        def plans = service.getPlansByStatus(p)
+
+        then:
+        plans.next.empty
+    }
+
+    void "getPlansByStatus does not return released plans with no releaseDate"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def plan = new ReleasePlan(name: "second plan", project: p, status: "Released", person: person, releaseDate: null).save(flush: true)
+
+        expect:
+        plan.id != null
+
+        when:
+        def plans = service.getPlansByStatus(p)
+
+        then:
+        plans.released.empty
+    }
+
+    void "getPlansByStatus does not return in progress plans with no plannedDate"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def plan = new ReleasePlan(name: "second plan", project: p, status: "In Progress", person: person, plannedDate: null).save(flush: true)
+
+        expect:
+        plan.id != null
+
+        when:
+        def plans = service.getPlansByStatus(p)
+
+        then:
+        plans.inProgress.empty
+    }
+
+    void "getPlansByStatus does not return in progress plans with releaseDate"() {
+        given:
+        def p = new Project(name: "name123", code: "cod22").save()
+        def date = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
+        def plan = new ReleasePlan(name: "second plan", project: p, status: "In Progress", person: person,
+                plannedDate: date, releaseDate: date).save(flush: true)
+
+        expect:
+        plan.id != null
+
+        when:
+        def plans = service.getPlansByStatus(p)
+
+        then:
+        plans.inProgress.empty
     }
 }
