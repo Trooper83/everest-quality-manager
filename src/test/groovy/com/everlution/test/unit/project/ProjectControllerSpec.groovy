@@ -567,9 +567,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
             1 * countByProjectAndStatus(project, 'Open') >> 0
             1 * findAllByProject(project, _) >> sr
         }
-        controller.testResultService = Mock(TestResultService) {
-            1 * getMostFailedTestCount(project) >> []
-        }
         controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
         }
@@ -581,9 +578,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         }
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * getPlansByStatus(project) >> new LinkedHashMap<>()
-        }
-        controller.testRunService = Mock(TestRunService) {
-            1 * findAllByProject(project, _) >> sr
         }
 
         when:"a domain instance is passed to the home action"
@@ -620,23 +614,16 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.releasePlanService = Mock(ReleasePlanService) {
             1 * getPlansByStatus(project) >> [
                     "released": new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
-                    "next": new ReleasePlan(status: 'Released', releaseDate: pastDate),
                     "inProgress": new ReleasePlan(status: 'In Progress', plannedDate: futureDate)]
         }
         controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
-        }
-        controller.testResultService = Mock(TestResultService) {
-            1 * getMostFailedTestCount(project) >> []
         }
         controller.scenarioService = Mock(ScenarioService) {
             1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
             1 * countByProject(project) >> 0
-        }
-        controller.testRunService = Mock(TestRunService) {
-            1 * findAllByProject(project, _) >> sr
         }
 
         when:"A domain instance is passed to the home action"
@@ -645,12 +632,11 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         then:"A model is populated containing the domain instance"
         model.project instanceof Project
         model.bugCount == 0
+        model.scenarioCount == 0
+        model.testCaseCount == 0
         model.automatedTestCount == 0
-        model.next != null
         model.released != null
         model.current != null
-        model.testRuns == []
-        model.mostFailedTests == []
         model.recentBugs == []
     }
 

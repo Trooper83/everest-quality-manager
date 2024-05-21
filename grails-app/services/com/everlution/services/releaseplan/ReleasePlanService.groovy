@@ -65,13 +65,7 @@ abstract class ReleasePlanService implements IReleasePlanService {
                 .sort { it.plannedDate }
                 .take(3)
 
-
-        List<ReleasePlan> nextCopy = List.copyOf(releasePlans)
-        def next = nextCopy
-                .findAll {it.status == 'Planning' }
-                .sort { it.dateCreated }
-                .take(3)
-        return [ next: next, released: released, inProgress: inProgress ]
+        return [ released: released, inProgress: inProgress ]
     }
 
     /**

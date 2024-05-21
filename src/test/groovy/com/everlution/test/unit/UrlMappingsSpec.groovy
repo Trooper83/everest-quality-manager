@@ -310,4 +310,9 @@ class UrlMappingsSpec extends Specification implements UrlMappingsUnitTest<UrlMa
             id = 321
         }
     }
+
+    void "verify user forward and reverse mappings"() {
+        expect:
+        false
+    }
 }

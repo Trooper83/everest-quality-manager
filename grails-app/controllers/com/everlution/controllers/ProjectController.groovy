@@ -71,9 +71,7 @@ class ProjectController {
         def recentBugs = bugService.findAllByProject(project, [max:10, sort: 'dateCreated', order: 'desc']).results
         def bugCount = bugService.countByProjectAndStatus(project, "Open")
         // automated tests
-        def mostFailedTests = testResultService.getMostFailedTestCount(project)
         def autoTestCount = automatedTestService.countByProject(project)
-        def testRuns = testRunService.findAllByProject(project, [max:10]).results
         // release plans
         def releasePlans = releasePlanService.getPlansByStatus(project)
         // test cases
@@ -83,8 +81,7 @@ class ProjectController {
 
         respond project, view: "home", model: [bugCount: bugCount, next: releasePlans.next,
                                                released: releasePlans.released, current: releasePlans.inProgress,
-                                               automatedTestCount: autoTestCount, testRuns: testRuns,
-                                               mostFailedTests: mostFailedTests, recentBugs: recentBugs,
+                                               automatedTestCount: autoTestCount, recentBugs: recentBugs,
                                                testCaseCount: testCasesCount, scenarioCount: scenarioCount]
     }
 
