@@ -1,22 +1,26 @@
 package com.everlution.test.ui.functional.specs.project.home
 
+import com.everlution.domains.Bug
+import com.everlution.services.bug.BugService
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.ReleasePlan
 import com.everlution.services.releaseplan.ReleasePlanService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.results.SendResults
+import com.everlution.test.ui.support.pages.bug.ShowBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.CreateProjectPage
 import com.everlution.test.ui.support.pages.project.EditProjectPage
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.ui.support.pages.project.ShowProjectPage
+import com.everlution.test.ui.support.pages.releaseplan.ShowReleasePlanPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 import spock.lang.Shared
 
-import java.time.Instant
-import java.time.temporal.ChronoUnit
+import java.sql.Timestamp
 
 @SendResults
 @Integration
@@ -24,6 +28,7 @@ class HomePageSpec extends GebSpec {
 
     @Shared int id
 
+    BugService bugService
     PersonService personService
     ProjectService projectService
     ReleasePlanService releasePlanService
@@ -94,25 +99,102 @@ class HomePageSpec extends GebSpec {
         page.errorsMessage.text() == "Project has associated items and cannot be deleted"
     }
 
-    void "next and previous links display"() {
-        given: "a project with a release plan"
+    void "maximum of ten bugs are displayed"() {
+        given:
         def person = personService.list(max:1).first()
-        def project = projectService.list(max: 1).first()
-        def futureDate = new Date().from(Instant.now().plus(1, ChronoUnit.MINUTES))
-        def pastDate = new Date().from(Instant.now().minus(1, ChronoUnit.MINUTES))
-        def nextPlan = new ReleasePlan(name: "next plan", project: project, status: "ToDo", plannedDate: futureDate,
-                person: person)
-        def previousPlan = new ReleasePlan(name: "previous plan", project: project, status: "Released",
-                releaseDate: pastDate, person: person)
-        releasePlanService.save(nextPlan)
-        releasePlanService.save(previousPlan)
+        def p = projectService.list(max: 1).first()
+        int count = 0
+        while(count < 15) {
+            bugService.save(new Bug(project: p, name: "Bug number ${count}", status: "Open", person: person))
+            count++
+        }
 
-        when: "go to project page"
-        go "/project/home/${project.id}"
+        when:
+        def page = to ProjectHomePage, p.id
 
         then:
-        def page = at ProjectHomePage
-        page.nextReleaseLink.displayed
-        page.previousReleaseLink.displayed
+        page.recentBugsTable.rowCount == 10
+    }
+
+    void "bug links direct to show bug view"() {
+        given:
+        def person = personService.list(max:1).first()
+        def p = projectService.list(max: 1).first()
+        bugService.save(new Bug(project: p, name: "Bug Links correctly to show page", status: "Open", person: person))
+
+        when:
+        def page = to ProjectHomePage, p.id
+        page.recentBugsTable.clickCell("Name", 0)
+
+        then:
+        at ShowBugPage
+    }
+
+    void "previous release link directs to show release plan view"() {
+        given:
+        def person = personService.list(max:1).first()
+        def project = projectService.list(max: 1).first()
+
+        def plan = new ReleasePlan(name: "Released test plan", project: project, status: "Released", person: person,
+                                    releaseDate: new Timestamp(System.currentTimeMillis()))
+        releasePlanService.save(plan)
+
+        when:
+        def page = to ProjectHomePage, project.id
+        page.goToReleasedPlan()
+
+        then:
+        at ShowReleasePlanPage
+    }
+
+    void "current release link directs to show release plan view"() {
+        given:
+        def person = personService.list(max:1).first()
+        def project = projectService.list(max: 1).first()
+
+        def plan = new ReleasePlan(name: "In Progress test plan", project: project, status: "In Progress",
+                                    person: person, plannedDate: new Timestamp(System.currentTimeMillis()))
+        releasePlanService.save(plan)
+
+        when:
+        def page = to ProjectHomePage, project.id
+        page.goToInProgressPlan()
+
+        then:
+        at ShowReleasePlanPage
+    }
+
+    void "not found text displayed when no release plans found"() {
+        given:
+        def p = DataFactory.createProject()
+
+        when:
+        def page = to ProjectHomePage, p.id
+
+        then:
+        page.releasedPlansNotFoundText.displayed
+        page.inProgressPlansNotFoundText.displayed
+    }
+
+    void "dates are formatted as MMMM d yyyy"() {
+        given:
+        def person = personService.list(max:1).first()
+        def p = projectService.list(max: 1).first()
+        bugService.save(new Bug(project: p, name: "Bug Links correctly to show page", status: "Open", person: person))
+        def rPlan = new ReleasePlan(name: "Released test plan", project: p, status: "Released", person: person,
+                releaseDate: new Timestamp(System.currentTimeMillis()))
+        def iPlan = new ReleasePlan(name: "In Progress test plan", project: p, status: "In Progress",
+                person: person, plannedDate: new Timestamp(System.currentTimeMillis()))
+        releasePlanService.save(rPlan)
+        releasePlanService.save(iPlan)
+
+        when:
+        def page = to ProjectHomePage, p.id
+
+        then:
+        def d = DataFactory.getPastDate(0)
+        page.recentBugsTable.getValueInColumn(0, "Created") == d
+        page.inProgressPlanLinks.first().find("[data-name=createdDateValue]").text() == d
+        page.releasedPlanLinks.first().find("[data-name=createdDateValue]").text() == d
     }
 }

@@ -76,7 +76,7 @@
                                     </g:each>
                                 </g:if>
                                 <g:else>
-                                    <p>No release plans found</p>
+                                    <p data-test-id="notFoundText">No release plans found</p>
                                 </g:else>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                                     </g:each>
                                 </g:if>
                                 <g:else>
-                                    <p>No release plans found</p>
+                                    <p data-test-id="notFoundText">No release plans found</p>
                                 </g:else>
                             </div>
                         </div>
