@@ -1,5 +1,7 @@
 package com.everlution.test.ui.functional.specs.releaseplan
 
+import com.everlution.domains.Platform
+import com.everlution.domains.Project
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.ReleasePlan
@@ -293,22 +295,19 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
+        def p = personService.list(max:1).first()
+        def pd = DataFactory.project()
+        def pr = new Project(name: pd.name, code: pd.code, platforms:
+                [new Platform(name: "Platypus Form"), new Platform(name: "Form Platypus")])
+        projectService.save(pr)
+        def r = DataFactory.createReleasePlan(p, pr)
 
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Release Plans')
-
-        when: "click first row in list"
-        def listPage = browser.page(ListReleasePlanPage)
-        listPage.listTable.clickCell("Name", 0)
+        when:
+        def page = to ShowReleasePlanPage, pr.id, r.id
 
         then: "correct options are populated"
-        def page = browser.page(ShowReleasePlanPage)
         page.displayAddTestCycleModal()
-        page.testCycleModalPlatformOptions*.text() == ["Select a Platform...", "Android", "iOS", "Web"]
+        page.testCycleModalPlatformOptions*.text() == ["Select a Platform...", "Platypus Form", "Form Platypus"]
 
         and: "default value is blank"
         page.testCycleModalPlatformSelect().selected == ""
