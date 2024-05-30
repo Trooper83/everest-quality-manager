@@ -114,11 +114,11 @@ class TestCycleServiceSpec extends Specification {
 
         when:
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: pl).save()
-        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: null).save()
         TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: pl1).save()
         TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: pl2).save()
         def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo", person: person).save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web").save(flush: true)
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: pl).save(flush: true)
         testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
         then:
@@ -166,7 +166,7 @@ class TestCycleServiceSpec extends Specification {
         def project = DataFactory.createProject()
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project).save()
         def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo", person: person).save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, testCaseIds: [testCase.id]).save(flush: true)
 
         when:
         testCycleService.addTestIterations(testCycleService.get(tc.id), [testCase])

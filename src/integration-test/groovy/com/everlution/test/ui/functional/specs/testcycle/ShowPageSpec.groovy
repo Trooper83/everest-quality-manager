@@ -777,4 +777,24 @@ class ShowPageSpec extends GebSpec {
         showCycle.testsTable.getValueInColumn(0, "Executed By") == ''
         showCycle.testsTable.getValueInColumn(0, "Result") == 'UNEXECUTED'
     }
+
+    void "page loads when platform and environ is null"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        def p = personService.list(max:1).first()
+        def t = DataFactory.createTestCycle(p)
+
+        expect:
+        !t.releasePlan.project.platforms
+        !t.releasePlan.project.environments
+
+        when:
+        to ShowTestCyclePage, t.releasePlan.project.id, t.id
+
+        then:
+        at ShowTestCyclePage
+    }
 }

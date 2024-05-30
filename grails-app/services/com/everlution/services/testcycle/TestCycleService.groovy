@@ -49,7 +49,7 @@ abstract class TestCycleService implements ITestCycleService {
                 def s = new IterationStep(act: step.act, data: step.data, result: step.result)
                 steps.add(s)
             }
-            iterations.add(new TestIteration(name: testCase.name, result: "ToDo", steps: steps, testCase: testCase,
+            iterations.add(new TestIteration(name: testCase.name, steps: steps, testCase: testCase,
                     verify: testCase.verify))
         }
         return iterations
@@ -68,7 +68,7 @@ abstract class TestCycleService implements ITestCycleService {
             testCases.removeIf(test -> testCycle.testCaseIds.contains(test.id))
         }
         if (testCycle.platform != null) {
-            testCases.removeIf(test -> (test.platform?.name != testCycle.platform & test.platform != null))
+            testCases.removeIf(test -> (test.platform != testCycle.platform & test.platform != null))
         }
         if (testCycle.environ != null) {
             testCases.removeIf(test -> (!test.environments?.contains(testCycle.environ)) & test.environments != null)

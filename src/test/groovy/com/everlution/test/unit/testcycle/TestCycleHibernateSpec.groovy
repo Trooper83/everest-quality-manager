@@ -1,6 +1,8 @@
 package com.everlution.test.unit.testcycle
 
+import com.everlution.domains.Environment
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.ReleasePlan
 import com.everlution.domains.TestCase
@@ -13,13 +15,19 @@ import spock.lang.Shared
 
 class TestCycleHibernateSpec extends HibernateSpec {
 
+    List<Class> getDomainClasses() { [Project, Platform, Environment, ReleasePlan, Person] }
+
+    @Shared Environment environment
+    @Shared Platform platform
     @Shared Person person
     @Shared Project project
     @Shared ReleasePlan releasePlan
     @Shared TestCase testCase
 
     def setup() {
-        project = new Project(name: "Test Case Date Project For Cycle", code: "TCC").save()
+        platform = new Platform(name: 'platform name')
+        environment = new Environment(name: 'env name')
+        project = new Project(name: "Test Case Date Project For Cycle", code: "TCC", platforms: [platform], environments: [environment]).save()
         person = new Person(email: "test@test.com", password: "!Password2022").save()
         releasePlan = new ReleasePlan(name: "this is the name", project: project, status: "ToDo",
                 person: person).save()
@@ -66,7 +74,7 @@ class TestCycleHibernateSpec extends HibernateSpec {
     void "delete cycle with iteration throws exception"() {
         given:
         TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan).save()
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: cycle).save()
+        def iteration = new TestIteration(name: "test name", testCase: testCase, steps: [], testCycle: cycle).save()
 
         expect:
         TestCycle.findById(cycle.id) != null
@@ -82,7 +90,7 @@ class TestCycleHibernateSpec extends HibernateSpec {
     void "removeFrom cycle with iteration throws exception"() {
         given:
         TestCycle cycle = new TestCycle(name: "test cycle", releasePlan: releasePlan).save()
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: cycle).save()
+        def iteration = new TestIteration(name: "test name", testCase: testCase, steps: [], testCycle: cycle).save()
 
         expect:
         TestCycle.findById(cycle.id) != null
@@ -93,5 +101,35 @@ class TestCycleHibernateSpec extends HibernateSpec {
 
         then:
         thrown(DataIntegrityViolationException)
+    }
+
+    void "delete does not cascade to platform"() {
+        given:
+        TestCycle cycle = new TestCycle(name: "test cycle for platform cascade", releasePlan: releasePlan, platform: platform).save()
+
+        expect:
+        cycle.id != null
+
+        when:
+        cycle.delete(flush: true)
+
+        then:
+        TestCycle.findById(cycle.id) == null
+        Platform.findById(platform.id) != null
+    }
+
+    void "delete does not cascade to environment"() {
+        given:
+        TestCycle cycle = new TestCycle(name: "test cycle for platform cascade", releasePlan: releasePlan, environ: environment).save()
+
+        expect:
+        cycle.id != null
+
+        when:
+        cycle.delete(flush: true)
+
+        then:
+        TestCycle.findById(cycle.id) == null
+        Environment.findById(environment.id) != null
     }
 }

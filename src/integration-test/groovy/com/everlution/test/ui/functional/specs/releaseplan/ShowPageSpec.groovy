@@ -339,6 +339,29 @@ class ShowPageSpec extends GebSpec {
         page.testCycleModalEnvironSelect().selected == ""
     }
 
+    void "page loads when platform and environ is null"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        def p = personService.list(max:1).first()
+        def t = DataFactory.createTestCycle(p)
+
+        expect:
+        !t.releasePlan.project.platforms
+        !t.releasePlan.project.environments
+
+        and:
+        def show = to ShowReleasePlanPage, t.releasePlan.project.id, t.releasePlan.id
+
+        when:
+        show.createTestCycle("New Test Cycle", "", "")
+
+        then:
+        at ShowReleasePlanPage
+    }
+
     void "add tests modal resets data when cancelled"() {
         given: "login as a basic user"
         to LoginPage

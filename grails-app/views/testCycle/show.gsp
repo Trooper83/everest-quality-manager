@@ -49,7 +49,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p class="col-4 fw-bold">Platform</p>
-                                <p class="col" id="platform">${testCycle.platform}</p>
+                                <p class="col" id="platform">${testCycle.platform?.name}</p>
                             </div>
                         </li>
                     </ul>

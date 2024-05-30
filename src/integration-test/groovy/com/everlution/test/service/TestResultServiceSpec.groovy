@@ -87,8 +87,9 @@ class TestResultServiceSpec extends Specification {
 
         then:
         results.size() == 1
-        results.first()[0] == a.fullName
-        results.first()[1] == 2
+        results.first()[0] == a.id
+        results.first()[1] == a.fullName
+        results.first()[2] == 2
     }
 
     void "getMostFailedTestCount returns empty when no results found"() {
@@ -125,7 +126,7 @@ class TestResultServiceSpec extends Specification {
         def results = testResultService.getMostFailedTestCount(p)
 
         then:
-        results.first()[0] == a.fullName
+        results.first()[0] == a.id
         results.size() == 1
     }
 
@@ -150,10 +151,10 @@ class TestResultServiceSpec extends Specification {
         def results = testResultService.getMostFailedTestCount(p)
 
         then:
-        results[0][1] == 3
-        results[1][1] == 2
-        results[2][1] == 1
-        results[3][1] == 1
+        results[0][2] == 3
+        results[1][2] == 2
+        results[2][2] == 1
+        results[3][2] == 1
     }
 
     void "getMostFailedTestCount returns list of 10"() {
