@@ -45,7 +45,7 @@ abstract class ProjectService implements IProjectService {
         }
         for(id in removedItems.platformIds) {
             def platform = platformService.get(id)
-            project.removeFromPlatforms(platform) //TODO: test me
+            project.removeFromPlatforms(platform)
         }
         return save(project)
     }
