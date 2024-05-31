@@ -1,6 +1,7 @@
 # Everest Test Case & Bug Tracking Tool
 
 ## Creating Runnable Jar
+- Update the version number in `build.gradle` and `gradle.properties`
 - Run `bootJar` gradle task
 
 ## Versions

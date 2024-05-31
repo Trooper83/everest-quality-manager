@@ -77,12 +77,12 @@ class ReleasePlanSpec extends GebSpec {
 
         when:
         def page = browser.page(ExecuteTestIterationPage)
-        page.setResult("Passed", "Some notes")
+        page.setResult("PASSED", "Some notes")
 
         then:
         def iteration = at ShowTestIterationPage
-        iteration.resultValue.text() == "Passed"
-        iteration.notesValue.text() == "Some notes"
+        iteration.resultsTable.getValueInColumn(0, "Result") == "PASSED"
+        iteration.resultsTable.getValueInColumn(0, "Notes") == "Some notes"
     }
 
     void "release plan can be edited"() {
