@@ -7,6 +7,7 @@ import com.everlution.domains.Environment
 import com.everlution.domains.Link
 import com.everlution.domains.Person
 import com.everlution.domains.PersonRole
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.ReleasePlan
 import com.everlution.domains.Role
@@ -101,8 +102,14 @@ class BootStrap {
         def area1 = new Area(name: "bootstrap area 12")
         def env = new Environment(name: "bootstrap environment")
         def env1 = new Environment(name: "bootstrap environment12")
-        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env]).save(failOnError: true)
-        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1]).save(failOnError: true)
+        def pl = new Platform(name: "Web")
+        def pl1 = new Platform(name: "iOS")
+        def pl2 = new Platform(name: "Web")
+        def pl3 = new Platform(name: "iOS")
+        def project = new Project(name: "bootstrap project", code: "bsp", areas: [area], environments: [env],
+                platforms: [pl, pl1]).save(failOnError: true)
+        def project1 = new Project(name: "bootstrap project12", code: "BPP", areas: [area1], environments: [env1],
+                platforms: [pl2, pl3]).save(failOnError: true)
 
         Step testStep = new Step(act: "do something", result: "something happened", data: "testing this data").save(failOnError: true)
         Step testStep1 = new Step(act: "do something12", result: "something happened12").save(failOnError: true)
@@ -179,11 +186,14 @@ class BootStrap {
         new ReleasePlan(name: "Bootstrapped release plan1", project: project1, status: "ToDo", person: person, notes: "these are notes").save(failOnError: true)
         def cycle = new TestCycle(name: "Bootstrapped test cycle")
         plan.addToTestCycles(cycle).save(failOnError: true)
-        new AutomatedTest(project: project, fullName: "com.everlution.myfirsttest", name: "My First Test").save(failOnError: true)
+        def at = new AutomatedTest(project: project, fullName: "com.everlution.myfirsttest", name: "My First Test").save(failOnError: true)
+        def r4 = new TestResult(result: "FAILED", automatedTest: at)
+        def r5 = new TestResult(result: "FAILED", automatedTest: at)
         def a = new AutomatedTest(project: project, fullName: "com.everlution.mysecondtest", name: "My Second Test").save(failOnError: true)
         def r1 = new TestResult(result: "PASSED", automatedTest: a)
-        def r2 = new TestResult(result: "FAILED", automatedTest:  a, failureCause: "some really long string\n with breaks to see how it renders")
+        def failureCause = "Condition not satisfied:\n\nr.status == 401\n| |      |\n| 400    false\n<kong.unirest.StringResponse"
+        def r2 = new TestResult(result: "FAILED", automatedTest:  a, failureCause: failureCause)
         def r3 = new TestResult(result: "SKIPPED", automatedTest:  a)
-        new TestRun(name: "Bootstrapped Test Run", project: project, testResults: [r1, r2, r3]).save(failOnError: true)
+        new TestRun(name: "Bootstrapped Test Run", project: project, testResults: [r1, r2, r3, r4, r5]).save(failOnError: true)
     }
 }

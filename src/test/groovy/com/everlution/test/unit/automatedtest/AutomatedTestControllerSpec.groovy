@@ -77,6 +77,42 @@ class AutomatedTestControllerSpec extends Specification implements ControllerUni
         view == 'automatedTests'
     }
 
+    void "automatedTests action sets sort and order when not included in params"() {
+        given:
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when: "call action"
+        controller.automatedTests(1, 10)
+
+        then:
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "automatedTests action retains sort and order when included in param"() {
+        given:
+        controller.automatedTestService = Mock(AutomatedTestService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when: "call action"
+        params.sort = 'testSort'
+        params.order = 'testOrder'
+        controller.automatedTests(1, 10)
+
+        then:
+        controller.params.sort == 'testSort'
+        controller.params.order == 'testOrder'
+    }
+
 
     void "automatedTests action returns the correct model"() {
         given:

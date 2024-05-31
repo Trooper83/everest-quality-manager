@@ -21,7 +21,7 @@ class HomeAdminSpec extends GebSpec {
         id = projectService.list(max: 1).first().id
     }
 
-    void "admin button displays for project admin and above"(String email, String password) {
+    void "view button displays for basic and above"(String email, String password) {
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -32,15 +32,16 @@ class HomeAdminSpec extends GebSpec {
 
         then:
         def page = browser.at(ProjectHomePage)
-        page.adminButton.displayed
+        page.viewButton.displayed
 
         where:
         email                           | password
         Credentials.PROJECT_ADMIN.email | Credentials.PROJECT_ADMIN.password
         Credentials.APP_ADMIN.email     | Credentials.APP_ADMIN.password
+        Credentials.BASIC.email         | Credentials.BASIC.password
     }
 
-    void "admin button not displayed for basic and read only"(String email, String password) {
+    void "view button not displayed for read only"(String email, String password) {
         given: "login as a project admin user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -51,11 +52,10 @@ class HomeAdminSpec extends GebSpec {
 
         then:
         def page = browser.at(ProjectHomePage)
-        !page.adminButton.displayed
+        !page.viewButton.displayed
 
         where:
         email                           | password
-        Credentials.BASIC.email | Credentials.BASIC.password
         Credentials.READ_ONLY.email     | Credentials.READ_ONLY.password
     }
 }

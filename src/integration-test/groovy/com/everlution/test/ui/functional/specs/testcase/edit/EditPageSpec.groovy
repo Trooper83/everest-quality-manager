@@ -1,11 +1,13 @@
 package com.everlution.test.ui.functional.specs.testcase.edit
 
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.TestCase
 import com.everlution.services.testcase.TestCaseService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -54,21 +56,23 @@ class EditPageSpec extends GebSpec {
 
     void "verify platform field options"() {
         given:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
+        def pl = new Platform(name: "Testing 123")
+        def pl1 = new Platform(name: "Testing 321")
+        def projectData = DataFactory.project()
+        def project = projectService.save(new Project(name: projectData.name, code: projectData.code, platforms: [pl, pl1]))
+        Person person = personService.list(max: 1).first()
+        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project)
+        def id = testCaseService.save(testCase).id
 
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Test Cases')
-
-        browser.page(ListTestCasePage).listTable.clickCell("Name", 0)
-
-        when:
-        browser.page(ShowTestCasePage).goToEdit()
+        when: "go to edit page"
+        go "/project/${project.id}/testCase/edit/${id}"
 
         then: "correct options populate for executionMethod and type"
         EditTestCasePage page = browser.page(EditTestCasePage)
         verifyAll {
-            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+            page.platformOptions*.text().containsAll(project.platforms*.name)
+            page.platformOptions.size() == 3
         }
     }
 

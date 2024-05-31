@@ -1,5 +1,7 @@
 package com.everlution.test.ui.functional.specs.releaseplan
 
+import com.everlution.domains.Platform
+import com.everlution.domains.Project
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.ReleasePlan
@@ -293,22 +295,19 @@ class ShowPageSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
-        and:
-        def projectsPage = at(ListProjectPage)
-        projectsPage.projectTable.clickCell('Name', 0)
+        def p = personService.list(max:1).first()
+        def pd = DataFactory.project()
+        def pr = new Project(name: pd.name, code: pd.code, platforms:
+                [new Platform(name: "Platypus Form"), new Platform(name: "Form Platypus")])
+        projectService.save(pr)
+        def r = DataFactory.createReleasePlan(p, pr)
 
-        and: "go to the lists page"
-        def projectHomePage = at ProjectHomePage
-        projectHomePage.sideBar.goToProjectDomain('Release Plans')
-
-        when: "click first row in list"
-        def listPage = browser.page(ListReleasePlanPage)
-        listPage.listTable.clickCell("Name", 0)
+        when:
+        def page = to ShowReleasePlanPage, pr.id, r.id
 
         then: "correct options are populated"
-        def page = browser.page(ShowReleasePlanPage)
         page.displayAddTestCycleModal()
-        page.testCycleModalPlatformOptions*.text() == ["Select a Platform...", "Android", "iOS", "Web"]
+        page.testCycleModalPlatformOptions*.text() == ["Select a Platform...", "Platypus Form", "Form Platypus"]
 
         and: "default value is blank"
         page.testCycleModalPlatformSelect().selected == ""
@@ -337,6 +336,29 @@ class ShowPageSpec extends GebSpec {
         page.displayAddTestCycleModal()
         page.testCycleModalEnvironSelect().selectedText == "Select an Environment..."
         page.testCycleModalEnvironSelect().selected == ""
+    }
+
+    void "page loads when platform and environ is null"() {
+        given: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        def p = personService.list(max:1).first()
+        def t = DataFactory.createTestCycle(p)
+
+        expect:
+        !t.releasePlan.project.platforms
+        !t.releasePlan.project.environments
+
+        and:
+        def show = to ShowReleasePlanPage, t.releasePlan.project.id, t.releasePlan.id
+
+        when:
+        show.createTestCycle("New Test Cycle", "", "")
+
+        then:
+        at ShowReleasePlanPage
     }
 
     void "add tests modal resets data when cancelled"() {
@@ -387,19 +409,25 @@ class ShowPageSpec extends GebSpec {
         def tc = DataFactory.testCase()
         def tc1 = DataFactory.testCase()
         def tc2 = DataFactory.testCase()
+        def tc3 = DataFactory.testCase()
         def testCase = new TestCase(name: tc.name, project: project, person: person)
         def testCase1 = new TestCase(name: tc1.name, project: project, person: person)
         def testCase2 = new TestCase(name: tc2.name, project: project, person: person)
+        def testCase3 = new TestCase(name: tc3.name, project: project, person: person)
         testCaseService.save(testCase)
         testCaseService.save(testCase1)
         testCaseService.save(testCase2)
-        testCycleService.addTestIterations(testCycle, [testCase, testCase1, testCase2])
+        testCaseService.save(testCase3)
+        testCycleService.addTestIterations(testCycle, [testCase, testCase1, testCase2, testCase3])
         def iter = testCycle.testIterations.first()
-        iter.result = 'Passed'
+        iter.lastResult = 'PASSED'
         testIterationService.save(iter)
         def iteration = testCycle.testIterations[2]
-        iteration.result = 'Failed'
+        iteration.lastResult = 'FAILED'
         testIterationService.save(iteration)
+        def iteration1 = testCycle.testIterations[3]
+        iteration1.lastResult = 'SKIPPED'
+        testIterationService.save(iteration1)
 
         and: "login as a basic user"
         to LoginPage
@@ -415,6 +443,7 @@ class ShowPageSpec extends GebSpec {
         progressBar[0].find("[aria-label='passed']").attr('aria-valuenow') == '1'
         progressBar[0].find("[aria-label='failed']").attr('aria-valuenow') == '1'
         progressBar[0].find("[aria-label='todo']").attr('aria-valuenow') == '1'
+        progressBar[0].find("[aria-label='skipped']").attr('aria-valuenow') == '1'
     }
 
     void "empty progress bar displayed when no test iterations are present on cycle"() {

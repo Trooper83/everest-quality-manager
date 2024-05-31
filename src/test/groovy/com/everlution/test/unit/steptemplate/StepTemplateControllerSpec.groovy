@@ -93,6 +93,42 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
         view == 'stepTemplates'
     }
 
+    void "stepTemplates action sets sort and order params when not found"() {
+        given:
+        controller.stepTemplateService = Mock(StepTemplateService) {
+            1 * findAllInProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when: "call action"
+        controller.stepTemplates(1, 10)
+
+        then:
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "stepTemplates action retains sort and order params when included"() {
+        given:
+        controller.stepTemplateService = Mock(StepTemplateService) {
+            1 * findAllInProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when: "call action"
+        params.sort = 'testSort'
+        params.order = 'testOrder'
+        controller.stepTemplates(1, 10)
+
+        then:
+        controller.params.sort == 'testSort'
+        controller.params.order == 'testOrder'
+    }
+
     void "stepTemplates action returns the correct model"() {
         given:
         controller.stepTemplateService = Mock(StepTemplateService) {

@@ -4,12 +4,14 @@ import com.everlution.domains.Area
 import com.everlution.domains.Bug
 import com.everlution.domains.Environment
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.ReleasePlan
 import com.everlution.domains.Scenario
 import com.everlution.domains.TestCase
 import com.everlution.domains.TestGroup
 import grails.test.hibernate.HibernateSpec
+import grails.validation.ValidationException
 import spock.lang.Shared
 
 import javax.persistence.PersistenceException
@@ -185,5 +187,51 @@ class ProjectHibernateSpec extends HibernateSpec {
 
         then: "exception thrown"
         thrown(PersistenceException)
+    }
+
+    void "removeFromPlatforms deletes orphaned platform"() {
+        given: "project with valid platform params"
+        def pl = new Platform(name: "platform name")
+        Project p = new Project(name: "Cascades To Platform", code: "CTA", platforms: [pl]).save()
+
+        expect: "env is saved"
+        Platform.findById(pl.id) != null
+
+        when: "remove from project"
+        p.removeFromPlatforms(pl).save(flush: true)
+
+        then: "it was deleted"
+        Platform.findById(pl.id) == null
+    }
+
+    void "delete project cascades to platform"() {
+        given:
+        Project p = new Project(name: "Cascades To Platform", code: "CTP", platforms: [new Platform(name: "platform name")]).save()
+
+        expect:
+        Platform.count() == 1
+
+        when: "delete project"
+        p.delete()
+        sessionFactory.currentSession.flush()
+
+        then: "it was deleted"
+        Platform.count() == 0
+    }
+
+    void "update project cascades to platform"() {
+        given: "project with valid platform params"
+        Project p = new Project(name: "Cascades To Env", code: "CTE", platforms: [new Platform(name: "platform name")]).save()
+
+        expect: "platform is saved"
+        p.platforms[0].name == "platform name"
+
+        when: "update env"
+        p.platforms[0].name = "edited name"
+        p.save()
+        sessionFactory.currentSession.flush()
+
+        then: "env was updated"
+        Project.findById(p.id).platforms[0].name == "edited name"
     }
 }

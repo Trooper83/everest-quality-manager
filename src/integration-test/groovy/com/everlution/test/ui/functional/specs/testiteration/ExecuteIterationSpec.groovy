@@ -33,7 +33,7 @@ class ExecuteIterationSpec extends GebSpec {
     TestCaseService testCaseService
     TestCycleService testCycleService
 
-    void "update result persists"() {
+    void "update result persists and creates result"() {
         setup:
         def gd = DataFactory.testGroup()
         def group = new TestGroup(name: gd.name)
@@ -63,22 +63,58 @@ class ExecuteIterationSpec extends GebSpec {
         def showCycle = at ShowTestCyclePage
         showCycle.testsTable.clickCell("", 0)
 
-        expect:
-        def page = browser.page(ExecuteTestIterationPage)
-        page.resultSelect().selectedText == "ToDo"
-
         when:
-        page.setResult("Passed", "Some notes")
+        def page = browser.page(ExecuteTestIterationPage)
+        page.setResult("PASSED", "Some notes")
 
         then:
         def show = at ShowTestIterationPage
         show.statusMessage.text() ==~ /Test Iteration \S+ updated/
-        show.resultValue.text() == "Passed"
-        show.notesValue.text() == "Some notes"
-        show.executedByValue.text() == Credentials.BASIC.email
+        show.resultsTable.getValueInColumn(0, "#") == "1"
+        show.resultsTable.getValueInColumn(0, "Result") == "PASSED"
+        show.resultsTable.getValueInColumn(0, "Notes") == "Some notes"
+        show.resultsTable.getValueInColumn(0, "Executed By") == Credentials.BASIC.email
 
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy")
         Date date = new Date()
-        show.dateExecutedValue.text().contains(formatter.format(date))
+        show.resultsTable.getValueInColumn(0, "Date Executed").contains(formatter.format(date))
+    }
+
+    void "form fails to submit if result is blank"() {
+        setup:
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def proj = new Project(name: pd.name, code: pd.code, testGroups: [group])
+        def project = projectService.save(proj)
+        def person = personService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "release plan 1", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def cycle = new TestCycle(name: "I am a test cycle", releasePlan: plan)
+        releasePlanService.addTestCycle(plan, cycle)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group],
+                steps: [new Step(act: 'action')])
+        testCaseService.save(testCase)
+        testCycleService.addTestIterations(cycle, [testCase])
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to cycle"
+        go "/project/${project.id}/testCycle/show/${cycle.id}"
+
+        and:
+        def showCycle = at ShowTestCyclePage
+        showCycle.testsTable.clickCell("", 0)
+
+        when:
+        def page = browser.page(ExecuteTestIterationPage)
+        page.setResult("", "Some notes")
+
+        then:
+        at ExecuteTestIterationPage
     }
 }

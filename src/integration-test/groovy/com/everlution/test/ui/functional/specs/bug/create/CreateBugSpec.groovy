@@ -2,6 +2,7 @@ package com.everlution.test.ui.functional.specs.bug.create
 
 import com.everlution.domains.Area
 import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
@@ -58,9 +59,10 @@ class CreateBugSpec extends GebSpec {
         def ed1 = DataFactory.environment()
         def env = new Environment(ed)
         def env1 = new Environment(ed1)
+        def pl = new Platform(name: "Web")
         def projectData = DataFactory.project()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
-                areas: [area], environments: [env, env1]))
+                areas: [area], environments: [env, env1], platforms: [pl]))
         def name = faker.zelda().game()
         def description = faker.zelda().character()
         def stepData = DataFactory.step()

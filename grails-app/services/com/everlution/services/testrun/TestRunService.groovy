@@ -46,10 +46,15 @@ abstract class TestRunService implements ITestRunService {
         List<TestResult> testResults = []
         List<AutomatedTest> tests = []
         for(TestRunResult r in results) {
+            // if test was already found or created use that and add result to it
             def test = tests.find { it -> it.fullName == r.testName }
             if(test == null) {
                 test = automatedTestService.findOrSave(project, r.testName)
                 tests.add(test)
+            }
+            // set failureCause to null if exceeding limit
+            if(r.failureCause?.length() > 2500) {
+                r.failureCause = null
             }
             def tr = new TestResult(automatedTest: test, result: r.result.toUpperCase(), failureCause: r.failureCause)
             testResults.add(tr)

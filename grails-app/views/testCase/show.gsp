@@ -57,7 +57,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p id="platform-label" class="col-4 fw-bold">Platform</p>
-                                <p class="col" id="platform" aria-labelledby="platform-label">${testCase.platform}</p>
+                                <p class="col" id="platform" aria-labelledby="platform-label">${testCase.platform?.name}</p>
                             </div>
                         </li>
                         <li class="list-group-item border-bottom">

@@ -85,20 +85,23 @@
             <g:form resource="${this.testIteration}" method="PUT" useToken="true"
                     uri="/project/${testIteration.testCycle.releasePlan.project.id}/testIteration/update/${testIteration.id}">
                 <g:hiddenField name="version" value="${this.testIteration?.version}"/>
+                <g:set var="resultsCount" value="${testIteration.results.size()}" />
                 <div class="card mt-3 mb-5">
                     <div class="card-header">
                         <h1 class="me-auto">Execution Details</h1>
                     </div>
                     <div class="card-body">
                         <div class="col-4 mb-3">
-                            <label class="form-label" for="result">Result</label>
-                            <g:select class="form-select" name="result" id="result" from="${['ToDo', 'Passed', 'Failed']}"
-                                      value="${testIteration.result}"/>
+                            <label class="form-label" for="lastResult">Result</label>
+                            <g:select class="form-select" name="lastResult"
+                                      from="${['PASSED', 'FAILED', 'SKIPPED']}" noSelection="['':'']" required="true"
+                                      data-test-id="result"
+                            />
                         </div>
                         <div class="col-6 mb-3">
                             <label class="form-label" for="notes">Notes</label>
-                            <g:textArea class="form-control" name="notes" value="${testIteration.notes}"
-                                        maxLength="500"></g:textArea>
+                            <g:textArea class="form-control" name="notes" maxLength="1000"
+                                    data-test-id="notes"></g:textArea>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -110,7 +113,6 @@
             </g:form>
         </main>
     </div>
-</div>
 </div>
 </body>
 </html>

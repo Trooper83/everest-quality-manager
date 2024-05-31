@@ -25,6 +25,13 @@ class CreateProjectPage extends BasePage {
         environmentTags(required: false) { $("#environmentRow p") }
         errors { $("div.alert-danger") }
         nameInput { $("#name") }
+        addPlatformButton { $("#btnAddPlatform") }
+        platformInput { $("#platform") }
+        platformItem { name -> $("#platformRow li", name: name) }
+        platformTag(required: false) { text -> $("#platformRow p", text: text) }
+        platformTagInput { text -> platformItem(text).find("[data-test-id='tag-input']") }
+        platformTagRemoveButton { text -> platformTag(text).find("svg") }
+        platformTags(required: false) { $("#platformRow p") }
         tooltip(wait: true) { $("div[role=tooltip]") }
     }
 
@@ -44,6 +51,15 @@ class CreateProjectPage extends BasePage {
     void addEnvironmentTag(String name) {
         environmentInput << name
         addEnvironmentButton.click()
+    }
+
+    /**
+     * adds a platform tag
+     * @param name - name of the tag to add
+     */
+    void addPlatformTag(String name) {
+        platformInput << name
+        addPlatformButton.click()
     }
 
     /**
@@ -92,6 +108,15 @@ class CreateProjectPage extends BasePage {
     }
 
     /**
+     * determines if a platform tag is displayed
+     * @param name - name of the tag
+     * @return boolean - true if tag found, false if not
+     */
+    boolean isPlatformTagDisplayed(String name) {
+        return platformTag(name).size() == 1
+    }
+
+    /**
      * determines if an area tag has a hidden input
      * fails the test if the input is not found
      * present means found in the DOM, displayed means visible to the user
@@ -118,6 +143,19 @@ class CreateProjectPage extends BasePage {
     }
 
     /**
+     * determines if a platform tag has a hidden input
+     * fails the test if the input is not found
+     * present means found in the DOM, displayed means visible to the user
+     * @param name - name of the tag
+     * @return boolean - true if input is displayed, false if it is not displayed
+     */
+    boolean isPlatformTagHiddenInputDisplayed(String name) {
+        def p = platformTagInput(name)
+        assert p.size() == 1 //verify one tag is found
+        return p.displayed
+    }
+
+    /**
      * removes an area tag
      * @param name - name of the tag to remove
      */
@@ -131,6 +169,14 @@ class CreateProjectPage extends BasePage {
      */
     void removeEnvironmentTag(String name) {
         environmentTagRemoveButton(name).click()
+    }
+
+    /**
+     * removes a platform tag
+     * @param name - name of the tag to remove
+     */
+    void removePlatformTag(String name) {
+        platformTagRemoveButton(name).click()
     }
 
     /**

@@ -2,6 +2,7 @@ package com.everlution.controllers
 
 import com.everlution.domains.Person
 import com.everlution.domains.TestIteration
+import com.everlution.domains.TestIterationResult
 import com.everlution.services.testiteration.TestIterationService
 import com.everlution.services.testresult.TestResultService
 import grails.plugin.springsecurity.SpringSecurityService
@@ -16,7 +17,6 @@ class TestIterationController {
 
     SpringSecurityService springSecurityService
     TestIterationService testIterationService
-    TestResultService testResultService
 
     static allowedMethods = [update: "PUT", show: "GET", execute: "GET"]
 
@@ -58,10 +58,12 @@ class TestIterationController {
                 return
             }
 
-            def person = springSecurityService.getCurrentUser() as Person
-            testIteration.person = person
-            testIteration.dateExecuted = new Date()
             try {
+                def person = springSecurityService.getCurrentUser() as Person
+                testIteration.lastExecutedBy = person
+                testIteration.lastExecuted = new Date()
+                def r = new TestIterationResult(result: testIteration.lastResult, person: person, notes: params.notes)
+                testIteration.addToResults(r)
                 testIterationService.save(testIteration)
             } catch (ValidationException ignored) {
                 def t = testIterationService.read(testIteration.id)

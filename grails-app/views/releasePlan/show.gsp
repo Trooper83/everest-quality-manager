@@ -92,12 +92,14 @@
                                                 data-bs-target="#collapse-${i}">${cycle.name}
                                         </button>
                                     </h2>
-                                    <g:set var="todo" value="${cycle.testIterations.count {it.result == 'ToDo'}}" />
-                                    <g:set var="pass" value="${cycle.testIterations.count {it.result == 'Passed'}}" />
-                                    <g:set var="fail" value="${cycle.testIterations.count {it.result == 'Failed'}}" />
+                                    <g:set var="unexecuted" value="${cycle.testIterations.count {it.lastResult == null}}" />
+                                    <g:set var="pass" value="${cycle.testIterations.count {it.lastResult == 'PASSED'}}" />
+                                    <g:set var="fail" value="${cycle.testIterations.count {it.lastResult == 'FAILED'}}" />
+                                    <g:set var="skip" value="${cycle.testIterations.count {it.lastResult == 'SKIPPED'}}" />
                                     <g:set var="total" value="${cycle.testIterations.size()}" />
                                     <p class="me-2 fw-bold">Progress:</p>
-                                    <g:multiProgressBar total="${total}" todo="${todo}" passed="${pass}" failed="${fail}"/>
+                                    <g:multiProgressBar total="${total}" unexecuted="${unexecuted}" passed="${pass}"
+                                                        failed="${fail}" skipped="${skip}"/>
                                 </div>
                                 <div id="collapse-${i}" class="collapse" data-parent="#testCycles">
                                     <div class="card-body" data-test-id="testCycle-content">
@@ -111,7 +113,7 @@
                                             <li class="list-group-item border-bottom">
                                                 <div class="row">
                                                     <p class="col-4 fw-bold">Platform</p>
-                                                    <p class="col">${cycle.platform}</p>
+                                                    <p class="col">${cycle.platform?.name}</p>
                                                 </div>
                                             </li>
                                             <li class="list-group-item border-bottom">
@@ -145,6 +147,7 @@
             <div class="modal-body">
                 <g:form action="addTestCycle" controller="releasePlan" method="POST" useToken="true">
                     <g:hiddenField name="releasePlan.id" value="${releasePlan.id}"/>
+                    <g:hiddenField name="testCycle.releasePlan" value="${releasePlan.id}"/>
                     <div class="row justify-content-center">
                         <div class="col-8 required mb-3">
                             <label class="form-label" for="name">Name</label>
@@ -164,8 +167,10 @@
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-8 mb-3">
-                            <label for="platform">Platform</label>
-                            <g:select class="form-select" name="testCycle.platform" from="${['Android', 'iOS', 'Web']}"
+                            <label class="form-label" for="platform">Platform</label>
+                            <g:select class="form-select" name="testCycle.platform"
+                                      from="${releasePlan.project.platforms}"
+                                      optionKey="id" optionValue="name"
                                       noSelection="${['':'Select a Platform...']}"
                             />
                         </div>
@@ -190,11 +195,6 @@
                 $('#testCycleModal form')[0].reset();
             });
         });
-
-
-
-
-
 </script>
 </body>
 </html>

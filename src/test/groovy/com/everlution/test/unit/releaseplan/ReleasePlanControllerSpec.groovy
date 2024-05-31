@@ -67,6 +67,42 @@ class ReleasePlanControllerSpec extends Specification implements ControllerUnitT
         view == 'releasePlans'
     }
 
+    void "release plans action sets sort and order when not included in params"() {
+        given:
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:
+        controller.releasePlans(1, null)
+
+        then:
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "release plans action retains sort and order when included in params"() {
+        given:
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:
+        params.sort = 'testSort'
+        params.order = 'testOrder'
+        controller.releasePlans(1, null)
+
+        then:
+        controller.params.sort == 'testSort'
+        controller.params.order == 'testOrder'
+    }
+
     void "release plans action returns the correct model"() {
         given:
         controller.releasePlanService = Mock(ReleasePlanService) {

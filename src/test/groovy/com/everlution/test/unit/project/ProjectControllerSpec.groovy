@@ -11,6 +11,8 @@ import com.everlution.services.scenario.ScenarioService
 import com.everlution.SearchResult
 import com.everlution.services.testcase.TestCaseService
 import com.everlution.controllers.command.RemovedItems
+import com.everlution.services.testresult.TestResultService
+import com.everlution.services.testrun.TestRunService
 import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
@@ -475,6 +477,38 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         101  | 100
     }
 
+    void "projects action sets sort and order when not included in params"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 0
+        }
+
+        when:"The index action is executed"
+        controller.projects()
+
+        then:"The model is correct"
+        controller.params.sort == 'name'
+        controller.params.order == 'asc'
+    }
+
+    void "projects action retains sort and order when included in params"() {
+        given:
+        controller.projectService = Mock(ProjectService) {
+            1 * list(_) >> []
+            1 * count() >> 0
+        }
+
+        when:"The index action is executed"
+        params.sort = 'testingSort'
+        params.order = 'testingOrder'
+        controller.projects()
+
+        then:"The model is correct"
+        controller.params.sort == 'testingSort'
+        controller.params.order == 'testingOrder'
+    }
+
     void "projects with search renders projects view"() {
         given:
         controller.projectService = Mock(ProjectService) {
@@ -525,10 +559,15 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     void "home action renders home view"() {
         given:
         def project = new Project()
+        def sr = new SearchResult([], 0)
         controller.projectService = Mock(ProjectService) {
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
+            1 * countByProjectAndStatus(project, 'Open') >> 0
+            1 * findAllByProject(project, _) >> sr
+        }
+        controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
@@ -537,11 +576,8 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.testCaseService = Mock(TestCaseService) {
             1 * countByProject(project) >> 0
         }
-        controller.automatedTestService = Mock(AutomatedTestService) {
-            1 * countByProject(project) >> 0
-        }
         controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> new LinkedHashMap<>()
+            1 * getPlansByStatus(project) >> new LinkedHashMap<>()
         }
 
         when:"a domain instance is passed to the home action"
@@ -567,24 +603,26 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     void "home action with a valid id"() {
         given:
         def project = new Project()
+        def sr = new SearchResult([], 0)
         controller.projectService = Mock(ProjectService) {
             1 * get(2) >> project
         }
         controller.bugService = Mock(BugService) {
+            1 * countByProjectAndStatus(project, 'Open') >> 0
+            1 * findAllByProject(project, _) >> sr
+        }
+        controller.releasePlanService = Mock(ReleasePlanService) {
+            1 * getPlansByStatus(project) >> [
+                    "released": new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
+                    "inProgress": new ReleasePlan(status: 'In Progress', plannedDate: futureDate)]
+        }
+        controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
         }
         controller.scenarioService = Mock(ScenarioService) {
             1 * countByProject(project) >> 0
         }
         controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> [
-                    "previousRelease": new ReleasePlan(plannedDate: futureDate, status: 'ToDo'),
-                    "nextRelease": new ReleasePlan(status: 'Released', releaseDate: pastDate) ]
-        }
-        controller.automatedTestService = Mock(AutomatedTestService) {
             1 * countByProject(project) >> 0
         }
 
@@ -597,66 +635,9 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.scenarioCount == 0
         model.testCaseCount == 0
         model.automatedTestCount == 0
-        model.nextRelease != null
-        model.previousRelease != null
-    }
-
-    void "home action returns null for next release plan when none matched"() {
-        given:
-        def project = new Project()
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.scenarioService = Mock(ScenarioService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> [:]
-        }
-        controller.automatedTestService = Mock(AutomatedTestService) {
-            1 * countByProject(project) >> 0
-        }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.nextRelease == null
-    }
-
-    void "home action returns null for previous release plan when none matched"() {
-        given:
-        def project = new Project()
-        controller.projectService = Mock(ProjectService) {
-            1 * get(2) >> project
-        }
-        controller.bugService = Mock(BugService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.scenarioService = Mock(ScenarioService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.testCaseService = Mock(TestCaseService) {
-            1 * countByProject(project) >> 0
-        }
-        controller.releasePlanService = Mock(ReleasePlanService) {
-            1 * getPrevNextPlans(project) >> [:]
-        }
-        controller.automatedTestService = Mock(AutomatedTestService) {
-            1 * countByProject(project) >> 0
-        }
-
-        when:"A domain instance is passed to the home action"
-        controller.home(2)
-
-        then:"A model is populated containing the domain instance"
-        model.previousRelease == null
+        model.released != null
+        model.current != null
+        model.recentBugs == []
     }
 
     void "show action returns 405 with not allowed method types"(String httpMethod) {

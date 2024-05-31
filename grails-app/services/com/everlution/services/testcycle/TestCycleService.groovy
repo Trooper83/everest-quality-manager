@@ -49,7 +49,7 @@ abstract class TestCycleService implements ITestCycleService {
                 def s = new IterationStep(act: step.act, data: step.data, result: step.result)
                 steps.add(s)
             }
-            iterations.add(new TestIteration(name: testCase.name, result: "ToDo", steps: steps, testCase: testCase,
+            iterations.add(new TestIteration(name: testCase.name, steps: steps, testCase: testCase,
                     verify: testCase.verify))
         }
         return iterations

@@ -27,9 +27,9 @@ class DataFactory {
      * @param days - days to add from today
      */
     static getFutureDate(int days) {
-        LocalDate date = LocalDate.now().plusDays(days);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-        return date.format(formatter);
+        LocalDate date = LocalDate.now().plusDays(days)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+        return date.format(formatter)
     }
 
     /**
@@ -37,9 +37,9 @@ class DataFactory {
      * @param days - days to subtract from today
      */
     static getPastDate(int days) {
-        LocalDate date = LocalDate.now().minusDays(days);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-        return date.format(formatter);
+        LocalDate date = LocalDate.now().minusDays(days)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+        return date.format(formatter)
     }
 
     /**

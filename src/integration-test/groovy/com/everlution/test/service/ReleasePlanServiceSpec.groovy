@@ -181,22 +181,21 @@ class ReleasePlanServiceSpec extends Specification {
         plan.results.first().name == "name124"
     }
 
-    void "getPrevNextRelease returns releases"() {
+    void "getPlansByStatus returns releases"() {
         given:
         def proj = projectService.list(max: 1).first()
         def per = personService.list(max: 1).first()
         def pDate = new Date().from(Instant.now().minus(10, ChronoUnit.DAYS))
-        def nDate = new Date().from(Instant.now().plus(10, ChronoUnit.DAYS))
-        ReleasePlan next = new ReleasePlan(name: "test name", project: proj, status: "ToDo", person: per, plannedDate: nDate)
         ReleasePlan prev = new ReleasePlan(name: "test name", project: proj, status: "Released", person: per, releaseDate: pDate)
-        releasePlanService.save(next)
+        ReleasePlan inProgress = new ReleasePlan(name: "test name", project: proj, status: "In Progress", person: per, plannedDate: pDate)
         releasePlanService.save(prev)
+        releasePlanService.save(inProgress)
 
         when:
-        def plans = releasePlanService.getPrevNextPlans(proj)
+        def plans = releasePlanService.getPlansByStatus(proj)
 
         then:
-        plans.nextRelease == next
-        plans.previousRelease == prev
+        plans.released.first() == prev
+        plans.inProgress.first() == inProgress
     }
 }

@@ -2,6 +2,7 @@ package com.everlution.test.unit.testcycle
 
 import com.everlution.domains.Environment
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.ReleasePlan
 import com.everlution.domains.Step
@@ -89,7 +90,6 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         tc.testIterations.size() == 1
         tc.testIterations.first().name == testCase.name
         tc.testIterations.first().verify == testCase.verify
-        tc.testIterations.first().result == "ToDo"
         tc.testIterations.first().testCase == testCase
         tc.testIterations.first().steps.size() == testCase.steps.size()
         tc.testIterations.first().steps[0].act == testCase.steps[0].act
@@ -155,12 +155,20 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
     }
 
     void "add test iterations filters out test cases by platform"() {
+        given:
+        def pl = new Platform(name: 'Web')
+        def pl1 = new Platform(name: 'iOS')
+        def pl2 = new Platform(name: 'Android')
+        def pr = new Project(name: 'name of the project', code: 'notp', platforms: [pl, pl1, pl2]).save()
+        def rp = releasePlan = new ReleasePlan(name: "release plan name", project: pr, status: "ToDo",
+                person: person).save()
+
         when:
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
-        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
-        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web").save(flush: true)
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: pr, platform: pl).save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: pr, platform: null).save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: pr, platform: pl1).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: pr, platform: pl2).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: rp, platform: pl).save(flush: true)
         service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
         then:
@@ -202,7 +210,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
     void "add test iterations filters out test cases by unique"() {
         when:
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web").save(flush: true)
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: null).save(flush: true)
         service.addTestIterations(tc, [testCase, testCase, testCase])
 
         then:
@@ -210,19 +218,25 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
     }
 
     void "add test iterations filters out test cases by already on test cycle"() {
+        given:
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: null).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: null).save(flush: true)
+        service.addTestIterations(tc, [testCase])
+
+        expect:
+        tc.testIterations.size() == 1
+
         when:
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web", testCaseIds: [testCase.id]).save(flush: true)
         service.addTestIterations(tc, [testCase])
 
         then:
-        !tc.testIterations
+        tc.testIterations.size() == 1
     }
 
     void "add test iterations adds test case ids to test cycle with null test case ids"() {
         given:
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web").save(flush: true)
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan).save(flush: true)
 
         expect:
         tc.testCaseIds == null
@@ -236,8 +250,8 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
 
     void "add test iterations adds test case ids to test cycle with existing test case ids"() {
         given:
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "Web", testCaseIds: [9999]).save(flush: true)
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, testCaseIds: [9999]).save(flush: true)
 
         expect:
         tc.testCaseIds.size() == 1

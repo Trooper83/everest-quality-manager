@@ -16,11 +16,12 @@ class Project {
     String name
     Collection testGroups
 
-    static hasMany = [ areas: Area, environments: Environment, testGroups: TestGroup ]
+    static hasMany = [ areas: Area, environments: Environment, testGroups: TestGroup, platforms: Platform ]
 
     static mapping = {
         areas cascade: "all-delete-orphan"
         environments cascade: "all-delete-orphan"
+        platforms cascade: "all-delete-orphan"
         testGroups cascade: "all-delete-orphan"
     }
 
@@ -38,6 +39,16 @@ class Project {
             return true
         }
         environments validator: { val ->
+            if(val == null) {
+                return true
+            }
+            def duplicates = val.countBy{it.name}.grep{it.value > 1}.collect{it.key}
+            if(duplicates.size() > 0) {
+                return false
+            }
+            return true
+        }
+        platforms validator: { val ->
             if(val == null) {
                 return true
             }

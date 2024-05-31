@@ -47,6 +47,42 @@ class TestCaseControllerSpec extends Specification implements ControllerUnitTest
         view == 'testCases'
     }
 
+    void "test cases action sets order and sort params when not found"() {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:
+        controller.testCases(1, null)
+
+        then:
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "test cases action retains order and sort params when found"() {
+        given:
+        controller.testCaseService = Mock(TestCaseService) {
+            1 * findAllByProject(_, params) >> new SearchResult([], 0)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:
+        params.sort = 'testSort'
+        params.order = 'testOrder'
+        controller.testCases(1, null)
+
+        then:
+        controller.params.sort == 'testSort'
+        controller.params.order == 'testOrder'
+    }
+
     void "test cases action returns the correct model"() {
         given:
         controller.testCaseService = Mock(TestCaseService) {

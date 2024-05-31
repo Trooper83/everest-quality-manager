@@ -17,6 +17,7 @@ class ProjectSpec extends GebSpec {
         given: "create data"
         def pd = DataFactory.project()
         def ad = DataFactory.area()
+        def pld = DataFactory.area()
         def env = DataFactory.environment()
 
         and: "login as a user"
@@ -31,6 +32,7 @@ class ProjectSpec extends GebSpec {
         page.completeCreateForm(pd.name, pd.code)
         page.addAreaTag(ad.name)
         page.addEnvironmentTag(env.name)
+        page.addPlatformTag(pld.name)
         page.createButton.click()
 
         then: "all data is displayed on show page"
@@ -38,6 +40,7 @@ class ProjectSpec extends GebSpec {
         verifyAll {
             show.isAreaDisplayed(ad.name)
             show.isEnvironmentDisplayed(env.name)
+            show.isPlatformDisplayed(pld.name)
             show.nameValue.text() == pd.name
             show.codeValue.text() == pd.code
         }
@@ -63,9 +66,10 @@ class ProjectSpec extends GebSpec {
         when: "edit the project"
         def edited = DataFactory.project()
         def ad = DataFactory.area()
+        def pld = DataFactory.area()
         def env = DataFactory.environment()
         EditProjectPage page = browser.page(EditProjectPage)
-        page.editProject(edited.name, edited.code, [ad.name], [env.name])
+        page.editProject(edited.name, edited.code, [ad.name], [env.name], [pld.name])
 
         then: "at home page and data displayed"
         println('testing')
@@ -75,6 +79,7 @@ class ProjectSpec extends GebSpec {
             showPage.codeValue.text() == edited.code
             showPage.isAreaDisplayed(ad.name)
             showPage.isEnvironmentDisplayed(env.name)
+            showPage.isPlatformDisplayed(pld.name)
         }
 
         cleanup:

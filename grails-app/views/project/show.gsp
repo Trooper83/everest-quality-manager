@@ -56,12 +56,24 @@
                             </div>
                         </li>
                     </ul>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush border-bottom">
                         <li class="list-group-item">
                             <div class="row align-items-center" id="environments">
                                 <p id="environments-label" class="col-4 fw-bold">Environments</p>
                                 <div class="col form-row">
                                     <g:each in="${project.environments}">
+                                        <p class="ml-1 badge text-bg-light border">${it.name}</p>
+                                    </g:each>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row align-items-center" id="platforms">
+                                <p id="platforms-label" class="col-4 fw-bold">Platforms</p>
+                                <div class="col form-row">
+                                    <g:each in="${project.platforms}">
                                         <p class="ml-1 badge text-bg-light border">${it.name}</p>
                                     </g:each>
                                 </div>

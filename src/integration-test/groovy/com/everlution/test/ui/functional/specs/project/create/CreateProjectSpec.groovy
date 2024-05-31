@@ -38,6 +38,10 @@ class CreateProjectSpec extends GebSpec {
         def pd = DataFactory.project()
         def ad = DataFactory.area()
         def ad1 = DataFactory.area()
+        def ed = DataFactory.environment()
+        def ed1 = DataFactory.environment()
+        def pld = DataFactory.area()
+        def pld1 = DataFactory.area()
 
         and: "login as a user"
         to LoginPage
@@ -47,19 +51,27 @@ class CreateProjectSpec extends GebSpec {
         and: "go to the create page"
         def page = to CreateProjectPage
 
-        when: "create a project with an area"
+        when: "create a project with items"
         page.completeCreateForm(pd.name, pd.code)
         page.addAreaTag(ad.name)
         page.addAreaTag(ad1.name)
+        page.addEnvironmentTag(ed.name)
+        page.addEnvironmentTag(ed1.name)
+        page.addPlatformTag(pld.name)
+        page.addPlatformTag(pld1.name)
         page.createButton.click()
 
         then: "all data is displayed on show page"
-        def home = at ShowProjectPage
+        def show = at ShowProjectPage
         verifyAll {
-            home.isAreaDisplayed(ad.name)
-            home.isAreaDisplayed(ad1.name)
-            home.nameValue.text() == pd.name
-            home.codeValue.text() == pd.code
+            show.isAreaDisplayed(ad.name)
+            show.isAreaDisplayed(ad1.name)
+            show.isEnvironmentDisplayed(ed.name)
+            show.isEnvironmentDisplayed(ed1.name)
+            show.isPlatformDisplayed(pld.name)
+            show.isPlatformDisplayed(pld1.name)
+            show.nameValue.text() == pd.name
+            show.codeValue.text() == pd.code
         }
     }
 }

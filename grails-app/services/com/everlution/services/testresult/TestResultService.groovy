@@ -2,6 +2,7 @@ package com.everlution.services.testresult
 
 import com.everlution.AutomatedTestResultsViewModel
 import com.everlution.domains.AutomatedTest
+import com.everlution.domains.Project
 import com.everlution.domains.TestResult
 import grails.gorm.services.Service
 
@@ -32,5 +33,12 @@ abstract class TestResultService implements ITestResultService {
         def values = new AutomatedTestResultsViewModel(total, totalPass.size(), totalFail.size(), totalSkip.size(),
                 recentTotal, recentTotalPass.size(), recentTotalFail.size(), recentTotalSkip.size(), recentResults)
         return values
+    }
+
+    List getMostFailedTestCount(Project project) {
+        def r = TestResult.findAll("select t.automatedTest.id, t.automatedTest.fullName, count(*) as c from TestResult t " +
+                "where t.result = ?0 and t.automatedTest.project = ?1 group by t.automatedTest order by c desc",
+                ['FAILED', project], [max:10])
+        return r
     }
 }

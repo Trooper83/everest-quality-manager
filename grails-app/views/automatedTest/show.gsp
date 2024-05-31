@@ -109,7 +109,7 @@
                                 <span class="badge text-bg-danger">${result.result}</span>
                             </g:elseif>
                             <g:else>
-                                <span class="badge text-bg-secondary">${result.result}</span>
+                                <span class="badge text-bg-warning">${result.result}</span>
                             </g:else>
                         </td>
                         <td data-name="createdDateValue">${result.dateCreated}</td>

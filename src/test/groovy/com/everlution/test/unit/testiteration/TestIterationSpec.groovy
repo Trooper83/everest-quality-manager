@@ -22,8 +22,8 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
                 executionMethod: "Manual", type: "UI", project: project).save()
         def releasePlan = new ReleasePlan(name: "releasing this", project: project, person: person).save()
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
-        new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [], testCycle: testCycle).save()
-        new TestIteration(name: "test name123", testCase: testCase, result: "ToDo", steps: [], testCycle: testCycle).save()
+        new TestIteration(name: "test name", testCase: testCase, steps: [], testCycle: testCycle).save()
+        new TestIteration(name: "test name123", testCase: testCase, steps: [], testCycle: testCycle).save()
 
         expect:
         TestIteration.count() == 2
@@ -88,44 +88,6 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         domain.validate(["name"])
     }
 
-    void "result cannot be blank"() {
-        when:
-        domain.result = ""
-
-        then:
-        !domain.validate(["result"])
-        domain.errors["result"].code == "blank"
-    }
-
-    void "result cannot be null"() {
-        when:
-        domain.result = null
-
-        then:
-        !domain.validate(["result"])
-        domain.errors["result"].code == "nullable"
-    }
-
-    void "result validates with value in list"(String value) {
-        when:
-        domain.result = value
-
-        then:
-        domain.validate(["result"])
-
-        where:
-        value << ["ToDo", "Passed", "Failed"]
-    }
-
-    void "result fails validation with value not in list"() {
-        when:
-        domain.result = "test"
-
-        then:
-        !domain.validate(["result"])
-        domain.errors["result"].code == "not.inList"
-    }
-
     void "steps cannot be null"() {
         when:
         domain.steps = null
@@ -169,71 +131,12 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
         domain.errors["testCycle"].code == "nullable"
     }
 
-    void "notes can be null"() {
-        when:
-        domain.notes = null
-
-        then:
-        domain.validate(["notes"])
-    }
-
-    void "notes can be blank"() {
-        when:
-        domain.notes = ""
-
-        then:
-        domain.validate(["notes"])
-    }
-
-    void "notes cannot exceed 1000 characters"() {
-        when: "for a string of 1001 characters"
-        String str = "a" * 1001
-        domain.notes = str
-
-        then: "validation fails"
-        !domain.validate(["notes"])
-        domain.errors["notes"].code == "maxSize.exceeded"
-    }
-
-    void "notes validates with 1000 characters"() {
-        when: "for a string of 1000 characters"
-        String str = "a" * 1000
-        domain.notes = str
-
-        then: "validation passes"
-        domain.validate(["notes"])
-    }
-
-    void "person can be null"() {
-        when:
-        domain.person = null
-
-        then:
-        domain.validate(["person"])
-    }
-
-    void "dateCreated can be null"() {
-        when:
-        domain.dateCreated = null
-
-        then:
-        domain.validate(["dateCreated"])
-    }
-
     void "lastUpdated can be null"() {
         when:
         domain.lastUpdated = null
 
         then:
         domain.validate(["lastUpdated"])
-    }
-
-    void "dateExecuted can be null"() {
-        when:
-        domain.dateExecuted = null
-
-        then:
-        domain.validate(["dateExecuted"])
     }
 
     void "verify can be null"() {
@@ -269,5 +172,65 @@ class TestIterationSpec extends Specification implements DomainUnitTest<TestIter
 
         then: "description validation passes"
         domain.validate(["verify"])
+    }
+
+    void "results can be null"() {
+        when:
+        domain.results = null
+
+        then:
+        domain.validate(["results"])
+    }
+
+    void "lastExecuted can be null"() {
+        when:
+        domain.lastExecuted = null
+
+        then:
+        domain.validate(["dateCreated"])
+    }
+
+    void "lastResult can be blank"() {
+        when:
+        domain.lastResult = ""
+
+        then:
+        domain.validate(["lastResult"])
+    }
+
+    void "lastResult can be null"() {
+        when:
+        domain.lastResult = null
+
+        then:
+        domain.validate(["lastResult"])
+    }
+
+    void "lastResult validates with value in list"(String value) {
+        when:
+        domain.lastResult = value
+
+        then:
+        domain.validate(["lastResult"])
+
+        where:
+        value << ["SKIPPED", "PASSED", "FAILED"]
+    }
+
+    void "lastResult fails validation with value not in list"() {
+        when:
+        domain.lastResult = "test"
+
+        then:
+        !domain.validate(["lastResult"])
+        domain.errors["lastResult"].code == "not.inList"
+    }
+
+    void "lastExecutedBy can be null"() {
+        when:
+        domain.lastExecutedBy = null
+
+        then:
+        domain.validate(["lastExecutedBy"])
     }
 }

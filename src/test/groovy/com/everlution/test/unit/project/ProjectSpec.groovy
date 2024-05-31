@@ -2,6 +2,7 @@ package com.everlution.test.unit.project
 
 import com.everlution.domains.Area
 import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.TestGroup
 import grails.testing.gorm.DomainUnitTest
@@ -289,5 +290,30 @@ class ProjectSpec extends Specification implements DomainUnitTest<Project> {
 
         then: "domain validates"
         domain.validate(["testGroups"])
+    }
+
+    void "project cannot have duplicate platforms"() {
+        when: "project with duplicate area params"
+        domain.platforms = [new Platform(name: "name"), new Platform(name: "name")]
+
+        then: "project validation fails"
+        !domain.validate(["platforms"])
+        domain.errors["platforms"].code == "validator.invalid"
+    }
+
+    void "project validates with non-duplicate platforms"() {
+        when: "project with duplicate area params"
+        domain.areas = [new Platform(name: "name"), new Platform(name: "name123")]
+
+        then: "project validation fails"
+        domain.validate(["platforms"])
+    }
+
+    void "platforms can be null"() {
+        when: "platforms is null"
+        domain.platforms = null
+
+        then: "domain validates"
+        domain.validate(["platforms"])
     }
 }

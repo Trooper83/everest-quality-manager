@@ -82,7 +82,7 @@
                 </thead>
                 <tbody>
                 <g:each status="i" var="result" in="${results}">
-                    <g:if test="${result.result == 'FAILED'}">
+                    <g:if test="${result.failureCause}">
                         <tr>
                             <td class="col-8">
                                 <button class="btn btn-link" type="button"
@@ -92,7 +92,7 @@
                                 <div class="collapse" id="failedCause-${i}">
                                     <div class="card">
                                         <div class="card-body bg-dark text-danger" data-test-id="failureCause">
-                                            ${result.failureCause}
+                                            <g:failureCause value="${result.failureCause}" />
                                         </div>
                                     </div>
                                 </div>
@@ -116,8 +116,11 @@
                                 <g:if test="${result.result == 'PASSED'}">
                                     <span class="badge text-bg-success">${result.result}</span>
                                 </g:if>
+                                <g:elseif test="${result.result == 'FAILED'}">
+                                    <span class="badge text-bg-danger">${result.result}</span>
+                                </g:elseif>
                                 <g:else>
-                                    <span class="badge text-bg-secondary">${result.result}</span>
+                                    <span class="badge text-bg-warning">${result.result}</span>
                                 </g:else>
                             </td>
                             <td class="col-2 align-middle">

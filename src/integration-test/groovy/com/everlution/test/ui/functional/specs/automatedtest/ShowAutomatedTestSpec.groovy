@@ -139,7 +139,7 @@ class ShowAutomatedTestSpec extends GebSpec {
 
         then:
         $("span", text: "PASSED").hasClass("text-bg-success")
-        $("span", text: "SKIPPED").hasClass("text-bg-secondary")
+        $("span", text: "SKIPPED").hasClass("text-bg-warning")
         $("span", text: "FAILED").hasClass("text-bg-danger")
     }
 }

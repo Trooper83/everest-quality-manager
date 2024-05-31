@@ -8,6 +8,8 @@ import com.everlution.services.releaseplan.ReleasePlanService
 import com.everlution.services.scenario.ScenarioService
 import com.everlution.services.testcase.TestCaseService
 import com.everlution.controllers.command.RemovedItems
+import com.everlution.services.testresult.TestResultService
+import com.everlution.services.testrun.TestRunService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import org.springframework.dao.DataIntegrityViolationException
@@ -22,6 +24,8 @@ class ProjectController {
     ReleasePlanService releasePlanService
     ScenarioService scenarioService
     TestCaseService testCaseService
+    TestRunService testRunService
+    TestResultService testResultService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", projects: ["GET", "POST"],
                                 create: "GET", show: "GET", edit: "GET", home: "GET"]
@@ -34,6 +38,10 @@ class ProjectController {
     @Secured("ROLE_READ_ONLY")
     def projects(Integer max) {
         params.max = Math.min(max ?: 25, 100)
+        if(!params.sort) {
+            params.sort = 'name'
+            params.order = 'asc'
+        }
         if(!params.isSearch) { // load view
             def projects = projectService.list(params)
             def count = projectService.count()
@@ -58,14 +66,23 @@ class ProjectController {
             notFound()
             return
         }
+
+        // bugs
+        def recentBugs = bugService.findAllByProject(project, [max:10, sort: 'dateCreated', order: 'desc']).results
+        def bugCount = bugService.countByProjectAndStatus(project, "Open")
+        // automated tests
         def autoTestCount = automatedTestService.countByProject(project)
-        def bugCount = bugService.countByProject(project)
-        def testCaseCount = testCaseService.countByProject(project)
+        // release plans
+        def releasePlans = releasePlanService.getPlansByStatus(project)
+        // test cases
+        def testCasesCount = testCaseService.countByProject(project)
+        // scenarios
         def scenarioCount = scenarioService.countByProject(project)
-        def releasePlans = releasePlanService.getPrevNextPlans(project)
-        respond project, view: "home", model: [testCaseCount: testCaseCount, scenarioCount: scenarioCount,
-                bugCount: bugCount, nextRelease: releasePlans.nextRelease, previousRelease: releasePlans.previousRelease,
-                automatedTestCount: autoTestCount]
+
+        respond project, view: "home", model: [bugCount: bugCount, next: releasePlans.next,
+                                               released: releasePlans.released, current: releasePlans.inProgress,
+                                               automatedTestCount: autoTestCount, recentBugs: recentBugs,
+                                               testCaseCount: testCasesCount, scenarioCount: scenarioCount]
     }
 
     /**
@@ -82,7 +99,7 @@ class ProjectController {
      * @param projectId
      * @return
      */
-    @Secured("ROLE_PROJECT_ADMIN")
+    @Secured("ROLE_BASIC")
     def show(Long projectId) {
         respond projectService.get(projectId), view: "show"
     }

@@ -88,6 +88,36 @@
                                 </ul>
                             </div>
                         </div>
+                        <div class="col-10 mb-1" id="platforms">
+                            <label class="form-label fw-bold" for="platform">Platforms</label>
+                            <div class="col-10 hstack gap-3">
+                                <g:field class="form-control" maxLength="100" type="text" name="platform" data-toggle="tooltip"
+                                         trigger="manual" title="Platform Name cannot be blank"/>
+                                <g:field class="btn btn-light border" type="button" name="btnAddPlatform" value="Add"
+                                         onclick="addTag('platform')"/>
+                            </div>
+                        </div>
+                        <div class="row mb-3" id="platformRow">
+                            <div class="col-8">
+                                <ul class="no-bullets list-inline">
+                                    <g:each status="i" var="platform" in="${project.platforms}">
+                                        <li class="list-inline-item" name="${platform.name}">
+                                            <div class="form-row ml-1">
+                                                <p class="ml-1 badge text-bg-light border">${platform.name}<svg xmlns="http://www.w3.org/2000/svg" style="cursor:pointer"
+                                                                                                           width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" onclick="removeTag(this,'platform',${platform.id})">
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                                </p>
+                                                <g:hiddenField name="platforms[${i}].id" value="${platform.id}"/>
+                                                <input style="display: none;" type="text" id="platforms[${i}].name" class="form-control-sm"
+                                                       name="platforms[${i}].name" value="${platform.name}" data-test-id="tag-input"
+                                                />
+                                            </div>
+                                        </li>
+                                    </g:each>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <g:submitButton name="updateButton" data-test-id="edit-update-button" class="btn btn-primary mt-2" value="Update"/>

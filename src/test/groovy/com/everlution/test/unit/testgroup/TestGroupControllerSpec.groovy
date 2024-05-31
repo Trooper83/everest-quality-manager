@@ -74,6 +74,42 @@ class TestGroupControllerSpec extends Specification implements ControllerUnitTes
         model.project
     }
 
+    void "test groups action sets sort and order params when not found"() {
+        given:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * findAllByProject(_, params) >> new SearchResult([new TestGroup()], 1)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The index action is executed"
+        controller.testGroups(1, 10)
+
+        then:
+        controller.params.sort == 'dateCreated'
+        controller.params.order == 'desc'
+    }
+
+    void "test groups action sets sort and order params when not found"() {
+        given:
+        controller.testGroupService = Mock(TestGroupService) {
+            1 * findAllByProject(_, params) >> new SearchResult([new TestGroup()], 1)
+        }
+        controller.projectService = Mock(ProjectService) {
+            1 * get(_) >> new Project()
+        }
+
+        when:"The index action is executed"
+        params.sort = 'a'
+        params.order = 'b'
+        controller.testGroups(1, 10)
+
+        then:
+        controller.params.sort == 'a'
+        controller.params.order == 'b'
+    }
+
     void "test groups action returns not found with invalid project"() {
         given:
         controller.testGroupService = Mock(TestGroupService) {

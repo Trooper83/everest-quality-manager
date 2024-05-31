@@ -9,7 +9,7 @@ interface IBugService {
 
     Bug get(Serializable id)
 
-    int countByProject(Project project)
+    int countByProjectAndStatus(Project project, String status)
 
     Bug read(Serializable id)
 

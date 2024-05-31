@@ -6,6 +6,7 @@ import com.everlution.domains.ReleasePlan
 import com.everlution.domains.TestCase
 import com.everlution.domains.TestCycle
 import com.everlution.domains.TestIteration
+import com.everlution.domains.TestIterationResult
 import com.everlution.services.testiteration.TestIterationService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
@@ -34,7 +35,7 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         when:
         def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
-        new TestIteration(name: "name", testCase: testCase, steps: [], result: "ToDo", testCycle: testCycle).save()
+        new TestIteration(name: "name", testCase: testCase, steps: [], testCycle: testCycle).save()
 
         then:
         service.get(1) instanceof TestIteration
@@ -49,7 +50,7 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         when:
         def releasePlan = new ReleasePlan(name: "releasing this", project: project).save()
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
-        new TestIteration(name: "name", testCase: testCase, steps: [], result: "ToDo", testCycle: testCycle).save()
+        new TestIteration(name: "name", testCase: testCase, steps: [], testCycle: testCycle).save()
 
         then:
         service.read(1) instanceof TestIteration
@@ -68,7 +69,7 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [],
+        def iteration = new TestIteration(name: "test name", testCase: testCase, steps: [],
                 testCycle: testCycle)
 
         when:
@@ -95,7 +96,7 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def iteration = new TestIteration(name: "test name", testCase: testCase, result: "ToDo", steps: [],
+        def iteration = new TestIteration(name: "test name", testCase: testCase, steps: [],
                 testCycle: testCycle)
         service.save(iteration)
 
@@ -131,9 +132,9 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def iteration = new TestIteration(name: "1test name", testCase: testCase, result: "ToDo", steps: [],
+        def iteration = new TestIteration(name: "1test name", testCase: testCase, steps: [],
                 testCycle: testCycle)
-        def iteration1 = new TestIteration(name: "2test name", testCase: testCase, result: "ToDo", steps: [],
+        def iteration1 = new TestIteration(name: "2test name", testCase: testCase, steps: [],
                 testCycle: testCycle)
         service.save(iteration)
         service.save(iteration1)
@@ -152,9 +153,9 @@ class TestIterationServiceSpec extends Specification implements ServiceUnitTest<
         def testCycle = new TestCycle(name: "name", releasePlan: releasePlan).save()
         def testCase = new TestCase(person: person, name: "First Test Case", description: "test",
                 executionMethod: "Manual", type: "UI", project: project).save()
-        def iteration = new TestIteration(name: "1test name", testCase: testCase, result: "ToDo", steps: [],
+        def iteration = new TestIteration(name: "1test name", testCase: testCase, steps: [],
                 testCycle: testCycle)
-        def iteration1 = new TestIteration(name: "2test name", testCase: testCase, result: "ToDo", steps: [],
+        def iteration1 = new TestIteration(name: "2test name", testCase: testCase, steps: [],
                 testCycle: testCycle)
         service.save(iteration)
         service.save(iteration1)

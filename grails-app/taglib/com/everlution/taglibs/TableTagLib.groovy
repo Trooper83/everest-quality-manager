@@ -255,7 +255,7 @@ class TableTagLib implements TagLibrary {
         String title = attrs.remove("title") as String
 
         def href = createHref(linkParams, domain, projectId, isTopLevel, itemId)
-        def link = "<th><a href=${href}>${title}</a></th>"
+        def link = "<th class=\"${attrs['class']}\"><a href=\"${href}\">${title}</a></th>"
         writer << link
     }
 

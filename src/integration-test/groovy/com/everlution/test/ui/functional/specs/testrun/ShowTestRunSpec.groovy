@@ -91,7 +91,7 @@ class ShowTestRunSpec extends GebSpec {
         and:
         def proj = projectService.list(max:1).first()
         def a = automatedTestService.save(new AutomatedTest(fullName: "Failure cause collapsed", project: proj))
-        def tr = new TestResult(result: "FAILED", automatedTest: a)
+        def tr = new TestResult(result: "FAILED", automatedTest: a, failureCause: "I failed whoopsy")
         def r = testRunService.save(new TestRun(name: "Linking test run", project: proj,
                 testResults: [tr]))
 
@@ -222,7 +222,28 @@ class ShowTestRunSpec extends GebSpec {
 
         then:
         $("span", text: "PASSED").hasClass("text-bg-success")
-        $("span", text: "SKIPPED").hasClass("text-bg-secondary")
+        $("span", text: "SKIPPED").hasClass("text-bg-warning")
         $("span", text: "FAILED").hasClass("text-bg-danger")
+    }
+
+    void "failureCause parsed with html breaks"() {
+        given:
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        and:
+        def proj = projectService.list(max:1).first()
+        def a = automatedTestService.save(new AutomatedTest(fullName: "Failure cause parsed with breaks", project: proj))
+        def tr = new TestResult(result: "FAILED", automatedTest: a, failureCause: "This test failed \n with line breaks")
+        def r = testRunService.save(new TestRun(name: "Failing test run", project: proj,
+                testResults: [tr]))
+
+        when:
+        def page = to(ShowTestRunPage, proj.id, r.id)
+        page.expandFailureCause()
+
+        then:
+        page.failedCauseElement.text() == 'This test failed\nwith line breaks'
     }
 }

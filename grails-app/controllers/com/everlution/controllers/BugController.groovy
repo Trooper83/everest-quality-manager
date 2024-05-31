@@ -36,10 +36,13 @@ class BugController {
         }
 
         params.max = Math.min(max ?: 25, 100)
+        if(!params.sort) {
+            params.sort = 'dateCreated'
+            params.order = 'desc'
+        }
         def searchResult
         if(!params.isSearch) { // load view
             searchResult = bugService.findAllByProject(project, params)
-
 
         } else { // perform search
             searchResult = bugService.findAllInProjectByName(project, params.searchTerm, params)
