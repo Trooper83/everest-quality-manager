@@ -33,6 +33,7 @@ class StepTableModule extends Module {
         }
         waitFor {
             searchResultsMenu.displayed
+            searchResults.size() > 0
         }
         searchResult(text).first().click()
         sleep(500)
@@ -215,7 +216,14 @@ class StepTableModule extends Module {
     /**
      * selects a suggested step
      */
+    void selectSuggestedStep() {
+        suggestedSteps.first().click()
+    }
+
+    /**
+     * selects a suggested step
+     */
     void selectSuggestedStep(String name) {
-        suggestedStep(name).click()
+        suggestedSteps(name).click()
     }
 }

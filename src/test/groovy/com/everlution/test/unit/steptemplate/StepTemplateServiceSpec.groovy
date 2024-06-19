@@ -9,6 +9,7 @@ import com.everlution.domains.StepTemplate
 import com.everlution.services.steptemplate.StepTemplateService
 import grails.testing.gorm.DataTest
 import grails.testing.services.ServiceUnitTest
+import grails.validation.ValidationException
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -413,7 +414,7 @@ class StepTemplateServiceSpec extends Specification implements ServiceUnitTest<S
 
         when:
         t.act = "action"
-        service.update(t)
+        service.update(t, null, null)
 
         then:
         Step.get(s.id).act == "action"
@@ -442,7 +443,7 @@ class StepTemplateServiceSpec extends Specification implements ServiceUnitTest<S
 
         when:
         t.result = "res"
-        service.update(t)
+        service.update(t, null, null)
 
         then:
         Step.get(s.id).act == null
@@ -471,7 +472,7 @@ class StepTemplateServiceSpec extends Specification implements ServiceUnitTest<S
 
         when:
         t.name = "new name"
-        service.update(t)
+        service.update(t, null, null)
 
         then:
         StepTemplate.get(t.id).name == "new name"
@@ -493,9 +494,58 @@ class StepTemplateServiceSpec extends Specification implements ServiceUnitTest<S
 
         when:
         t.name = "new name should be found"
-        service.update(t)
+        service.update(t, null, null)
 
         then:
         service.read(t.id).name == "new name should be found"
+    }
+
+    void "update creates links"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "update creates links", act: "first", person: person, project: project).save()
+        StepTemplate t1 = new StepTemplate(name: "update creates links part II", act: "second", person: person, project: project).save()
+        Link l = new Link(relation: "Is Child of", linkedId: t1.id)
+
+        when:
+        service.update(t, [l], [])
+
+        then:
+        l.id != null
+        l.project == project
+        l.ownerId == t.id
+    }
+
+    void "update removes links"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "update creates links", act: "first", person: person, project: project).save()
+        StepTemplate t1 = new StepTemplate(name: "update creates links part II", act: "second", person: person, project: project).save()
+        Link l = new Link(relation: "Is Child of", linkedId: t1.id, project: project, ownerId: t.id).save(flush: true)
+
+        expect:
+        service.getRelatedTemplates(t.id).relatedStepTemplates.size() == 1
+
+        when:
+        service.update(t, [], [l.id])
+
+        then:
+        service.getRelatedTemplates(t.id).relatedStepTemplates.size() == 0
+    }
+
+    void "update does not throw exception when linksToAdd and linksToRemove are null"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "name", act: "first", person: person, project: project).save()
+
+        expect:
+        t.name == "name"
+
+        when:
+        t.name = "new name should be found"
+        service.update(t, null, null)
+
+        then:
+        noExceptionThrown()
     }
 }

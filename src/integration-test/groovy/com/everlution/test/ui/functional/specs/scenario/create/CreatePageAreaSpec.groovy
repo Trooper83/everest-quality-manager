@@ -1,6 +1,9 @@
 package com.everlution.test.ui.functional.specs.scenario.create
 
+import com.everlution.domains.Area
+import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -19,18 +22,20 @@ class CreatePageAreaSpec extends GebSpec {
         to LoginPage
         def loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to the create page"
-        def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/scenario/create"
     }
 
     void "area field has no value set"() {
-        when: "project is selected"
-        def page = browser.page(CreateScenarioPage)
+        setup:
+        def area = new Area(name: "area testing platform123")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
+        def page = to CreateScenarioPage, project.id
 
-        then: "default text selected"
+        expect: "default text selected"
         page.areaSelect().selectedText == ""
         page.areaSelect().selected == ""
+        def found = project.areas*.name
+        found.add(0, "")
+        found.containsAll(page.areaOptions*.text())
     }
 }

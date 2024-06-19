@@ -4,8 +4,10 @@ import com.everlution.test.ui.support.pages.common.ShowPage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 
 class ShowBugPage extends ShowPage {
-    static url = "/bug/show"
     static at = { title == "Bug Details" }
+    static convertToPath(Long projectId, Long id) {
+        "/project/${projectId}/bug/show/${id}"
+    }
 
     static content = {
         actualValue { $("#actual") }

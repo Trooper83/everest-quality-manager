@@ -1,5 +1,8 @@
 package com.everlution.test.ui.functional.specs.scenario
 
+import com.everlution.domains.Area
+import com.everlution.domains.Platform
+import com.everlution.domains.Project
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.Scenario
@@ -162,5 +165,47 @@ class ListSpec extends GebSpec {
         then:
         page.listTable.rowCount > 0
         page.searchModule.searchInput.text == ''
+    }
+
+    void "blank value when related items are null"() {
+        given:
+        def pd = DataFactory.project()
+        def person = personService.list(max:1).first()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code))
+        scenarioService.save(new Scenario(name: "related items testing scenario", project: project,
+                person: person, executionMethod: "Automated", type: "UI"))
+
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        when:
+        def page = to(ListScenarioPage, project.id)
+
+        then:
+        page.listTable.getValueInColumn(0, "Area") == ""
+        page.listTable.getValueInColumn(0, "Platform") == ""
+    }
+
+    void "related items display name value"() {
+        given:
+        def area = new Area(name: "area list testing area")
+        def platform = new Platform(name: "platform list testing platform")
+        def pd = DataFactory.project()
+        def person = personService.list(max:1).first()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area], platforms: [platform]))
+        scenarioService.save(new Scenario(name: "related items testing scenario", project: project,
+                person: person, executionMethod: "Automated", type: "UI", area: area, platform: platform))
+
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to(ListScenarioPage, project.id)
+
+        then:
+        page.listTable.getValueInColumn(0, "Area") == "area list testing area"
+        page.listTable.getValueInColumn(0, "Platform") == "platform list testing platform"
     }
 }

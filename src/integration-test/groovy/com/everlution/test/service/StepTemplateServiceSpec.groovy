@@ -60,6 +60,15 @@ class StepTemplateServiceSpec extends Specification {
         StepTemplate.get(templateId) == null
     }
 
+    void "delete does not thrown exception when invalid id"() {
+        when:
+        stepTemplateService.delete(null)
+        sessionFactory.currentSession.flush()
+
+        then:
+        noExceptionThrown()
+    }
+
     void "save persists template"() {
         setup:
         setupData()
@@ -204,7 +213,7 @@ class StepTemplateServiceSpec extends Specification {
         templates.relatedStepTemplates.size() == 1
     }
 
-    void "update does not modify steps when validation error thrown"() {
+    void "update does not modify steps when validation exception thrown"() {
         given:
         setupData()
         StepTemplate t = new StepTemplate(name: "name", act: "first", person: person, project: project)
@@ -218,11 +227,25 @@ class StepTemplateServiceSpec extends Specification {
 
         when:
         t.name = null
-        stepTemplateService.update(t)
+        t.act = null
+        stepTemplateService.update(t, null, null)
 
         then:
         thrown(ValidationException)
         Step.get(s.id).act == "same same"
         Step.get(s.id).result == "result"
+    }
+
+    void "update throws validation exception when link fails validation"() {
+        given:
+        setupData()
+        StepTemplate t = new StepTemplate(name: "name for validation fail for link", act: "first", person: person, project: project)
+        stepTemplateService.save(t)
+
+        when:
+        stepTemplateService.update(t, [new Link()], null)
+
+        then:
+        thrown(ValidationException)
     }
 }

@@ -9,8 +9,10 @@ import org.openqa.selenium.Keys
 import org.openqa.selenium.support.ui.ExpectedConditions
 
 class CreateScenarioPage extends CreatePage {
-    static url = "/scenario/create"
     static at = { title == "Create Scenario" }
+    static convertToPath(Long projectId) {
+        "/project/${projectId}/scenario/create"
+    }
 
     static content = {
         areaOptions { $("#area>option") }

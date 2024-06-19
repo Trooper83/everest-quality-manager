@@ -1,6 +1,14 @@
 package com.everlution.test.ui.functional.specs.scenario
 
+import com.everlution.domains.Area
+import com.everlution.domains.Environment
+import com.everlution.domains.Platform
+import com.everlution.domains.Project
+import com.everlution.domains.Scenario
+import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
+import com.everlution.services.scenario.ScenarioService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.common.LoginPage
@@ -17,7 +25,9 @@ import grails.testing.mixin.integration.Integration
 @Integration
 class ShowPageSpec extends GebSpec {
 
+    PersonService personService
     ProjectService projectService
+    ScenarioService scenarioService
 
     void "status message displayed after scenario created"() {
         given: "login as a basic user"
@@ -176,5 +186,52 @@ class ShowPageSpec extends GebSpec {
         then: "at show scenario page with message displayed"
         def showPage = at ShowScenarioPage
         showPage.statusMessage.text() ==~ /Scenario \d+ updated/
+    }
+
+    void "related items display name"() {
+        given:
+        def area = new Area(name: "area testing area")
+        def env = new Environment(name: "env testing area")
+        def platform = new Platform(name: "platform testing area")
+        def pd = DataFactory.project()
+        def person = personService.list(max:1).first()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area],
+                                    environments: [env], platforms: [platform]))
+        def scenario = scenarioService.save(new Scenario(name: "related items testing scenario", project: project,
+                person: person, executionMethod: "Automated", type: "UI", area: area, platform: platform,
+                environments: [env]))
+
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to ShowScenarioPage, project.id, scenario.id
+
+        then:
+        page.areaValue.text() == area.name
+        page.platformValue.text() == platform.name
+        page.areEnvironmentsDisplayed([env.name])
+    }
+
+    void "related items value blank when null"() {
+        given:
+        def pd = DataFactory.project()
+        def person = personService.list(max:1).first()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code))
+        def scenario = scenarioService.save(new Scenario(name: "related items testing scenario123", project: project,
+                person: person, executionMethod: "Automated", type: "UI"))
+
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to ShowScenarioPage, project.id, scenario.id
+
+        then:
+        page.areaValue.text() == ""
+        page.platformValue.text() == ""
+        page.environmentsList.text() == ""
     }
 }

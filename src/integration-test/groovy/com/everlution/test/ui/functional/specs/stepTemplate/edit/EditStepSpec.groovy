@@ -1,6 +1,8 @@
 package com.everlution.test.ui.functional.specs.stepTemplate.edit
 
+import com.everlution.domains.Link
 import com.everlution.domains.Person
+import com.everlution.services.link.LinkService
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
@@ -20,6 +22,7 @@ import spock.lang.Shared
 @Integration
 class EditStepSpec extends GebSpec {
 
+    LinkService linkService
     PersonService personService
     ProjectService projectService
     StepTemplateService stepTemplateService
@@ -144,5 +147,31 @@ class EditStepSpec extends GebSpec {
 
         then:
         !showPage.isLinkDisplayed(linked.name, 'parents')
+    }
+
+    void "data and links are repopulated when validation fails"() {
+        given: "get fake data"
+        def linked = stepTemplateService.findAllInProject(project, [max:1]).results.first()
+        def step = new StepTemplate(name: "name", act: "action", result: "result", project: project, person: person)
+        def id = stepTemplateService.save(step).id
+        linkService.save(new Link(ownerId: id, linkedId: linked.id, project: project, relation: "Is Child of"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        def editPage = to (EditStepTemplatePage, project.id, id)
+
+        when:
+        editPage.editStepTemplate("", "", "")
+
+        then: "data is displayed on show page"
+        at EditStepTemplatePage
+        editPage.nameInput.value() == "name"
+        editPage.actionInput.value() == "action"
+        editPage.resultInput.value() == "result"
+        editPage.linkModule.isLinkDisplayed(linked.name)
     }
 }

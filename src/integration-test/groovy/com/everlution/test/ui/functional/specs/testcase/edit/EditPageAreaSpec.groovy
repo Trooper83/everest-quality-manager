@@ -103,4 +103,23 @@ class EditPageAreaSpec extends GebSpec {
         then: "at the edit page"
         at EditTestCasePage
     }
+
+    void "options equal project areas"() {
+        given: "project & test case instances with areas"
+        def area = new Area(name: "area testing area13424")
+        def project = projectService.save(new Project(name: "area tc testing project I", code: "AP1", areas: [area]))
+        def testCase = testCaseService.save(new TestCase(name: "area testing test case I", project: project,
+                person: person, executionMethod: "Automated", type: "UI", area: area))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to EditTestCasePage, project.id, testCase.id
+
+        then:
+        page.areaOptions*.text() == ["", area.name]
+    }
 }

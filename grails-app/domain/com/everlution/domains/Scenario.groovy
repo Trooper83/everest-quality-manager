@@ -11,7 +11,7 @@ class Scenario {
     Date lastUpdated
     String name
     Person person
-    String platform
+    Platform platform
     Project project
     String type
 
@@ -21,6 +21,7 @@ class Scenario {
         area cascade: "none"
         environments cascade: "none"
         person cascade: "none"
+        platform cascade: "none"
         project cascade: "none"
     }
 
@@ -40,7 +41,16 @@ class Scenario {
         gherkin blank: true, nullable: true, maxSize: 2500
         name blank: false, maxSize: 255, nullable: false
         person nullable: false
-        platform blank: true, nullable: true, inList: ["Android", "iOS", "Web"]
+        platform nullable: true, validator: { val, Scenario obj ->
+            if(val == null) {
+                return
+            }
+            if(obj.project == null || obj.project.platforms == null) {
+                return false
+            }
+            def ids = obj.project.platforms*.id
+            val.id in ids
+        }
         project nullable: false
         type blank: true, nullable: true, inList: ["UI", "API"]
         environments nullable: true, validator: { val, Scenario obj ->

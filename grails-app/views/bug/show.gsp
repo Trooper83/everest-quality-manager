@@ -61,9 +61,9 @@
                             </div>
                         </li>
                         <li class="list-group-item">
-                            <div class="row align-items-center" id="environments">
+                            <div class="row align-items-center">
                                 <p id="environments-label" class="col-4 fw-bold">Environments</p>
-                                <div class="col form-row">
+                                <div class="col form-row" id="environments">
                                     <g:each in="${bug.environments}">
                                         <p>${it.name}</p>
                                     </g:each>

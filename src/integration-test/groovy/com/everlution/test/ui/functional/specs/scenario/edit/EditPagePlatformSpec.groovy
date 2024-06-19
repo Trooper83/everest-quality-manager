@@ -1,11 +1,11 @@
 package com.everlution.test.ui.functional.specs.scenario.edit
 
-import com.everlution.domains.Area
 import com.everlution.domains.Person
-import com.everlution.services.person.PersonService
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
-import com.everlution.services.project.ProjectService
 import com.everlution.domains.Scenario
+import com.everlution.services.person.PersonService
+import com.everlution.services.project.ProjectService
 import com.everlution.services.scenario.ScenarioService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
@@ -18,7 +18,7 @@ import spock.lang.Shared
 
 @SendResults
 @Integration
-class EditPageAreaSpec extends GebSpec {
+class EditPagePlatformSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
@@ -30,13 +30,13 @@ class EditPageAreaSpec extends GebSpec {
         person = personService.list(max: 1).first()
     }
 
-    void "area select defaults with selected area"() {
-        setup: "project & scenario instances with areas"
-        def area = new Area(name: "area testing area")
+    void "platform select defaults with selected platform"() {
+        setup: "project & scenario instances with platforms"
+        def platform = new Platform(name: "platform testing platform")
         def pd = DataFactory.project()
-        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
-        def scenario = scenarioService.save(new Scenario(name: "area testing scenario I", project: project,
-                person: person, executionMethod: "Automated", type: "UI", area: area))
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, platforms: [platform]))
+        def scenario = scenarioService.save(new Scenario(name: "platform testing scenario I", project: project,
+                person: person, executionMethod: "Automated", type: "UI", platform: platform))
 
         and: "login as a basic user"
         to LoginPage
@@ -48,14 +48,14 @@ class EditPageAreaSpec extends GebSpec {
 
         then: "scenario.area is selected"
         EditScenarioPage page = browser.page(EditScenarioPage)
-        page.areaSelect().selectedText == area.name
+        page.platformSelect().selectedText == platform.name
     }
 
-    void "area select defaults empty text when no area set"() {
+    void "platform select defaults empty text when no platform set"() {
         setup: "project & scenario instances with areas"
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code))
-        def scenario = scenarioService.save(new Scenario(name: "area testing scenario II", project: project,
+        def scenario = scenarioService.save(new Scenario(name: "platform testing scenario II", project: project,
                 person: person, executionMethod: "Automated", type: "UI"))
 
         and: "login as a basic user"
@@ -68,16 +68,16 @@ class EditPageAreaSpec extends GebSpec {
 
         then: "scenario.area is selected"
         EditScenarioPage page = browser.page(EditScenarioPage)
-        page.areaSelect().selectedText == ""
+        page.platformSelect().selectedText == ""
     }
 
-    void "area options equal project areas"() {
-        setup: "project & scenario instances with areas"
-        def area = new Area(name: "area testing area123")
+    void "platform options equal project platform"() {
+        setup: "project & scenario instances with platforms"
+        def platform = new Platform(name: "platform testing platform123")
         def pd = DataFactory.project()
-        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
-        def scenario = scenarioService.save(new Scenario(name: "area testing scenario I", project: project,
-                person: person, executionMethod: "Automated", type: "UI", area: area))
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, platforms: [platform]))
+        def scenario = scenarioService.save(new Scenario(name: "platform testing scenario I", project: project,
+                person: person, executionMethod: "Automated", type: "UI", platform: platform))
 
         and: "login as a basic user"
         to LoginPage
@@ -89,8 +89,8 @@ class EditPageAreaSpec extends GebSpec {
 
         then: "scenario.area is selected"
         EditScenarioPage page = browser.page(EditScenarioPage)
-        def found = project.areas*.name
+        def found = project.platforms*.name
         found.add(0, "")
-        found.containsAll(page.areaOptions*.text())
+        found.containsAll(page.platformOptions*.text())
     }
 }

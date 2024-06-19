@@ -1,25 +1,25 @@
 package com.everlution.test.ui.functional.specs.bug.create
 
-import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
-import com.everlution.test.support.results.SendResults
-import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.support.data.Credentials
+import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.bug.CreateBugPage
 import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
+import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
 
 @SendResults
 @Integration
-class CreatePageEnvironmentsSpec extends GebSpec {
+class CreatePagePlatformSpec extends GebSpec {
 
     ProjectService projectService
 
-    void "environments field has no value set"() {
+    void "platform field has no value set"() {
         given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
@@ -29,35 +29,32 @@ class CreatePageEnvironmentsSpec extends GebSpec {
         def projectsPage = at(ListProjectPage)
         projectsPage.projectTable.clickCell('Name', 0)
 
-        and: "go to the create bug page"
+        when: "go to the create bug page"
         def projectHomePage = at ProjectHomePage
         projectHomePage.sideBar.goToCreate("Bug")
 
-        when: "project is selected"
-        def page = browser.page(CreateBugPage)
-
         then: "default text selected"
-        page.environmentsSelect().selectedText == []
-        page.environmentsSelect().selected == []
-        page.environmentsOptions[0].text() == "Select Environments..."
+        def page = browser.page(CreateBugPage)
+        page.platformSelect().selectedText == ""
+        page.platformSelect().selected == ""
     }
 
-    void "environment options equals project options"() {
+    void "platform options equal project"() {
         given:
-        def env = new Environment(name: "Env is the only env")
+        def platform = new Platform(name: "Platform is the only platform")
         def pd = DataFactory.project()
         def project = projectService.save(new Project(name: pd.name, code: pd.code,
-                environments: [env]))
+                platforms: [platform]))
 
-        and:
+        and: "login as a basic user"
         to LoginPage
-        def loginPage = browser.page(LoginPage)
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when:
-        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
         def page = to CreateBugPage, project.id
 
         then:
-        page.environmentsOptions*.text().containsAll("Env is the only env")
+        page.platformOptions*.text().containsAll("Platform is the only platform")
     }
 }
