@@ -37,7 +37,7 @@
                                 <g:textArea class="form-control" name="steps[${i}].result" readonly="true"
                                             style="min-height:3.5em; max-height:7em;">${step.result}</g:textArea>
                             </div>
-                            <div class="">
+                            <div>
                                 <g:if test="${i == entity.steps.size() - 1}">
                                     <input class="btn btn-link btn-sm" type="button" value="Remove"
                                            onclick="removeBuilderRow(this, ${step.id});" />

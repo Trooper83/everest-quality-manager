@@ -2,17 +2,16 @@
 function getEntryRow() {
     const row = $('<div class="row align-items-center mt-3"/>');
 
-    const index = $('#stepsTableContent input.iHidden').length;
+    const index = $('#stepsTableContent div.row').length;
     const removed = $('#stepsTableContent input[data-test-id=step-removed-input]').length;
     const itemIndex = index + removed;
 
-    const hidden = $('<input type="hidden" name="stepsIndex[' + itemIndex + ']" class="iHidden" value="" id="steps[' + itemIndex + ']"/>');
     const action = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].act" value="" id="steps[' + itemIndex + '].act"/></div>');
     const data = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].data" value="" id="steps[' + itemIndex + '].data"/></div>');
     const result = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></div>');
     const button = $('<div class="col-md-1"><input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeEntryRow(this)" /></div>');
 
-    row.append(hidden, action, data, result, button);
+    row.append(action, data, result, button);
     return row;
 }
 
@@ -172,7 +171,9 @@ async function displayStepProperties(id) {
         const s = await fetchStep(id);
         if (s) {
 
-            const index = document.querySelector('#builderSteps').childElementCount;
+            const existing = document.querySelectorAll('div#stepsTableContent > div.row').length;
+            const displayed = document.querySelectorAll('#builderSteps > div').length;
+            const index = existing + displayed;
 
             const actCol = document.createElement('div');
             actCol.setAttribute('class', 'col');
@@ -240,7 +241,7 @@ async function displayStepProperties(id) {
 
             //create row and append elements
             const row = document.createElement('div');
-            row.setAttribute('class', 'row align-items-center mb-2');
+            row.setAttribute('class', 'row align-items-center mt-3');
             row.appendChild(actCol);
             row.appendChild(dataCol);
             row.appendChild(resCol);
@@ -370,7 +371,7 @@ function removeBuilderRow(element, id) {
 /**
 * resets step forms to avoid submitting builder and free-form step data
 */
-function resetForm(type) {
+function resetForm(type) { //TODO: can modify this to remove if statement
     if(type == 'free') {
         if (document.getElementById('stepsTableContent').hasChildNodes()) {
             const steps = document.getElementById('stepsTableContent');
@@ -395,6 +396,25 @@ function resetForm(type) {
         if (document.getElementById('currentStep').firstChild) {
             document.getElementById('currentStep').firstChild.remove();
         }
+    }
+}
+
+/**
+* appends steps from modal to steps table
+*/
+function appendBuilderSteps() {
+    const eles = document.querySelectorAll('#builderSteps > div.row');
+    if (eles.length > 0) {
+        const links = document.querySelectorAll('#stepsTableContent input[value=Remove]');
+        links.forEach(link => {
+            link.setAttribute('style', 'display:none;');
+        });
+        const parent = document.querySelector('#stepsTableContent');
+        eles.forEach(ele => {
+            let e = ele.querySelector('input[value=Remove]');
+            e.parentElement.setAttribute('class', 'col-md-1');
+            parent.append(ele);
+        });
     }
 }
 //end builder
