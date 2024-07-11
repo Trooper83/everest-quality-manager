@@ -114,24 +114,7 @@ class BugSpec extends GebSpec {
         def editPage = browser.page(EditBugPage)
         editPage.scrollToBottom()
         editPage.stepsTable.addBuilderStep("This is a builder step")
-        editPage.edit()
-
-        then:
-        at ShowBugPage
-    }
-
-    void "adding builder step from suggested steps retains order"() {
-        given:
-        def createPage = browser.page(CreateBugPage)
-        createPage.createBuilderBug("This should not fail bug", "", "", [], "",
-                "This is a builder step", "", "")
-
-        when:
-        def show = at ShowBugPage
-        show.goToEdit()
-        def editPage = browser.page(EditBugPage)
-        editPage.scrollToBottom()
-        editPage.stepsTable.selectSuggestedStep()
+        editPage.stepsTable.appendBuilderSteps()
         editPage.edit()
 
         then:

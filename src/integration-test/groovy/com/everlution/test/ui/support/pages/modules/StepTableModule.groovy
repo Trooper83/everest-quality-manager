@@ -8,6 +8,7 @@ class StepTableModule extends Module {
 
     static content = {
         addRowButton { $("#btnAddRow") }
+        appendStepsButton { $("#btnAppendSteps") }
         builderStepRows(required: false) { $('#builderSteps div.row') }
         builderTab { $("#builder-tab") }
         currentStepName(required: false) { $("#currentStep p") }
@@ -17,6 +18,7 @@ class StepTableModule extends Module {
         searchResult { text -> $(".search-results-menu-item", text: text) }
         searchResults { $('.search-results-menu-item') }
         searchResultsMenu { $('#search-results') }
+        searchStepsBtn { $('#searchStepBtn') }
         stepRows(required: false) { $('#stepsTableContent div.row') }
         suggestedStep(required: false) { text -> $("#suggestedSteps div.card-body p", text: text) }
         suggestedSteps(required: false) { $("#suggestedSteps div.card") }
@@ -25,7 +27,10 @@ class StepTableModule extends Module {
     /**
      * adds a builder step
      */
-    void addBuilderStep(String text) {
+    void addBuilderStep(String text, boolean displayModal = true) {
+        if (displayModal) {
+            displaySearchStepsModal()
+        }
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -36,6 +41,9 @@ class StepTableModule extends Module {
             searchResults.size() > 0
         }
         searchResult(text).first().click()
+        waitFor {
+            !searchResultsMenu.displayed
+        }
         sleep(500)
     }
 
@@ -58,6 +66,23 @@ class StepTableModule extends Module {
      */
     void addRow() {
         addRowButton.click()
+    }
+
+    /**
+     * adds builder steps and closes the modal
+     */
+    void appendBuilderSteps() {
+        appendStepsButton.click()
+    }
+
+    /**
+     * displays the search steps modal
+     */
+    void displaySearchStepsModal() {
+        searchStepsBtn.click()
+        waitFor {
+            searchInput.displayed
+        }
     }
 
     /**

@@ -68,15 +68,7 @@
                         <h1>Steps To Recreate</h1>
                     </div>
                     <div class="card-body">
-                        <g:if test="${bug.steps.size() == 0}">
-                            <g:render template="/shared/defaultStepsTemplate"/>
-                        </g:if>
-                        <g:elseif test="${bug.steps[0].isBuilderStep}">
-                            <g:render template="/shared/builderStepsTemplate" bean="${bug}" var="entity"/>
-                        </g:elseif>
-                        <g:else>
-                            <g:render template="/shared/freeFormStepsTemplate" bean="${bug}" var="entity"/>
-                        </g:else>
+                        <g:render template="/shared/editStepsTemplate" bean="${bug}" var="entity"/>
                         <div class="row mb-3 mt-3 me-2 ms-2 border-top">
                             <div class="col-5 mt-3">
                                 <label class="form-label" for="expected">Expected</label>
@@ -97,6 +89,14 @@
         </main>
     </div>
 </div>
+<g:render template="/shared/stepsModal"/>
 <asset:javascript src="step.js"/>
+<script>
+    $(document).ready(function() {
+        $('#stepsModal').on('hidden.bs.modal', function () {
+            resetForm();
+        });
+    });
+</script>
 </body>
 </html>

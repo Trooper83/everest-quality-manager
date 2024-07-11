@@ -303,6 +303,7 @@ async function displaySuggestedSteps(id) {
             setParentName(s.template.name);
             if (s.relatedStepTemplates.length == 0) {
                 const emptyDiv = document.createElement('p');
+                emptyDiv.setAttribute('class', 'mt-3')
                 emptyDiv.setAttribute('id', 'noStepsFound');
                 emptyDiv.appendChild(document.createTextNode('No related steps found'));
                 parent.appendChild(emptyDiv);
@@ -311,7 +312,7 @@ async function displaySuggestedSteps(id) {
             //add all related steps to dom
             s.relatedStepTemplates.forEach(template => {
                 const col = document.createElement('div');
-                col.setAttribute('class', 'col');
+                col.setAttribute('class', 'col mt-3');
                 col.setAttribute('onclick', `displayStepProperties(${template.id});`);
                 const card = document.createElement('div');
                 card.setAttribute('class', 'card mb-2 suggested');
@@ -351,7 +352,7 @@ function removeBuilderRow(element, id) {
            const stepId = row.querySelector('input[data-name=hiddenId]').value;
            displaySuggestedSteps(stepId);
        } else {
-           resetForm('builder');
+           resetForm();
        }
     } else {
        element.closest('div.row').remove();
@@ -363,39 +364,29 @@ function removeBuilderRow(element, id) {
            const stepId = row.querySelector('input[data-name=hiddenId]').value;
            displaySuggestedSteps(stepId);
        } else {
-           resetForm('builder');
+           resetForm();
        }
     }
 }
 
 /**
-* resets step forms to avoid submitting builder and free-form step data
+* resets step builder modal form
 */
-function resetForm(type) { //TODO: can modify this to remove if statement
-    if(type == 'free') {
-        if (document.getElementById('stepsTableContent').hasChildNodes()) {
-            const steps = document.getElementById('stepsTableContent');
-            while (steps.firstChild) {
-                 steps.removeChild(steps.firstChild);
-            }
+function resetForm() {
+    if (document.getElementById('builderSteps').hasChildNodes()) {
+        const rows = document.querySelectorAll('#builderSteps .row');
+        for (let row of rows) {
+            row.remove();
         }
-    } else {
-        if (document.getElementById('builderSteps').hasChildNodes()) {
-            const rows = document.querySelectorAll('#builderSteps .row');
-            for (let row of rows) {
-                row.remove();
-            }
+    }
+    if (document.getElementById('suggestedSteps')) {
+        const suggested = document.getElementById('suggestedSteps');
+        while (suggested.firstChild) {
+            suggested.removeChild(suggested.firstChild);
         }
-        if (document.getElementById('suggestedSteps')) {
-
-            const suggested = document.getElementById('suggestedSteps');
-            while (suggested.firstChild) {
-                suggested.removeChild(suggested.firstChild);
-            }
-        }
-        if (document.getElementById('currentStep').firstChild) {
-            document.getElementById('currentStep').firstChild.remove();
-        }
+    }
+    if (document.getElementById('currentStep').firstChild) {
+        document.getElementById('currentStep').firstChild.remove();
     }
 }
 
@@ -413,6 +404,7 @@ function appendBuilderSteps() {
         eles.forEach(ele => {
             let e = ele.querySelector('input[value=Remove]');
             e.parentElement.setAttribute('class', 'col-md-1');
+            e.setAttribute('onclick', 'removeEntryRow(this);')
             parent.append(ele);
         });
     }

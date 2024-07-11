@@ -99,9 +99,14 @@ class CreateTestCasePage extends CreatePage {
         environmentsSelect().selected = environments
         testGroupsSelect().selected = testGroups
         scrollToBottom()
-        steps.each { it ->
-            testStepTable.addBuilderStep(it)
+        steps.eachWithIndex { it, idx ->
+            if (idx == 0) {
+                testStepTable.addBuilderStep(it)
+            } else {
+                testStepTable.addBuilderStep(it, false)
+            }
         }
+        testStepTable.appendBuilderSteps()
         scrollToBottom()
         createButton.click()
     }

@@ -126,7 +126,6 @@ class EditBugSpec extends GebSpec {
         when: "edit the bug"
         EditBugPage page = browser.page(EditBugPage)
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
         page.stepsTable.addStep("added action", "added data", "added result")
         page.edit()
 
@@ -210,6 +209,7 @@ class EditBugSpec extends GebSpec {
         EditBugPage page = browser.page(EditBugPage)
         page.scrollToBottom()
         page.stepsTable.addBuilderStep(template.name)
+        page.stepsTable.appendBuilderSteps()
         page.edit()
 
         then: "at show view with added step"
@@ -239,10 +239,10 @@ class EditBugSpec extends GebSpec {
         step.id != null
         EditBugPage page = browser.page(EditBugPage)
         page.scrollToBottom()
-        page.stepsTable.getBuilderStepsCount() == 1
+        page.stepsTable.getStepsCount() == 1
 
         when: "edit the bug"
-        page.stepsTable.removeBuilderRow(0)
+        page.stepsTable.removeRow(0)
         page.edit()
 
         then: "at show view with edited step values"

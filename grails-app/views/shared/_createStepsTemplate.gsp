@@ -9,7 +9,7 @@
 
     </div>
     <input class="btn btn-secondary btn-sm mt-3" id="btnAddRow" type="button" value="New Step" onclick="addEntryRow()"/>
-    <button id="addStepBtn" type="button" class="btn btn-secondary btn-sm mt-3" data-bs-toggle="modal"
+    <button id="searchStepBtn" type="button" class="btn btn-secondary btn-sm mt-3" data-bs-toggle="modal"
             data-bs-target="#stepsModal">Search Steps
     </button>
 </div>

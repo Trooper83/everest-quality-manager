@@ -61,6 +61,7 @@ class EditPageBuilderStepsSpec extends GebSpec {
         when:
         EditBugPage page = browser.page(EditBugPage)
         page.scrollToBottom()
+        page.stepsTable.displaySearchStepsModal()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -82,6 +83,7 @@ class EditPageBuilderStepsSpec extends GebSpec {
         when:
         EditBugPage page = browser.page(EditBugPage)
         page.scrollToBottom()
+        page.stepsTable.displaySearchStepsModal()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -102,6 +104,7 @@ class EditPageBuilderStepsSpec extends GebSpec {
 
         when:
         page.scrollToBottom()
+        page.stepsTable.displaySearchStepsModal()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -118,7 +121,7 @@ class EditPageBuilderStepsSpec extends GebSpec {
         EditBugPage page = browser.page(EditBugPage)
         page.scrollToBottom()
         page.stepsTable.addBuilderStep(stepTemplate.name)
-        page.stepsTable.addBuilderStep(stepTemplate.name)
+        page.stepsTable.addBuilderStep(stepTemplate.name, false)
 
         then:
         !page.stepsTable.getBuilderStep(0).find('input[value=Remove]').displayed
@@ -130,7 +133,7 @@ class EditPageBuilderStepsSpec extends GebSpec {
         EditBugPage page = browser.page(EditBugPage)
         page.scrollToBottom()
         page.stepsTable.addBuilderStep(stepTemplate.name)
-        page.stepsTable.addBuilderStep(stepTemplate.name)
+        page.stepsTable.addBuilderStep(stepTemplate.name, false)
 
         when:
         page.stepsTable.removeBuilderRow(1)
@@ -214,29 +217,6 @@ class EditPageBuilderStepsSpec extends GebSpec {
         page.stepsTable.getCurrentBuilderStepName() == s.name
     }
 
-    void "suggested steps and current step name are displayed upon page load"() {
-        given:
-        def s = new StepTemplate(name: "33test 12313step", act: "33action jackson", result: "33result",
-                project: project, person: person)
-        stepTemplateService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: stepTemplate.id, relation: Relationship.IS_PARENT_OF.name, project: project)
-        linkService.save(l)
-
-        and:
-        EditBugPage page = browser.page(EditBugPage)
-        page.scrollToBottom()
-        page.stepsTable.addBuilderStep(s.name)
-        page.edit()
-
-        when:
-        def show = at ShowBugPage
-        show.goToEdit()
-
-        then:
-        page.stepsTable.isSuggestedStepDisplayed(stepTemplate.name)
-        page.stepsTable.getCurrentBuilderStepName() == s.name
-    }
-
     void "form is reset when last step is removed"() {
         given:
         def s = new StepTemplate(name: "6test ste3242424p", act: "6action jackson", result: "6result",
@@ -287,24 +267,5 @@ class EditPageBuilderStepsSpec extends GebSpec {
 
         then:
         !page.stepsTable.isBuilderStepHiddenInputDisplayed(0)
-    }
-
-    void "removing step adds hidden input"() {
-        given:
-        EditBugPage page = browser.page(EditBugPage)
-        page.scrollToBottom()
-        page.stepsTable.addBuilderStep(stepTemplate.name)
-        page.edit()
-
-        and:
-        def show = at ShowBugPage
-        show.goToEdit()
-
-        when:
-        page.scrollToBottom()
-        page.stepsTable.removeBuilderRow(0)
-
-        then:
-        !page.stepsTable.isRemovedBuilderStepHiddenInputDisplayed()
     }
 }

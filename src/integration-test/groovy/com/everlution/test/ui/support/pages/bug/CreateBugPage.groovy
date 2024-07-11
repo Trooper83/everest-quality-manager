@@ -57,6 +57,7 @@ class CreateBugPage extends CreatePage {
         environmentsSelect().selected = environment
         scrollToBottom()
         stepsTable.addBuilderStep(stepName)
+        stepsTable.appendBuilderSteps()
         expectedInput = expected
         actualInput = actual
         scrollToBottom()
@@ -73,7 +74,6 @@ class CreateBugPage extends CreatePage {
         actualInput = faker.beer().name()
         expectedInput = faker.beer().name()
         scrollToBottom()
-        stepsTable.selectStepsTab('free-form')
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(5),
                 faker.lorem().sentence(7))
         createButton.click()
@@ -91,7 +91,6 @@ class CreateBugPage extends CreatePage {
         environmentsSelect().selected = environment
         notesInput = notes
         scrollToBottom()
-        stepsTable.selectStepsTab('free-form')
         stepsTable.addStep(action, data, result)
         expectedInput = expected
         actualInput = actual
@@ -107,7 +106,6 @@ class CreateBugPage extends CreatePage {
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
         scrollToBottom()
-        stepsTable.selectStepsTab('free-form')
         stepsTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(5),
                 faker.lorem().sentence(7))
         actualInput = faker.beer().name()

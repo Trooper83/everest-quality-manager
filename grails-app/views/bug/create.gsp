@@ -89,7 +89,7 @@
 <script>
     $(document).ready(function() {
         $('#stepsModal').on('hidden.bs.modal', function () {
-            resetForm('builder');
+            resetForm();
         });
     });
 </script>

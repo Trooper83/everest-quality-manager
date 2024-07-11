@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <input class="btn btn-primary btn-sm" id="btnAddRow" type="button" value="Add Steps"
+                <input class="btn btn-primary btn-sm" id="btnAppendSteps" type="button" value="Add Steps"
                        data-bs-dismiss="modal" onclick="appendBuilderSteps()"/>
             </div>
         </div>
