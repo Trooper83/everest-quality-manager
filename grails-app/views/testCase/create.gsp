@@ -83,7 +83,7 @@
                         <h1>Steps</h1>
                     </div>
                     <div class="card-body">
-                        <g:render template="/shared/defaultStepsTemplate"/>
+                        <g:render template="/shared/createStepsTemplate"/>
                         <div class="row mb-3 mt-3 ms-2 me-2 border-top">
                             <div class="col-8 mt-3">
                                 <label class="form-label" for="verify">Verify</label>
@@ -100,6 +100,14 @@
         <g:render template="/shared/toastTemplate"/>
     </div>
 </div>
+<g:render template="/shared/stepsModal"/>
 <asset:javascript src="step.js"/>
+<script>
+    $(document).ready(function() {
+        $('#stepsModal').on('hidden.bs.modal', function () {
+            resetForm();
+        });
+    });
+</script>
 </body>
 </html>

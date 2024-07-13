@@ -85,7 +85,6 @@ class EditTestCaseSpec extends GebSpec {
         when: "edit the test case"
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
         page.stepsTable.addStep("added action", "added data", "added result")
         page.editTestCase()
 
@@ -173,6 +172,7 @@ class EditTestCaseSpec extends GebSpec {
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.scrollToBottom()
         page.stepsTable.addBuilderStep(step.name)
+        page.stepsTable.appendBuilderSteps()
         page.editTestCase()
 
         then: "at show view with added step"
@@ -203,10 +203,10 @@ class EditTestCaseSpec extends GebSpec {
         step.id != null
         EditTestCasePage page = browser.page(EditTestCasePage)
         page.scrollToBottom()
-        page.stepsTable.getBuilderStepsCount() == 1
+        page.stepsTable.getStepsCount() == 1
 
         when: "edit the test case"
-        page.stepsTable.removeBuilderRow(0)
+        page.stepsTable.removeRow(0)
         page.editTestCase()
 
         then: "at show view with edited step values"
@@ -257,5 +257,10 @@ class EditTestCaseSpec extends GebSpec {
             showPage.platformValue.text() == ""
             showPage.verifyValue.text() == "verify added"
         }
+    }
+
+    void "steps are removed and added in same action"() {
+        expect:
+        false
     }
 }

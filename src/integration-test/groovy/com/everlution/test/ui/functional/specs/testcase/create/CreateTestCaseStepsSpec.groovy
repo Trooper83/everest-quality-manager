@@ -37,7 +37,6 @@ class CreateTestCaseStepsSpec extends GebSpec {
         page.completeCreateForm()
 
         and: "add a new test step"
-        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addStep("should not persist", "", "should not persist")
 
         and: "remove row"
@@ -70,10 +69,11 @@ class CreateTestCaseStepsSpec extends GebSpec {
         def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         page.scrollToBottom()
         page.testStepTable.addBuilderStep(step.name)
-        page.testStepTable.addBuilderStep(step.name)
+        page.testStepTable.addBuilderStep(step.name, false)
 
         and: "remove row"
         page.testStepTable.removeBuilderRow(1)
+        page.testStepTable.appendBuilderSteps()
 
         and: "submit form"
         page.scrollToBottom()
@@ -139,5 +139,10 @@ class CreateTestCaseStepsSpec extends GebSpec {
         ShowTestCasePage showPage = at ShowTestCasePage
         showPage.isStepsRowDisplayed('here is the action', 'testing','this is the result')
         showPage.isStepsRowDisplayed('1here is the action', 'testing','1this is the result')
+    }
+
+    void "free form and builder steps are persisted"() {
+        expect:
+        false
     }
 }

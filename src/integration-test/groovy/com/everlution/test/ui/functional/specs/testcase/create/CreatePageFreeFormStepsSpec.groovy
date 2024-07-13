@@ -29,7 +29,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         given:
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
-        page.testStepTable.selectStepsTab('free-form')
 
         expect: "row count is 0"
         page.testStepTable.getStepsCount() == 0
@@ -45,7 +44,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         setup: "add a row"
         CreateTestCasePage page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
-        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addRow()
 
         expect: "row count is 1"
@@ -63,7 +61,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         def createPage = browser.page(CreateTestCasePage)
         createPage.completeCreateForm()
         createPage.scrollToBottom()
-        createPage.testStepTable.selectStepsTab('free-form')
         createPage.testStepTable.addStep("", "", "")
         createPage.createButton.click()
 
@@ -77,7 +74,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         given: "add a row"
         def page = browser.page(CreateTestCasePage)
         page.scrollToBottom()
-        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addRow()
 
         when:
@@ -89,23 +85,5 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         then:
         !page.testStepTable.getStep(0).find('input[value=Remove]').displayed
         page.testStepTable.getStep(1).find('input[value=Remove]').displayed
-    }
-
-    void "changing step type resets free form"() {
-        setup: "add a row"
-        CreateTestCasePage page = browser.page(CreateTestCasePage)
-        page.scrollToBottom()
-        page.testStepTable.selectStepsTab('free-form')
-        page.testStepTable.addRow()
-
-        expect: "row count is 1"
-        page.testStepTable.getStepsCount() == 1
-
-        when:
-        page.testStepTable.selectStepsTab('builder')
-        page.testStepTable.selectStepsTab('free-form')
-
-        then: "row count is 0"
-        page.testStepTable.getStepsCount() == 0
     }
 }

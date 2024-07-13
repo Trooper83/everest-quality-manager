@@ -119,8 +119,8 @@ class StepTableModule extends Module {
      * determines if a removed builder steps hidden input is present
      * this will fail a test if one is not found
      */
-    boolean isRemovedBuilderStepHiddenInputDisplayed() {
-        def removed = $('#builderSteps input[data-test-id=step-removed-input]')
+    boolean isStepHiddenInputDisplayed() {
+        def removed = $('input[data-test-id=step-removed-input]')
         assert removed.size() == 1 //verify one is found
         return removed.displayed
     }
@@ -225,17 +225,6 @@ class StepTableModule extends Module {
      */
     void removeRow(int index) {
         getStep(index).find("input[value=Remove]").click()
-    }
-
-    /**
-     * selects the steps form to use [builder, free-form]
-     */
-    void selectStepsTab(String type) {
-        if(type == 'builder') {
-            builderTab.click()
-        } else {
-            freeFormTab.click()
-        }
     }
 
     /**

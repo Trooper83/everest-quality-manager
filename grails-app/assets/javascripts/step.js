@@ -2,9 +2,7 @@
 function getEntryRow() {
     const row = $('<div class="row align-items-center mt-3"/>');
 
-    const index = $('#stepsTableContent div.row').length;
-    const removed = $('#stepsTableContent input[data-test-id=step-removed-input]').length;
-    const itemIndex = index + removed;
+    const itemIndex = $('#stepsTableContent div.row').length;
 
     const action = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].act" value="" id="steps[' + itemIndex + '].act"/></div>');
     const data = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].data" value="" id="steps[' + itemIndex + '].data"/></div>');
@@ -26,11 +24,11 @@ function removeEntryRow(element, id) {
     if(id) {
        let input = $('<input style="display: none;" data-test-id="step-removed-input" type="text" id="removedItems.stepIds" name="removedItems.stepIds" value="' + id + '" />');
        $(element).parent().parent().parent().append(input);
-       $(element).parent().parent().remove();
+       $(element).parent().parent().hide();
     } else {
        $(element).parent().parent().remove();
     }
-    $('#stepsTableContent div').find('input[value=Remove]').last().show();
+    $('#stepsTableContent').find('div.row:visible').last().find('input[value=Remove]').show();
 }
 //end free form
 

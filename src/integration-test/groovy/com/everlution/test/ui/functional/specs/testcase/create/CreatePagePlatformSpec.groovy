@@ -29,7 +29,7 @@ class CreatePagePlatformSpec extends GebSpec {
         and: "login as a basic user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
         when:
         def page = to CreateTestCasePage, project.id

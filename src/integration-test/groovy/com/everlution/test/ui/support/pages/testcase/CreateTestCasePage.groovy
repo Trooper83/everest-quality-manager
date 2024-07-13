@@ -66,7 +66,6 @@ class CreateTestCasePage extends CreatePage {
         nameInput = faker.zelda().game()
         descriptionInput = faker.zelda().character()
         scrollToBottom()
-        testStepTable.selectStepsTab('free-form')
         testStepTable.addStep(faker.lorem().sentence(5), faker.lorem().sentence(3),
                 faker.lorem().sentence(7))
         createButton.click()
@@ -126,7 +125,6 @@ class CreateTestCasePage extends CreatePage {
         environmentsSelect().selected = environments
         testGroupsSelect().selected = testGroups
         scrollToBottom()
-        testStepTable.selectStepsTab('free-form')
         steps.each { it ->
             testStepTable.addStep(it.act, it.data, it.result)
         }
@@ -143,7 +141,6 @@ class CreateTestCasePage extends CreatePage {
         nameInput = "fake test case"
         descriptionInput = "fake description"
         scrollToBottom()
-        testStepTable.selectStepsTab('free-form')
         testStepTable.addStep("step action", "step data","step result")
     }
 }

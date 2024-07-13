@@ -30,7 +30,6 @@ class EditBugSpec extends GebSpec {
     BugService bugService
     PersonService personService
     ProjectService projectService
-    StepService stepService
     StepTemplateService stepTemplateService
 
     @Shared Person person
@@ -249,5 +248,41 @@ class EditBugSpec extends GebSpec {
         ShowBugPage showPage = at ShowBugPage
         showPage.getStepsCount() == 0
         !showPage.isStepsRowDisplayed("action", "", "result")
+    }
+
+    void "steps are removed and added in same action"() {
+        given: "create bug"
+        Project project = projectService.list(max: 1).first()
+        def template = new StepTemplate(act: "action", result: "result", project: project, person: person,
+                name: 'this is a test step')
+        stepTemplateService.save(template)
+        def step = new Step(act: "remove me", result: "I am removed")
+        Bug bug = new Bug(person: person, name: "first17878", project: project, steps: [step], status: 'Open')
+        def id = bugService.save(bug).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/bug/edit/${id}"
+
+        expect:
+        EditBugPage page = browser.page(EditBugPage)
+        page.scrollToBottom()
+        page.stepsTable.getStepsCount() == 1
+
+        when: "edit the bug"
+        page.stepsTable.removeRow(0)
+        page.stepsTable.addBuilderStep(template.name)
+        page.stepsTable.appendBuilderSteps()
+        page.edit()
+
+        then: "at show view with edited step values"
+        ShowBugPage showPage = at ShowBugPage
+        showPage.getStepsCount() == 1
+        !showPage.isStepsRowDisplayed(step.act, "", step.result)
+        showPage.isStepsRowDisplayed(template.act, "", template.result)
     }
 }

@@ -82,6 +82,7 @@
                 </div>
             </g:form>
         </main>
+        <g:render template="/shared/toastTemplate"/>
     </div>
 </div>
 <g:render template="/shared/stepsModal"/>

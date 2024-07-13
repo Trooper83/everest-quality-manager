@@ -118,6 +118,7 @@ div.date-picker select:-moz-focusring {
   position:fixed;
   top:5em;
   right:1.5em;
+  z-index:999999;
 }
 
 /*
