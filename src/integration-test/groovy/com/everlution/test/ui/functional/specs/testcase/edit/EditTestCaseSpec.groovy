@@ -9,6 +9,7 @@ import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.domains.Step
 import com.everlution.domains.StepTemplate
+import com.everlution.services.step.StepService
 import com.everlution.services.steptemplate.StepTemplateService
 import com.everlution.domains.TestCase
 import com.everlution.services.testcase.TestCaseService
@@ -29,6 +30,7 @@ class EditTestCaseSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
+    StepService stepService
     StepTemplateService stepTemplateService
     TestCaseService testCaseService
 
@@ -260,7 +262,39 @@ class EditTestCaseSpec extends GebSpec {
     }
 
     void "steps are removed and added in same action"() {
+        given: "create test case"
+        Project project = projectService.list(max: 1).first()
+        def step = new Step(act: "action", result: "result")
+        TestCase testCase = new TestCase(person: person, name: "first123", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project,
+                steps: [step])
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and: "go to edit page"
+        go "/project/${project.id}/testCase/edit/${id}"
+
         expect:
-        false
+        stepService.get(step.id) != null
+
+        when: "edit the test case"
+        EditTestCasePage page = browser.page(EditTestCasePage)
+        page.scrollToBottom()
+        page.stepsTable.removeRow(0)
+
+        and:
+        page.stepsTable.addStep("I should be found", "", "result of found")
+        page.editTestCase()
+
+        then: "at show view with edited step values"
+        ShowTestCasePage showPage = at ShowTestCasePage
+        showPage.getStepsCount() == 1
+        !showPage.isStepsRowDisplayed("action", "","result")
+        showPage.isStepsRowDisplayed("I should be found", "","result of found")
+        stepService.get(step.id) == null
     }
 }

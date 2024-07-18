@@ -28,6 +28,7 @@ class BugSpec extends GebSpec {
     def area = 'Bugs'
     def env = 'Integrated'
     def env1 = 'Production'
+    def platform = 'Web'
 
     def setup() {
         to LoginPage
@@ -44,7 +45,7 @@ class BugSpec extends GebSpec {
     void "bug can be created and data persists"() {
         when:
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", notes, action, data, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area, [env, env1], platform, notes, action, data, result, actual, expected)
 
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
@@ -52,7 +53,7 @@ class BugSpec extends GebSpec {
             showPage.areaValue.text() == area
             showPage.nameValue.text() == name
             showPage.descriptionValue.text() == description
-            showPage.platformValue.text() == "Web"
+            showPage.platformValue.text() == platform
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env, env1])
             showPage.notesValue.text() == notes
@@ -65,7 +66,7 @@ class BugSpec extends GebSpec {
     void "bug can be edited and data persists"() {
         given:
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", notes, action, data, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area, [env, env1], platform, notes, action, data, result, actual, expected)
         ShowBugPage showPage = at ShowBugPage
         showPage.goToEdit()
 
@@ -90,7 +91,7 @@ class BugSpec extends GebSpec {
     void "bug can be deleted"() {
         given:
         CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", notes, action, data, result, actual, expected)
+        createPage.createFreeFormBug(name, description, area, [env, env1], platform, notes, action, data, result, actual, expected)
 
         when: "delete bug"
         def showPage = browser.at(ShowBugPage)

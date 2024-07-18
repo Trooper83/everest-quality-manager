@@ -98,7 +98,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <g:each var="result" in="${resultModel.recentResults}">
+                <g:each var="result" in="${resultModel.recentResults.reverse()}">
                     <tr>
                         <td><g:link uri="/project/${project.id}/testRun/show/${result.testRun.id}">${result.testRun.name}</g:link></td>
                         <td>

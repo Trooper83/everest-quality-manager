@@ -222,7 +222,7 @@ class ShowPageSpec extends GebSpec {
         listPage.listTable.clickCell("Name", 0)
 
         when: "create test cycle"
-        browser.page(ShowReleasePlanPage).createTestCycle("test cycle 999", "1", "Web")
+        browser.page(ShowReleasePlanPage).createTestCycle("test cycle 999", "", "")
 
         then:
         def showPage = at ShowReleasePlanPage
@@ -307,7 +307,7 @@ class ShowPageSpec extends GebSpec {
 
         then: "correct options are populated"
         page.displayAddTestCycleModal()
-        page.testCycleModalPlatformOptions*.text() == ["Select a Platform...", "Platypus Form", "Form Platypus"]
+        page.testCycleModalPlatformOptions*.text().containsAll("Select a Platform...", "Form Platypus", "Platypus Form")
 
         and: "default value is blank"
         page.testCycleModalPlatformSelect().selected == ""

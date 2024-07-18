@@ -2,6 +2,7 @@ package com.everlution.test.ui.functional.specs.scenario.edit
 
 import com.everlution.domains.Area
 import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
@@ -56,14 +57,15 @@ class EditScenarioSpec extends GebSpec {
     void "all edit from data saved"() {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
+        def platform = new Platform(DataFactory.area())
         def env = new Environment(DataFactory.environment())
         def projectData = DataFactory.project()
         def person = personService.list(max: 1).first()
         def project = projectService.save(new Project(name: projectData.name, code: projectData.code,
-                areas: [area], environments: [env]))
+                areas: [area], environments: [env], platforms: [platform]))
         def sd = DataFactory.scenario()
         def scenario = new Scenario(name: sd.name, description: sd.description, person: person, project: project,
-                area: area, executionMethod: "Manual", type: "API", platform: "Web", environments: [env])
+                area: area, executionMethod: "Manual", type: "API", platform: "", environments: [env])
         def id = scenarioService.save(scenario).id
 
         and: "login as a basic user"
@@ -78,7 +80,7 @@ class EditScenarioSpec extends GebSpec {
         EditScenarioPage page = browser.page(EditScenarioPage)
         def edited = DataFactory.scenario()
         page.editScenario(edited.name, edited.description, edited.gherkin, "", [""],
-                "Automated", "UI", "iOS")
+                "Automated", "UI", platform.name)
 
         then: "data is displayed on show page"
         ShowScenarioPage showPage = at ShowScenarioPage
@@ -88,7 +90,7 @@ class EditScenarioSpec extends GebSpec {
             showPage.nameValue.text() == edited.name
             showPage.descriptionValue.text() == edited.description
             showPage.executionMethodValue.text() == "Automated"
-            showPage.platformValue.text() == "iOS"
+            showPage.platformValue.text() == platform.name
             showPage.typeValue.text() == "UI"
             showPage.gherkinTextArea.text() == edited.gherkin
         }

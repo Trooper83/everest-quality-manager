@@ -109,7 +109,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.testStepTable.searchResultsMenu.displayed
     }
 
-    void "adding a step removes the remove link from previous step"() {
+    void "adding a step hides the remove link from previous step"() {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.scrollToBottom()
@@ -126,7 +126,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.testStepTable.getBuilderStep(1).find('input[value=Remove]').displayed
     }
 
-    void "removing a step adds a remove link to previous step"() {
+    void "removing a step displays a remove link to previous step"() {
         given:
         CreateTestCasePage createPage = browser.page(CreateTestCasePage)
         createPage.scrollToBottom()
@@ -317,5 +317,36 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         start | end
         0     | 7
         5     | 10
+    }
+
+    void "step action and result textareas are readonly on modal"() {
+        given:
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.scrollToBottom()
+
+        when:
+        createPage.testStepTable.addBuilderStep(stepTemplate.name)
+
+        then:
+        def row = createPage.testStepTable.getBuilderStep(0)
+        row.find('textarea')[0].getAttribute('readonly') == 'true'
+        row.find('textarea')[1].getAttribute('readonly') == ''
+        row.find('textarea')[2].getAttribute('readonly') == 'true'
+    }
+
+    void "step action and result textareas are readonly on page"() {
+        given:
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.scrollToBottom()
+
+        when:
+        createPage.testStepTable.addBuilderStep(stepTemplate.name)
+        createPage.testStepTable.appendBuilderSteps()
+
+        then:
+        def row = createPage.testStepTable.getStep(0)
+        row.find('textarea')[0].getAttribute('readonly') == 'true'
+        row.find('textarea')[1].getAttribute('readonly') == ''
+        row.find('textarea')[2].getAttribute('readonly') == 'true'
     }
 }

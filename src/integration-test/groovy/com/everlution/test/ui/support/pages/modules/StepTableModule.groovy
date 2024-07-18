@@ -240,4 +240,14 @@ class StepTableModule extends Module {
     void selectSuggestedStep(String name) {
         suggestedSteps(name).click()
     }
+
+    /**
+     * inputs text into a builder steps data field on the builder modal
+     * @param stepIndex
+     * @param data
+     */
+    void setBuilderStepData(int stepIndex, String data) {
+        def row = getBuilderStep(stepIndex)
+        row.find('textarea')[1].value(data)
+    }
 }

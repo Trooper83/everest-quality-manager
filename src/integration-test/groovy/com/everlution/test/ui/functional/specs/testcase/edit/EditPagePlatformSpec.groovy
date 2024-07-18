@@ -33,7 +33,7 @@ class EditPagePlatformSpec extends GebSpec {
     void "platform select defaults with selected platform"() {
         setup: "project & test case instances with platforms"
         def platform = new Platform(name: "platform testing platform1234545")
-        def project = projectService.save(new Project(name: "platform tc testing project I", code: "AP1", platforms: [platform]))
+        def project = projectService.save(new Project(name: "platform tc testing project I", code: "APP11", platforms: [platform]))
         def testCase = testCaseService.save(new TestCase(name: "platform testing test case I", project: project,
                 person: person, executionMethod: "Automated", type: "UI", platform: platform))
 
@@ -51,7 +51,7 @@ class EditPagePlatformSpec extends GebSpec {
 
     void "platform select defaults empty text when no platform set"() {
         setup: "project & test case instances with platforms"
-        def project = projectService.save(new Project(name: "platform tc testing project II", code: "AP2"))
+        def project = projectService.save(new Project(name: "platform tc testing project II", code: "APP22"))
         def testCase = testCaseService.save(new TestCase(name: "platform testing test case II", project: project,
                 person: person, executionMethod: "Automated", type: "UI"))
 

@@ -6,7 +6,6 @@ import com.everlution.services.project.ProjectService
 import com.everlution.domains.TestCase
 import com.everlution.services.testcase.TestCaseService
 import com.everlution.domains.TestGroup
-import com.everlution.services.testgroup.TestGroupService
 import com.everlution.test.support.DataFactory
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.results.SendResults
@@ -28,7 +27,6 @@ class ShowPageSpec extends GebSpec {
     PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
-    TestGroupService testGroupService
 
     void "create message displays after group created"() {
         given: "login as a basic user"

@@ -1,5 +1,7 @@
 package com.everlution.test.ui.functional.specs.scenario.create
 
+import com.everlution.domains.Platform
+import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.data.Credentials
 import com.everlution.test.support.results.SendResults
@@ -19,17 +21,19 @@ class CreatePageSpec extends GebSpec {
         to LoginPage
         def loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
-
-        and: "go to the create page"
-        def project = projectService.list(max: 1).first()
-        go "/project/${project.id}/scenario/create"
     }
 
     void "verify platform options"() {
-        expect: "correct options are populated"
-        CreateScenarioPage page = browser.page(CreateScenarioPage)
+        given:
+        def p = new Project(name: "verify platform options scenario", code: "vpos", platforms: [new Platform(name: "platform1 11")])
+        def id = projectService.save(p).id
+
+        when:
+        def page = to (CreateScenarioPage, id)
+
+        then: "correct options are populated"
         verifyAll {
-            page.platformOptions*.text() == ["", "Android", "iOS", "Web"]
+            page.platformOptions*.text() == ["", "platform1 11"]
         }
 
         and: "default value is blank"
@@ -38,6 +42,10 @@ class CreatePageSpec extends GebSpec {
         })
     }
     void "verify method and type field options"() {
+        setup:
+        def project = projectService.list(max: 1).first()
+        go "/project/${project.id}/scenario/create"
+
         expect: "correct options populate for executionMethod and type"
         CreateScenarioPage page = browser.page(CreateScenarioPage)
         verifyAll {
