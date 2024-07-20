@@ -71,7 +71,10 @@ class ReleasePlanSpec extends GebSpec {
         cycle.addTestsByGroup()
 
         and:
-        int row = (int) Math.round(cycle.testsTable.rowCount / 2)
+        int row = 0
+        if (cycle.testsTable.rowCount > 10) {
+            row = (int) Math.round(cycle.testsTable.rowCount / 2)
+        }
         cycle.scrollToBottom()
         cycle.testsTable.clickCell("", row)
 

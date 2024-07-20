@@ -133,6 +133,7 @@ class TestCaseSpec extends GebSpec {
         def editPage = browser.page(EditTestCasePage)
         editPage.scrollToBottom()
         editPage.stepsTable.addBuilderStep(step.name)
+        editPage.stepsTable.appendBuilderSteps()
         editPage.edit()
 
         then:
