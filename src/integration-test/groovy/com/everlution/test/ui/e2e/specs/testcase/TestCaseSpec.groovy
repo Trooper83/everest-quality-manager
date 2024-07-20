@@ -116,4 +116,26 @@ class TestCaseSpec extends GebSpec {
         def showPage = at ShowTestCasePage
         showPage.isStepsRowDisplayed(step.action, '', step.result)
     }
+
+    void "adding builder steps retains order"() {
+        given:
+        def step = DataFactory.step()
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.sideBar.goToCreate('Step Template')
+        browser.page(CreateStepTemplatePage).createStepTemplate(step.action, step.name, step.result)
+        browser.page(ShowStepTemplatePage).sideBar.goToCreate('Test Case')
+        createPage.createBuilderTestCase(tc.name, "", "", [], [], "",
+                "", "", [step.name])
+
+        when:
+        def showPage = at ShowTestCasePage
+        showPage.goToEdit()
+        def editPage = browser.page(EditTestCasePage)
+        editPage.scrollToBottom()
+        editPage.stepsTable.addBuilderStep(step.name)
+        editPage.edit()
+
+        then:
+        at ShowTestCasePage
+    }
 }

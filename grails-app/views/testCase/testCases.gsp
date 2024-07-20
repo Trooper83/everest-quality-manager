@@ -41,7 +41,7 @@
                                 <td><g:link uri="/project/${project.id}/testCase/show/${test.id}">${test.name}</g:link></td>
                                 <td>${test.person.email}</td>
                                 <td>${test.area?.name}</td>
-                                <td>${test.platform}</td>
+                                <td>${test.platform?.name}</td>
                                 <td>${test.type}</td>
                                 <td>${test.executionMethod}</td>
                                 <td data-name="createdDateValue">${test.dateCreated}</td>

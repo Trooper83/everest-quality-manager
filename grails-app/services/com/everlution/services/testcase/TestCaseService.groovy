@@ -62,11 +62,9 @@ abstract class TestCaseService implements ITestCaseService {
      */
     @Transactional
     TestCase saveUpdate(TestCase testCase, RemovedItems removedItems) {
-        def steps = []
         for(id in removedItems.stepIds) {
             def step = stepService.get(id)
             if (step) {
-                steps.add(step)
                 testCase.removeFromSteps(step)
             }
         }

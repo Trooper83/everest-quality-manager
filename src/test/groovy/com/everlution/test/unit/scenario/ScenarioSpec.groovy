@@ -1,6 +1,6 @@
 package com.everlution.test.unit.scenario
 
-import com.everlution.domains.Area
+import com.everlution.domains.Platform
 import com.everlution.domains.Environment
 import com.everlution.domains.Person
 import com.everlution.domains.Project
@@ -239,32 +239,49 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         domain.validate(["platform"])
     }
 
-    void "platform can be blank"() {
+    void "platform fails to validate when project null"() {
         when:
-        domain.platform = ""
-
-        then:
-        domain.validate(["platform"])
-    }
-
-    void "platform value in list"(String value) {
-        when:
-        domain.platform = value
-
-        then:
-        domain.validate(["platform"])
-
-        where:
-        value << ["Android", "iOS", "Web"]
-    }
-
-    void "platform value not in list"() {
-        when:
-        domain.platform = "test"
+        domain.project = null
+        domain.platform = new Platform(name: "test")
 
         then:
         !domain.validate(["platform"])
-        domain.errors["platform"].code == "not.inList"
+        domain.errors["platform"].code == "validator.invalid"
+    }
+
+    void "platform validates with platform in project"() {
+        when:
+        def a = new Platform(name: "test platform")
+        def p = new Project(name: "testing project platforms", code: "tpa", platforms: [a]).save()
+        domain.project = p
+        domain.platform = a
+
+        then:
+        domain.validate(["platform"])
+    }
+
+    void "platform fails to validate for project with no platforms"() {
+        when:
+        def a = new Platform(name: "test platform").save()
+        def p = new Project(name: "testing project platforms", code: "tpa").save()
+        domain.project = p
+        domain.platform = a
+
+        then:
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "validator.invalid"
+    }
+
+    void "platform not in project fails to validate for project with platforms"() {
+        when:
+        def a = new Platform(name: "test platform").save()
+        def p = new Project(name: "testing project platforms", code: "tpa", platforms: [new Platform(name: "test")]).save()
+        domain.project = p
+        domain.platform = a
+
+        then:
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "validator.invalid"
     }
 
     void "person cannot be null"() {
@@ -285,57 +302,57 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         domain.errors["project"].code == "nullable"
     }
 
-    void "area can be null"() {
+    void "platform can be null"() {
         when:
-        domain.area = null
+        domain.platform = null
 
         then:
-        domain.validate(["area"])
+        domain.validate(["platform"])
     }
 
-    void "area fails to validate when project null"() {
+    void "platform fails to validate when project null"() {
         when:
         domain.project = null
-        domain.area = new Area(name: "test")
+        domain.platform = new Platform(name: "test")
 
         then:
-        !domain.validate(["area"])
-        domain.errors["area"].code == "validator.invalid"
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "validator.invalid"
     }
 
-    void "area validates with area in project"() {
+    void "platform validates with platform in project"() {
         when:
-        def a = new Area(name: "test area")
-        def p = new Project(name: "testing project areas", code: "tpa", areas: [a]).save()
+        def a = new Platform(name: "test platform")
+        def p = new Project(name: "testing project platforms", code: "tpa", platforms: [a]).save()
         domain.project = p
-        domain.area = a
+        domain.platform = a
 
         then:
-        domain.validate(["area"])
+        domain.validate(["platform"])
     }
 
-    void "area fails to validate for project with no areas"() {
+    void "platform fails to validate for project with no platforms"() {
         when:
-        def a = new Area(name: "test area").save()
-        def p = new Project(name: "testing project areas", code: "tpa").save()
+        def a = new Platform(name: "test platform").save()
+        def p = new Project(name: "testing project platforms", code: "tpa").save()
         domain.project = p
-        domain.area = a
+        domain.platform = a
 
         then:
-        !domain.validate(["area"])
-        domain.errors["area"].code == "validator.invalid"
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "validator.invalid"
     }
 
-    void "area not in project fails to validate for project with areas"() {
+    void "platform not in project fails to validate for project with platforms"() {
         when:
-        def a = new Area(name: "test area").save()
-        def p = new Project(name: "testing project areas", code: "tpa", areas: [new Area(name: "test")]).save()
+        def a = new Platform(name: "test platform").save()
+        def p = new Project(name: "testing project platforms", code: "tpa", platforms: [new Platform(name: "test")]).save()
         domain.project = p
-        domain.area = a
+        domain.platform = a
 
         then:
-        !domain.validate(["area"])
-        domain.errors["area"].code == "validator.invalid"
+        !domain.validate(["platform"])
+        domain.errors["platform"].code == "validator.invalid"
     }
 
     void "environment can be null"() {
@@ -359,7 +376,7 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
     void "environment validates with environment in project"() {
         when:
         def e = new Environment(name: "test env")
-        def p = new Project(name: "testing project areas", code: "tpa", environments: [e]).save()
+        def p = new Project(name: "testing project platforms", code: "tpa", environments: [e]).save()
         domain.project = p
         domain.environments = [e]
 
@@ -371,7 +388,7 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         when:
         def e = new Environment(name: "test env")
         def en = new Environment(name: "test environment")
-        def p = new Project(name: "testing project areas", code: "tpa", environments: [e, en]).save()
+        def p = new Project(name: "testing project platforms", code: "tpa", environments: [e, en]).save()
         domain.project = p
         domain.environments = [e, en]
 
@@ -383,7 +400,7 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
         when:
         def e = new Environment(name: "test env")
         def en = new Environment(name: "test environment")
-        def p = new Project(name: "testing project areas", code: "tpa", environments: [e]).save()
+        def p = new Project(name: "testing project platforms", code: "tpa", environments: [e]).save()
         domain.project = p
         domain.environments = [e, en]
 
@@ -395,7 +412,7 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
     void "environment fails to validate for project with no environments"() {
         when:
         def e = new Environment(name: "test env").save()
-        def p = new Project(name: "testing project areas", code: "tpa").save()
+        def p = new Project(name: "testing project platforms", code: "tpa").save()
         domain.project = p
         domain.environments = [e]
 
@@ -407,7 +424,7 @@ class ScenarioSpec extends Specification implements DomainUnitTest<Scenario> {
     void "environment not in project fails to validate for project with environments"() {
         when:
         def e = new Environment(name: "test env").save()
-        def p = new Project(name: "testing project areas", code: "tpa", environments: [new Environment(name: "failed")]).save()
+        def p = new Project(name: "testing project platforms", code: "tpa", environments: [new Environment(name: "failed")]).save()
         domain.project = p
         domain.environments = [e]
 

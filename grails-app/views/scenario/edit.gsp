@@ -48,8 +48,9 @@
                         <div class="hstack gap-3 mb-3">
                             <div class="col-4">
                                 <label class="form-label" for="platform">Platform</label>
-                                <g:select class="form-select" name="platform" from="${['Android', 'iOS', 'Web']}"
-                                          noSelection="${['':'']}" value="${scenario.platform}"
+                                <g:select class="form-select" name="platform" from="${scenario.project.platforms}"
+                                          optionKey="id" optionValue="name"
+                                          noSelection="${['':'']}" value="${scenario.platform?.id}"
                                 />
                             </div>
                             <div class="col-4">

@@ -76,4 +76,27 @@ class EditPageEnvironmentsSpec extends GebSpec {
         EditScenarioPage page = browser.page(EditScenarioPage)
         page.environmentsSelect().selected.empty
     }
+
+    void "environment options equal project environments"() {
+        setup: "project & scenario instances with platforms"
+        def env = new Environment(name: "env testing platform123")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
+        def scenario = scenarioService.save(new Scenario(name: "platform testing scenario I", project: project,
+                person: person, executionMethod: "Automated", type: "UI", environments: [env]))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when: "go to edit page"
+        go "/project/${project.id}/scenario/edit/${scenario.id}"
+
+        then: "scenario.area is selected"
+        EditScenarioPage page = browser.page(EditScenarioPage)
+        def found = project.environments*.name
+        found.add(0, "No Environment...")
+        found.containsAll(page.environmentsOptions*.text())
+    }
 }

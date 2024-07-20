@@ -28,6 +28,7 @@ class BugSpec extends GebSpec {
     def area = 'Bugs'
     def env = 'Integrated'
     def env1 = 'Production'
+    def platform = 'Web'
 
     def setup() {
         to LoginPage
@@ -39,19 +40,20 @@ class BugSpec extends GebSpec {
 
         def projectHomePage = at ProjectHomePage
         projectHomePage.sideBar.goToCreate("Bug")
-
-        CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.createFreeFormBug(name, description, area, [env, env1], "Web", notes, action, data, result, actual, expected)
     }
 
     void "bug can be created and data persists"() {
-        expect: "data is displayed on show page"
+        when:
+        CreateBugPage createPage = browser.page(CreateBugPage)
+        createPage.createFreeFormBug(name, description, area, [env, env1], platform, notes, action, data, result, actual, expected)
+
+        then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
         verifyAll {
             showPage.areaValue.text() == area
             showPage.nameValue.text() == name
             showPage.descriptionValue.text() == description
-            showPage.platformValue.text() == "Web"
+            showPage.platformValue.text() == platform
             showPage.statusValue.text() == "Open"
             showPage.areEnvironmentsDisplayed([env, env1])
             showPage.notesValue.text() == notes
@@ -63,6 +65,8 @@ class BugSpec extends GebSpec {
 
     void "bug can be edited and data persists"() {
         given:
+        CreateBugPage createPage = browser.page(CreateBugPage)
+        createPage.createFreeFormBug(name, description, area, [env, env1], platform, notes, action, data, result, actual, expected)
         ShowBugPage showPage = at ShowBugPage
         showPage.goToEdit()
 
@@ -85,6 +89,10 @@ class BugSpec extends GebSpec {
     }
 
     void "bug can be deleted"() {
+        given:
+        CreateBugPage createPage = browser.page(CreateBugPage)
+        createPage.createFreeFormBug(name, description, area, [env, env1], platform, notes, action, data, result, actual, expected)
+
         when: "delete bug"
         def showPage = browser.at(ShowBugPage)
         showPage.nameValue.text() == name
@@ -93,5 +101,24 @@ class BugSpec extends GebSpec {
         then: "at list page"
         def listPage = at ListBugPage
         !listPage.listTable.isValueInColumn("Name", name)
+    }
+
+    void "adding builder steps retains order"() {
+        given:
+        def createPage = browser.page(CreateBugPage)
+        createPage.createBuilderBug("This should not fail bug", "", "", [], "",
+                "This is a builder step", "", "")
+
+        when:
+        def show = at ShowBugPage
+        show.goToEdit()
+        def editPage = browser.page(EditBugPage)
+        editPage.scrollToBottom()
+        editPage.stepsTable.addBuilderStep("This is a builder step")
+        editPage.stepsTable.appendBuilderSteps()
+        editPage.edit()
+
+        then:
+        at ShowBugPage
     }
 }

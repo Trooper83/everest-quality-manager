@@ -1,9 +1,13 @@
 package com.everlution.test.ui.functional.specs.bug
 
+import com.everlution.domains.Area
 import com.everlution.domains.Bug
+import com.everlution.domains.Platform
+import com.everlution.domains.Project
 import com.everlution.services.bug.BugService
 import com.everlution.services.person.PersonService
 import com.everlution.services.project.ProjectService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.support.data.Credentials
@@ -339,5 +343,50 @@ class ListSpec extends GebSpec {
         then:
         page.listTable.rowCount > 0
         page.searchModule.searchInput.text == ''
+    }
+
+    void "blank value when related items are null"() {
+        given:
+        def person = personService.list(max:1).first()
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code))
+        bugService.save(new Bug(name: "platform testing bug II", project: project, person: person,
+                status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to ListBugPage, project.id
+
+        then:
+        page.listTable.getValueInColumn(0, "Area") == ""
+        page.listTable.getValueInColumn(0, "Platform") == ""
+    }
+
+    void "name displays for related items"() {
+        given:
+        def person = personService.list(max:1).first()
+        def platform = new Platform(name: "platform testing platform II")
+        def area = new Area(name: "platform testing area II")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, platforms: [platform],
+                                areas: [area]))
+        bugService.save(new Bug(name: "platform testing bug II", project: project, person: person,
+                platform: platform, area: area, status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to ListBugPage, project.id
+
+        then:
+        page.listTable.getValueInColumn(0, "Area") == "platform testing area II"
+        page.listTable.getValueInColumn(0, "Platform") == "platform testing platform II"
     }
 }

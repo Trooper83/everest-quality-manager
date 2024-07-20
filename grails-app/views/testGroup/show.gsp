@@ -45,7 +45,7 @@
                 <tr>
                     <td><g:link uri="/project/${test.project.id}/testCase/show/${test.id}">${test.name}</g:link></td>
                     <td>${test.area?.name}</td>
-                    <td>${test.platform}</td>
+                    <td>${test.platform?.name}</td>
                     <td>${test.type}</td>
                     <td>${test.executionMethod}</td>
                 </tr>

@@ -55,9 +55,9 @@
                             </div>
                         </li>
                         <li class="list-group-item">
-                            <div class="row align-items-center" id="environments">
+                            <div class="row align-items-center">
                                 <p id="environments-label" class="col-4 fw-bold">Environments</p>
-                                <div class="col form-row">
+                                <div class="col form-row" id="environments">
                                     <g:each in="${scenario.environments}">
                                         <p>${it.name}</p>
                                     </g:each>
@@ -79,7 +79,7 @@
                         <li class="list-group-item border-bottom">
                             <div class="row">
                                 <p id="platform-label" class="col-4 fw-bold">Platform</p>
-                                <p class="col" id="platform" aria-labelledby="platform-label">${scenario.platform}</p>
+                                <p class="col" id="platform" aria-labelledby="platform-label">${scenario.platform?.name}</p>
                             </div>
                         </li>
                         <li class="list-group-item">

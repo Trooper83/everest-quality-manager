@@ -97,8 +97,11 @@ abstract class StepTemplateService implements IStepTemplateService {
         return new RelatedStepTemplates(template, related)
     }
 
+    /**
+     * updates a template's properties, adds links and removes (deletes) links
+     */
     @Transactional
-    StepTemplate update(StepTemplate template) {
+    StepTemplate update(StepTemplate template, List<Link> linksToAdd, List<Long> linkIdsToRemove) {
         def actDirty = template.isDirty('act')
         def resDirty = template.isDirty('result')
         def t = save(template)
@@ -110,6 +113,17 @@ abstract class StepTemplateService implements IStepTemplateService {
                 stepService.save(it)
             }
         }
+        if (linksToAdd) {
+            linksToAdd.each { link ->
+                link.project = template.project
+                link.ownerId = template.id
+                linkService.createSave(link)
+            }
+        }
+        if (linkIdsToRemove) {
+            linkService.deleteRelatedLinks(linkIdsToRemove)
+        }
+
         return t
     }
 }

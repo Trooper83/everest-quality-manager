@@ -4,8 +4,10 @@ import com.everlution.test.ui.support.pages.common.ShowPage
 import com.everlution.test.ui.support.pages.modules.StepTableModule
 
 class ShowTestCasePage extends ShowPage {
-    static url = "/testCase/show"
     static at = { title == "TestCase Details" }
+    static convertToPath(Long projectId, Long id) {
+        "/project/${projectId}/testCase/show/${id}"
+    }
 
     static content = {
         areaValue { $("#area") }

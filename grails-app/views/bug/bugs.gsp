@@ -39,7 +39,7 @@
                             <tr>
                                 <td><g:link uri="/project/${project.id}/bug/show/${bug.id}">${bug.name}</g:link></td>
                                 <td>${bug.person.email}</td>
-                                <td>${bug.platform}</td>
+                                <td>${bug.platform?.name}</td>
                                 <td>${bug.area?.name}</td>
                                 <td>${bug.status}</td>
                                 <td data-name="createdDateValue">${bug.dateCreated}</td>

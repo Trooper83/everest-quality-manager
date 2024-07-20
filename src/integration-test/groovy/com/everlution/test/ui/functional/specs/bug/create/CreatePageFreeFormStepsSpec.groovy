@@ -46,7 +46,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
 
         when: "add a test step row"
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
         page.stepsTable.addRow()
 
         then: "row count is 1"
@@ -57,7 +56,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         setup: "add a row"
         def page = browser.page(CreateBugPage)
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
         page.stepsTable.addRow()
 
         expect: "row count is 1"
@@ -91,7 +89,6 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         setup: "add a row"
         def page = browser.page(CreateBugPage)
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
         page.stepsTable.addRow()
 
         when:
@@ -100,23 +97,5 @@ class CreatePageFreeFormStepsSpec extends GebSpec {
         then:
         !page.stepsTable.getStep(0).find('input[value=Remove]').displayed
         page.stepsTable.getStep(1).find('input[value=Remove]').displayed
-    }
-
-    void "changing step type resets free form"() {
-        setup: "add a row"
-        def page = browser.page(CreateBugPage)
-        page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
-        page.stepsTable.addRow()
-
-        expect: "row count is 1"
-        page.stepsTable.getStepsCount() == 1
-
-        when:
-        page.stepsTable.selectStepsTab('builder')
-        page.stepsTable.selectStepsTab('free-form')
-
-        then: "row count is 0"
-        page.stepsTable.getStepsCount() == 0
     }
 }

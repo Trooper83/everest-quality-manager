@@ -156,28 +156,16 @@ class StepTemplateController {
             }
 
             try {
-                stepTemplateService.save(template)
+                stepTemplateService.update(template, links.links, removedItems.linkIds)
             } catch (ValidationException e) {
                 def s = stepTemplateService.read(template.id)
                 def l = stepTemplateService.getLinkedTemplatesByRelation(s)
                 s.errors = e.errors
                 render view: 'edit', model: [stepTemplate: s, linkedMap: l]
                 return
-            }
-            try {
-                links.links?.removeAll( l -> l == null)
-                links.links?.each { link ->
-                    link.project = template.project
-                    link.ownerId = template.id
-                    linkService.createSave(link)
-                }
-            } catch (ValidationException ignored) {
-                flash.error = "An error occurred attempting to link templates"
-            }
-            try {
-                linkService.deleteRelatedLinks(removedItems.linkIds)
             } catch (Exception ignored) {
-                flash.error = "An error occurred attempting to delete links"
+                error()
+                return
             }
             request.withFormat {
                 form multipartForm {

@@ -1,6 +1,6 @@
 package com.everlution.test.ui.functional.specs.testcase.create
 
-import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.domains.TestCase
 import com.everlution.services.person.PersonService
@@ -16,40 +16,38 @@ import grails.testing.mixin.integration.Integration
 
 @SendResults
 @Integration
-class CreatePageEnvironmentsSpec extends GebSpec {
+class CreatePagePlatformSpec extends GebSpec {
 
     PersonService personService
     ProjectService projectService
     TestCaseService testCaseService
 
-    void "environments field has no value set"() {
-        given: "login as a basic user"
+    void "platform has no value set"() {
+        given:
+        Project project = projectService.list(max:1).first()
+
+        and: "login as a basic user"
         to LoginPage
-        def loginPage = browser.page(LoginPage)
+        LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
-        and:
-        def project = projectService.list(max: 1).first()
+        when:
+        def page = to CreateTestCasePage, project.id
 
-        when: "go to the create page"
-        go "/project/${project.id}/testCase/create"
-
-        then: "default text selected"
-        def page = browser.page(CreateTestCasePage)
-        page.environmentsSelect().selectedText == []
-        page.environmentsSelect().selected == []
+        then:
+        page.platformSelect().selectedText == ""
     }
 
-    void "environments equal project options"() {
+    void "platform options equal project platforms"() {
         given:
-        def e = DataFactory.area()
-        def env = new Environment(name: e.name)
+        def p = DataFactory.area()
+        def platform = new Platform(name: p.name)
         def pd = DataFactory.project()
         def person = personService.list(max: 1).first()
-        Project proj = new Project(name: pd.name, code: pd.code, environments: [env])
+        Project proj = new Project(name: pd.name, code: pd.code, platforms: [platform])
         def project = projectService.save(proj)
         TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
-                executionMethod: "Automated", type: "API", project: project, environments: [env])
+                executionMethod: "Automated", type: "API", project: project, platform: platform)
         testCaseService.save(testCase)
 
         and: "login as a basic user"
@@ -61,6 +59,6 @@ class CreatePageEnvironmentsSpec extends GebSpec {
         def page = to CreateTestCasePage, project.id
 
         then:
-        page.environmentsOptions*.text() == ["Select Environments...", env.name]
+        page.platformOptions*.text() == ["", platform.name]
     }
 }

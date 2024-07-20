@@ -45,7 +45,6 @@ class CreateBugStepsSpec extends GebSpec {
 
         and: "add a new test step"
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab("free-form")
         page.stepsTable.addStep("should not persist", "should not persist", "should not persist")
 
         and: "remove row"
@@ -78,10 +77,11 @@ class CreateBugStepsSpec extends GebSpec {
         def template = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         page.scrollToBottom()
         page.stepsTable.addBuilderStep(template.name)
-        page.stepsTable.addBuilderStep(template.name)
+        page.stepsTable.addBuilderStep(template.name, false)
 
         and: "remove row"
-        page.stepsTable.removeBuilderRow(1)
+        page.stepsTable.appendBuilderSteps()
+        page.stepsTable.removeRow(1)
 
         and: "submit form"
         page.scrollToBottom()
@@ -129,7 +129,6 @@ class CreateBugStepsSpec extends GebSpec {
         LoginPage loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
 
-
         when: "create test case"
         to(CreateBugPage, project.id)
         CreateBugPage createPage = browser.page(CreateBugPage)
@@ -140,5 +139,35 @@ class CreateBugStepsSpec extends GebSpec {
         then: "data is displayed on show page"
         ShowBugPage showPage = at ShowBugPage
         showPage.isStepsRowDisplayed(step.action, step.data, step.result)
+    }
+
+    void "free form and builder steps are persisted"() {
+        given: "get fake data"
+        def project = projectService.list(max:1).first()
+        def person = personService.list(max:1).first()
+        def stepData = DataFactory.step()
+        def template = new StepTemplate(name: 'name of the template', act: stepData.action, result: stepData.result,
+                person: person, project: project)
+        stepTemplateService.save(template)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when: "create"
+        to(CreateBugPage, project.id)
+        CreateBugPage createPage = browser.page(CreateBugPage)
+        createPage.nameInput = "Name of the bug"
+        createPage.scrollToBottom()
+        createPage.stepsTable.addStep("this should be found", stepData.data, "this is a result")
+        createPage.stepsTable.addBuilderStep('name of the template')
+        createPage.stepsTable.appendBuilderSteps()
+        createPage.submit()
+
+        then:
+        ShowBugPage showPage = at ShowBugPage
+        showPage.isStepsRowDisplayed(stepData.action, "", stepData.result)
+        showPage.isStepsRowDisplayed("this should be found", stepData.data, "this is a result")
     }
 }

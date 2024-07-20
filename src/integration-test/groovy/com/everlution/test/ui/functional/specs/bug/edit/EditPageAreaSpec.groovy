@@ -55,7 +55,6 @@ class EditPageAreaSpec extends GebSpec {
 
         when: "add empty steps"
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab("free-form")
         page.stepsTable.addStep("", "","")
 
         and: "submit"
@@ -63,5 +62,65 @@ class EditPageAreaSpec extends GebSpec {
 
         then: "at the edit page"
         at EditBugPage
+    }
+
+    void "area defaults with no value when area null"() {
+        given:
+        def area = new Area(name: "area testing area II434")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
+        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person,
+                status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to EditBugPage, project.id, bug.id
+
+        then:
+        page.areaSelect().selectedText == ""
+    }
+
+    void "area value set when area value not blank"() {
+        given:
+        def area = new Area(name: "area testing area II43434324")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
+        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person,
+                area: area, status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to EditBugPage, project.id, bug.id
+
+        then:
+        page.areaSelect().selectedText == area.name
+    }
+
+    void "area options equal project options"() {
+        given:
+        def area = new Area(name: "area testing area II43434324556565")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, areas: [area]))
+        def bug = bugService.save(new Bug(name: "area testing bug II", project: project, person: person,
+                area: area, status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to EditBugPage, project.id, bug.id
+
+        then:
+        page.areaOptions*.text().containsAll(area.name)
     }
 }

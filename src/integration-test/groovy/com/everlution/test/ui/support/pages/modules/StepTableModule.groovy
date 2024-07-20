@@ -8,6 +8,7 @@ class StepTableModule extends Module {
 
     static content = {
         addRowButton { $("#btnAddRow") }
+        appendStepsButton { $("#btnAppendSteps") }
         builderStepRows(required: false) { $('#builderSteps div.row') }
         builderTab { $("#builder-tab") }
         currentStepName(required: false) { $("#currentStep p") }
@@ -17,6 +18,7 @@ class StepTableModule extends Module {
         searchResult { text -> $(".search-results-menu-item", text: text) }
         searchResults { $('.search-results-menu-item') }
         searchResultsMenu { $('#search-results') }
+        searchStepsBtn { $('#searchStepBtn') }
         stepRows(required: false) { $('#stepsTableContent div.row') }
         suggestedStep(required: false) { text -> $("#suggestedSteps div.card-body p", text: text) }
         suggestedSteps(required: false) { $("#suggestedSteps div.card") }
@@ -25,7 +27,10 @@ class StepTableModule extends Module {
     /**
      * adds a builder step
      */
-    void addBuilderStep(String text) {
+    void addBuilderStep(String text, boolean displayModal = true) {
+        if (displayModal) {
+            displaySearchStepsModal()
+        }
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -33,8 +38,12 @@ class StepTableModule extends Module {
         }
         waitFor {
             searchResultsMenu.displayed
+            searchResults.size() > 0
         }
         searchResult(text).first().click()
+        waitFor {
+            !searchResultsMenu.displayed
+        }
         sleep(500)
     }
 
@@ -57,6 +66,23 @@ class StepTableModule extends Module {
      */
     void addRow() {
         addRowButton.click()
+    }
+
+    /**
+     * adds builder steps and closes the modal
+     */
+    void appendBuilderSteps() {
+        appendStepsButton.click()
+    }
+
+    /**
+     * displays the search steps modal
+     */
+    void displaySearchStepsModal() {
+        searchStepsBtn.click()
+        waitFor {
+            searchInput.displayed
+        }
     }
 
     /**
@@ -93,8 +119,8 @@ class StepTableModule extends Module {
      * determines if a removed builder steps hidden input is present
      * this will fail a test if one is not found
      */
-    boolean isRemovedBuilderStepHiddenInputDisplayed() {
-        def removed = $('#builderSteps input[data-test-id=step-removed-input]')
+    boolean isStepHiddenInputDisplayed() {
+        def removed = $('input[data-test-id=step-removed-input]')
         assert removed.size() == 1 //verify one is found
         return removed.displayed
     }
@@ -202,20 +228,26 @@ class StepTableModule extends Module {
     }
 
     /**
-     * selects the steps form to use [builder, free-form]
+     * selects a suggested step
      */
-    void selectStepsTab(String type) {
-        if(type == 'builder') {
-            builderTab.click()
-        } else {
-            freeFormTab.click()
-        }
+    void selectSuggestedStep() {
+        suggestedSteps.first().click()
     }
 
     /**
      * selects a suggested step
      */
     void selectSuggestedStep(String name) {
-        suggestedStep(name).click()
+        suggestedSteps(name).click()
+    }
+
+    /**
+     * inputs text into a builder steps data field on the builder modal
+     * @param stepIndex
+     * @param data
+     */
+    void setBuilderStepData(int stepIndex, String data) {
+        def row = getBuilderStep(stepIndex)
+        row.find('textarea')[1].value(data)
     }
 }

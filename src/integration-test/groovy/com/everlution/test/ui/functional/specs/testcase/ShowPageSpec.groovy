@@ -1,5 +1,8 @@
 package com.everlution.test.ui.functional.specs.testcase
 
+import com.everlution.domains.Area
+import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
@@ -208,5 +211,58 @@ class ShowPageSpec extends GebSpec {
 
         then:
         show.errorsMessage.text() == "Test Case has associated Test Iterations and cannot be deleted"
+    }
+
+    void "blank value when related items are null"() {
+        given:
+        def person = personService.list(max: 1).first()
+        Project project = projectService.list(max:1).first()
+        TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project)
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to ShowTestCasePage, project.id, id
+
+        then:
+        page.environmentsList.text() == ""
+        page.platformValue.text() == ""
+        page.areaValue.text() == ""
+    }
+
+    void "name displays for related items"() {
+        given:
+        def a = DataFactory.area()
+        def e = DataFactory.area()
+        def p = DataFactory.area()
+        def area = new Area(name: a.name)
+        def env = new Environment(name: e.name)
+        def platform = new Platform(name: p.name)
+        def pd = DataFactory.project()
+        def person = personService.list(max: 1).first()
+        Project proj = new Project(name: pd.name, code: pd.code, areas: [area], platforms: [platform], environments: [env])
+        def project = projectService.save(proj)
+        TestCase testCase = new TestCase(person: person,name: "first", description: "desc1",
+                executionMethod: "Automated", type: "API", project: project, area: area, platform: platform,
+                environments: [env])
+        def id = testCaseService.save(testCase).id
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to ShowTestCasePage, project.id, id
+
+        then:
+        page.environmentsList.text() == env.name
+        page.platformValue.text() == platform.name
+        page.areaValue.text() == area.name
     }
 }

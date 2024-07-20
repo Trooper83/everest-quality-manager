@@ -106,7 +106,6 @@ class EditPageEnvironmentsSpec extends GebSpec {
 
         when: "add empty steps"
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab("free-form")
         page.stepsTable.addStep("", "","")
 
         and: "submit"
@@ -114,5 +113,25 @@ class EditPageEnvironmentsSpec extends GebSpec {
 
         then: "at the edit page"
         at EditBugPage
+    }
+
+    void "environment options equal project options"() {
+        given: "project & bug instances with areas"
+        def env = new Environment(name: "area testing env I")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
+        def bug = bugService.save(new Bug(name: "env testing bug II", project: project, person: person,
+                environments: [env], status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to EditBugPage, project.id, bug.id
+
+        then:
+        page.environmentsOptions*.text().containsAll(env.name)
     }
 }

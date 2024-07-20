@@ -37,7 +37,6 @@ class CreateTestCaseStepsSpec extends GebSpec {
         page.completeCreateForm()
 
         and: "add a new test step"
-        page.testStepTable.selectStepsTab('free-form')
         page.testStepTable.addStep("should not persist", "", "should not persist")
 
         and: "remove row"
@@ -70,10 +69,11 @@ class CreateTestCaseStepsSpec extends GebSpec {
         def step = stepTemplateService.findAllInProject(project, [max:1]).results.first()
         page.scrollToBottom()
         page.testStepTable.addBuilderStep(step.name)
-        page.testStepTable.addBuilderStep(step.name)
+        page.testStepTable.addBuilderStep(step.name, false)
 
         and: "remove row"
         page.testStepTable.removeBuilderRow(1)
+        page.testStepTable.appendBuilderSteps()
 
         and: "submit form"
         page.scrollToBottom()
@@ -139,5 +139,43 @@ class CreateTestCaseStepsSpec extends GebSpec {
         ShowTestCasePage showPage = at ShowTestCasePage
         showPage.isStepsRowDisplayed('here is the action', 'testing','this is the result')
         showPage.isStepsRowDisplayed('1here is the action', 'testing','1this is the result')
+    }
+
+    void "free form and builder steps are persisted"() {
+        given: "get fake data"
+        def project = projectService.list(max:1).first()
+        def person = personService.list(max:1).first()
+        def step = new StepTemplate(project: project, person: person, name: 'what kind of name should I use',
+                act: 'here is the action', result: 'this is the result')
+        def step1 = new StepTemplate(project: project, person: person, name: '1what kind of name should I use',
+                act: '1here is the action', result: '1this is the result')
+        stepTemplateService.save(step)
+        stepTemplateService.save(step1)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when: "create test case"
+        to(CreateTestCasePage, project.id)
+        CreateTestCasePage createPage = browser.page(CreateTestCasePage)
+        createPage.nameInput = "Name of the test"
+        createPage.scrollToBottom()
+        createPage.testStepTable.addBuilderStep(step.name)
+        createPage.testStepTable.addBuilderStep(step1.name, false)
+        createPage.testStepTable.setBuilderStepData(0, 'this is a test')
+        createPage.testStepTable.appendBuilderSteps()
+        createPage.testStepTable.addStep("free-form step action", "data1", "free-form step result")
+        createPage.testStepTable.addStep("1free-form step action", "data11", "1free-form step result")
+        createPage.submit()
+
+        then:
+        ShowTestCasePage showPage = at ShowTestCasePage
+        showPage.getStepsCount() == 4
+        showPage.isStepsRowDisplayed("free-form step action", "data1", "free-form step result")
+        showPage.isStepsRowDisplayed("1free-form step action", "data11", "1free-form step result")
+        showPage.isStepsRowDisplayed(step.act, "this is a test", step.result)
+        showPage.isStepsRowDisplayed(step1.act, "", step1.result)
     }
 }

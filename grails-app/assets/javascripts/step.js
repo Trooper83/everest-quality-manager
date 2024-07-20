@@ -2,17 +2,14 @@
 function getEntryRow() {
     const row = $('<div class="row align-items-center mt-3"/>');
 
-    const index = $('#stepsTableContent input.iHidden').length;
-    const removed = $('#stepsTableContent input[data-test-id=step-removed-input]').length;
-    const itemIndex = index + removed;
+    const itemIndex = $('#stepsTableContent div.row').length;
 
-    const hidden = $('<input type="hidden" name="stepsIndex[' + itemIndex + ']" class="iHidden" value="" id="steps[' + itemIndex + ']"/>');
     const action = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].act" value="" id="steps[' + itemIndex + '].act"/></div>');
     const data = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].data" value="" id="steps[' + itemIndex + '].data"/></div>');
     const result = $('<div class="col"><textarea class="form-control" type="text" maxLength="500" name="steps[' + itemIndex + '].result" value="" id="steps[' + itemIndex + '].result"/></div>');
     const button = $('<div class="col-md-1"><input class="btn btn-link btn-sm" type="button" value="Remove" onclick="removeEntryRow(this)" /></div>');
 
-    row.append(hidden, action, data, result, button);
+    row.append(action, data, result, button);
     return row;
 }
 
@@ -27,11 +24,11 @@ function removeEntryRow(element, id) {
     if(id) {
        let input = $('<input style="display: none;" data-test-id="step-removed-input" type="text" id="removedItems.stepIds" name="removedItems.stepIds" value="' + id + '" />');
        $(element).parent().parent().parent().append(input);
-       $(element).parent().parent().remove();
+       $(element).parent().parent().hide();
     } else {
        $(element).parent().parent().remove();
     }
-    $('#stepsTableContent div').find('input[value=Remove]').last().show();
+    $('#stepsTableContent').find('div.row:visible').last().find('input[value=Remove]').show();
 }
 //end free form
 
@@ -172,7 +169,9 @@ async function displayStepProperties(id) {
         const s = await fetchStep(id);
         if (s) {
 
-            const index = document.querySelector('#builderSteps').childElementCount;
+            const existing = document.querySelectorAll('div#stepsTableContent > div.row').length;
+            const displayed = document.querySelectorAll('#builderSteps > div').length;
+            const index = existing + displayed;
 
             const actCol = document.createElement('div');
             actCol.setAttribute('class', 'col');
@@ -240,7 +239,7 @@ async function displayStepProperties(id) {
 
             //create row and append elements
             const row = document.createElement('div');
-            row.setAttribute('class', 'row align-items-center mb-2');
+            row.setAttribute('class', 'row align-items-center mt-3');
             row.appendChild(actCol);
             row.appendChild(dataCol);
             row.appendChild(resCol);
@@ -302,6 +301,7 @@ async function displaySuggestedSteps(id) {
             setParentName(s.template.name);
             if (s.relatedStepTemplates.length == 0) {
                 const emptyDiv = document.createElement('p');
+                emptyDiv.setAttribute('class', 'mt-3')
                 emptyDiv.setAttribute('id', 'noStepsFound');
                 emptyDiv.appendChild(document.createTextNode('No related steps found'));
                 parent.appendChild(emptyDiv);
@@ -310,7 +310,7 @@ async function displaySuggestedSteps(id) {
             //add all related steps to dom
             s.relatedStepTemplates.forEach(template => {
                 const col = document.createElement('div');
-                col.setAttribute('class', 'col');
+                col.setAttribute('class', 'col mt-3');
                 col.setAttribute('onclick', `displayStepProperties(${template.id});`);
                 const card = document.createElement('div');
                 card.setAttribute('class', 'card mb-2 suggested');
@@ -350,7 +350,7 @@ function removeBuilderRow(element, id) {
            const stepId = row.querySelector('input[data-name=hiddenId]').value;
            displaySuggestedSteps(stepId);
        } else {
-           resetForm('builder');
+           resetForm();
        }
     } else {
        element.closest('div.row').remove();
@@ -362,39 +362,49 @@ function removeBuilderRow(element, id) {
            const stepId = row.querySelector('input[data-name=hiddenId]').value;
            displaySuggestedSteps(stepId);
        } else {
-           resetForm('builder');
+           resetForm();
        }
     }
 }
 
 /**
-* resets step forms to avoid submitting builder and free-form step data
+* resets step builder modal form
 */
-function resetForm(type) {
-    if(type == 'free') {
-        if (document.getElementById('stepsTableContent').hasChildNodes()) {
-            const steps = document.getElementById('stepsTableContent');
-            while (steps.firstChild) {
-                 steps.removeChild(steps.firstChild);
-            }
+function resetForm() {
+    if (document.getElementById('builderSteps').hasChildNodes()) {
+        const rows = document.querySelectorAll('#builderSteps .row');
+        for (let row of rows) {
+            row.remove();
         }
-    } else {
-        if (document.getElementById('builderSteps').hasChildNodes()) {
-            const rows = document.querySelectorAll('#builderSteps .row');
-            for (let row of rows) {
-                row.remove();
-            }
+    }
+    if (document.getElementById('suggestedSteps')) {
+        const suggested = document.getElementById('suggestedSteps');
+        while (suggested.firstChild) {
+            suggested.removeChild(suggested.firstChild);
         }
-        if (document.getElementById('suggestedSteps')) {
+    }
+    if (document.getElementById('currentStep').firstChild) {
+        document.getElementById('currentStep').firstChild.remove();
+    }
+}
 
-            const suggested = document.getElementById('suggestedSteps');
-            while (suggested.firstChild) {
-                suggested.removeChild(suggested.firstChild);
-            }
-        }
-        if (document.getElementById('currentStep').firstChild) {
-            document.getElementById('currentStep').firstChild.remove();
-        }
+/**
+* appends steps from modal to steps table
+*/
+function appendBuilderSteps() {
+    const eles = document.querySelectorAll('#builderSteps > div.row');
+    if (eles.length > 0) {
+        const links = document.querySelectorAll('#stepsTableContent input[value=Remove]');
+        links.forEach(link => {
+            link.setAttribute('style', 'display:none;');
+        });
+        const parent = document.querySelector('#stepsTableContent');
+        eles.forEach(ele => {
+            let e = ele.querySelector('input[value=Remove]');
+            e.parentElement.setAttribute('class', 'col-md-1');
+            e.setAttribute('onclick', 'removeEntryRow(this);')
+            parent.append(ele);
+        });
     }
 }
 //end builder

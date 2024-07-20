@@ -7,8 +7,10 @@ import geb.module.MultipleSelect
 import geb.module.Select
 
 class EditScenarioPage extends EditPage {
-    static url = "/scenario/edit"
     static at = { title == "Edit Scenario" }
+    static convertToPath(Long projectId, Long id) {
+        "/project/${projectId}/scenario/edit/${id}"
+    }
 
     static content = {
         areaOptions { $("#area>option") }

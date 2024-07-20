@@ -88,15 +88,7 @@
                         <h1>Steps</h1>
                     </div>
                     <div class="card-body">
-                        <g:if test="${testCase.steps.size() == 0}">
-                            <g:render template="/shared/defaultStepsTemplate"/>
-                        </g:if>
-                        <g:elseif test="${testCase.steps[0].isBuilderStep}">
-                            <g:render template="/shared/builderStepsTemplate" bean="${testCase}" var="entity"/>
-                        </g:elseif>
-                        <g:else>
-                            <g:render template="/shared/freeFormStepsTemplate" bean="${testCase}" var="entity"/>
-                        </g:else>
+                        <g:render template="/shared/editStepsTemplate" bean="${testCase}" var="entity"/>
                         <div class="row mb-3 mt-3 me-2 ms-2 border-top">
                             <div class="col-8 mt-3">
                                 <label class="form-label" for="verify">Verify</label>
@@ -111,9 +103,17 @@
                 </div>
             </g:form>
         </main>
+        <g:render template="/shared/toastTemplate"/>
     </div>
-    <g:render template="/shared/toastTemplate"/>
 </div>
+<g:render template="/shared/stepsModal"/>
 <asset:javascript src="step.js"/>
+<script>
+    $(document).ready(function() {
+        $('#stepsModal').on('hidden.bs.modal', function () {
+            resetForm();
+        });
+    });
+</script>
 </body>
 </html>

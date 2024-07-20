@@ -55,6 +55,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         when:
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.scrollToBottom()
+        createPage.stepsTable.displaySearchStepsModal()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -76,6 +77,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         when:
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.scrollToBottom()
+        createPage.stepsTable.displaySearchStepsModal()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -95,6 +97,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
         when:
         createPage.scrollToBottom()
+        createPage.stepsTable.displaySearchStepsModal()
         for (int i = 0; i < text.length(); i++){
             char c = text.charAt(i)
             String s = new StringBuilder().append(c).toString()
@@ -116,7 +119,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.stepsTable.getBuilderStep(0).find('input[value=Remove]').displayed
 
         when:
-        createPage.stepsTable.addBuilderStep(template.name)
+        createPage.stepsTable.addBuilderStep(template.name, false)
 
         then:
         !createPage.stepsTable.getBuilderStep(0).find('input[value=Remove]').displayed
@@ -128,7 +131,7 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         CreateBugPage createPage = browser.page(CreateBugPage)
         createPage.scrollToBottom()
         createPage.stepsTable.addBuilderStep(template.name)
-        createPage.stepsTable.addBuilderStep(template.name)
+        createPage.stepsTable.addBuilderStep(template.name, false)
 
         expect:
         !createPage.stepsTable.getBuilderStep(0).find('input[value=Remove]').displayed
@@ -215,34 +218,6 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.stepsTable.getCurrentBuilderStepName() == s.name
     }
 
-    void "changing step type resets builder form"() {
-        given:
-        def s = new StepTemplate(name: "5test step", act: "5action jackson", result: "5result", project: project,
-                person: person)
-        stepTemplateService.save(s)
-        def l = new Link(ownerId: s.id, linkedId: template.id, relation: Relationship.IS_PARENT_OF.name, project: project)
-        linkService.save(l)
-
-        and:
-        def createPage = createPage(CreateBugPage)
-        createPage.scrollToBottom()
-        createPage.stepsTable.addBuilderStep(s.name)
-
-        expect:
-        createPage.stepsTable.getBuilderStepsCount() == 1
-        createPage.stepsTable.currentStepName.displayed
-        createPage.stepsTable.getSuggestedStepsCount() == 1
-
-        when:
-        createPage.stepsTable.selectStepsTab('free-form')
-        createPage.stepsTable.selectStepsTab('builder')
-
-        then:
-        createPage.stepsTable.getBuilderStepsCount() == 0
-        !createPage.stepsTable.currentStepName.displayed
-        createPage.stepsTable.getSuggestedStepsCount() == 0
-    }
-
     void "form is reset when last step is removed"() {
         given:
         def s = new StepTemplate(name: "6test step", act: "6action jackson", result: "6result", project: project,
@@ -270,28 +245,6 @@ class CreatePageBuilderStepsSpec extends GebSpec {
         createPage.stepsTable.getSuggestedStepsCount() == 0
     }
 
-    void "suggestion results are removed when clicked outside of menu"() {
-        given:
-        def text = template.name.substring(0, 3)
-        CreateBugPage createPage = browser.page(CreateBugPage)
-        createPage.scrollToBottom()
-        for (int i = 0; i < text.length(); i++){
-            char c = text.charAt(i)
-            String s = new StringBuilder().append(c).toString()
-            createPage.stepsTable.searchInput << s
-        }
-        sleep(500)
-
-        expect:
-        createPage.stepsTable.searchResultsMenu.displayed
-
-        when:
-        createPage.stepsTable.builderTab.click()
-
-        then:
-        !createPage.stepsTable.searchResultsMenu.displayed
-    }
-
     void "no results message displayed when no related steps found"() {
         setup:
         def s = new StepTemplate(name: "7test step", act: "7action jackson", result: "7result", project: project,
@@ -315,5 +268,21 @@ class CreatePageBuilderStepsSpec extends GebSpec {
 
         then:
         !createPage.stepsTable.isBuilderStepHiddenInputDisplayed(0)
+    }
+
+    void "form is reset when steps are appended"() {
+        given:
+        CreateBugPage createPage = browser.page(CreateBugPage)
+        createPage.scrollToBottom()
+        createPage.stepsTable.addBuilderStep(template.name)
+        createPage.stepsTable.appendBuilderSteps()
+
+        when:
+        createPage.stepsTable.displaySearchStepsModal()
+
+        then:
+        createPage.stepsTable.getBuilderStepsCount() == 0
+        !createPage.stepsTable.currentStepName.displayed
+        createPage.stepsTable.getSuggestedStepsCount() == 0
     }
 }

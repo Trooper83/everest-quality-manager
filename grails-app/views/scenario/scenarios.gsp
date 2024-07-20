@@ -41,7 +41,7 @@
                                 <td><g:link uri="/project/${project.id}/scenario/show/${scenario.id}">${scenario.name}</g:link></td>
                                 <td>${scenario.person.email}</td>
                                 <td>${scenario.area?.name}</td>
-                                <td>${scenario.platform}</td>
+                                <td>${scenario.platform?.name}</td>
                                 <td>${scenario.type}</td>
                                 <td>${scenario.executionMethod}</td>
                                 <td data-name="createdDateValue">${scenario.dateCreated}</td>

@@ -43,11 +43,9 @@ abstract class BugService implements IBugService {
      */
     @Transactional
     Bug saveUpdate(Bug bug, RemovedItems removedItems) {
-        def steps = []
         for(id in removedItems.stepIds) {
             def step = stepService.get(id)
             if (step) {
-                steps.add(step)
                 bug.removeFromSteps(step)
             }
         }

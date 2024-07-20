@@ -3,8 +3,10 @@ package com.everlution.test.ui.support.pages.scenario
 import com.everlution.test.ui.support.pages.common.ShowPage
 
 class ShowScenarioPage extends ShowPage {
-    static url = "/scenario/show"
     static at = { title == "Scenario Details" }
+    static convertToPath(Long projectId, Long id) {
+        "/project/${projectId}/scenario/show/${id}"
+    }
 
     static content = {
         areaValue { $("#area") }

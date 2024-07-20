@@ -1,5 +1,14 @@
 package com.everlution.test.ui.functional.specs.bug
 
+import com.everlution.domains.Area
+import com.everlution.domains.Bug
+import com.everlution.domains.Environment
+import com.everlution.domains.Platform
+import com.everlution.domains.Project
+import com.everlution.services.bug.BugService
+import com.everlution.services.person.PersonService
+import com.everlution.services.project.ProjectService
+import com.everlution.test.support.DataFactory
 import com.everlution.test.support.results.SendResults
 import com.everlution.test.ui.support.pages.project.ProjectHomePage
 import com.everlution.test.support.data.Credentials
@@ -11,10 +20,15 @@ import com.everlution.test.ui.support.pages.common.LoginPage
 import com.everlution.test.ui.support.pages.project.ListProjectPage
 import geb.spock.GebSpec
 import grails.testing.mixin.integration.Integration
+import org.bouncycastle.asn1.x509.OtherName
 
 @SendResults
 @Integration
 class ShowPageSpec extends GebSpec {
+
+    BugService bugService
+    PersonService personService
+    ProjectService projectService
 
     void "status message displayed after bug created"() {
         given: "login as a basic user"
@@ -177,5 +191,53 @@ class ShowPageSpec extends GebSpec {
 
         then: "at show bug page with message displayed"
         showPage.statusMessage.text() ==~ /Bug \d+ updated/
+    }
+
+    void "blank value when related items are null"() {
+        given:
+        def person = personService.list(max:1).first()
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code))
+        def bug = bugService.save(new Bug(name: "Show view blank related items", project: project, person: person,
+                status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        when:
+        def page = to ShowBugPage, project.id, bug.id
+
+        then:
+        page.areaValue.text() == ""
+        page.platformValue.text() == ""
+        page.environmentsList.text() == ""
+    }
+
+    void "name displays for related items"() {
+        given:
+        def person = personService.list(max:1).first()
+        def platform = new Platform(name: "platform testing platform III")
+        def area = new Area(name: "area testing area III")
+        def env = new Environment(name: "env testing env III")
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, platforms: [platform],
+                areas: [area], environments: [env]))
+        def bug = bugService.save(new Bug(name: "Show view related items displays names", project: project, person: person,
+                platform: platform, area: area, environments: [env], status: "Open", actual: "actual", expected: "expected"))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.READ_ONLY.email, Credentials.READ_ONLY.password)
+
+        when:
+        def page = to ShowBugPage, project.id, bug.id
+
+        then:
+        page.platformValue.text() == "platform testing platform III"
+        page.areaValue.text() == "area testing area III"
+        page.environmentsList.text() == "env testing env III"
     }
 }

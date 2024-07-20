@@ -102,7 +102,6 @@ class EditPageEnvironmentsSpec extends GebSpec {
 
         when: "add empty steps"
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
         page.stepsTable.addStep("", "","")
 
         and: "submit"
@@ -110,5 +109,25 @@ class EditPageEnvironmentsSpec extends GebSpec {
 
         then: "at the edit page"
         at EditTestCasePage
+    }
+
+    void "options equal project areas"() {
+        given: "project & test case instances with areas"
+        def env = new Environment(DataFactory.environment())
+        def pd = DataFactory.project()
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
+        def testCase = testCaseService.save(new TestCase(name: "area testing test case II234", project: project,
+                person: person, executionMethod: "Automated", type: "UI", environments: [env]))
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        when:
+        def page = to EditTestCasePage, project.id, testCase.id
+
+        then:
+        page.environmentsOptions*.text() == ["No Environment...", env.name]
     }
 }

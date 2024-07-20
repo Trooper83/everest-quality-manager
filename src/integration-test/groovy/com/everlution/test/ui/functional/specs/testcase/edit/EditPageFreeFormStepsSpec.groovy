@@ -134,7 +134,6 @@ class EditPageFreeFormStepsSpec extends GebSpec {
         and:
         def page = browser.page(EditTestCasePage)
         page.scrollToBottom()
-        page.stepsTable.selectStepsTab('free-form')
 
         when:
         page.stepsTable.addRow()

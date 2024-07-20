@@ -18,7 +18,7 @@ plugins {
     id 'org.grails.grails-gsp' version '6.0.0'
 }
 
-version "3.0.4"
+version "3.0.5"
 group "com.everlution.everest"
 
 repositories {

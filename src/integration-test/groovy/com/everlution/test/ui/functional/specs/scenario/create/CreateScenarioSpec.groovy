@@ -2,6 +2,7 @@ package com.everlution.test.ui.functional.specs.scenario.create
 
 import com.everlution.domains.Area
 import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
@@ -46,13 +47,15 @@ class CreateScenarioSpec extends GebSpec {
     void "all create form data saved"() {
         setup: "get fake data"
         def area = new Area(DataFactory.area())
+        def platform = new Platform(DataFactory.area())
         def ed = DataFactory.environment()
         def ed1 = DataFactory.environment()
         def env = new Environment(ed)
         def env1 = new Environment(ed1)
         def projectData = DataFactory.project()
         def project = projectService.save(
-                new Project(name: projectData.name, code: projectData.code, areas: [area], environments: [env, env1])
+                new Project(name: projectData.name, code: projectData.code, areas: [area], environments: [env, env1],
+                platforms: [platform])
         )
 
         when: "login as a basic user"
@@ -65,7 +68,7 @@ class CreateScenarioSpec extends GebSpec {
         def createPage = browser.page(CreateScenarioPage)
         def scn = DataFactory.scenario()
         createPage.createScenario(scn.name, scn.description, scn.gherkin, area.name,
-                [env.name, env1.name],"Automated", "UI", "Web")
+                [env.name, env1.name],"Automated", "UI", platform.name)
 
         then: "data is displayed on show page"
         def showPage = at ShowScenarioPage
@@ -75,7 +78,7 @@ class CreateScenarioSpec extends GebSpec {
             showPage.descriptionValue.text() == scn.description
             showPage.executionMethodValue.text() == "Automated"
             showPage.typeValue.text() == "UI"
-            showPage.platformValue.text() == "Web"
+            showPage.platformValue.text() == platform.name
             showPage.areEnvironmentsDisplayed([env.name, env1.name])
             showPage.gherkinTextArea.text() == scn.gherkin
         }

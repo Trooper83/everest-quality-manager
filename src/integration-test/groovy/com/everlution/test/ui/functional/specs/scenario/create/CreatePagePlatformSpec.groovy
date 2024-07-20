@@ -1,6 +1,6 @@
 package com.everlution.test.ui.functional.specs.scenario.create
 
-import com.everlution.domains.Environment
+import com.everlution.domains.Platform
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
 import com.everlution.test.support.DataFactory
@@ -13,29 +13,29 @@ import grails.testing.mixin.integration.Integration
 
 @SendResults
 @Integration
-class CreatePageEnvironmentsSpec extends GebSpec {
+class CreatePagePlatformSpec extends GebSpec {
 
     ProjectService projectService
 
     def setup() {
-        setup: "login as a basic user"
+        given: "login as a basic user"
         to LoginPage
         def loginPage = browser.page(LoginPage)
         loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
     }
 
-    void "options equal project environments"() {
+    void "platform options equal project platforms"() {
         setup:
-        def env = new Environment(name: "env testing platform123")
+        def platform = new Platform(name: "platform testing platform123")
         def pd = DataFactory.project()
-        def project = projectService.save(new Project(name: pd.name, code: pd.code, environments: [env]))
+        def project = projectService.save(new Project(name: pd.name, code: pd.code, platforms: [platform]))
         def page = to CreateScenarioPage, project.id
 
-        expect: "default text selected"
-        page.environmentsSelect().selectedText == []
-        page.environmentsSelect().selected == []
-        def found = project.environments*.name
-        found.add(0, "Select Environments...")
-        found.containsAll(page.environmentsOptions*.text())
+        expect:
+        page.platformSelect().selectedText == ""
+        page.platformSelect().selected == ""
+        def found = project.platforms*.name
+        found.add(0, "")
+        found.containsAll(page.platformOptions*.text())
     }
 }

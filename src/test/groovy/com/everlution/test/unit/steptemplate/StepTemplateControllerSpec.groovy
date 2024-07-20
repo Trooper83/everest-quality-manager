@@ -12,13 +12,14 @@ import com.everlution.services.steptemplate.StepTemplateService
 import com.everlution.controllers.command.LinksCmd
 import com.everlution.controllers.command.RemovedItems
 import grails.plugin.springsecurity.SpringSecurityService
+import grails.testing.gorm.DomainUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
 import org.grails.web.servlet.mvc.SynchronizerTokensHolder
 import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.Specification
 
-class StepTemplateControllerSpec extends Specification implements ControllerUnitTest<StepTemplateController> {
+class StepTemplateControllerSpec extends Specification implements ControllerUnitTest<StepTemplateController>, DomainUnitTest<StepTemplate> {
 
     def setup() {
     }
@@ -588,10 +589,10 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
         response.status == 404
     }
 
-    void "test the update action correctly persists"() {
+    void "update action correctly sets flash message and redirect url"() {
         given:
         controller.stepTemplateService = Mock(StepTemplateService) {
-            1 * save(_ as StepTemplate)
+            1 * update(_ as StepTemplate, _, _)
         }
 
         when:"The save action is executed with a valid instance"
@@ -600,157 +601,17 @@ class StepTemplateControllerSpec extends Specification implements ControllerUnit
         request.method = 'PUT'
         setToken(params)
         populateValidParams(params)
-        def t = new StepTemplate(params)
         def project = new Project()
-        t.id = 1
+        StepTemplate template = new StepTemplate()
+        template.id = 1
         project.id = 1
-        t.project = project
+        template.project = project
 
-        controller.update(t, 1, new LinksCmd(), null)
+        controller.update(template, 1, new LinksCmd(links: []), new RemovedItems(linkIds: []))
 
         then:"A redirect is issued to the show action"
         response.redirectedUrl == '/project/1/stepTemplate/show/1'
         controller.flash.message == "default.updated.message"
-    }
-
-    void "update action with an invalid instance"() {
-        given:
-        controller.stepTemplateService = Mock(StepTemplateService) {
-            1 * save(_ as StepTemplate) >> { StepTemplate template ->
-                throw new ValidationException("Invalid instance", template.errors)
-            }
-            1 * read(_) >> {
-                Mock(StepTemplate)
-            }
-        }
-
-        when:"update action is executed with an invalid instance"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        setToken(params)
-        populateValidParams(params)
-        def t = new StepTemplate(params)
-        def project = new Project()
-        t.id = 1
-        project.id = 1
-        t.project = project
-        controller.update(t, 1, null, null)
-
-        then:"The edit view is rendered again with the correct model"
-        model.stepTemplate instanceof StepTemplate
-        view == '/stepTemplate/edit'
-    }
-
-    void "update sets flash error when validation fails for link"() {
-        given:
-        controller.stepTemplateService = Mock(StepTemplateService) {
-            1 * save(_ as StepTemplate) >> new StepTemplate()
-        }
-        controller.linkService = Mock(LinkService) {
-            1 * createSave(_) >> { Link link ->
-                throw new ValidationException("Invalid instance", link.errors)
-            }
-        }
-
-        when:"update action is executed with an invalid instance"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        setToken(params)
-        populateValidParams(params)
-        def t = new StepTemplate(params)
-        def project = new Project()
-        t.id = 1
-        project.id = 1
-        t.project = project
-        controller.update(t, 1, new LinksCmd(links: [new Link()]), new RemovedItems())
-
-        then:"The edit view is rendered again with the correct model"
-        controller.flash.error == "An error occurred attempting to link templates"
-    }
-
-    void "update sets flash error when delete links fails"() {
-        given:
-        controller.stepTemplateService = Mock(StepTemplateService) {
-            1 * save(_ as StepTemplate) >> new StepTemplate()
-        }
-        controller.linkService = Mock(LinkService) {
-            1 * deleteRelatedLinks(_) >> {
-                throw new Exception("Invalid instance")
-            }
-            1 * createSave(_) >> new Link()
-        }
-
-        when:"update action is executed with an invalid instance"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        setToken(params)
-        populateValidParams(params)
-        def t = new StepTemplate(params)
-        def project = new Project()
-        t.id = 1
-        project.id = 1
-        t.project = project
-        controller.update(t, 1, new LinksCmd(links: [new Link()]), new RemovedItems(linkIds: [1]))
-
-        then:"The edit view is rendered again with the correct model"
-        controller.flash.error == "An error occurred attempting to delete links"
-    }
-
-    void "update action correctly removes null links"() {
-        given:
-        controller.stepTemplateService = Mock(StepTemplateService) {
-            1 * save(_ as StepTemplate)
-        }
-        controller.linkService = Mock(LinkService) {
-            1 * deleteRelatedLinks(_)
-        }
-
-        when:"The save action is executed with a valid instance"
-        response.reset()
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        setToken(params)
-        populateValidParams(params)
-        def t = new StepTemplate(params)
-        def project = new Project()
-        t.id = 1
-        project.id = 1
-        t.project = project
-
-        controller.update(t, 1, new LinksCmd(links: [null]), new RemovedItems())
-
-        then:"A redirect is issued to the show action"
-        response.redirectedUrl == '/project/1/stepTemplate/show/1'
-        controller.flash.message == "default.updated.message"
-        !controller.flash.error
-    }
-
-    void "update repopulates links after validation failure"() {
-        given:
-        controller.stepTemplateService = Mock(StepTemplateService) {
-            1 * save(_ as StepTemplate) >> { StepTemplate template ->
-                throw new ValidationException("Invalid instance", template.errors)
-            }
-            1 * read(_) >> {
-                Mock(StepTemplate)
-            }
-            1 * getLinkedTemplatesByRelation(_) >> [:]
-        }
-
-        when:"update action is executed with an invalid instance"
-        request.contentType = FORM_CONTENT_TYPE
-        request.method = 'PUT'
-        setToken(params)
-        populateValidParams(params)
-        def t = new StepTemplate(params)
-        def project = new Project()
-        t.id = 1
-        project.id = 1
-        t.project = project
-        controller.update(t, 1, null, null)
-
-        then:"The edit view is rendered again with the correct model"
-        model.linkedMap instanceof Map
     }
 
     void "update action returns 405 with not allowed method types"(String httpMethod) {

@@ -75,21 +75,4 @@ class EditPageSpec extends GebSpec {
             page.platformOptions.size() == 3
         }
     }
-
-    void "default steps panel displays for test with no steps"() {
-        given: "create test case"
-        Project project = projectService.list(max: 1).first()
-        Person person = personService.list(max: 1).first()
-        TestCase testCase = new TestCase(person: person, name: "first1", description: "desc1",
-                executionMethod: "Automated", type: "API", project: project)
-        def id = testCaseService.save(testCase).id
-
-        when: "go to edit page"
-        go "/project/${project.id}/testCase/edit/${id}"
-
-        then: "edit the test case"
-        EditTestCasePage page = browser.page(EditTestCasePage)
-        page.stepsTable.freeFormTab.displayed
-        page.stepsTable.builderTab.displayed
-    }
 }
