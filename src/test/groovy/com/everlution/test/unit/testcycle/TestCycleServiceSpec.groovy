@@ -142,12 +142,17 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
     }
 
     void "add test iterations does not filter test cases when platform is null"() {
+        given:
+        def pl = new Platform(name: 'Web')
+        def pl1 = new Platform(name: 'iOS')
+        def pl2 = new Platform(name: 'Android')
+
         when:
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
-        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "").save()
-        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "iOS").save()
-        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Android").save()
-        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: "").save(flush: true)
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: pl).save()
+        TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, platform: null).save()
+        TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, platform: pl1).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, platform: pl2).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan).save(flush: true)
         service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
         then:
@@ -199,7 +204,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1]).save()
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
         TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
-        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, environments: []).save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, environ: env1).save(flush: true)
         service.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
@@ -209,7 +214,7 @@ class TestCycleServiceSpec extends Specification implements ServiceUnitTest<Test
 
     void "add test iterations filters out test cases by unique"() {
         when:
-        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: "Web").save()
+        TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, platform: new Platform(name: "testing")).save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: releasePlan, platform: null).save(flush: true)
         service.addTestIterations(tc, [testCase, testCase, testCase])
 

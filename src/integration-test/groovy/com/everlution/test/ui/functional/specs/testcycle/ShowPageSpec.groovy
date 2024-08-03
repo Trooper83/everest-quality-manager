@@ -1,6 +1,8 @@
 package com.everlution.test.ui.functional.specs.testcycle
 
+import com.everlution.domains.Environment
 import com.everlution.domains.Person
+import com.everlution.domains.Platform
 import com.everlution.services.person.PersonService
 import com.everlution.domains.Project
 import com.everlution.services.project.ProjectService
@@ -796,5 +798,73 @@ class ShowPageSpec extends GebSpec {
 
         then:
         at ShowTestCyclePage
+    }
+
+    void "test iteration is added when test env is null and cycle env is not null"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def env = new Environment(name: "Testing cycles")
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group], environments: [env])
+        projectService.save(project)
+        def person = personService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "release plan 19999", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def planPage = to ShowReleasePlanPage, project.id, plan.id
+        planPage.createTestCycle("Name of the cycle", env.name, "")
+        planPage.goToTestCycle(0)
+
+        when:
+        def showCycle = at ShowTestCyclePage
+        showCycle.addTestsByGroup(group.name)
+
+        then:
+        showCycle.scrollToBottom()
+        showCycle.testsTable.getRowCount() == 1
+    }
+
+    void "test iteration is added when test platform is null and cycle platform is not null"() {
+        given: "setup data"
+        def gd = DataFactory.testGroup()
+        def group = new TestGroup(name: gd.name)
+        def pd = DataFactory.project()
+        def platform = new Platform(name: "Testing cycles")
+        def project = new Project(name: pd.name, code: pd.code, testGroups: [group], platforms: [platform])
+        projectService.save(project)
+        def person = personService.list(max: 1).first()
+        def plan = new ReleasePlan(name: "release plan 19999", project: project, status: "ToDo", person: person)
+        releasePlanService.save(plan)
+        def tc = DataFactory.testCase()
+        def testCase = new TestCase(name: tc.name, project: project, person: person, testGroups: [group])
+        testCaseService.save(testCase)
+
+        and: "login as a basic user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def planPage = to ShowReleasePlanPage, project.id, plan.id
+        planPage.createTestCycle("Name of the cycle", "", platform.name)
+        planPage.goToTestCycle(0)
+
+        when:
+        def showCycle = at ShowTestCyclePage
+        showCycle.addTestsByGroup(group.name)
+
+        then:
+        showCycle.scrollToBottom()
+        showCycle.testsTable.getRowCount() == 1
     }
 }
