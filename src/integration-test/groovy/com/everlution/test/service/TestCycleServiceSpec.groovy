@@ -29,8 +29,11 @@ class TestCycleServiceSpec extends Specification {
 
     @Shared Person person
 
-    private Long setupData() {
+    def setup() {
         person = personService.list([max:1]).first()
+    }
+
+    private Long setupData() {
         def project = new Project(name: "release name765", code: "glo").save()
         def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo", person: person).save()
         new TestCycle(name: "First Test Case", releasePlan: plan).save()
@@ -152,13 +155,41 @@ class TestCycleServiceSpec extends Specification {
         TestCase testCase = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1]).save()
         TestCase testCase1 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env1, env2]).save()
         TestCase testCase11 = new TestCase(person: person, name: "Second Test Case", project: project, environments: [env2]).save()
-        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, environments: []).save()
         def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo", person: person).save()
         TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, environ: env1).save(flush: true)
         testCycleService.addTestIterations(tc, [testCase, testCase1, testCase11, testCase111])
 
         then:
         tc.testIterations.size() == 3
+    }
+
+    void "addTestIterations adds test when cycle env is not null and test env is empty"() {
+        when:
+        def project = DataFactory.createProject()
+        def env1 = new Environment(name: "env1")
+        project.addToEnvironments(env1).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project, environments: []).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo", person: person).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, environ: env1).save(flush: true)
+        testCycleService.addTestIterations(tc, [testCase111])
+
+        then:
+        tc.testIterations.size() == 1
+    }
+
+    void "addTestIterations adds test when cycle platform is not null and test platform is empty"() {
+        when:
+        def project = DataFactory.createProject()
+        def plat = new Platform(name: "plat1")
+        project.addToPlatforms(plat).save()
+        TestCase testCase111 = new TestCase(person: person, name: "Second Test Case", project: project).save()
+        def plan = new ReleasePlan(name: "release plan name", project: project, status: "ToDo", person: person).save()
+        TestCycle tc = new TestCycle(name: "First Test Case", releasePlan: plan, platform: plat).save(flush: true)
+        testCycleService.addTestIterations(tc, [testCase111])
+
+        then:
+        tc.testIterations.size() == 1
     }
 
     void "add test iterations filters out test cases already on test cycle"() {
