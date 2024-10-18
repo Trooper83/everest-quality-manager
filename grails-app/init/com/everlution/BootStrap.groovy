@@ -33,39 +33,16 @@ class BootStrap {
                 seedTestUsers()
                 seedTestData()
             }
-            local {
-                seedTestUsers()
-                seedTestData()
-            }
             integrated {
                 // intentionally left blank
             }
             production {
                 // intentionally left blank
             }
-            model_db {
-                initDB()
-            }
         }
     }
 
     def destroy = {
-    }
-
-    @Transactional
-    void initDB() {
-        new Role(authority: "ROLE_BASIC").save(failOnError: true)
-        new Role(authority: "ROLE_READ_ONLY").save(failOnError: true)
-        new Role(authority: "ROLE_PROJECT_ADMIN").save(failOnError: true)
-        def appAdminRole = new Role(authority: "ROLE_APP_ADMIN").save(failOnError: true)
-        def appAdminUser = new Person(email: "app_admin@appadmin.com", password: "!Password#2022").save(failOnError: true)
-
-        PersonRole.create(appAdminUser, appAdminRole)
-
-        PersonRole.withSession {
-            it.flush()
-            it.clear()
-        }
     }
 
     @Transactional
