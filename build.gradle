@@ -18,8 +18,8 @@ plugins {
     id 'org.grails.grails-gsp' version '6.0.0'
 }
 
-version "3.0.5"
-group "com.everlution.everest"
+version "1.0.0"
+group "com.manager.quality.everest"
 
 repositories {
     maven { url "https://repo.grails.org/grails/core" }
@@ -123,19 +123,14 @@ integrationTest {
     useJUnitPlatform()
 
     systemProperty "geb.env", "chrome"
-    systemProperty "sendResults", "false"
+    systemProperty "sendResults", "false" //set url in com.manager.quality.everest.GlobalResultsExtension before enabling
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
 
-    def env = "int"
     String baseUrl, projectId
 
-    if(env == "prod") {
-        baseUrl = "https://www.everlution.everestquality.com"
-        projectId = "7"
-    } else {
-        baseUrl = "http://localhost:8080"
-        projectId = "6"
-    }
+    baseUrl = "http://localhost:8080"
+    projectId = "" //set for integration tests
+
     systemProperty "apiBaseUrl", baseUrl
     systemProperty "apiProjectId", projectId
 }

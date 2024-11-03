@@ -22,16 +22,6 @@ environments {
             new ChromeDriver(o)
         }
     }
-
-    // run via “./gradlew -Dgeb.env=prod iT”
-    prod {
-        baseUrl = "https://www.everlution.everestquality.com"
-        driver = {
-            ChromeOptions o = new ChromeOptions()
-            //o.addArguments('headless')
-            new ChromeDriver(o)
-        }
-    }
     // run via “./gradlew -Dgeb.env=local iT”
     local {
         baseUrl = "http://localhost:8080"
