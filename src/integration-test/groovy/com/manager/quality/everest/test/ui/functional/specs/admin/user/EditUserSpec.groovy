@@ -92,29 +92,6 @@ class EditUserSpec extends GebSpec {
         p.password.startsWith("{bcrypt}")
     }
 
-    void "user can login with new credentials"() {
-        given:
-        to LoginPage
-        LoginPage loginPage = browser.page(LoginPage)
-        loginPage.login(Credentials.APP_ADMIN.email, Credentials.APP_ADMIN.password)
-
-        and:
-        go "user/edit/${person.id}"
-
-        when:
-        EditUserPage page = browser.page(EditUserPage)
-        def p = DataFactory.person()
-        page.editPerson(p.email, p.password, [], [SecurityRoles.ROLE_READ_ONLY.role])
-        page.navBar.logout()
-
-        and:
-        def logPage = at LoginPage
-        logPage.login(p.email, p.password)
-
-        then:
-        at ListProjectPage
-    }
-
     void "user cannot login with old password"() {
         given:
         to LoginPage

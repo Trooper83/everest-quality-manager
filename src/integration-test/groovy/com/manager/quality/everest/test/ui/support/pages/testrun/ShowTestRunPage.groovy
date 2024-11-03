@@ -24,5 +24,8 @@ class ShowTestRunPage extends ShowPage {
     void expandFailureCause() {
         def cells = $("tbody tr")[0].find("td")
         cells[0].find("button").click()
+        waitFor {
+            $('[data-test-id=failureCause]').isDisplayed()
+        }
     }
 }

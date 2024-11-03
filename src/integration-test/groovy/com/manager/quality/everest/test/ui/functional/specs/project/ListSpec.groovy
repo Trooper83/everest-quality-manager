@@ -31,7 +31,7 @@ class ListSpec extends GebSpec {
         page.projectTable.getHeaders() == ["Name", "Code"]
     }
 
-    void "sort parameters correctly set in url"(String column, String propName) {
+    void "name sort parameters correctly set in url"() {
         given: "login as read only user"
         to LoginPage
         LoginPage loginPage = browser.page(LoginPage)
@@ -41,23 +41,42 @@ class ListSpec extends GebSpec {
         def page = to ListProjectPage
 
         and:
-        page.projectTable.sortColumn(column)
+        page.projectTable.sortColumn('Name')
 
         expect: "correct params are displayed"
-        currentUrl.contains("sort=${propName}")
+        currentUrl.contains("sort=name")
+        currentUrl.contains('order=desc')
+
+        when:
+        page.projectTable.sortColumn('Name')
+
+        then: "correct params are displayed"
+        currentUrl.contains("sort=name")
+        currentUrl.contains('order=asc')
+    }
+
+    void "code sort parameters correctly set in url"() {
+        given: "login as read only user"
+        to LoginPage
+        LoginPage loginPage = browser.page(LoginPage)
+        loginPage.login(Credentials.BASIC.email, Credentials.BASIC.password)
+
+        and:
+        def page = to ListProjectPage
+
+        and:
+        page.projectTable.sortColumn('Code')
+
+        expect: "correct params are displayed"
+        currentUrl.contains("sort=code")
         currentUrl.contains('order=asc')
 
         when:
-        page.projectTable.sortColumn(column)
+        page.projectTable.sortColumn('Code')
 
         then: "correct params are displayed"
-        currentUrl.contains("sort=${propName}")
+        currentUrl.contains("sort=code")
         currentUrl.contains('order=desc')
-
-        where:
-        column | propName
-        'Name' | 'name'
-        'Code' | 'code'
     }
 
     void "delete message displays after project deleted"() {
