@@ -11,4 +11,4 @@ Open source quality management tool that allows teams to track Bugs, Tests and R
    - EVEREST_DB_PASSWORD (database admin user's password)
    - EVEREST_DB_URL (url connection string to database)
 9. Start App `java -jar <path_to_jar>`
-   10. Run the command replacing the path
+   - Run the command replacing the path
